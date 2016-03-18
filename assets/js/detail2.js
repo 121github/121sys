@@ -1886,7 +1886,7 @@ var record = {
                 var template = $('#emailtemplatespicker').val();
                 window.location.href = helper.baseUrl + 'email/create/' + template + '/' + record.urn;
             });
-            $panel.on('click', 'span.del-email-btn', function (e) {
+            $modal.on('click', 'button.del-email-btn', function (e) {
                 e.preventDefault();
                 modal.delete_email($(this).attr('item-id'), $(this).attr('item-modal'));
             });
@@ -1894,7 +1894,7 @@ var record = {
                 e.preventDefault();
                 record.email_panel.show_all_email();
             });
-            $panel.on('click', 'span.view-email-btn', function (e) {
+            $panel.on('click', 'tr.view-email-btn', function (e) {
                 e.preventDefault();
                 record.email_panel.view_email($(this).attr('item-id'));
             });
@@ -1945,6 +1945,9 @@ var record = {
                 dataType: "HTML"
             }).done(function (data) {
                 var mheader = "View Email", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+				 // if (helper.permissions['delete emails'] > 0) {
+                            mfooter += '<button class="btn btn-danger pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + email_id + '" title="Delete email" >Delete</button>';
+                       // }
                 modals.load_modal(mheader, $mbody, mfooter);
                 record.email_panel.load_email_view(email_id);
             });
@@ -1956,10 +1959,15 @@ var record = {
                 dataType: "JSON",
                 data: {email_id: email_id}
             }).done(function (response) {
-                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>" + ((response.data.pending == 1) ? "Pending to (re)send automatically..." : "This email was sent successfuly") + "</th>" : "<th colspan='2' style='color:red'>" + ((response.data.pending == 1) ? "Pending to send automatically..." : "This email was not sent") + "</th>"
+				if(response.data.status!=="na"){
+                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>" + ((response.data.pending == 1) ? "Pending to (re)send automatically..." : "Email was sent") + "</th>" : "<th colspan='2' style='color:red'>" + ((response.data.pending == 1) ? "Pending to send automatically..." : "This email was not sent") + "</th>"
                 var status = (response.data.status == true) ? "Yes" : "No";
                 var read_confirmed = (response.data.read_confirmed == 1) ? "Yes " + " (" + response.data.read_confirmed_date + ")" : "No";
-
+				} else {
+					var message = "<th colspan='2'>This email was recieved (inbound)</th>";
+				  var read_confirmed = "n/a";
+				    var status = "n/a";	
+				}
                 var tbody = "<tr>" +
                     message +
                     "</tr>" +
@@ -1989,7 +1997,7 @@ var record = {
                     "<tr>" +
                     "<th colspan=2>Body</th>" +
                     "</tr>" +
-                    "<td colspan=2 class='body'>" + response.data.body + "</td>" +
+                    "<td colspan=2 class='body'><iframe style='width:100%;height:500px' src='"+helper.baseUrl+"email/load_html/"+email_id+"'>" + response.data.body + "</iframe></td>" +
                     "</tr>" +
                     "<th>Sent</th>" +
                     "<td class='status'>" + status + ((response.data.pending == 1) ? " (Pending to (re)send automatically...)" : "") + "</td>" +
@@ -2038,14 +2046,17 @@ var record = {
                         var message = (val.pending == 1) ? "Email pending to send" : (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                         var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                         var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
-                        var $delete_option = "";
-                        if (helper.permissions['delete emails'] > 0) {
-                            $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + val.email_id + '" title="Delete email" ></span>';
-                        }
-                        $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                        tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+							var color = "";
+if(val.status==0){
+	color = "danger";
+}
+if(val.read_confirmed==1){
+	color  = "success";
+}
+
+                        tbody += '<tr class="view-email-btn pointer '+color+'" item-id="' + val.email_id + '"><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td></tr>';
                     });
-                    var table = '<thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + tbody + '</tbody>';
+                    var table = '<thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th></tr></thead><tbody>' + tbody + '</tbody>';
                     $('#email-all-table').html(table);
                 } else {
                     modal_body.html('<p>No emails have been sent for this record</p>');
@@ -2074,19 +2085,22 @@ var record = {
                             var message = (val.pending == 1) ? "Email pending to send" : (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                             var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                             var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
-                            var $delete_option = "";
-                            if (helper.permissions['delete email'] > 0) {
-                                $delete_option = '<span class="glyphicon glyphicon-trash pull-right pointer del-email-btn marl" data-target="#modal" item-modal="0" item-id="' + val.email_id + '" title="Delete email" ></span>';
-                            }
-                            $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+							var color = "";
+if(val.status==0){
+	color = "danger";
+}
+if(val.read_confirmed==1){
+	color  = "success";
+}
+
+                            $body += '<tr class="view-email-btn pointer '+color+'" item-id="' + val.email_id + '"><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td></tr>';
                         }
                         k++;
                     });
                     if (k > record.limit - 1) {
                         $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-default btn-sm pull-right" id="show-all-email-btn">Show All</span></a></td></tr>';
                     }
-                     $panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                     $panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive table-hover"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
                     $panel.find('.panel-body').append('<p>No emails have been sent for this record</p>');
                 }

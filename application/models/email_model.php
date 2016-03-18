@@ -318,22 +318,23 @@ $qry .= " group by urn";
         }
 
         $qry = "select e.email_id,
-                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i') as sent_date,
                       e.subject,
                       e.body,
                       e.send_from,
                       e.send_to,
-                      e.cc,
-                      e.bcc,
-                      if(e.user_id = 0 or e.user_id is null,'Auto') user_id,
+                            if(e.cc is null,'-',e.cc) cc,
+                    if(e.bcc is null,'-',e.bcc) bcc,
+                      e.user_id,
                       e.urn,
-                       if(e.template_id = 0 or e.template_id is null,'Inbound Email') template_id,
-                      e.read_confirmed,
-                      e.read_confirmed_date,
-                      e.status,
+                   e.template_id,
+                      if(e.inbound=1,'na',e.read_confirmed) read_confirmed,
+					  if(e.inbound=1,'na',e.read_confirmed_date) read_confirmed_date,
+					   if(e.inbound=1,'na',e.status) status,
                       u.*,
                       t.*,
-                      e.pending
+                      e.pending,
+					  if(inbound=1,'Inbound',u.name) name
 		    	from email_history e
 		    	left join users u ON (u.user_id = e.user_id)
 		    	left join email_templates t ON (t.template_id = e.template_id)
@@ -357,20 +358,20 @@ $qry .= " group by urn";
                       e.body,
                       e.send_from,
                       e.send_to,
-                      e.cc,
-                      e.bcc,
+                           if(e.cc is null,'-',e.cc) cc,
+                    if(e.bcc is null,'-',e.bcc) bcc,
                       e.user_id,
                       e.urn,
                       e.template_id,
-                      e.read_confirmed,
-                      e.read_confirmed_date,
-                      e.status,
-                      u.name,
+                      if(e.inbound=1,'na',e.read_confirmed) read_confirmed,
+					  if(e.inbound=1,'na',e.read_confirmed_date) read_confirmed_date,
+					   if(e.inbound=1,'na',e.status) status,
                       t.*,
-                      e.pending
+                      e.pending,
+					   if(inbound=1,'Inbound',u.name) name
 		    	from email_history e
-		    	inner join users u ON (u.user_id = e.user_id)
-		    	inner join email_templates t ON (t.template_id = e.template_id)
+		    	left join users u ON (u.user_id = e.user_id)
+		    	left join email_templates t ON (t.template_id = e.template_id)
 		    	where e.urn = " . $urn . "
 		    	order by e.sent_date desc
 		    	" . $limit_;
@@ -481,22 +482,23 @@ $qry .= " group by urn";
                   eh.body,
                   eh.send_from,
                   eh.send_to,
-                  eh.cc,
-                  eh.bcc,
+                       if(eh.cc is null,'-',eh.cc) cc,
+                    if(eh.bcc is null,'-',eh.bcc) bcc,
                   eh.user_id,
                   eh.urn,
                   eh.template_id,
-                  eh.read_confirmed,
-                  eh.read_confirmed_date,
-                  eh.status,
+      if(eh.inbound=1,'na',eh.read_confirmed) read_confirmed,
+					  if(eh.inbound=1,'na',eh.read_confirmed_date) read_confirmed_date,
+					   if(eh.inbound=1,'na',eh.status) status,
                   eh.pending,
                   u.*,
-                  t.*
+                  t.*,
+				     if(eh.inbound=1,'Inbound',u.name) name
             from email_history eh
-            inner join users u ON (u.user_id = eh.user_id)
-            inner join records r ON (r.urn = eh.urn)
-            inner join campaigns c ON (c.campaign_id = r.campaign_id)
-            inner join email_templates t ON (t.template_id = eh.template_id)
+            left join users u ON (u.user_id = eh.user_id)
+            left join records r ON (r.urn = eh.urn)
+            left join campaigns c ON (c.campaign_id = r.campaign_id)
+            left join email_templates t ON (t.template_id = eh.template_id)
             where 1 $where
             order by eh.sent_date desc";
 
@@ -514,19 +516,20 @@ $qry .= " group by urn";
                       e.body,
                       e.send_from,
                       e.send_to,
-                      e.cc,
-                      e.bcc,
+                      if(e.cc is null,'-',e.cc) cc,
+                    if(e.bcc is null,'-',e.bcc) bcc,
                       e.user_id,
                       e.urn,
                       e.template_id,
-                      e.read_confirmed,
-                      e.read_confirmed_date,
-                      e.status,
+                if(e.inbound=1,'na',e.read_confirmed) read_confirmed,
+					  if(e.inbound=1,'na',e.read_confirmed_date) read_confirmed_date,
+					   if(e.inbound=1,'na',e.status) status,
                       u.*,
                       t.*,
-                      e.pending
+                      e.pending,
+					  if(e.inbound = 1,'Auto',u.name) name
 		    	from email_history e
-		    	inner join users u ON (u.user_id = e.user_id)
+		    	left join users u ON (u.user_id = e.user_id)
 		    	left join email_templates t ON (t.template_id = e.template_id)
 		    	where e.email_id = " . $email_id;
 

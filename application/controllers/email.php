@@ -71,6 +71,12 @@ class Email extends CI_Controller
             ));
         }
     }
+	
+	public function load_html(){
+		$email_id = $this->uri->segment(3);
+		$email = $this->Email_model->get_email_by_id($email_id);
+		echo $email['body'];
+	}
 
     //this function returns a json array of email data for a given record id
     public function get_email()
