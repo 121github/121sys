@@ -36,14 +36,16 @@ class Webform_model extends CI_Model
     {
 		
 		
-		
+
 		$data = array();
 		//get appointment details
 		if($appointment_id){
-		$qry = "select *,date_format(appointments.start,'%d/%m/%Y %H:%i') start_datetime,date_format(appointments.start,'%d/%m/%Y') start_date,date_format(appointments.start,'%H:%i') start_time,appointment_type from appointments join appointment_types using(appointment_type_id) join users on user_id = created_by join contacts using(contact_id) join contact_telephone using(contact_id) where appointment_id = '".$appointment_id."'";
+		$qry = "select *,date_format(appointments.start,'%d/%m/%Y %H:%i') start_datetime,date_format(appointments.start,'%d/%m/%Y') start_date,start sql_start,date_format(appointments.start,'%H:%i') start_time,appointment_type,group_concat(distinct telephone_number SEPARATOR ', ') all_numbers from appointments left join appointment_types using(appointment_type_id) left join users on user_id = created_by left join contacts using(contact_id) left join contact_telephone using(contact_id) where appointment_id = '".$appointment_id."' group by contact_id";
 		$data['appointment'] = $this->db->query($qry)->row_array();
 		}
-		
+		//$this->firephp->log($qry);
+		$custom_panels = "select name,value from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '".intval($urn)."'";
+		$data['custom_panels'] = $this->db->query($custom_panels)->result_array();
 		
 		$qry = "select * from webform_answers wa where webform_id = '".intval($form)."' and wa.urn = '".intval($urn)."'";
 		$qry .= ($appointment_id?" and appointment_id = '".$appointment_id."' ":"");	

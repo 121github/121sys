@@ -1374,7 +1374,7 @@ class Ajax extends CI_Controller
                 }
                 //check if its a special field ie-ownership,client_ref or color
                 if (in_array($k, $custom_fields)) {
-                    $qry = "select field_name,is_color,is_owner,is_client_ref from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and field = '$k'";
+                    $qry = "select field_name,is_color,is_owner,is_client_ref,is_pot,is_source from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and field = '$k'";
                     $special_fields = $this->db->query($qry)->result_array();
                     foreach ($special_fields as $row) {
                         if ($row['is_color'] == 1) {
@@ -1384,6 +1384,18 @@ class Ajax extends CI_Controller
                             $this->Records_model->save_ownership($urn, array($v));
                             if (!empty($v)) {
                                 $info[$k] = $this->Records_model->get_name_from_user_id($v);
+                            }
+                        }
+						 if ($row['is_pot'] == 1) {
+                            $this->Records_model->save_pot($urn, $v);
+                            if (!empty($v)) {
+                                $info[$k] = $this->Records_model->get_pot_from_id($v);
+                            }
+                        }
+						 if ($row['is_source'] == 1) {
+                            $this->Records_model->save_source($urn, $v);
+                            if (!empty($v)) {
+                                $info[$k] = $this->Records_model->get_source_from_id($v);
                             }
                         }
                         if ($row['is_client_ref'] == 1) {

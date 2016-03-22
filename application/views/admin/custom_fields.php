@@ -39,6 +39,8 @@
                                             <th> | Is color? |</th>
                                             <th> | Is ownership? |</th>
                                             <th> | Is client ref?</th>
+                                             <th> | Is Pot?</th>
+                                              <th> | Is Source?</th>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c1[name]" id="c1"/></td>
@@ -58,6 +60,10 @@
                                                        id="c1_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c1[is_client_ref]"
                                                        id="c1_ref"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c1[is_pot]"
+                                                       id="c1_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c1[is_source]"
+                                                       id="c1_source"/></td>
                                         </tr>
 
                                         <tr>
@@ -77,7 +83,10 @@
                                             <td><input type="checkbox" class="form-control" name="c2[is_owner]"
                                                        id="c2_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c2[is_client_ref]"
-                                                       id="c2_ref"/></td>
+                                                       id="c2_ref"/></td> <td><input type="checkbox" class="form-control" name="c2[is_pot]"
+                                                       id="c2_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c2[is_source]"
+                                                       id="c2_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c3[name]" id="c3"/></td>
@@ -96,7 +105,10 @@
                                             <td><input type="checkbox" class="form-control" name="c3[is_owner]"
                                                        id="c3_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c3[is_client_ref]"
-                                                       id="c3_ref"/></td>
+                                                       id="c3_ref"/></td> <td><input type="checkbox" class="form-control" name="c3[is_pot]"
+                                                       id="c3_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c3[is_source]"
+                                                       id="c3_source"/></td>
                                             <td></td>
                                         </tr>
                                         <tr>
@@ -116,7 +128,10 @@
                                             <td><input type="checkbox" class="form-control" name="c4[is_owner]"
                                                        id="c4_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c4[is_client_ref]"
-                                                       id="c4_ref"/></td>
+                                                       id="c4_ref"/></td> <td><input type="checkbox" class="form-control" name="c4[is_pot]"
+                                                       id="c4_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c4[is_source]"
+                                                       id="c4_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c5[name]" id="c5"/></td>
@@ -135,7 +150,10 @@
                                             <td><input type="checkbox" class="form-control" name="c5[is_owner]"
                                                        id="c5_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c5[is_client_ref]"
-                                                       id="c5_ref"/></td>
+                                                       id="c5_ref"/></td> <td><input type="checkbox" class="form-control" name="c5[is_pot]"
+                                                       id="c5_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c5[is_source]"
+                                                       id="c5_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c6[name]" id="c6"/></td>
@@ -154,7 +172,10 @@
                                             <td><input type="checkbox" class="form-control" name="c6[is_owner]"
                                                        id="c6_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c6[is_client_ref]"
-                                                       id="c6_ref"/></td>
+                                                       id="c6_ref"/></td> <td><input type="checkbox" class="form-control" name="c6[is_pot]"
+                                                       id="c6_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c6[is_source]"
+                                                       id="c6_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c7[name]" id="c7"/></td>
@@ -173,7 +194,10 @@
                                             <td><input type="checkbox" class="form-control" name="c7[is_owner]"
                                                        id="c7_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c7[is_client_ref]"
-                                                       id="c7_ref"/></td>
+                                                       id="c7_ref"/></td> <td><input type="checkbox" class="form-control" name="c7[is_pot]"
+                                                       id="c7_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c7[is_source]"
+                                                       id="c7_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c8[name]" id="c8"/></td>
@@ -192,7 +216,10 @@
                                             <td><input type="checkbox" class="form-control" name="c8[is_owner]"
                                                        id="c8_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c8[is_client_ref]"
-                                                       id="c8_ref"/></td>
+                                                       id="c8_ref"/></td> <td><input type="checkbox" class="form-control" name="c8[is_pot]"
+                                                       id="c8_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c8[is_source]"
+                                                       id="c8_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c9[name]" id="c9"/></td>
@@ -211,7 +238,10 @@
                                             <td><input type="checkbox" class="form-control" name="c9[is_owner]"
                                                        id="c9_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c9[is_client_ref]"
-                                                       id="c9_ref"/></td>
+                                                       id="c9_ref"/></td> <td><input type="checkbox" class="form-control" name="c9[is_pot]"
+                                                       id="c9_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c9[is_source]"
+                                                       id="c9_source"/></td>
                                         </tr>
                                         <tr>
                                             <td><input class="form-control" value="" name="c10[name]" id="c10"/></td>
@@ -230,13 +260,16 @@
                                             <td><input type="checkbox" class="form-control" name="c10[is_owner]"
                                                        id="c10_own"/></td>
                                             <td><input type="checkbox" class="form-control" name="c10[is_client_ref]"
-                                                       id="c10_ref"/></td>
+                                                       id="c10_ref"/></td> <td><input type="checkbox" class="form-control" name="c10[is_pot]"
+                                                       id="c10_pot"/></td>
+                                                         <td><input type="checkbox" class="form-control" name="c10[is_source]"
+                                                       id="c10_source"/></td>
                                         </tr>
                                     </table>
                                     <script type="text/javascript">
-                                        $(document).ready(function () {
-                                            $(document).on('change', '[id*="own"]', function () {
-                                                if ($(this).prop('checked')) {
+                                        $(document).ready(function(){
+                                            $(document).on('change', '[id*="own"],[id*="pot"],[id*="source"]', function () {
+                                                if ($(this).prop('checked')){
                                                     $(this).closest('tr').find('[id*="sel"]').prop('checked', true);
                                                     $(this).closest('tr').find('[id*="col"]').prop('checked', false);
                                                     $(this).closest('tr').find('[id*="ref"]').prop('checked', false);

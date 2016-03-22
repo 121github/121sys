@@ -2,7 +2,7 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
-
+		$('#top-campaign-select').hide();
     },
     record_setup_update: function() {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
@@ -213,22 +213,8 @@ var campaign_functions = {
 
     },
     load_custom_fields: function() {
-        $.each($('#custom-panel').find('.c1'), function () {
-            if ($(this).html() != '' && $(this).html() != '-') {
-                $(this).prepend('#');
-            }
-        });
     },
     edit_custom_fields: function() {
-        //Enable Job Status Dropdown since the job reference is set
-        var record_details_panel = $('#custom-panel');
-        if (record_details_panel.find('input[name="c1"]') &&
-            record_details_panel.find('input[name="c1"]').val() !== null &&
-            record_details_panel.find('input[name="c1"]').val().length>0)
-        {
-            record_details_panel.find('input[name="c1"]').val("#"+record_details_panel.find('input[name="c1"]').val());
-            $('#custom-panel').find('select[name="c2"]').attr('disabled',false).selectpicker('refresh');
-        }
     },
     save_custom_fields: function(data) {
 

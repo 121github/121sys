@@ -48,19 +48,25 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             width: 450px;
         }
 		select,input,textarea { display:none }
+		#logo-img { display:none }
 		@media print {
 			.collapse {
     display: block !important;
     height: auto !important;
 }
-th{ width:200px; }
+th{ width:140px; }
+.print-hide { display:none !important }
+#images-panel { display:none !important }
+body { font-size:12px !important  }
+.col-md-6 { width:50% !important; float:left !important; }
+#logo-img { display:inline !important; position:absolute !important; top:0px; right:20px;  }
 		}
 
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>HSL Delivery Notes <small></small></h2>
+    <h3>HSL Delivery<small></small><img id="logo-img" class="pull-right" width="60px" src="<?php echo base_url(); ?>assets/themes/images/hsl/hsl_stacked_logo.png"></h3>
 
     <form id="form" style="padding-bottom:50px;">
     <input type="hidden" id="webform-id" name="id" value="<?php echo @$values['id'] ?>" />
@@ -69,8 +75,8 @@ th{ width:200px; }
     
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
-    <div class="panel-heading pointer" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-      <h4 class="panel-title">
+    <div class="panel-heading print-hide">
+      <h4 class="panel-title pointer" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           Customer Details
       </h4>
     </div>
@@ -79,22 +85,26 @@ th{ width:200px; }
       
             <div class="row">
       <div class="col-md-6">
-      <h4>Contact Info</h4>
+      <h4>Appointment Info</h4>
 <table class="table"><tr><th>Customer</th><td><?php echo $appointment['fullname'] ?></td></tr>
        <tr><th>Address</th><td><?php echo str_replace(",","<br>",$appointment['address']) ?></td></tr>
-          <tr><th>Telephone</th><td><?php echo $appointment['telephone_number'] ?></td></tr>
-               <tr><th>Email</th><td><?php echo $appointment['email'] ?></td></tr>
+          <tr><th>Telephone(s)</th><td><?php echo $appointment['all_numbers'] ?></td></tr>
+               <tr><th>Delivery Date</th><td><?php echo date("l jS F Y g:i a",strtotime($appointment['sql_start'])) ?></td></tr>
+               <tr><th>Delivery Type</th><td><?php echo $appointment['appointment_type']; ?></td></tr>
+                  <tr><th>Delivery Notes</th><td><?php echo $appointment['text'] ?></td></tr>
        </table>
        </div>
         <div class="col-md-6">
-        <h4>Order Info</h4>
+        <h4>Delivery Info</h4>
    <table class="table">
    <tr><th>HSL Ref</th><td><?php echo $custom['c1'] ?></td></tr>
    <tr><th>Value (&pound;)</th><td><?php echo $custom['c2'] ?></td></tr>
-   <tr><th>Model</th><td><?php echo $custom['c4'] ?></td></tr>
-   <tr><th>Material</th><td><?php echo $custom['c5'] ?></td></tr>
-   <tr><th>Retailer</th><td><?php echo $custom['c6'] ?></td></tr>
-   <tr><th>Purchase Date</th><td><?php echo $custom['d1'] ?></td></tr>
+   <?php $show_fields = array("Order number","Delivery Items","Delivery Comments","Delivery Product Type"); ?>
+   <?php foreach($custom_panels as $row){ ?>
+   <?php if(in_array($row['name'],$show_fields)){ ?>
+   <tr><th><?php echo $row['name'] ?></th><td><?php echo $row['value'] ?></td></tr>
+   <?php } ?>
+   <?php } ?>
        </table>
        </div>
        </div>
@@ -102,110 +112,44 @@ th{ width:200px; }
        
       </div>
     </div>
-  </div><!--
-  <div class="panel panel-default">
-    <div class="panel-heading pointer" role="tab" id="headingTwo"  data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-      <h4 class="panel-title">
-          Order Details
-      </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-      <div class="panel-body">
-        <table class="table"><tr><th>Value</th><td>&pound;2000</td></tr>
-       <tr><th>Model</th><td>Holly Standard DUA</td></tr>
-          <tr><th>Material</th><td>Fabric</td></tr>
-               <tr><th>Retailer</th><td>-</td></tr>
-       </table>
-      </div>
-    </div>
   </div>
-  -->
   <div class="panel panel-default">
-    <div class="panel-heading pointer" role="tab" id="headingThree" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-      <h4 class="panel-title">
-          <?php if($appointment['appointment_type_id']==4){ echo "Delivery"; } ?> Details
+    <div class="panel-heading " >
+      <h4 class="panel-title pointer" role="tab" id="headingThree" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+      To be completed on delivery
       </h4>
     </div>
-    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
       <div class="panel-body">
       <div class="row">
-      <div class="col-md-6">
-         <table class="table"><tr><th>Date</th><td>9/11/2015</td></tr>
-       <tr><th>Environment</th><td class="val-text"><span><?php echo @$values['a1'] ?></span> <select name="answers[a1]" class="form-control req"><option  value="">--Please Select--</option><option <?php echo (@$values['a1']=="good"?"selected":"") ?> value="good">Good</option><option <?php echo (@$values['a1']=="average"?"selected":"") ?> value="average">Average</option><option <?php echo (@$values['a1']=="bad"?"selected":"") ?> value="bad">Bad</option></select></td></tr>
-          <tr><th>Condition</th><td class="val-text"><span><?php echo @$values['a2'] ?></span> <select name="answers[a2]" class="form-control req"><option value="">--Please Select--</option><option <?php echo (@$values['a2']=="good"?"selected":"") ?> value="good">Good</option><option <?php echo (@$values['a2']=="average"?"selected":"") ?> value="average">Average</option><option <?php echo (@$values['a2']=="bad"?"selected":"") ?> value="bad">Bad</option></select></td></tr>
-               <tr><th>Maintenance</th><td class="val-text"><span><?php echo @$values['a3'] ?></span> <select name="answers[a3]" class="form-control req"><option  value="">--Please Select--</option><option <?php echo (@$values['a3']=="good"?"selected":"") ?> value="good">Good</option><option <?php echo (@$values['a3']=="average"?"selected":"") ?> value="average">Average</option><option <?php echo (@$values['a3']=="bad"?"selected":"") ?> value="bad">Bad</option></select></td></tr>
-       </table>
+     <div class="col-md-12">
+     <div class="form-group">
+     <label>Assembly Completed</label> Yes &#9744; No &#9744; N/A &#9744;
+     </div>
+      <div class="form-group">
+    <label>Demonstration Completed</label> Yes &#9744; No &#9744; N/A &#9744;
+    </div>
+     <div class="form-group">
+     <label>Quality Check</label> Pass &#9744; Fail &#9744; N/A &#9744;</div>
+      <div class="form-group">
+      <label>Reason for fail (if applicable)</label><br><br> _____________________________<br></div>
+       <div class="form-group">
+      <p><label>Customer Signature</label><br><br> _____________________________</p>
+       <p> <label>Customer Print</label><br><br> _____________________________</p>
        </div>
-        <div class="col-md-6">
-        <table class="table"><tr><th>Type</th><td class="val-text"><?php echo @$appointment['appointment_type'] ?></td></tr>
-       <tr><th>Batch Label Photo</th><td class="val-text"><span><?php echo @$values['a5'] ?></span><select name="answers[a5]"class="form-control req"><option value="">--Please Select--</option><option <?php echo (@$values['a5']=="yes"?"selected":"") ?>  value="yes">Yes</option><option <?php echo (@$values['a5']=="no"?"selected":"") ?>  value="no">No</option></select></td></tr>
-          <tr><th>Time Taken</th><td class="val-text"><span><?php echo @$values['a6'] ?></span><input name="answers[a6]" class="form-control req" value="<?php echo @$values['a6'] ?>" placeholder="eg:40mins"/></td></tr>
-               <tr><th>Approved</th><td class="val-text"><span><?php echo @$values['a7'] ?></span><select name="answers[a7]" class="form-control req"><option value="">--Please Select--</option><option <?php echo (@$values['a7']=="yes"?"selected":"") ?>  value="yes">Yes</option><option <?php echo (@$values['a7']=="no"?"selected":"") ?>  value="no">No</option></select></td></tr>
-       </table>
+     </div>
        </div>
        </div>
       </div>
     </div>
   </div>
-    <div class="panel panel-default">
-    <div class="panel-heading pointer" role="tab" id="headingFour"  data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-      <h4 class="panel-title">
-          Fault Details
-      </h4>
-    </div>
-    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-      <div class="panel-body">
-       <div class="row">
-      <div class="col-md-6">
-         <table class="table"><tr><th>Fault Code</th><td class="val-text"><span><?php echo @$values['a8'] ?></span> <input class="form-control req" value="<?php echo @$values['a8'] ?>" name="answers[a8]" placeholder="eg: Upholstery"/></td></tr>
-       <tr><th>Description</th><td class="val-text"><span><?php echo @$values['a9'] ?></span><textarea name="answers[a9]" class="form-control req"><?php echo @$values['a9'] ?></textarea></td></tr>
-       </table>
-       </div>
-        <div class="col-md-6">
-        <table class="table"><tr><th>Sub Code</th><td class="val-text"><span><?php echo @$values['a10'] ?></span><input name="answers[a10" class="form-control req" value="<?php echo @$values['a10'] ?>" placeholder="eg: Reclinder in/op"/></td></tr>
-       <tr><th>Actions Taken</th><td class="val-text"><span><?php echo @$values['a11'] ?></span><textarea name="answers[a11]" class="form-control req"><?php echo @$values['a11'] ?></textarea></td></tr>
-       
-       </table>
-       </div>
-       </div>
-      </div>
-    </div>
-  </div>
-   <div class="panel panel-default">
-    <div class="panel-heading pointer" role="tab" id="headingFive" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-      <h4 class="panel-title">
-        Images
-      </h4>
-    </div>
-    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-      <div class="panel-body">
-      <table class="table"><tr><th><span class="btn btn-default btn fileinput-button">Upload Images <span class="glyphicon glyphicon-plus"></span></span>
-                    <!-- The file input field used as target for the file upload widget -->
-                    <input style="display:none" id="fileupload" type="file" name="files"  data-url="<?php echo base_url()."records/upload_attach"; ?>"/> 
-               </th><td>       
-                <!-- The global progress bar -->
-                <div id="progress-files" class="progress pull-right" style="display: none; width: 200px; margin-right: 10px;">
-                    <div class="progress-bar progress-bar-success"></div>
-                </div>
-                <!-- The container for the uploaded files -->
-                <div id="files" class="files pull-right" style="display: none; margin-right: 10px;">
-                    <span id="file-status"></span>
-                </div></td></tr></table>
-                
-                
-           <div id="image-gallery"></div>    
-       
-       
-      </div>
-    </div>
-  </div>
-</div>
+
     
     
 
 </form>
   
-  
+  </div>
    
           </div>
           
@@ -213,9 +157,10 @@ th{ width:200px; }
              <div style="padding:8px 50px">
        <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default  navbar-btn">Go
             back</a>
-       <button class="btn btn-primary  navbar-btn" id="edit-report">Edit</button>
+            <button class="btn btn-primary  navbar-btn" onclick="window.print()" id="print-report">Print</button>
+      <!-- <button class="btn btn-primary  navbar-btn" id="edit-report">Edit</button>
        <button class="btn btn-primary  navbar-btn" id="save-form" style="display:none">Save</button>
-       <button class="btn btn-success  navbar-btn" id="complete-form">Set Complete</button>
+       <button class="btn btn-success  navbar-btn" id="complete-form">Set Complete</button>-->
        
        </div>
        

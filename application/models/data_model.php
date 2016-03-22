@@ -33,6 +33,7 @@ $this->db->query("truncate survey_answers");
 $this->db->query("truncate task_history");
 $this->db->query("truncate audit_values");
 $this->db->query("truncate records");
+$this->db->query("truncate custom_panel_data");
 $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
 return true;
 	}

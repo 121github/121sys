@@ -419,7 +419,7 @@ class Search extends CI_Controller
 			"contact" => "date(contact)",
             "question" => "question_id",
             "dials" => "dials",
-            "progress" => "progress_id",
+            "progress" => "progress_description.progress_id",
 			"team" => "teams.team_id",
 			"source" => "records.source_id",
 			"hsource" => "history.source_id",

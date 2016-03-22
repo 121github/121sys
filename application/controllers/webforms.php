@@ -88,7 +88,6 @@ class Webforms extends CI_Controller
 			echo json_encode(array("id"=>$id));
 			exit;
 		}
-			
 			$all_data = $this->Webform_model->get_all_data($urn,$campaign_id,$form,$appointment_id);
 			//$this->firephp->log($all_data);
 				//if the customer is viewing the form we can make some fields read only

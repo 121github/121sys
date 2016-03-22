@@ -12,6 +12,23 @@ class Records_model extends CI_Model
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 	
+	public function update_custom_source_field($urn,$source_id){
+		$check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_source = 1";
+		if($this->db->query($check)->num_rows()>0){
+			$field = $this->db->query($check)->row()->field;
+		$query = "update record_details set `$field` = (select source_name from data_sources where source_id = '$source_id')";
+		$this->db->query($query); 
+		}
+	}
+	public function update_custom_pot_field($urn,$pot_id){
+		$check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_pot = 1";
+		if($this->db->query($check)->num_rows()>0){
+			$field = $this->db->query($check)->row()->field;
+		$query = "update record_details set `$field` = (select pot_name from data_pots where pot_id = '$pot_id')";
+		$this->db->query($query); 
+	}
+	}
+	
 	public function save_record_options($data){
 	$this->db->where("urn",$data['urn']);
 	$this->db->update("records",$data);
@@ -1260,7 +1277,7 @@ return $comments;
 
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry = "select `field`,`field_name`,`is_select`,is_buttons,is_decimal,is_radio,is_renewal,format,editable,is_owner from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry = "select `field`,`field_name`,`is_select`,is_buttons,is_decimal,is_radio,is_renewal,format,editable,is_owner,is_pot,is_source from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields = "";
         foreach ($fields_result as $row) {
@@ -1279,6 +1296,22 @@ return $comments;
                     foreach ($users as $user) {
                         $options[] = array("id" => $user['user_id'], "option" => $user['name']);
                     }
+				} else if($row['is_pot'] == "1"){
+					//update source from record
+					$update = "update record_details join records using(urn) left join data_pots using(pot_id) set `".$row['field']."` = pot_name";
+					$this->db->query($update);
+					$pots = $this->get_pots(false, $campaign);
+                    foreach ($pots as $pot) {
+                        $options[] = array("id" => $pot['pot_id'], "option" => $pot['pot_name']);
+                    }
+				} else if($row['is_source'] == "1"){
+					//update source from record
+					$update = "update record_details join records using(urn) left join data_sources using(source_id) set `".$row['field']."` = source_name";
+					$this->db->query($update);
+					$sources = $this->get_sources(false, $campaign);
+                    foreach ($sources as $source) {
+                        $options[] = array("id" => $source['source_id'], "option" => $source['source_name']);
+                    }
                 } else {
                     $this->db->select("id,option");
                     $this->db->where(array(
@@ -1291,6 +1324,7 @@ return $comments;
                         $options[] = array("id" => $opt['option'], "option" => $opt['option']);
                     }
                 }
+				$this->firephp->log($options);
                 $stuff2[$row['field_name']] = $options;
             }
 
@@ -1773,6 +1807,35 @@ return $comments;
 		return $data_id;
 		 }
 	 }
+  }
+  
+  public function get_pot_from_id($id){
+	  return $this->db->get_where("data_pots",array("pot_id"=>$id))->row()->pot_name;
+  }
+    public function get_source_from_id($id){
+	   return $this->db->get_where("data_sources",array("source_id"=>$id))->row()->source_name;
+  }
+  
+  public function get_pots($urn,$campaign){
+	  return $this->db->query("select pot_id,pot_name from data_pots group by pot_id")->result_array();
+  }
+    public function get_sources($urn,$campaign){
+	  return $this->db->query("select data_sources.source_id,source_name from data_sources join records using(source_id) where campaign_id = '$campaign' group by source_id")->result_array();
+  }
+   public function save_pot($urn,$id){
+	   if(empty($id)){
+		$id = NULL;   
+	   }
+	   $this->db->where(array("urn"=>$urn));
+	   return $this->db->update("records",array("pot_id"=>$id));
+  }
+  
+   public function save_source($urn,$id){
+	   if(empty($id)){
+		$id = NULL;   
+	   }
+	   $this->db->where(array("urn"=>$urn));
+	   return $this->db->update("records",array("source_id"=>$id));
   }
 }
 

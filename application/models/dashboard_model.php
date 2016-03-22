@@ -158,7 +158,7 @@ class Dashboard_model extends CI_Model
         $data['parked_url'] = base_url() . "search/custom/records/parked/yes" . $extra_url;
         $pending_qry = "select count(*) data from records where progress_id = 1 and record_status=1 $extra ";
         $data['pending'] = $this->db->query($pending_qry)->row()->data;
-        $data['pending_url'] = base_url() . "search/custom/records/progress/pending/status/live" . $extra_url;
+        $data['pending_url'] = base_url() . "search/custom/records/progress/1/status/live" . $extra_url;
 
         $in_progress_qry = "select count(*) data from records where progress_id = 2  and record_status=1 $extra";
         $data['in_progress'] = $this->db->query($in_progress_qry)->row()->data;

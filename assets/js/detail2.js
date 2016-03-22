@@ -1949,6 +1949,7 @@ var record = {
                             mfooter += '<button class="btn btn-danger pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + email_id + '" title="Delete email" >Delete</button>';
                        // }
                 modals.load_modal(mheader, $mbody, mfooter);
+				modal_body.css('overflow','auto');
                 record.email_panel.load_email_view(email_id);
             });
         },
