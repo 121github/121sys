@@ -208,10 +208,10 @@ var custom_panels = {
                         html += "<select "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='selectpicker'><option value=''>--Please select--</option>";
                         $.each(field.options, function(o, option) {
                             var selected = "";
-                            if (value == option.option_id) {
+                            if (value == option.option_name) {
                                 selected = "selected";
                             }
-                            html += "<option " + selected + " value='" + option.option_id + "'>" + option.option_name + "</option>";
+                            html += "<option " + selected + " value='" + option.option_name + "'>" + option.option_name + "</option>";
                         });
                         html += "</select>";
                     }

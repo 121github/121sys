@@ -1577,14 +1577,10 @@ class Ajax extends CI_Controller
                 $row['value'] == htmlentities($row['value']);
             }
             if ($fields[$row['name']]['type'] == "select") {
-                //get the actual values of the options
-                $value = $this->db->query("select name from custom_panel_options where option_id = '{$row['value']}'")->row_array();
-                $row['value'] = !empty($value) ? $value['name'] : "";
+               $row['value'] == htmlentities($row['value']);
             }
             if ($fields[$row['name']]['type'] == "multiple") {
-                //get the actual values of the options
-                $name = $this->db->query("select group_concat(distinct name SEPARATOR ', ') name from custom_panel_options where option_id in({$row['value']}) group by field_id")->row()->name;
-                $row['value'] = $name;
+               $row['value'] == htmlentities($row['value']);
             }
             $data[$row['data_id']][$row['name']] = $row;
             $data[$row['data_id']][$row['name']]['name'] = $fields[$row['name']]['name'];
