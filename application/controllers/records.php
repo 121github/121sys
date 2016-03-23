@@ -1300,6 +1300,12 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $this->Records_model->delete_attachment($this->input->post('attachment_id'));
 
             //Delete the file from the server folder
+			if(!file_exists(strstr('./' . $attachment['path'], 'upload'))){
+				 echo json_encode(array(
+                    "success" => true
+                ));
+				exit;
+			}
             if (unlink(strstr('./' . $attachment['path'], 'upload'))) {
                 //return success to page
                 echo json_encode(array(

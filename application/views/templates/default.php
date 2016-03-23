@@ -71,7 +71,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php } ?>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
-    <div id="top-campaign-container" style="padding-top:8px; width:230px; display:none">
+    <div id="top-campaign-container" <?php if(count($_SESSION['campaign_access']['array'])<3){ echo 'class="hidden"'; } ?> style="padding-top:8px; width:230px; display:none">
         <select id="top-campaign-select" class="selectpicker" data-width="230px">
             <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
                 <option

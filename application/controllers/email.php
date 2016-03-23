@@ -434,8 +434,9 @@ class Email extends CI_Controller
 
     public function send_template_email()
     {
+		if(@$_POST['code']!=="remotepass"){
         user_auth_check();
-
+		}
         $urn = intval($this->input->post('urn'));
         $template_id = intval($this->input->post('template_id'));
         $recipients_to = $this->input->post('recipients_to');

@@ -1694,7 +1694,11 @@ return $comments;
         $this->db->where('attachment_id', $id);
 
         $result = $this->db->get()->result_array();
+		if(count($result)){
         return $result[0];
+		} else {
+		return false;	
+		}
     }
 
     public function delete_attachment($id)

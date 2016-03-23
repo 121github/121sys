@@ -1559,9 +1559,11 @@ class Ajax extends CI_Controller
         foreach ($panel_fields as $k => $row) {
             $options[$row['name']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
             $fields[$row['name']] = $row;
+			$fields[$row['name']]['value'] = "-";
             $fields[$row['name']]['options'] = $options[$row['name']];
         }
         $panel_data = $this->Records_model->get_custom_panel_data($urn, $id);
+		
         $data = array();
         foreach ($panel_data as $k => $row) {
             if ($fields[$row['name']]['type'] == "date") {
@@ -1582,10 +1584,11 @@ class Ajax extends CI_Controller
             if ($fields[$row['name']]['type'] == "multiple") {
                $row['value'] == htmlentities($row['value']);
             }
+			$data[$row['data_id']][$row['name']] = $fields[$row['name']];
             $data[$row['data_id']][$row['name']] = $row;
             $data[$row['data_id']][$row['name']]['name'] = $fields[$row['name']]['name'];
         }
-
+		$this->firephp->log($data);
         echo json_encode(array("success" => true, "panel" => $panel_details, "fields" => $fields, "data" => $data));
 
     }
