@@ -331,7 +331,7 @@ $qry .= " group by urn";
                       if(e.inbound=1,'na',e.read_confirmed) read_confirmed,
 					  if(e.inbound=1,'na',e.read_confirmed_date) read_confirmed_date,
 					   if(e.inbound=1,'na',e.status) status,
-                      u.*,
+                      user_email,username,
                       t.*,
                       e.pending,
 					  if(inbound=1,'Inbound',if(u.name is null,'Auto',u.name)) name
@@ -491,7 +491,7 @@ $qry .= " group by urn";
 					  if(eh.inbound=1,'na',eh.read_confirmed_date) read_confirmed_date,
 					   if(eh.inbound=1,'na',eh.status) status,
                   eh.pending,
-                  u.*,
+                  user_email,username,
                   t.*,
 				     if(eh.inbound=1,'Inbound',if(u.name is null,'Auto',u.name)) name
             from email_history eh
@@ -524,7 +524,7 @@ $qry .= " group by urn";
                 if(e.inbound=1,'na',e.read_confirmed) read_confirmed,
 					  if(e.inbound=1,'na',e.read_confirmed_date) read_confirmed_date,
 					   if(e.inbound=1,'na',e.status) status,
-                      u.*,
+                       user_email,username,
                       t.*,
                       e.pending,
 					  if(e.inbound = 1,'Inbound',if(u.name is null,'Auto',u.name)) name
