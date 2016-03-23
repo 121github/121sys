@@ -471,7 +471,15 @@ class Email extends CI_Controller
                 }
                 $history_visible = $form['history_visible'];
                 unset($form['history_visible']);
-
+				
+				
+				$attachments = array();
+                    if($template_id) {
+                        $attachments = $this->Email_model->get_attachments_by_template_id($template_id);
+						$form['template_attachments'] = $attachments;
+                    }
+                  
+				
                 if ($this->send($form)) {
                     $email_history = array(
                         'body' => $form['body'],
@@ -502,7 +510,7 @@ class Email extends CI_Controller
                     if ($this->input->is_ajax_request()) {
                         echo json_encode(array(
                             "success" => false,
-                            "msg" => "ERROR: Email not sent successfuly. Error during the sent process"
+                            "msg" => "An unknown error occured while sending the email"
                         ));
                     }
                 }
@@ -511,7 +519,7 @@ class Email extends CI_Controller
                 if ($this->input->is_ajax_request()) {
                     echo json_encode(array(
                         "success" => false,
-                        "msg" => "ERROR: Email not sent successfuly on ".$success_msg.". The template doesn't exist"
+                        "msg" => "Email not sent because the email template doesn't exist"
                     ));
                 }
             }
@@ -521,7 +529,7 @@ class Email extends CI_Controller
             if ($this->input->is_ajax_request()) {
                 echo json_encode(array(
                     "success" => false,
-                    "msg" => "ERROR: Email not sent successfuly. URN, template or recipients not found"
+                    "msg" => "Email sending failed. One or more invalid parameters were given"
                 ));
             }
         }
