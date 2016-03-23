@@ -129,6 +129,7 @@ class Email extends CI_Controller
                         }
                     } else {
                         $template['template_body'] = str_replace("[$key]", $val, $template['template_body']);
+						$template['template_subject'] = str_replace("[$key]", $val, $template['template_subject']);
                     }
                 }
             }
@@ -402,6 +403,7 @@ class Email extends CI_Controller
                                 $val = str_replace("Mrs ", "", $val);
                             }
                             $form['body'] = str_replace("[$key]", $val, $form['body']);
+							$form['subject'] = str_replace("[$key]", $val, $form['subject']);
                         }
                     }
                     $history_visible = $form['history_visible'];
@@ -467,6 +469,7 @@ class Email extends CI_Controller
                             $val = str_replace("Mrs ", "", $val);
                         }
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
+						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
                     }
                 }
                 $history_visible = $form['history_visible'];
@@ -488,7 +491,7 @@ class Email extends CI_Controller
                         'send_to' => $form['send_to'],
                         'cc' => $form['cc'],
                         'bcc' => $form['bcc'],
-                        'user_id' => $_SESSION['user_id'],
+                        'user_id' => isset($_SESSION['user_id'])?$_SESSION['user_id']:0,
                         'urn' => $form['urn'],
                         'template_id' => $form['template_id'],
                         'template_unsubscribe' => $form['template_unsubscribe'],

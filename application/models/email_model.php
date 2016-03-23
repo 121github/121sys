@@ -334,7 +334,7 @@ $qry .= " group by urn";
                       u.*,
                       t.*,
                       e.pending,
-					  if(inbound=1,'Inbound',u.name) name
+					  if(inbound=1,'Inbound',if(u.name is null,'Auto',u.name)) name
 		    	from email_history e
 		    	left join users u ON (u.user_id = e.user_id)
 		    	left join email_templates t ON (t.template_id = e.template_id)
@@ -368,7 +368,7 @@ $qry .= " group by urn";
 					   if(e.inbound=1,'na',e.status) status,
                       t.*,
                       e.pending,
-					   if(inbound=1,'Inbound',u.name) name
+					   if(inbound=1,'Inbound',if(u.name is null,'Auto',u.name)) name
 		    	from email_history e
 		    	left join users u ON (u.user_id = e.user_id)
 		    	left join email_templates t ON (t.template_id = e.template_id)
@@ -493,7 +493,7 @@ $qry .= " group by urn";
                   eh.pending,
                   u.*,
                   t.*,
-				     if(eh.inbound=1,'Inbound',u.name) name
+				     if(eh.inbound=1,'Inbound',if(u.name is null,'Auto',u.name)) name
             from email_history eh
             left join users u ON (u.user_id = eh.user_id)
             left join records r ON (r.urn = eh.urn)
@@ -527,7 +527,7 @@ $qry .= " group by urn";
                       u.*,
                       t.*,
                       e.pending,
-					  if(e.inbound = 1,'Auto',u.name) name
+					  if(e.inbound = 1,'Inbound',if(u.name is null,'Auto',u.name)) name
 		    	from email_history e
 		    	left join users u ON (u.user_id = e.user_id)
 		    	left join email_templates t ON (t.template_id = e.template_id)
