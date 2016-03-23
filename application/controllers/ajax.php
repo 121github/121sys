@@ -1566,6 +1566,9 @@ class Ajax extends CI_Controller
 		
         $data = array();
         foreach ($panel_data as $k => $row) {
+			if(!isset($data[$row['data_id']])){
+				$data[$row['data_id']] = $fields;	
+			}
             if ($fields[$row['name']]['type'] == "date") {
                 $row['value'] == date($fields[$row['name']]['format'], strtotime($row['value']));
             }
@@ -1584,11 +1587,14 @@ class Ajax extends CI_Controller
             if ($fields[$row['name']]['type'] == "multiple") {
                $row['value'] == htmlentities($row['value']);
             }
-			$data[$row['data_id']][$row['name']] = $fields[$row['name']];
             $data[$row['data_id']][$row['name']] = $row;
             $data[$row['data_id']][$row['name']]['name'] = $fields[$row['name']]['name'];
+			
+			$email_query = $this->db->query("select email from contacts join appointments using(contact_id) join custom_panel_values on appointment_id = `value` join custom_panel_fields where is_appointment_id = 1 and data_id = '{$row['data_id']}'");
+		if($email_query->num_rows()){
+				$data[$row['data_id']]['email'] = $email_query->row()->email;
         }
-		$this->firephp->log($data);
+		}
         echo json_encode(array("success" => true, "panel" => $panel_details, "fields" => $fields, "data" => $data));
 
     }
@@ -1657,10 +1663,11 @@ class Ajax extends CI_Controller
                 $values[] = array("data_id" => $id, "field_id" => $field, "value" => $val);
             }
         }
+		$data = json_encode($this->input->post());
         $this->db->where(array("data_id" => $id));
         $this->db->delete("custom_panel_values");
         $this->db->insert_update_batch("custom_panel_values", $values);
-        echo json_encode(array("success" => true, "data_id" => $id));
+        echo json_encode(array("success" => true, "data_id" => $id, "data"=>$data));
 
     }
 

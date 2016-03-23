@@ -1792,7 +1792,7 @@ return $comments;
 	return $this->db->query($panel_fields_query)->result_array();
   }
      public function get_custom_panel_data($urn,$id){
-		$panel_data_query = "select id,data_id,field_id,value,name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and custom_panel_id = '$id' order by created_on desc";
+		$panel_data_query = "select id,data_id,field_id,`value`,custom_panel_fields.name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panels left join custom_panel_fields using(custom_panel_id) left join custom_panel_values using(field_id) left join custom_panel_data using(data_id) where urn = '$urn' and custom_panel_id = '$id' order by created_on desc";
 	return $this->db->query($panel_data_query)->result_array();
   }
   public function create_custom_data_with_linked_appointments($appointment_id){

@@ -906,10 +906,10 @@ class Email extends CI_Controller
                 $title = 'Appointment Booking - '.$appointment->title. ' #'.$appointment_id;
 
                 $description = "<div><h2>Appointment booked</h2></div>";
-                $description .= "<div>A new appointment have been booked for ".
+                $description .= "<div>A new appointment has been booked for ".
                     $day." and the allocated time will be between ".$start_time." and ".$end_time.
-                    ". The appointment have been booked for ".$contact['general']['fullname'].
-                    " on the address: ".$appointment->address."</div><br />";
+                    ". The appointment has been booked for ".$contact['general']['fullname'].
+                    " at the address: ".$appointment->address."</div><br />";
 
                 //Contact telephones
                 $contact_telephones = "";
@@ -1141,10 +1141,10 @@ class Email extends CI_Controller
                 $end_time = $end_day->format("G:ia");
 
                 $description = "<div><h2>Appointment rescheduled</h2></div>";
-                $description .= "An appointment have been rescheduled for " .
+                $description .= "An appointment has been rescheduled for " .
                     $day . " and the allocated time will be between " . $start_time . " and " . $end_time .
                     ". The appointment have been booked for " . $contact['general']['fullname'] .
-                    " on the address: " . $appointment->address . "</div><br />";
+                    " at the address: " . $appointment->address . "</div><br />";
 
                 //Contact telephones
                 $contact_telephones = "";
@@ -1364,10 +1364,10 @@ class Email extends CI_Controller
             $end_time = $end_day->format("G:ia");
 
             $description = "<div><h2>Appointment cancelled</h2></div>";
-            $description .= "An appointment have been cancelled. It was booked for " .
+            $description .= "An appointment has been cancelled. It was booked for " .
                 $day .
                 " with " . $contact['general']['fullname'] .
-                " on the address: " . $appointment->address . "</div><br />";
+                " at the address: " . $appointment->address . "</div><br />";
 
             //Contact telephones
             $contact_telephones = "";
@@ -1671,17 +1671,17 @@ END:VCALENDAR';
             $body = 'Appointment confirmation';
             if ($state == 'inserted') {
                 $subject = 'Appointment Booking';
-                $body = "A new appointment have been booked for ".
+                $body = "A new appointment has been booked for ".
                     $day." and the allocated time will be between ".$start_time." and ".$end_time.
                     ". The appointment have been booked for ".$contact['general']['fullname'].
-                    " on the address: ".$appointment->address;
+                    " at the address: ".$appointment->address;
             }
             else if ($state == 'updated') {
                 $subject = 'Appointment Update';
                 $body = "An appointment have been rescheduled for ".
                     $day." and the allocated time will be between ".$start_time." and ".$end_time.
-                    ". The appointment have been booked for ".$contact['general']['fullname'].
-                    " on the address: ".$appointment->address;
+                    ". The appointment has been booked for ".$contact['general']['fullname'].
+                    " at the address: ".$appointment->address;
             }
 
             //SEND MAIL

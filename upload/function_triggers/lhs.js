@@ -143,7 +143,6 @@ var campaign_functions = {
 				express = "Yes";	
 				}
 				}
-				console.log(express);
                 //If the ‘Express Report’ tick box is selected
                 if (express === 'Yes') {
                     //Survey Delivery Date should be populated with a date that is 2 working days post the start date
@@ -164,13 +163,35 @@ var campaign_functions = {
                 survey_date = null;
             }
 			 var update_status = false;	
-			if(typeof response.data[appointment.job_id]['Job Status']=="undefined"){
-			 var update_status = true;	
+			if(response.data[appointment.job_id]['Job Status']['value']==""||response.data[appointment.job_id]['Job Status']['value']=="Appointment Possible"
+			||response.data[appointment.job_id]['Job Status']['value']=="Appointment TBC"
+			||response.data[appointment.job_id]['Job Status']['value']=="Appointment Confirmed"){
+			 
+			 if(appointment.appointment_type_id=="1"){
+				 update_status = "Appointment Possible";
+			 } else if(appointment.appointment_type_id=="2"){
+				  update_status = "Appointment TBC";
+			 } else if(appointment.appointment_type_id=="3"){
+				  update_status = "Appointment Confirmed";
+				  //send the appointment confirmation email
+			 $.ajax({
+                url: helper.baseUrl + 'email/send_template_email',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn,
+                    template_id: 3,
+                    recipients_to: appointment.contact_email,
+                }
+            }).done(function(response) {
+				flashalert.success("Appointment confirmation email sent");
+			}).done(function(response) {
+				flashalert.danger("Appointment confirmation email not sent");
+			})
+				  
+			 }
+			 
 			}
-			if(response.data[appointment.job_id]['Job Status']['value']==""){
-			 var update_status = true;	
-			}
-			console.log(update_status);
 			if(update_status){
 		$.ajax({
                 url: helper.baseUrl + 'records/update_custom_data_field',
@@ -180,7 +201,7 @@ var campaign_functions = {
 					urn: record.urn,
 					data_id: appointment.job_id,
 					field_id:6,
-                    value: 2
+                    value: update_status
                 }
             })	
 			}
@@ -216,96 +237,40 @@ var campaign_functions = {
     },
     edit_custom_fields: function() {
     },
-    save_custom_fields: function(data) {
-
-
-
+    save_custom_panel: function($form) {
         //Get the Client email address on the record (contact on the appointment)
-        var client_email = "";
-        //If it has an appointment associated get the contact appointment email
-        if (data.c1 && data.c1 != '') {
-            $.ajax({
-                url: helper.baseUrl + 'appointments/get_contact_appointment',
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    appointment_id: data.c1
-                }
-            }).done(function (response) {
-                client_email = response.email;
-            });
-        }
-        //If it doesn't have an appointment associated, get the contact email(s)
-        else {
-            $.ajax({
-                url: helper.baseUrl + 'ajax/get_contacts',
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    urn: data.urn
-                }
-            }).done(function (response) {
-                var client_email_ar = [];
-                $.each(response.data, function (key, val) {
-                    client_email_ar.push(val.visible['Email address']);
-                });
-                client_email.split(",");
-            });
-        }
-
-        //Get the Account role group emails
-        var account_role_email = "";
-        var account_role_email_ar = [];
-        $.ajax({
-            url: helper.baseUrl + 'ajax/get_users_by_role',
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                role_id: 15
-            }
-        }).done(function (response) {
-            $.each(response.data, function (key, val) {
-                account_role_email_ar.push(val.user_email);
-            });
-        });
-
-        //TODO Fix this to avoid the timeset and call the functions asynchrony
-        //Send email templates if it is needed
-        setTimeout(function () {
-            account_role_email = account_role_email_ar.join(",");
+		if($('[name="appointment_contact_email"]').val().length>0){
+		var client_email  = $('[name="appointment_contact_email"]').val();	
+		} 
 
             //Job Status is Paid
-            if (data.c2 === "Paid") {
+            if ($form.find("[name='6']").val() === "Paid") {
                 //Send email Referral Scheme Email to Account Role group email
-                lhs.send_template_email(data.urn, 2, "Role Group Account", account_role_email, "","","It was sent a Referral Scheme Email to the Account Role group");
+                lhs.send_template_email(record.urn, 2, "Role Group Account", 'rowena@lhsurveying.co.uk', "","","Referral scheme email was sent to accounts");
 
                 //Send email Receipt of Payment Email to Client email address on the record
-                lhs.send_template_email(data.urn, 6, "Client", client_email, "","","It was sent a Receipt of Payment Email to the client");
-
+                lhs.send_template_email(record.urn, 6, "Client", 'rowena@lhsurveying.co.uk', "","","Receipt of payement email was sent to the client");
                 //Hard Copy Required is Yes
-                if (data.c5 === "Yes") {
+                if ($form.find("[name='10']").val() === "Yes") {
                     //Send email Hard Copy Email to the Account Role group email
-                    lhs.send_template_email(data.urn, 5, "Role Group Account", client_email, "","","It was sent a Hard Copy Email to the Account Role group");
+                    lhs.send_template_email(record.urn, 5, "Role Group Account", 'rowena@lhsurveying.co.uk', "","","Hard copy notification sent to accounts");
 
                 }
 
             }
             //Job Status is Paid & Issued
-            else if (data.c2 === "Paid & Issued") {
+            else if ($form.find("[name='6']").val() === "Paid & Issued") {
                 //Send email Feedback Email to Client email address on the record
-                lhs.send_template_email(data.urn, 8, "Client", client_email, "","","It was sent a Feedback Email to the client");
-
+                lhs.send_template_email(record.urn, 8, "Client", 'rowena@lhsurveying.co.uk', "","","Feedback email sent to the client");
             }
             //Job Status is Confirmed Appointment
-            else if (data.c2 === "Confirmed Appointment") {
+            else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
                 //Send email Appointment Confirmation Email to Client email
-                lhs.send_template_email(data.urn, 3, "Client", client_email, "","","It was sent an Appointment Confirmation Email to the client");
+                lhs.send_template_email(record.urn, 3, "Client", 'rowena@lhsurveying.co.uk', "","","Appointment confirmations ent to the client");
 
             }
 
             record.email_panel.load_panel();
-
-        }, 2000);
     },
 		custom_items_loaded:function(){
 			    $('.custom-panel').find('.id-title').text("Job Number");

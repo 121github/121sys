@@ -105,6 +105,7 @@ var custom_panels = {
         }
 
         html += "</tbody></table>";
+		html += "<input type='hidden' id='appointment-contact-email' value='"+response.email+"' />";
         return html;
     },
     load_list: function(response,visible_data_set) {
@@ -146,6 +147,7 @@ var custom_panels = {
                 });
                 table += "</table>";
 				html += wrapper+meta+table+"</div>";
+				html += "<input type='hidden' name='appointment_contact_email' value='"+response.data[data_id]['email']+"' />";
 				i++;
             });
 			list_counts += "</div>";
@@ -153,7 +155,6 @@ var custom_panels = {
 			html = list_counts+html;
 			}
         }
-	
         return html;
     },
     load_form: function(panel_id, data_id) {
@@ -284,6 +285,9 @@ var custom_panels = {
             type: "POST"
         }).done(function(response) {
             var display = $('.custom-panel[custom-panel-id="' + panel_id + '"]').attr('custom-panel-display');
+			  if(typeof campaign_functions.save_custom_panel !== "undefined"){
+                        campaign_functions.save_custom_panel($modal.find('form'));
+                }
             //reload the panel with the updated values
             custom_panels.load_panel(panel_id, display, response.data_id);
             //close the modal

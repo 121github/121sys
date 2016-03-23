@@ -1072,6 +1072,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 $id = $this->Records_model->save_appointment($data);
                 $state = 'updated';
             }
+			if(!empty($data['contact_id'])){
+			$data['contact_email'] = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->email;
+			}
             log_message('info', 'Appointment added to 121sys:' . $id . ":" . $state);
             $response = array(
                 "success" => true,
@@ -1095,12 +1098,6 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 			$response['data']['job_id'] = $data['data_id'];
 			}
 
-            //if its a GHS campaign update trackvia
-            if (isset($_SESSION['current_client']) && $_SESSION['current_client'] == "GHS") {
-                $response["trackvia"] = base_url() . "trackvia/add_appointment";
-                $response["urn"] = $data['urn'];
-                log_message('info', 'Appointment trigger was returned:' . $id . ":" . $state);
-            }
             echo json_encode($response);
 
             $this->load->model('Locations_model');

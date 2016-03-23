@@ -77,43 +77,31 @@
         </span>
     </h2>
 </div>
-<?php $details['collapsable'] = false; 
-?>
-<style>
-[data-toggle="collapse"] { cursor:pointer }
-.panel:not(:last-of-type){  border-bottom:none; }
-.panel:not(:first-of-type) { border-radius:0 !important; }
-.panel { margin-top:0 !important; margin-bottom:0 !important; border-bottom-right-radius:0 !important;  border-bottom-left-radius:0 !important; }
-.panel-heading { border-top-left-radius:0 !important;border-top-right-radius:0 !important }
-.panel-group .panel
-{
-  overflow: visible !important;
-}
-.list-group { margin-bottom:0 !important }
-.panel-primary > .panel-heading + .panel-collapse .panel-body {
-  border-top:none !important;
-}
-</style>
+
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-md-6 col-sm-12">
         
- <div class="panel-group" id="detail-accordion" role="tablist" aria-multiselectable="true">
+
       
            <?php $this->view('records/panels/record_update.php', $details); ?>
-           <?php $this->view('records/panels/contacts.php', $details); ?>
-            <?php $this->view('records/panels/referral.php', $details); ?>
-             <?php $this->view('records/panels/history.php', $details); ?>
+       
+         
+
                <?php $this->view('records/panels/custom_info.php', $details); ?>
            <?php if(isset($custom_panels)){ 
 		   foreach ($custom_panels as $k => $v) { 
                     $this->view('records/panels/' . "custom_panels.php", $custom_panels[$k]);
         }
 		   }?>
+                            <?php $this->view('records/panels/attachments.php', $details); ?>       
+    </div>
+   
+    <div class="col-md-6 col-sm-12">
+        <?php $this->view('records/panels/contacts.php', $details); ?>
+          <?php $this->view('records/panels/history.php', $details); ?>
              <?php $this->view('records/panels/emails.php', $details); ?>
-              <?php $this->view('records/panels/attachments.php', $details); ?>
                <?php $this->view('records/panels/appointments.php', $details); ?>
                 <?php $this->view('records/panels/quick_planner.php', $details); ?>
-           </div>
     </div>
    
 </div>

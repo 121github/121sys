@@ -2345,10 +2345,8 @@ if(val.read_confirmed==1){
                     $panel.find('.panel-content').fadeIn()
                 });
                 flashalert.success(response.msg);
-                if(typeof campaign_functions !== "undefined"){
                     if(typeof campaign_functions.save_custom_fields !== "undefined"){
                         campaign_functions.save_custom_fields(response.data);
-                    }
                 }
             });
         },
