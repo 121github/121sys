@@ -2705,7 +2705,7 @@ if(val.read_confirmed==1){
                     if (val.cancellation_reason) {
                         cancel_class = 'danger'
                     }
-                    table += '<tr class="' + cancel_class + '" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td><span data-toggle="tooltip" title="'+ val.text +'"  class="glyphicon glyphicon-info-sign"></span></td><td>' + val.name + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
+                    table += '<tr class="' + cancel_class + '" data-modal="'+(helper.permissions['edit appointments'] > 0?"edit-appointment":"view-appointment")+'" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td><span data-toggle="tooltip" title="'+ val.text +'"  class="glyphicon glyphicon-info-sign"></span></td><td>' + val.name + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
             $panel.find('.panel-content').append(table + "</tbody></table></div>");

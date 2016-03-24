@@ -62,11 +62,11 @@ $c_joins = "";
 $x=0;
 foreach($this->db->query($c_q)->result_array() as $row){ $x++;
 	$c_selects .= " custom_table_$x.`value` as '{$row['name']}',";
-	$c_joins .= " left join (select urn,appointment_id,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x "; 
+	$c_joins .= " left join (select urn c_urn,appointment_id c_id,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x "; 
 if($appointment_id){
-$c_joins .= " using(appointment_id) ";	
+$c_joins .= " on a.appointment_id = custom_table_$x.c_id ";	
 } else {
-$c_joins .= " using(urn) ";		
+$c_joins .= " on records.urn = custom_table_$x.c_urn ";		
 }
 }
 $c_selects = rtrim($c_selects,",");
@@ -341,10 +341,13 @@ $qry .= " group by urn";
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
         $where_visible = '';
+		/*
         if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != '1') {
             $where_visible = ' and visible = 1 ';
         }
-
+		*/
+		//always hide emails that are not visible
+		$where_visible = ' and visible = 1 ';
         $qry = "select e.email_id,
                       DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i') as sent_date,
                       e.subject,

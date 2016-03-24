@@ -804,7 +804,7 @@ var modals = {
 			}
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Closes</button> '+cancel_btn;
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> '+cancel_btn;
 			if(helper.permissions['confirm appointment'] > 0){ 
 			mfooter += '<input id="appointment-confirmed" data-onstyle="success" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> '
 			}

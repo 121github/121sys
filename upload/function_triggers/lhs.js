@@ -174,22 +174,7 @@ var campaign_functions = {
 			 } else if(appointment.appointment_type_id=="3"){
 				  update_status = "Appointment Confirmed";
 				  //send the appointment confirmation email
-			 $.ajax({
-                url: helper.baseUrl + 'email/send_template_email',
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    urn: record.urn,
-                    template_id: 3,
-                    recipients_to: appointment.contact_email,
-					appointment_id: appointment.appointment_id
-                }
-            }).done(function(response) {
-				flashalert.success("Appointment confirmation email sent");
-			}).fail(function(response) {
-				flashalert.danger("Appointment confirmation email not sent");
-			})
-				  
+			lhs.send_template_email(record.urn, 3, "Client", appointment.contact_email, "","","Appointment confirmation",appointmment.appointment_id);				  
 			 }
 			 
 			}
@@ -239,6 +224,10 @@ var campaign_functions = {
     edit_custom_fields: function() {
     },
     save_custom_panel: function($form) {
+		var appointment_id = false;
+		if($form.find('input[name="3"]').val()!==""){
+		appointment_id = $form.find('input[name="3"]').val();
+		}
         //Get the Client email address on the record (contact on the appointment)
 		if($('[name="appointment_contact_email"]').val().length>0){
 		var client_email  = $('[name="appointment_contact_email"]').val();	
@@ -247,14 +236,14 @@ var campaign_functions = {
             //Job Status is Paid
             if ($form.find("[name='6']").val() === "Paid") {
                 //Send email Referral Scheme Email to Account Role group email
-                lhs.send_template_email(record.urn, 2, "Role Group Account", 'rowena@lhsurveying.co.uk', "","","Referral scheme email was sent to accounts");
+                lhs.send_template_email(record.urn, 2, "Role Group Account", 'bradf@121customerinsight.co.uk', "","","Referral scheme email",appointment_id);
 
                 //Send email Receipt of Payment Email to Client email address on the record
-                lhs.send_template_email(record.urn, 6, "Client", 'rowena@lhsurveying.co.uk', "","","Receipt of payement email was sent to the client");
+                lhs.send_template_email(record.urn, 6, "Client", 'bradf@121customerinsight.co.uk', "","","Receipt of payement email",appointment_id);
                 //Hard Copy Required is Yes
                 if ($form.find("[name='10']").val() === "Yes") {
                     //Send email Hard Copy Email to the Account Role group email
-                    lhs.send_template_email(record.urn, 5, "Role Group Account", 'rowena@lhsurveying.co.uk', "","","Hard copy notification sent to accounts");
+                    lhs.send_template_email(record.urn, 5, "Role Group Account", 'bradf@121customerinsight.co.uk', "","","Hard copy notification",appointment_id);
 
                 }
 
@@ -262,12 +251,12 @@ var campaign_functions = {
             //Job Status is Paid & Issued
             else if ($form.find("[name='6']").val() === "Paid & Issued") {
                 //Send email Feedback Email to Client email address on the record
-                lhs.send_template_email(record.urn, 8, "Client", 'rowena@lhsurveying.co.uk', "","","Feedback email sent to the client");
+                lhs.send_template_email(record.urn, 8, "Client", 'bradf@121customerinsight.co.uk', "","","Feedback email",appointment_id);
             }
             //Job Status is Confirmed Appointment
             else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
                 //Send email Appointment Confirmation Email to Client email
-                lhs.send_template_email(record.urn, 3, "Client", 'rowena@lhsurveying.co.uk', "","","Appointment confirmations sent to the client");
+                lhs.send_template_email(record.urn, 3, "Client", 'bradf@121customerinsight.co.uk', "","","Appointment confirmation",appointment_id);
 
             }
 
@@ -295,7 +284,7 @@ var campaign_functions = {
 }
 
 var lhs = {
-    send_template_email: function(urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, msg) {
+    send_template_email: function(urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, email_name, appointment_id) {
         if (recipients_to != "") {
             $.ajax({
                 url: helper.baseUrl + 'email/send_template_email',
@@ -308,7 +297,8 @@ var lhs = {
                     recipients_to: recipients_to,
                     recipients_cc: recipients_cc,
                     recipients_bcc: recipients_bcc,
-                    msg: msg
+                    email_name: email_name,
+					appointment_id:appointment_id
                 }
             }).done(function(response) {
                 if (response.success) {

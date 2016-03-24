@@ -447,7 +447,7 @@ class Email extends CI_Controller
         $recipients_cc = $this->input->post('recipients_cc');
         $recipients_bcc = $this->input->post('recipients_bcc');
 		$appointment_id = $this->input->post('appointment_id');
-        $success_msg = $this->input->post('msg');
+        $email_name = $this->input->post('email_name');
 
         if ($template_id && $recipients_to && $urn) {
             //create the form structure to pass to the send function
@@ -512,7 +512,7 @@ class Email extends CI_Controller
                     if ($this->input->is_ajax_request()) {
                         echo json_encode(array(
                             "success" => true,
-                            "msg" => $success_msg,
+                            "msg" => $email_name . " was sent",
                             "email_history_id" => $email_id
                         ));
                     }
@@ -521,7 +521,7 @@ class Email extends CI_Controller
                     if ($this->input->is_ajax_request()) {
                         echo json_encode(array(
                             "success" => false,
-                            "msg" => "An unknown error occured while sending the email"
+                            "msg" => $email_name . " was not sent",
                         ));
                     }
                 }
@@ -729,6 +729,7 @@ class Email extends CI_Controller
                     }
 
                     if (@!copy($file_path, $tmp_path . $attachment['name'])) {
+						$this->firephp->log("No attachment found");
                         return false;
                     } else {
                         $disposition = (isset($attachment['disposition'])?$attachment['disposition']:"attachment");
@@ -758,9 +759,10 @@ class Email extends CI_Controller
                 return true;
             }
         }
+		
         $result = $this->email->send();
         //print_r($this->email->print_debugger());
-        //$this->firephp->log($this->email->print_debugger([$include = array('headers', 'subject', 'body')]));
+        $this->firephp->log($this->email->print_debugger());
 
         //Write on log
         log_message('info', '[EMAIL] Email sent from '.$form['send_from'].' to '.$form['send_to'].'. Title: '.$form['subject']);
