@@ -163,7 +163,7 @@ var campaign_functions = {
                 survey_date = null;
             }
 			 var update_status = false;	
-			if(response.data[appointment.job_id]['Job Status']['value']==""||response.data[appointment.job_id]['Job Status']['value']=="Appointment Possible"
+			if(response.data[appointment.job_id]['Job Status']['value'].length<2||response.data[appointment.job_id]['Job Status']['value']=="Appointment Possible"
 			||response.data[appointment.job_id]['Job Status']['value']=="Appointment TBC"
 			||response.data[appointment.job_id]['Job Status']['value']=="Appointment Confirmed"){
 			 
@@ -185,7 +185,7 @@ var campaign_functions = {
                 }
             }).done(function(response) {
 				flashalert.success("Appointment confirmation email sent");
-			}).done(function(response) {
+			}).fail(function(response) {
 				flashalert.danger("Appointment confirmation email not sent");
 			})
 				  

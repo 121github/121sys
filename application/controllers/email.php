@@ -991,7 +991,7 @@ class Email extends CI_Controller
                 </table>";
                 }
                 $description .= "<div>".$webform_table."</div><br />";
-
+				$description = "<div style='font-family:veranda,calibri,arial;font-size:10pt'>".$description."</div>";
                 $appointment_ics = array();
                 if ($appointment) {
                     $appointment_ics['appointment_id'] = $appointment->appointment_id;
@@ -1143,7 +1143,7 @@ class Email extends CI_Controller
                 $description = "<div><h2>Appointment rescheduled</h2></div>";
                 $description .= "An appointment has been rescheduled for " .
                     $day . " and the allocated time will be between " . $start_time . " and " . $end_time .
-                    ". The appointment have been booked for " . $contact['general']['fullname'] .
+                    ". The appointment has been booked for " . $contact['general']['fullname'] .
                     " at the address: " . $appointment->address . "</div><br />";
 
                 //Contact telephones
@@ -1225,7 +1225,7 @@ class Email extends CI_Controller
                     </table>";
                 }
                 $description .= "<div>" . $webform_table . "</div><br />";
-
+$description = "<style>body { font-family:veranda,calibri,arial;font-size:10pt }</style>".$description;
                 $appointment_ics = array();
                 if ($last_appointment_ics) {
                     $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
@@ -1449,7 +1449,7 @@ class Email extends CI_Controller
                     </table>";
             }
             $description .= "<div>" . $webform_table . "</div><br />";
-
+$description = "<div style='font-family:veranda,calibri,arial;font-size:10pt'>".$description."</div>";
             $appointment_ics = array();
             if ($last_appointment_ics) {
                 $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
@@ -1673,12 +1673,12 @@ END:VCALENDAR';
                 $subject = 'Appointment Booking';
                 $body = "A new appointment has been booked for ".
                     $day." and the allocated time will be between ".$start_time." and ".$end_time.
-                    ". The appointment have been booked for ".$contact['general']['fullname'].
+                    ". The appointment has been booked for ".$contact['general']['fullname'].
                     " at the address: ".$appointment->address;
             }
             else if ($state == 'updated') {
                 $subject = 'Appointment Update';
-                $body = "An appointment have been rescheduled for ".
+                $body = "An appointment has been rescheduled for ".
                     $day." and the allocated time will be between ".$start_time." and ".$end_time.
                     ". The appointment has been booked for ".$contact['general']['fullname'].
                     " at the address: ".$appointment->address;

@@ -1894,7 +1894,7 @@ var record = {
                 e.preventDefault();
                 record.email_panel.show_all_email();
             });
-            $panel.on('click', 'tr.view-email-btn', function (e) {
+            $(document).on('click', 'tr.view-email-btn', function (e) {
                 e.preventDefault();
                 record.email_panel.view_email($(this).attr('item-id'));
             });
