@@ -1264,7 +1264,7 @@ var dashboard = {
                     var columns = "col-lg-"+(report.column_size);
                     panels += '<div class="'+columns+'">' +
                                 '<div class="panel panel-primary">' +
-                                    '<div class="panel-heading clearfix">' + report.name +
+                                    '<div class="panel-heading clearfix">' + report.name + ' <span class="glyphicon glyphicon-info-sign pointer" data-toggle="tooltip" title="'+report.description+'"></span>'+
                                         '<div class="pull-right">' +
                                             '<a href="#filter-right" class="btn btn-default btn-xs">' +
                                                 '<span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter' +
@@ -1308,7 +1308,7 @@ var dashboard = {
 
                 });
                 $('.dashboard-area').append(panels);
-
+				$('[data-toggle="tooltip"]').tooltip();
                 //Set the charts on the show-charts class in order to be shown when we click on this button
                 $('.show-charts').attr('data',data_divs.join());
                 $('.show-charts').attr('charts',charts_divs.join());
@@ -1323,7 +1323,8 @@ var dashboard = {
                         dataType: "JSON"
                     }).done(function(resp) {
                         if (resp.success && resp.header) {
-                            var body = "<div class='table-"+report.report_id+" scroll'><table id='table-"+report.report_id+"' class='table table-bordered table-hover table-striped small' style='min-height: 400px;'></table></div>";
+                            var body = "<div class='table-"+report.report_id+" scroll'><table id='table-"+report.report_id+"' class='table table-bordered table-hover table-striped small' ></table></div>";
+							// removed style='min-height: 400px;'
                             $('#data-system-'+report.report_id).empty();
                             $('#data-system-'+report.report_id).append(body);
 
@@ -1357,9 +1358,24 @@ var dashboard = {
                             var dom_size = (report.column_size < 6 ? 12 : 6);
                             $('#table-'+report.report_id).DataTable({
                                 "dom": 'rt<"bottom-'+report.report_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
-                                "pagingType": "full"
+                                "pagingType": "full",
+								
+								 "createdRow": function(row, data, dataIndex) {
+									 if(resp.header[0]=="URN"){
+                $(row).attr('data-urn', data[0]);
+                $(row).attr('data-modal', 'view-record');
+                $(row).addClass('pointer');
+									 } else if(resp.header[0]=="Appointment ID"){
+				$(row).attr('data-id', data[0]);
+                $(row).attr('data-modal', 'view-appointment');
+                $(row).addClass('pointer');	 
+									 }
+								 },
+								 "columnDefs": [
+    { "visible": false, "targets": 0 }
+  ]
                             });
-                            $(".bottom-"+report.report_id).css("min-height", "160px");
+                            //$(".bottom-"+report.report_id).css("min-height", "160px");
                             if (dom_size == 12) {
                                 $(".bottom-"+report.report_id).css("text-align", "right");
                             }

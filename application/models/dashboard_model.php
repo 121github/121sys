@@ -772,7 +772,7 @@ class Dashboard_model extends CI_Model
 
     public function get_dashboard_reports_by_id($dashboard_id) {
         $qry = "SELECT
-                  dr.*, e.name
+                  dr.*, e.name, e.description
                 FROM dashboard_reports dr
                 INNER JOIN export_forms e ON (e.export_forms_id = dr.report_id)
                   WHERE dr.dashboard_id = ".$dashboard_id."

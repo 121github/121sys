@@ -91,7 +91,7 @@
             <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                 <label style="margin-top: 5%; width: 100%">
                     <div class="row">
-                        <div class="col-lg-6">User</div>
+                        <div class="col-lg-6">Agent</div>
                         <div class="col-lg-6">
                             <input type='checkbox' id='dash-agents-check' name='dash_agents_check' data-toggle='toggle' data-width='100' data-size="mini" data-onstyle='success' data-offstyle='danger' data-on='Editable' data-off='Not Editable'
                                 value=<?php echo ((isset($filters['agents']))?$filters['agents']['editable']:"1"); ?>
