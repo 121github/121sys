@@ -1148,7 +1148,6 @@ public function index(){
                 $filters = $aux;
             }
 
-
             $agents = $this->Form_model->get_agents();
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();
@@ -1195,7 +1194,6 @@ public function index(){
                 }
             }
             $campaign_outcomes = $aux;
-
             $this->load->view('forms/dashboard_filter_form.php', array(
                 'agents' => $agents,
                 'team_managers' => $teamManagers,
@@ -1437,7 +1435,6 @@ public function index(){
                 );
             }
             $filters = $aux;
-
             $agents = $this->Form_model->get_agents();
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();

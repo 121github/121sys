@@ -6,7 +6,7 @@ var dashboard = {
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
-                    'Any Time': ["02/07/2014", moment()],
+                    'Any Time': ["01/01/2014", moment()],
                     'Today': [moment(), moment()],
                     'Yesterday': [moment().subtract( 1,'days'), moment().subtract(1,'days')],
                     'Last 7 Days': [moment().subtract( 6,'days'), moment()],
@@ -18,13 +18,19 @@ var dashboard = {
                 minDate: "02/07/2014",
                 maxDate: moment(),
                 startDate: "02/07/2014",
-                endDate: moment()
+                endDate: moment(),
             },
             function (start, end, element) {
                 var $btn = this.element;
+				if(element=="Any Time"){
+				$btn.find('.date-text').html("Any time");
+                $btn.closest('form').find('input[name="date_from"]').val('');
+                $btn.closest('form').find('input[name="date_to"]').val('');	
+				} else {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+				}
         });
 
         $(document).on("click", '#filter-submit', function (e) {

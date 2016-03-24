@@ -152,7 +152,7 @@ var export_data = {
             var order_by = $('.edit-export-form').find('input[name="order_by"]').val();
             var group_by = $('.edit-export-form').find('input[name="group_by"]').val();
 
-            $('.preview-qry').html(query+(order_by.length>""?" ORDER BY "+order_by:"")+(group_by.length>""?" GROUP BY "+group_by:""));
+            $('.preview-qry').html(query+(group_by.length>""?" GROUP BY "+group_by:"")+(order_by.length>""?" ORDER BY "+order_by:""));
         });
 
         export_data.load_export_forms();
