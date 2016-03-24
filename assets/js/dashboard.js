@@ -1323,17 +1323,17 @@ var dashboard = {
                         dataType: "JSON"
                     }).done(function(resp) {
                         if (resp.success && resp.header) {
-                            var body = "<div class='table-"+report.report_id+" scroll'><table id='table-"+report.report_id+"' class='table table-bordered table-hover table-striped small' ></table></div>";
+                            var body = "<div class='table-"+report.report_id+" scroll table-responsive'><table id='table-"+report.report_id+"' class='table table-bordered table-hover table-striped small' ></table></div>";
 							// removed style='min-height: 400px;'
                             $('#data-system-'+report.report_id).empty();
                             $('#data-system-'+report.report_id).append(body);
 
-                            var width = ($('.table-'+report.report_id).find('table').width()/resp.header.length);
+                            //var width = ($('.table-'+report.report_id).find('table').width()/resp.header.length);
 
                             body = "<thead><tr>";
                             $.each(resp.header, function (i, val) {
                                 if (resp.header.length) {
-                                    body += "<th style='padding: 5px; width: "+width+"px;'>" + val + "</th>";
+                                    body += "<th>" + val + "</th>";
                                 }
                             });
                             body += "</tr></thead><tbody>";
@@ -1341,7 +1341,7 @@ var dashboard = {
                                 if (resp.data.length) {
                                     body += "<tr>";
                                     $.each(data, function (k, val) {
-                                        body += "<td style='padding: 5px; width: "+width+"px;'>" + val + "</td>";
+                                        body += "<td>" + val + "</td>";
                                     });
                                     body += "</tr>";
                                 }
@@ -1349,12 +1349,12 @@ var dashboard = {
                             body += "</tbody>";
 
                             $('.table-'+report.report_id).find('table').append(body);
-
+/*
                             $('.table-'+report.report_id).find('table').on('scroll', function () {
                                 var table = $(this).find('table');
                                 $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
                             });
-
+*/
                             var dom_size = (report.column_size < 6 ? 12 : 6);
                             $('#table-'+report.report_id).DataTable({
                                 "dom": 'rt<"bottom-'+report.report_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
