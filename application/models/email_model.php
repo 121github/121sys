@@ -60,7 +60,6 @@ $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) 
 $c_selects = "";
 $c_joins = "";
 $x=0;
-echo $c_q;
 foreach($this->db->query($c_q)->result_array() as $row){ $x++;
 	$c_selects .= " custom_table_$x.`value` as '{$row['name']}',";
 	$c_joins .= " left join (select urn c_urn,appointment_id c_id,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x "; 
