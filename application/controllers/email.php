@@ -45,6 +45,7 @@ class Email extends CI_Controller
     {
         user_auth_check();
         if ($this->input->is_ajax_request()) {
+			session_write_close();
             $urn = intval($this->input->post('urn'));
             $limit = (intval($this->input->post('limit'))) ? intval($this->input->post('limit')) : NULL;
 
@@ -445,7 +446,7 @@ class Email extends CI_Controller
         $recipients_to_name = $this->input->post('recipients_to_name');
         $recipients_cc = $this->input->post('recipients_cc');
         $recipients_bcc = $this->input->post('recipients_bcc');
-
+		$appointment_id = $this->input->post('appointment_id');
         $success_msg = $this->input->post('msg');
 
         if ($template_id && $recipients_to && $urn) {
@@ -458,7 +459,7 @@ class Email extends CI_Controller
                 $form['urn'] = $urn;
 
                 $last_comment = $this->Records_model->get_last_comment($urn);
-                $placeholder_data = $this->Email_model->get_placeholder_data($urn);
+                $placeholder_data = $this->Email_model->get_placeholder_data($urn,$appointment_id);
                 $placeholder_data[0]['comments'] = $last_comment;
                 $placeholder_data['recipient_name'] = $recipients_to_name;
                 if (count($placeholder_data)) {
@@ -468,6 +469,13 @@ class Email extends CI_Controller
                             $val = str_replace("Mrs ", "", $val);
                             $val = str_replace("Mrs ", "", $val);
                         }
+						if(strpos($form['body'],"[$key]")!==false&&empty($val)){
+						echo json_encode(array(
+                            "success" => false,
+                            "msg" => "Email not sent. $key is empty!"
+                        ));
+						exit;
+						}
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
 						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
                     }

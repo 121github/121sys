@@ -182,6 +182,7 @@ var campaign_functions = {
                     urn: record.urn,
                     template_id: 3,
                     recipients_to: appointment.contact_email,
+					appointment_id: appointment.appointment_id
                 }
             }).done(function(response) {
 				flashalert.success("Appointment confirmation email sent");
@@ -266,7 +267,7 @@ var campaign_functions = {
             //Job Status is Confirmed Appointment
             else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
                 //Send email Appointment Confirmation Email to Client email
-                lhs.send_template_email(record.urn, 3, "Client", 'rowena@lhsurveying.co.uk', "","","Appointment confirmations ent to the client");
+                lhs.send_template_email(record.urn, 3, "Client", 'rowena@lhsurveying.co.uk', "","","Appointment confirmations sent to the client");
 
             }
 
@@ -316,7 +317,9 @@ var lhs = {
                 else {
                     flashalert.danger(response.msg);
                 }
-            });
+            }).fail(function(){
+				 flashalert.danger(msg);
+			});
         }
         else {
             flashalert.danger("ERROR: No email address on: "+msg);

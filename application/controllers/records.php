@@ -1222,6 +1222,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
     {
 
         if ($this->input->is_ajax_request()) {
+			session_write_close();
             $record_urn = intval($this->input->post('urn'));
 			$webform = intval($this->input->post('webform'));
             $limit      = (intval($this->input->post('limit'))) ? intval($this->input->post('limit')) : NULL;

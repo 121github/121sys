@@ -36,17 +36,19 @@ class Email_model extends CI_Model
         if (isset($_SESSION['user_id'])) {
             $user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user,(select user_email from users where user_id = '{$_SESSION['user_id']}') user_email, (select user_telephone from users where user_id = '{$_SESSION['user_id']}') user_telephone ";
         }
-        //check if an appointment has been made and use the appointment contact in the placeholder
-        $query = "select urn from appointments where urn = '$urn' and contact_id is not null";
+		$find_appointment = "";
 		if($appointment_id){
-		$query .= " and appointment_id = '$appointment_id ";	
+		$find_appointment = " and appointment_id = '$appointment_id' ";	
 		}
+        //check if an appointment has been made and use the appointment contact in the placeholder
+        $query = "select urn from appointments where urn = '$urn' and contact_id is not null $find_appointment ";
+		
         if ($this->db->query($query)->num_rows() > 0) {
-            $contact_details = " left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id where records.urn = '$urn'";
+            $contact_details = " left join (select urn,max(appointment_id) max_id from appointments where urn='$urn' $find_appointment) a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id ";
             $attendee = " if(attendees.name is null,'Unknown',attendees.name) attendee ";
-            $appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)<'12:30:00','am','pm') time_slot, ";
+            $appointment_fields = " appointment_id, appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)<'12:30:00','am','pm') time_slot, ";
         } else {
-            $contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) where records.urn = '$urn'";
+            $contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) ";
             $attendee = " 'Sir/Madam' attendee ";
             $appointment_fields = "";
         }
@@ -60,7 +62,7 @@ $c_joins = "";
 $x=0;
 foreach($this->db->query($c_q)->result_array() as $row){ $x++;
 	$c_selects .= " custom_table_$x.`value` as '{$row['name']}',";
-	$c_joins .= " left join (select urn,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x "; 
+	$c_joins .= " left join (select urn,appointment_id,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x "; 
 if($appointment_id){
 $c_joins .= " using(appointment_id) ";	
 } else {
@@ -74,8 +76,10 @@ $c_selects = rtrim($c_selects,",");
 $custom_fields = custom_fields();
 $custom_field_list = implode(",",$custom_fields);
         $qry = "select records.urn,sticky_notes.note sticky_note,campaign_name,date_format(nextcall,'%d/%m/%Y %H:%i'), date_format(curdate(),'%d/%m/%Y') `date`, nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact,if(employees is null,'Unknown',employees) employees, companies.name company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,contacts.gender,contacts.position,date_format(contacts.dob,'%d/%m/%Y') dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,$custom_field_list, $c_selects, concat(ca.add1,' ',ca.add2,', ',ca.postcode) contact_address,
-		 concat(coa.add1,' ',coa.add2,', ',coa.postcode) company_address, if(campaign_type_id=1,ca.add1,coa.add1) add1, if(campaign_type_id=1,ca.add2,coa.add2) add2, if(campaign_type_id=1,ca.add3,coa.add3) add3,if(campaign_type_id=1,ca.county,coa.county) county,if(campaign_type_id=1,ca.postcode,coa.postcode) postcode $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join company_addresses coa using(company_id) left join record_details using(urn) left join sticky_notes using(urn) $c_joins ";
+		 concat(coa.add1,' ',coa.add2,', ',coa.postcode) company_address, if(campaign_type_id=1,ca.add1,coa.add1) add1, if(campaign_type_id=1,ca.add2,coa.add2) add2, if(campaign_type_id=1,ca.add3,coa.add3) add3,if(campaign_type_id=1,ca.county,coa.county) county,if(campaign_type_id=1,ca.postcode,coa.postcode) postcode $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join company_addresses coa using(company_id) left join record_details using(urn) left join sticky_notes using(urn) ";
         $qry .= $contact_details;
+		$qry .= $c_joins;
+		$qry .= " where records.urn = '$urn' ";
 $qry .= " group by urn";
         return $this->db->query($qry)->result_array();
 

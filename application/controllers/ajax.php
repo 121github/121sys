@@ -1550,6 +1550,7 @@ class Ajax extends CI_Controller
 
     public function load_custom_panel()
     {
+		session_write_close();
         $id = intval($this->input->post("id"));
         $urn = intval($this->input->post("urn"));
         $panel_details = $this->Records_model->get_custom_panel($id);

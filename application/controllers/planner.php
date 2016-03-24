@@ -104,6 +104,7 @@ class Planner extends CI_Controller
 
     public function simulate_121_planner()
     {
+		session_write_close();
         $customer_postcode = $this->input->post('postcode');
         $driver_id = $this->input->post('driver_id');
         $branch_id = $this->input->post('branch_id');
