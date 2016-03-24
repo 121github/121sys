@@ -301,10 +301,10 @@ var lhs = {
 					appointment_id:appointment_id
                 }
             }).done(function(response) {
-                if (response.success) {
+                if (response.success===true) {
                     flashalert.success(response.msg);
                 }
-                else {
+                else if(response.success==false){
                     flashalert.danger(response.msg);
                 }
             }).fail(function(){

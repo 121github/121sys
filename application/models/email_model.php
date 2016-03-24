@@ -332,7 +332,10 @@ $qry .= " group by urn";
         $this->db->where("id", $attachment_id);
         return $this->db->delete("email_template_attachments");
     }
-
+	public function check_for_duplicate($template,$rcpt,$urn){
+	$this->db->where(array("urn"=>$urn,"template_id"=>$template,"sent_to"=>$rcpt));
+	return $this->db->get("email_history")->num_rows();
+	}
     /**
      * Get emails history
      */

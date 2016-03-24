@@ -439,7 +439,7 @@ class Email extends CI_Controller
     {
 		if(@$_POST['code']!=="remotepass"){
         user_auth_check();
-		}
+		}		
         $urn = intval($this->input->post('urn'));
         $template_id = intval($this->input->post('template_id'));
         $recipients_to = $this->input->post('recipients_to');
@@ -448,7 +448,12 @@ class Email extends CI_Controller
         $recipients_bcc = $this->input->post('recipients_bcc');
 		$appointment_id = $this->input->post('appointment_id');
         $email_name = $this->input->post('email_name');
-
+		//first check it hasnt already been sent
+		if($this->Email_model->check_for_duplicate($template_id,$recipients_to,$urn)){
+			echo json_encode(array("msg"=>"Already sent this email"));
+		exit;
+		}
+		
         if ($template_id && $recipients_to && $urn) {
             //create the form structure to pass to the send function
             $form = $this->Email_model->template_to_form($template_id);
