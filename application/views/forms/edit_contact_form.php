@@ -1,5 +1,5 @@
-<ul class="nav nav-tabs" style=" background:#eee; width:100%;">
-    <li class="active"><a href="#general" class="tab" data-toggle="tab">General</a></li>
+<ul class="nav nav-tabs" id="contact-tabs" style=" background:#eee; width:100%;">
+    <li class="general-tab active"><a href="#general" class="tab" data-toggle="tab">General</a></li>
     <li class="tab-alert">You must create the contact before adding phone numbers</li>
     <li class="phone-tab"><a href="#phone" class="tab" data-toggle="tab">Phone Numbers</a></li>
     <li class="address-tab"><a href="#address" class="tab" data-toggle="tab">Addresses</a></li>

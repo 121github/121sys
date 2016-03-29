@@ -1610,6 +1610,7 @@ var modals = {
     },
     update_footer: function (content) {
         modal_footer.empty();
+		console.log(content);
         modal_footer.html(content);
     },
     view_record_html: function (data,tab) {
@@ -1868,9 +1869,10 @@ var modals = {
                 modals.contacts.save_item(action);
             });
             /*when a tab is changed we should reset the tab content*/
-            $(document).on('click', '#modal .nav-tabs .general-tab a, #modal .nav-tabs .phone-tab a,#modal .nav-tabs .address-tab a', function (e) {
+            $modal.on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
+				console.log(tabname);
                 modals.contacts.change_tab(tabname);
             });
             /*initialize the delete item buttons for phone */
@@ -2227,8 +2229,8 @@ var modals = {
                 modals.update_footer(buttons);
             } else {
                 buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+				$modal.find('#contact-phone-form,#contact-address-form').hide();
                 $modal.find('.table-container').show();
-                $modal.find('#contact-phone-form,#contact-address-form').hide();
                 modals.update_footer(buttons);
             }
 
@@ -2256,7 +2258,7 @@ var modals = {
                 modals.referrals.save_item(action);
             });
             /*when a tab is changed we should reset the tab content*/
-            $(document).on('click', '#modal .nav-tabs .general-tab a, #modal .nav-tabs, #modal .nav-tabs .address-tab a', function (e) {
+            $modal.on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
                 modals.referrals.change_tab(tabname);
@@ -2612,6 +2614,12 @@ var modals = {
                 //swap the buttons back
                 modals.update_footer('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
             });
+			 /*when a tab is changed we should reset the tab content*/
+          $modal.on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
+                e.preventDefault();
+                var tabname = $(this).attr('href');
+                modals.companies.change_tab(tabname);
+            });
         },
         edit_item_form: function (id, action) {
             $tab = $modal.find('.tab-pane.active');
@@ -2810,6 +2818,19 @@ var modals = {
 
             });
         },
+		change_tab: function (tab) {
+            modals.clear_footer();
+            var buttons = "";
+            if (tab == "#general") {
+                buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
+                modals.update_footer(buttons);
+            } else {
+                buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+				$modal.find('#company-phone-form,#company-address-form').hide();
+                $modal.find('.table-container').show();
+                modals.update_footer(buttons);
+            }
+		},
         load_tabs: function (id, item_form) {
             if (item_form !== "general") {
                 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';

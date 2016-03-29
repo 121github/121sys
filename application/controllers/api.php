@@ -758,12 +758,7 @@ class Api extends REST_Controller
               $now = date('Y-m-d H:i:s');
         $id = $custom_panel['data_id'];
         $urn =  $custom_panel['urn'];
-        if (empty($id)) {
-            //create new data set
-            $data = array("urn" => $urn, "created_on" => $now, "created_by" => $_SESSION['user_id'], "updated_on" => $now);
-            $this->db->insert("custom_panel_data", $data);
-            $id = $this->db->insert_id();
-        }
+
         if (!empty($id)) {
             //update existing data set
             $data = array("updated_on" => $now);
@@ -780,8 +775,7 @@ class Api extends REST_Controller
                 $values[] = array("data_id" => $id, "field_id" => $field, "value" => $val);
             }
         }
-        $this->db->where(array("data_id" => $id));
-        $this->db->delete("custom_panel_values");
+
         $this->db->insert_update_batch("custom_panel_values", $values);
 
             $message = array(

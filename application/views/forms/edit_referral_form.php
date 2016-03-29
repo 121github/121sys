@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs" style=" background:#eee; width:100%;">
+<ul class="nav nav-tabs" id="referral-tabs" style=" background:#eee; width:100%;">
     <li class="active"><a href="#general" class="tab" data-toggle="tab">General</a></li>
     <li class="tab-alert">You must create the referral before adding addresses</li>
     <li class="address-tab"><a href="#address" class="tab" data-toggle="tab">Addresses</a></li>
