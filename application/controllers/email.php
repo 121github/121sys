@@ -236,7 +236,6 @@ class Email extends CI_Controller
         user_auth_check();
         $form = $this->input->post();
 
-
         $form['body'] = $this->input->post('template_body');
         unset($form['template_body']);
         //Status false by default, before sent the email
@@ -301,6 +300,17 @@ class Email extends CI_Controller
                 if (isset($form[$attach['id']])) {
                     array_push($attachmentsForm, $attach);
                     unset($form[$attach['id']]);
+                }
+            }
+        }
+
+        //Add the record attachments to the list
+        if ($recordAttachList = $this->Records_model->get_attachments($form['urn'],null,0,false)) {
+            foreach ($recordAttachList as $attach) {
+                //If the attachment is checked we add it to the form
+                if (isset($form['record_'.$attach['attachment_id']])) {
+                    array_push($attachmentsForm, $attach);
+                    unset($form['record_'.$attach['attachment_id']]);
                 }
             }
         }

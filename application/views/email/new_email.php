@@ -156,6 +156,13 @@
 							</tbody>
 						</table>
 
+                        <table class="table record_attach_table">
+                            <thead>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
 						<table class="table new_attach_table">
 							<thead>
 							</thead>

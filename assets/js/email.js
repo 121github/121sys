@@ -47,6 +47,7 @@ var email = {
         email.empty_attachment_table();
         //start the function to load the groups into the table
         email.load_attachments();
+        email.load_record_attachments();
     },
     validate_email_input: function() {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -200,6 +201,10 @@ var email = {
         $thead = $('.attach_table').find('thead');
         $tbody.empty();
         $thead.empty();
+        $tbody = $('.record_attach_table').find('tbody');
+        $thead = $('.record_attach_table').find('thead');
+        $tbody.empty();
+        $thead.empty();
 
         //Set progress-bar 0%
         $('#container-fluid form').find('input[name="template_attachments"]').val("");
@@ -221,7 +226,14 @@ var email = {
             success: function (data) {
                 var thead, tbody;
                 $tbody = $('.attach_table').find('tbody');
+                $thead = $('.attach_table').find('thead');
                 $tbody.empty();
+                $thead.empty();
+                if (jQuery.isEmptyObject(data['data'])) {
+                    thead += "<th></th>";
+                } else {
+                    thead += "<th>Template Attachments</th>";
+                }
                 $.each(data['data'], function (key, val) {
                     tbody += "<tr>"
                     thead += "<th></th>";
@@ -229,6 +241,42 @@ var email = {
                 });
                 $('#attachments').find('.attach_table thead').append(thead);
                 $('#attachments').find('.attach_table tbody').append(tbody);
+                $('#attachments').fadeIn();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+
+        $('.ajax-table').fadeOut(1000, function () {
+            $('#container-fluid form').fadeIn();
+        });
+    },
+    //Load record attachments from the database for a particular record
+    load_record_attachments: function () {
+        var data = {urn: $('#container-fluid form').find('input[name="urn"]').val()};
+        $.ajax({
+            url: helper.baseUrl + "records/get_attachments",
+            type: 'POST',
+            dataType: "JSON",
+            data: data,
+            success: function (data) {
+                var thead, tbody;
+                $tbody = $('.record_attach_table').find('tbody');
+                $thead = $('.record_attach_table').find('thead');
+                $tbody.empty();
+                $thead.empty();
+                if (jQuery.isEmptyObject(data['data'])) {
+                    thead += "<th></th>";
+                } else {
+                    thead += "<th>Record Attachments</th>";
+                }
+                $.each(data['data'], function (key, val) {
+                    tbody += "<tr>"
+                    thead += "<th></th>";
+                    tbody += "<td><input type='checkbox' name='record_" + val['attachment_id'] + "' value='checked'> <a target='_blank' href='" + val['path'] + "'>" + val['name'] + "</a></td>";
+                });
+                $('#attachments').find('.record_attach_table thead').append(thead);
+                $('#attachments').find('.record_attach_table tbody').append(tbody);
                 $('#attachments').fadeIn();
             },
             error: function (jqXHR, textStatus, errorThrown) {
