@@ -89,7 +89,7 @@ body { font-size:12px !important  }
 <table class="table"><tr><th>Customer</th><td><?php echo $appointment['fullname'] ?></td></tr>
        <tr><th>Address</th><td><?php echo str_replace(",","<br>",$appointment['address']) ?></td></tr>
           <tr><th>Telephone(s)</th><td><?php echo $appointment['all_numbers'] ?></td></tr>
-               <tr><th>Delivery Date</th><td><?php echo date("l jS F Y g:i a",strtotime($appointment['sql_start'])) ?></td></tr>
+               <tr><th>Delivery Date</th><td><?php echo date("l jS F Y g a",strtotime($appointment['sql_start'])) ?></td></tr>
                <tr><th>Delivery Type</th><td><?php echo $appointment['appointment_type']; ?></td></tr>
                   <tr><th>Delivery Notes</th><td><?php echo $appointment['text'] ?></td></tr>
        </table>
@@ -98,7 +98,7 @@ body { font-size:12px !important  }
         <h4>Delivery Info</h4>
    <table class="table">
    <tr><th>HSL Ref</th><td><?php echo $custom['c1'] ?></td></tr>
-   <tr><th>Value (&pound;)</th><td><?php echo $custom['c2'] ?></td></tr>
+   <!--<tr><th>Value (&pound;)</th><td><?php echo $custom['c2'] ?></td></tr>-->
    <?php $show_fields = array("Order number","Delivery Items","Delivery Comments","Delivery Product Type"); ?>
    <?php foreach($custom_panels as $row){ ?>
    <?php if(in_array($row['name'],$show_fields)){ ?>

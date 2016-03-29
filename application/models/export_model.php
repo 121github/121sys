@@ -52,7 +52,7 @@ class Export_model extends CI_Model
     public function get_data($export_form, $options) {
 
         $qry = $export_form['query'];
-
+		
         //If there is not where clause in the query, add it
         if (!stripos($qry, "where")) {
             $qry .= " where 1=1 ";
