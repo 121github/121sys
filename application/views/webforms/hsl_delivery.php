@@ -89,7 +89,7 @@ body { font-size:12px !important  }
 <table class="table"><tr><th>Customer</th><td><?php echo $appointment['fullname'] ?></td></tr>
        <tr><th>Address</th><td><?php echo str_replace(",","<br>",$appointment['address']) ?></td></tr>
           <tr><th>Telephone(s)</th><td><?php echo $appointment['all_numbers'] ?></td></tr>
-               <tr><th>Delivery Date</th><td><?php echo date("l jS F Y g a",strtotime($appointment['sql_start'])) ?></td></tr>
+               <tr><th>Delivery Date</th><td><?php echo date("l jS F Y (a)",strtotime($appointment['sql_start'])) ?></td></tr>
                <tr><th>Delivery Type</th><td><?php echo $appointment['appointment_type']; ?></td></tr>
                   <tr><th>Delivery Notes</th><td><?php echo $appointment['text'] ?></td></tr>
        </table>
