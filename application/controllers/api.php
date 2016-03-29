@@ -713,5 +713,88 @@ class Api extends REST_Controller
 
         return $result;
     }
+	
+	/*******************************************************************************************************/
+    /*******************************************************************************************************/
+    /***********************  CUSTOM/DYNAMIC PANELS **************************************************************/
+    /*******************************************************************************************************/
+    /*******************************************************************************************************/
+
+    function custom_panel_get()
+    {
+        $this->load->model('Records_model');
+
+        $custom_panel = $this->Records_model->get_custom_panel_data($this->get('urn'),$this->get('panel_id'));
+
+
+        if($custom_panel)
+        {
+            $this->response($custom_panel, 200); // 200 being the HTTP response code
+        }
+
+        else
+        {
+            $this->response(NULL, 404);
+        }
+    }
+
+    function custom_panel_post()
+    {
+        $this->load->model('Records_model');
+
+        $custom_panel = $this->post();
+
+        if (!isset($custom_panel['urn']) || $custom_panel['urn'] == '') {
+            $message = array(
+                'success' => false,
+                'urn' => '',
+                'detail_id' => '',
+                'message' => "ERROR: The urn is undefined or it doesn't exist!"
+            );
+
+        }
+        else {
+
+              $now = date('Y-m-d H:i:s');
+        $id = $custom_panel['data_id'];
+        $urn =  $custom_panel['urn'];
+        if (empty($id)) {
+            //create new data set
+            $data = array("urn" => $urn, "created_on" => $now, "created_by" => $_SESSION['user_id'], "updated_on" => $now);
+            $this->db->insert("custom_panel_data", $data);
+            $id = $this->db->insert_id();
+        }
+        if (!empty($id)) {
+            //update existing data set
+            $data = array("updated_on" => $now);
+            $this->db->where(array("data_id" => $id));
+            $this->db->update("custom_panel_data", $data);
+        }
+
+        //add in the values
+        foreach ( $custom_panel as $field => $val) {
+            if ($field <> "urn" && $field <> "data_id") {
+                if (is_array($val)) {
+                    $val = implode(",", $val);
+                }
+                $values[] = array("data_id" => $id, "field_id" => $field, "value" => $val);
+            }
+        }
+        $this->db->where(array("data_id" => $id));
+        $this->db->delete("custom_panel_values");
+        $this->db->insert_update_batch("custom_panel_values", $values);
+
+            $message = array(
+                'success' => ($id?true:false),
+                'urn' => $urn,
+                'custom_id' => ($id?$id:''),
+			    'id' => ($id?$id:''),
+                'message' => ($id?'SAVED!':'ERROR: There was a problem adding the custom data')
+            );
+        }
+
+        $this->response($message, 200); // 200 being the HTTP response code
+    }
+
 
 }
