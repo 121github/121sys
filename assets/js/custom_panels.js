@@ -137,8 +137,10 @@ var custom_panels = {
                 table += "<table data-list-id='"+data_id+"' class='table "+response.panel.table_class+"'>";		
 				   table += "<tr><th style='white-space:nowrap;padding-right:5px' class='id-title'>ID#</th><td style='width:100%'>" + data_id + "</td></tr>";
                 $.each(response.fields, function(id, field) {
-                   if(typeof response.data[data_id][id] !== "undefined"){ var val=response.data[data_id][id].value
+                   if(typeof response.data[data_id][id] !== "undefined"){ var val=response.data[data_id][id].value;
+				   if(typeof response.data[data_id][id].created_on!=="undefined"){
 				   meta = "<span style='padding-bottom:5px' class='pull-left small'>Added on "+response.data[data_id][id].created_on+"</span>";
+				   }
 				    } else { var val= "-"; }
                     if (field.type == "checkbox" && val == "on"||field.type == "buttons" && val == "Yes") {
                         val = "<span class='fa fa-check'></span>"

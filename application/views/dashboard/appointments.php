@@ -6,8 +6,8 @@
 <div class="pull-right">
             <form class="filter-form">
             <div class="btn-group">
-                    <input type="hidden" value="2016-03-03" name="date_from">
-                    <input type="hidden" value="2016-04-01" name="date_to">
+                    <input type="hidden" value="<?php echo date('Y-m-d') ?>" name="date_from">
+                    <input type="hidden" value="<?php echo date('Y-m-d',strtotime('+ 29 days')) ?>" name="date_to">
                     <a class="daterange btn btn-default btn-xs" type="button">
                         <span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> Next 30 Days </span>
                     </a>
