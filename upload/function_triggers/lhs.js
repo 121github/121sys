@@ -3,6 +3,7 @@ var simulation = "";
 var campaign_functions = {
     init: function () {
 		$('#top-campaign-select').hide();
+		$('div.custom-panel,#custom-panel').hide();
     },
     record_setup_update: function() {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
@@ -264,6 +265,13 @@ var campaign_functions = {
     },
 		custom_items_loaded:function(){
 			    $('.custom-panel').find('.id-title').text("Job Number");
+				if(record.role=="16"){
+				$('.edit-detail-btn').hide();
+				$('#custom-panel').find('tr:contains(Quote)').hide();
+				$('.custom-panel').find('tr:contains(Quote)').hide();
+				$('.custom-panel').find('tr:contains(Invoice)').hide();
+				$('div.custom-panel,#custom-panel').show();
+				}
 		},
 		new_custom_item_setup:function(){
 

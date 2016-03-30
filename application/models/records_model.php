@@ -1422,6 +1422,12 @@ return $comments;
 
     public function delete_appointment($data)
     {
+		//remove from custom_panels
+		$update_link = "update custom_panel_data set appointment_id = NULL where appointment_id = '{$data['appointment_id']}'";
+		$this->db->query($update);
+		$delete_link = "delete from custom_panel_values where `value` = '{$data['appointment_id']}' and field_id in(select field_id from custom-panel_fields where is_appointment_id = 1)";
+		$this->db->query($update);
+		//now do the appointments table
         $this->db->where("appointment_id", $data['appointment_id']);
 
         $this->db->set("status", '0');
@@ -1523,8 +1529,15 @@ return $comments;
 	public function link_appointment_to_custom_data($data_id,$appointment_id){
 				$this->db->where("data_id",$data_id);
 				$this->db->update("custom_panel_data",array("appointment_id"=>$appointment_id));
-				$update = "update custom_panel_values join custom_panel_fields using(field_id) set `value` = '$appointment_id' where data_id = '$data_id' and is_appointment_id = 1";
-				$this->db->query($update);		
+				//get the linked appointment field
+				
+				//now replace it
+				$app_field = "select field_id from custom_panel_fields where is_appointment_id = 1";
+				if($this->db->query($app_field)->num_rows()){
+				$field_id = $this->db->query($app_field)->row()->field_id;
+				$update = "replace into custom_panel_values values('',$data_id,$field_id,$appointment_id)";
+				$this->db->query($update);	
+				}
 	}
 
     //when a record is update this function is ran to see if an email should be sent to anyone

@@ -468,7 +468,7 @@ endif; ?>
 										<?php } else { ?>
 					var layout_panel = "<p>You must select a campaign to set the layout</p>";
 										<?php } ?>
-                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
+                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><?php if(!in_array("change layout",$_SESSION['permissions'])){ ?><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a><?php } ?></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
                 var tabpanels = '<div class="tab-content">' +
                                     '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
                                         '<p>Fancy something different? Pick a new colour!</p>' +
