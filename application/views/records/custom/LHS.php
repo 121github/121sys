@@ -102,6 +102,7 @@
              <?php $this->view('records/panels/emails.php', $details); ?>
                <?php $this->view('records/panels/appointments.php', $details); ?>
                 <?php $this->view('records/panels/quick_planner.php', $details); ?>
+                 <?php $this->view('records/panels/sticky.php', $details); ?>
     </div>
    
 </div>

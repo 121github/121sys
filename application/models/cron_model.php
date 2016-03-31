@@ -141,6 +141,11 @@ class Cron_model extends CI_Model
         
         return $this->db->affected_rows();
     }
+	
+	public function remove_invalid_postcodes(){
+	$this->db->query("delete from contact_addresses where (add1='' or add1 is null) and (postcode = '' or postcode is null)");
+	$this->db->query("delete from company_addresses where (add1='' or add1 is null) and (postcode = '' or postcode is null)");	
+	}
     
     //this function formats the postcodes or sets them as null if they are found to be invalid
     public function update_address_tables()

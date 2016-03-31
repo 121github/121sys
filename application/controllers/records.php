@@ -510,16 +510,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
     public function save_notes()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
-            $this->db->where("urn", $this->input->post('urn'));
-            if ($this->db->replace('sticky_notes', array(
-                "note" => $this->input->post('notes'),
-                "urn" => $this->input->post('urn'),
-                "updated_by" => $_SESSION['user_id']
-            ))):
+			if($this->Records_model->save_notes($this->input->post('urn'),$this->input->post('notes'))){
                 echo json_encode(array(
                     "success" => true
                 ));
-            endif;
+			} else {
+				  echo json_encode(array(
+                    "success" => false
+                ));
+			}
         } else {
             echo "Denied";
             exit;

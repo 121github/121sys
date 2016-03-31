@@ -453,6 +453,39 @@ class Api extends REST_Controller
         $this->response($message, 200); // 200 being the HTTP response code
     }
 
+// INSERT STICKY NOTES
+
+
+  //Insert/Update company telephone
+    function sticky_note_post()
+    {
+        $this->load->model('Records_model');
+
+        $notes = $this->post();
+
+        if (!isset($notes['urn']) || $notes['urn'] == '') {
+            $message = array(
+                'success' => false,
+                'message' => "ERROR: The urn does not exist!"
+            );
+
+        }
+        else {
+
+            //Insert/Update company telephone
+            $id = $this->Records_model->save_notes($notes['urn'],$notes['note']);
+
+            $message = array(
+                'success' => ($company_telephone_id?true:false),
+                'company_id' => $company_telephone['company_id'],
+				'id' => $notes['urn'],
+                'message' => $notes['urn']?'SAVED!':'ERROR: The record notes were not saved'
+            );
+        }
+
+        $this->response($message, 200); // 200 being the HTTP response code
+    }
+
 
     /*******************************************************************************************************/
     /*******************************************************************************************************/

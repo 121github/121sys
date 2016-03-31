@@ -123,6 +123,7 @@ public function set_null_pots(){
         $this->Cron_model->update_location_ids();
         $this->Cron_model->update_locations_from_api();
         $this->Cron_model->update_locations_with_google();
+		$this->Cron_model->remove_invalid_postcodes();
         echo json_encode(array(
             "success" => true
         ));
@@ -132,7 +133,6 @@ public function set_null_pots(){
     {
         //sets invalid postcodes to null and looks up valid postcodes in the uk_postcodes table and copies them to the locations table
         $this->Cron_model->update_address_tables();
-
     }
 
     public function update_location_ids()

@@ -12,6 +12,17 @@ class Records_model extends CI_Model
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 	
+	public function save_notes($urn,$notes){
+		
+	 $this->db->where("urn", $urn);
+    return $this->db->replace('sticky_notes', array(
+                "note" => $notes,
+                "urn" => $urn,
+                "updated_by" => @$_SESSION['user_id']
+            ));
+			
+	}
+	
 	public function update_custom_source_field($urn,$source_id){
 		$check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_source = 1";
 		if($this->db->query($check)->num_rows()>0){

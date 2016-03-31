@@ -345,25 +345,24 @@ var record = {
             /*initialize the save notes button*/
             $panel.on('click', '#save-sticky', function (e) {
                 e.preventDefault();
-                record.sticky_note.save($(this).prev('span'));
+                record.sticky_note.save();
             });
         },
-        save: function ($alert) 
+        save: function () 
 		{
-			var $panel = $(record.sticky.panel);
             $.ajax({
                 url: helper.baseUrl + 'records/save_notes',
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    'notes': $panel.val(),
+                    'notes': $('#sticky-panel').find('textarea').val(),
                     'urn': record.urn
                 }
             }).done(function (response) {
                 if (response.success) {
                     flashalert.success('Sticky note was updated');
                 } else {
-                    flashalert.danger('Notes could not be saved. Please contact support@121customerinsight.co.uk');
+                    flashalert.danger('Notes could not be saved');
                 }
             });
 

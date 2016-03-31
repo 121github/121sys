@@ -118,7 +118,7 @@ class Contacts_model extends CI_Model
                       ct.telephone_number,
                       ct.tps,
                       address_id,a.description codescription,add1,add2,add3,city,county,country,a.primary is_primary,a.visible is_visible,
-                      postcode,lat latitude,lng longitude
+                      if(postcode is null,'',postcode) postcode,lat latitude,lng longitude
                   from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) join records using(urn) join campaigns camp using(campaign_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
 		$query = $this->db->query($qry);
         $results = $query->result_array();

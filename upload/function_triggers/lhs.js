@@ -4,7 +4,7 @@ var campaign_functions = {
     init: function () {
 		$('#top-campaign-select').hide();
 		if(record.role=="16"){
-		$('div.custom-panel,#custom-panel').hide();
+		$('div.custom-panel,#custom-panel,#email-panel').hide();
 		}
     },
     record_setup_update: function() {
