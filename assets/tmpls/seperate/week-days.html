@@ -8,10 +8,6 @@
 	height:auto
 }
 </style>
-<% _.each(slots, function(slot){ %>
-	<%= slot%>
-<% }); %>
-
 <% _.each(events, function(event){ %>
 <div class="cal-row-fluid">
 	<div class="cal-cell<%= event.days%> cal-offset<%= event.start_day %> day-highlight dh-<%= event['class'] %>"
