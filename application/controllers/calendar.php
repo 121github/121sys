@@ -202,7 +202,6 @@ $google_email = false;
         */
     }
 
-
     public function get_events()
     {
 		$counts = array();
@@ -319,6 +318,7 @@ $google_email = false;
             $result[$k]['app_count']=$counts[$v['date']]['apps'];
 	  }
   }
+  
         echo json_encode(array('success' => 1, 'result' => $result, 'postcode' => $postcode, 'date' => date('Y-m'),'rules'=>$appointment_rules));
         exit;
 

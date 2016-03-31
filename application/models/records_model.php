@@ -1435,9 +1435,9 @@ return $comments;
     {
 		//remove from custom_panels
 		$update_link = "update custom_panel_data set appointment_id = NULL where appointment_id = '{$data['appointment_id']}'";
-		$this->db->query($update);
+		$this->db->query($update_link);
 		$delete_link = "delete from custom_panel_values where `value` = '{$data['appointment_id']}' and field_id in(select field_id from custom-panel_fields where is_appointment_id = 1)";
-		$this->db->query($update);
+		$this->db->query($delete_link);
 		//now do the appointments table
         $this->db->where("appointment_id", $data['appointment_id']);
 
