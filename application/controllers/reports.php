@@ -18,7 +18,8 @@ class Reports extends CI_Controller
         $this->load->model('Report_model');
     }
 
-	public function overview(){
+    public function overview()
+    {
         $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
         $aux = array();
         foreach ($campaigns_by_group as $campaign) {
@@ -30,6 +31,8 @@ class Reports extends CI_Controller
         $campaigns_by_group = $aux;
 
         $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+
+
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
@@ -47,8 +50,8 @@ class Reports extends CI_Controller
 
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -68,154 +71,155 @@ $data_pot = $this->Form_model->get_pots();
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-'data_pot' => $data_pot,'css' => array(
+            'data_pot' => $data_pot, 'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
             )
         );
         $this->template->load('default', 'reports/overview.php', $data);
-    
-		
-	}
 
-	public function overview_data(){
+
+    }
+
+    public function overview_data()
+    {
         if ($this->input->is_ajax_request()) {
             $data = array();
             $data_array = array();
-			$totals = array();
+            $totals = array();
             $total = 0;
-			$by_pots=false;
-			if($this->uri->segment(3)=="pots"){
-			$by_pots=true;	
-			}
-            $results = $this->Report_model->get_overview($this->input->post(),$by_pots);
+            $by_pots = false;
+            if ($this->uri->segment(3) == "pots") {
+                $by_pots = true;
+            }
+            $results = $this->Report_model->get_overview($this->input->post(), $by_pots);
             $date_from = $this->input->post("date_from");
             $date_to = $this->input->post("date_to");
             $users = $this->input->post("agents");
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
             $pots = $this->input->post("pots");
-			$outcomes = $this->input->post("outcomes");
-/*
-            $overall_array = array();
-            $post = $this->input->post();
-            if ($this->input->post('teams') || $this->input->post('agents')) {
-                $colname = $this->input->post('colname');
-                unset($post['teams']);
-                unset($post['agents']);
-                $overall = $this->Report_model->get_overview($post);
-                $overall_array = array();
-                foreach ($overall as $k => $row) {
-                    $overall_array[$row['outcome']]["overall_total"] = $row['total'];
-                    $overall_array[$row['outcome']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+            $outcomes = $this->input->post("outcomes");
+            /*
+                        $overall_array = array();
+                        $post = $this->input->post();
+                        if ($this->input->post('teams') || $this->input->post('agents')) {
+                            $colname = $this->input->post('colname');
+                            unset($post['teams']);
+                            unset($post['agents']);
+                            $overall = $this->Report_model->get_overview($post);
+                            $overall_array = array();
+                            foreach ($overall as $k => $row) {
+                                $overall_array[$row['outcome']]["overall_total"] = $row['total'];
+                                $overall_array[$row['outcome']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+                            }
+                        }
+                        */
+            $url = base_url() . "search/custom/history";
+            $url .= (!empty($campaigns) ? "/hcampaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+            $url .= (!empty($users) ? "/user/" . implode("_", $users) . (count($users) > 1 ? ":in" : "") : "");
+            $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
+            $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
+            $url .= (!empty($teams) ? "/team/" . implode("_", $teams) . (count($teams) > 1 ? ":in" : "") : "");
+            $url .= (!empty($sources) ? "/hsource/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+            $url .= (!empty($outcomes) ? "/outcome/" . implode("_", $outcomes) . (count($outcomes) > 1 ? ":in" : "") : "");
+            $total_url = $url;
+            $campaign_results = array();
+            $campaign_total = array();
+
+            if (!$by_pots) {
+                foreach ($results as $k => $row) {
+                    $campaign_total[$row['campaign_id']] = 0;
+                    $campaign_results[$row['campaign_id'] . ":" . $row['campaign_group_id']] = array("campaign" => $row['campaign_name'], "count" => 0, "color" => get_color($row['campaign_group_id']));
+                    $totals[$row['user_id']] = 0;
+                }
+                foreach ($results as $k => $row) {
+                    $data[$row['user_id'] . ":" . $row['name']] = $campaign_results;
+                }
+                foreach ($results as $k => $row) {
+                    $total = $row['total'];
+                    $data[$row['user_id'] . ":" . $row['name']][$row['campaign_id'] . ":" . $row['campaign_group_id']] = array(
+                        "campaign" => $row['campaign_name'],
+                        "user" => $row['name'],
+                        "user_id" => $row['user_id'],
+                        "count" => $row['count'],
+                        "total_url" => $url . "/user/" . $row['user_id'],
+                        "url" => $url . "/user/" . $row['user_id'] . '/campaign/' . $row['campaign_id'],
+                        "color" => get_color($row['campaign_group_id'])
+                    );
+                    isset($campaign_total[$row['campaign_id']]) ? $campaign_total[$row['campaign_id']] += $row['count'] : 0;
+                    //this builds the campaign totals by creating a "user" called total and adding the counts
+                    $data["Totals"][$row['campaign_id'] . ":" . $row['campaign_group_id']] = array(
+                        "campaign" => $row['campaign_name'],
+                        "user" => "Total",
+                        "user_id" => 0,
+                        "count" => $campaign_total[$row['campaign_id']],
+                        "total_url" => $url . "/user/" . $row['user_id'],
+                        "grand_total_url" => $url,
+                        "url" => $url . '/campaign/' . $row['campaign_id'],
+                        "color" => get_color($row['campaign_group_id'])
+                    );
+
+                    $totals[$row['user_id']] += $row['count'];
+                    $data_array = $data;
                 }
             }
-			*/
-			 $url = base_url() . "search/custom/history";
-			 $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
-                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
-                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
-                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
-                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
-                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
-				$url .= (!empty($outcomes) ? "/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":"") : "");
-				$total_url = $url;
-				$campaign_results = array();
-				$campaign_total = array();
-				
-			if(!$by_pots){
-			foreach ($results as $k => $row) {
-				$campaign_total[$row['campaign_id']] = 0;
-			 $campaign_results[$row['campaign_id'].":".$row['campaign_group_id']] = array("campaign"=>$row['campaign_name'],"count"=>0,"color"=> get_color($row['campaign_group_id']));
-			 $totals[$row['user_id']] = 0;
-			}
-			foreach ($results as $k => $row) {
-			 $data[$row['user_id'].":".$row['name']] = $campaign_results;	
-			}		
-            foreach ($results as $k => $row) {
-                $total = $row['total'];
-                $data[$row['user_id'].":".$row['name']][$row['campaign_id'].":".$row['campaign_group_id']] = array(
-                    "campaign" => $row['campaign_name'],
-					"user" => $row['name'],
-					"user_id" => $row['user_id'],
-                    "count" => $row['count'],
-                    "total_url" => $url . "/user/" . $row['user_id'],
-					"url" => $url . "/user/" . $row['user_id'].'/campaign/'.$row['campaign_id'],
-					"color"=> get_color($row['campaign_group_id'])
-                );
-					isset($campaign_total[$row['campaign_id']])?$campaign_total[$row['campaign_id']]+=$row['count']:0;
-				//this builds the campaign totals by creating a "user" called total and adding the counts
-				 $data["Totals"][$row['campaign_id'].":".$row['campaign_group_id']] = array(
-                    "campaign" => $row['campaign_name'],
-					"user" => "Total",
-					"user_id" => 0,
-                    "count" =>  $campaign_total[$row['campaign_id']],
-                    "total_url" => $url . "/user/" . $row['user_id'],
-					"grand_total_url" =>$url,
-					"url" => $url . '/campaign/'.$row['campaign_id'],
-					"color"=> get_color($row['campaign_group_id'])
-                );
-				
-				$totals[$row['user_id']] += $row['count'];
-                $data_array = $data;
+            if ($by_pots) {
+                foreach ($results as $k => $row) {
+                    $campaign_total[$row['campaign_id']] = 0;
+                    $campaign_results[$row['campaign_id'] . ":"] = array("campaign" => $row['campaign_name'], "count" => 0, "color" => get_color($row['campaign_group_id']));
+                    $totals[$row['user_id']] = 0;
+                };
+                foreach ($results as $k => $row) {
+                    $data[$row['user_id'] . ":" . $row['name']] = $campaign_results;
+                }
+                foreach ($results as $k => $row) {
+                    $total = $row['total'];
+                    $data[$row['user_id'] . ":" . $row['name']][$row['campaign_id'] . ":"] = array(
+                        "campaign" => $row['campaign_name'],
+                        "user" => $row['name'],
+                        "user_id" => $row['user_id'],
+                        "count" => $row['count'],
+                        "total_url" => $url . "/user/" . $row['user_id'],
+                        "url" => $url . "/user/" . $row['user_id'] . '/pot/' . (empty($row['campaign_id']) ? "null" : $row['campaign_id']),
+                        "color" => get_color($row['campaign_group_id'])
+                    );
+                    isset($campaign_total[$row['campaign_id']]) ? $campaign_total[$row['campaign_id']] += $row['count'] : 0;
+                    //this builds the campaign totals by creating a "user" called total and adding the counts
+                    $data["Totals"][$row['campaign_id'] . ":"] = array(
+                        "campaign" => $row['campaign_name'],
+                        "user" => "Total",
+                        "user_id" => 0,
+                        "count" => $campaign_total[$row['campaign_id']],
+                        "total_url" => $url . "/user/" . $row['user_id'],
+                        "grand_total_url" => $url,
+                        "url" => $url . '/pot/' . (empty($row['campaign_id']) ? "null" : $row['campaign_id']),
+                        "color" => get_color($row['campaign_group_id'])
+                    );
+
+                    $totals[$row['user_id']] += $row['count'];
+                    $data_array = $data;
+                }
             }
-			}
-					if($by_pots){
-						foreach ($results as $k => $row) {
-				$campaign_total[$row['campaign_id']] = 0;
-			 $campaign_results[$row['campaign_id'].":"] = array("campaign"=>$row['campaign_name'],"count"=>0,"color"=> get_color($row['campaign_group_id']));
-			 $totals[$row['user_id']] = 0;
-			};
-			foreach ($results as $k => $row) {
-			 $data[$row['user_id'].":".$row['name']] = $campaign_results;	
-			}		
-            foreach ($results as $k => $row) {
-                $total = $row['total'];
-                $data[$row['user_id'].":".$row['name']][$row['campaign_id'].":"] = array(
-                    "campaign" => $row['campaign_name'],
-					"user" => $row['name'],
-					"user_id" => $row['user_id'],
-                    "count" => $row['count'],
-                    "total_url" => $url . "/user/" . $row['user_id'],
-					"url" => $url . "/user/" . $row['user_id'].'/pot/'.(empty($row['campaign_id'])?"null":$row['campaign_id']),
-					"color"=> get_color($row['campaign_group_id'])
-                );
-					isset($campaign_total[$row['campaign_id']])?$campaign_total[$row['campaign_id']]+=$row['count']:0;
-				//this builds the campaign totals by creating a "user" called total and adding the counts
-				 $data["Totals"][$row['campaign_id'].":"] = array(
-                    "campaign" => $row['campaign_name'],
-					"user" => "Total",
-					"user_id" => 0,
-                    "count" =>  $campaign_total[$row['campaign_id']],
-                    "total_url" => $url . "/user/" . $row['user_id'],
-					"grand_total_url" =>$url,
-					"url" => $url . '/pot/'.(empty($row['campaign_id'])?"null":$row['campaign_id']),
-					"color"=> get_color($row['campaign_group_id'])
-                );
-				
-				$totals[$row['user_id']] += $row['count'];
-                $data_array = $data;
-            }
-			}
-			//the grand total
-			$totals[0] = $total;
-			
-			//return the data
+            //the grand total
+            $totals[0] = $total;
+
+            //return the data
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
                 "total" => $total,
-				"totals"=>$totals,
-				  "total_url" => $total_url
+                "totals" => $totals,
+                "total_url" => $total_url
             ));
         }
-		
-	}
+
+    }
 
     public function data()
-     {
-		 
+    {
+
         $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
         $aux = array();
         foreach ($campaigns_by_group as $campaign) {
@@ -244,8 +248,8 @@ $data_pot = $this->Form_model->get_pots();
 
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources();
-		$data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -264,7 +268,7 @@ $data_pot = $this->Form_model->get_pots();
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-			'data_pot' => $data_pot,
+            'data_pot' => $data_pot,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -273,8 +277,8 @@ $data_pot = $this->Form_model->get_pots();
         );
         $this->template->load('default', 'reports/data.php', $data);
     }
-	
-	
+
+
     //this controller loads the view for the targets page on the dashboard
     public function reports()
     {
@@ -308,7 +312,7 @@ $data_pot = $this->Form_model->get_pots();
         $campaigns = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
         $outcomes = $this->Form_model->get_outcomes();
 
@@ -320,8 +324,8 @@ $data_pot = $this->Form_model->get_pots();
             'page' => 'data_capture',
             'campaigns' => $campaigns,
             'sources' => $sources,
-'data_pot' => $data_pot,
-'team_managers' => $teamManagers,
+            'data_pot' => $data_pot,
+            'team_managers' => $teamManagers,
             'agents' => $agents,
             'javascript' => array(
                 'report/data_capture.js?v' . $this->project_version,
@@ -452,8 +456,8 @@ $data_pot = $this->Form_model->get_pots();
 
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -473,7 +477,7 @@ $data_pot = $this->Form_model->get_pots();
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-'data_pot' => $data_pot,'css' => array(
+            'data_pot' => $data_pot, 'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
@@ -511,14 +515,14 @@ $data_pot = $this->Form_model->get_pots();
                     $overall_array[$row['outcome']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
                 }
             }
-			 $url = base_url() . "search/custom/history";
-			 $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
-                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
-                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
-                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
-                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
-                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
-				$total_url = $url;
+            $url = base_url() . "search/custom/history";
+            $url .= (!empty($campaigns) ? "/hcampaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+            $url .= (!empty($users) ? "/user/" . implode("_", $users) . (count($users) > 1 ? ":in" : "") : "");
+            $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
+            $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
+            $url .= (!empty($teams) ? "/team/" . implode("_", $teams) . (count($teams) > 1 ? ":in" : "") : "");
+            $url .= (!empty($sources) ? "/hsource/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+            $total_url = $url;
             foreach ($results as $k => $row) {
                 $total = $row['total'];
                 $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
@@ -539,7 +543,7 @@ $data_pot = $this->Form_model->get_pots();
                 "success" => true,
                 "data" => $data_array,
                 "total" => $total,
-				  "total_url" => $total_url
+                "total_url" => $total_url
             ));
         }
     }
@@ -578,12 +582,13 @@ $data_pot = $this->Form_model->get_pots();
         }
         $campaigns_by_group = $aux;
 
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+
         $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
         $agents = $this->Form_model->get_agents();
 
-        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
@@ -616,7 +621,7 @@ $data_pot = $this->Form_model->get_pots();
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
-'data_pot' => $data_pot,'team_managers' => $teamManagers,
+            'data_pot' => $data_pot, 'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
@@ -639,11 +644,11 @@ $data_pot = $this->Form_model->get_pots();
 
             $date_from_search = $form["date_from"];
             $date_to_search = $form["date_to"];
-            $agent_search = (isset($form["agents"])?$form["agents"]:array());
-            $campaign_search = (isset($form["campaigns"])?$form["campaigns"]:array());
-            $team_search = (isset($form["teams"])?$form["teams"]:array());
-            $source_search = (isset($form["sources"])?$form["sources"]:array());
-            $outcome_ids = isset($form["outcomes"]) ? $form["outcomes"]:array();
+            $agent_search = (isset($form["agents"]) ? $form["agents"] : array());
+            $campaign_search = (isset($form["campaigns"]) ? $form["campaigns"] : array());
+            $team_search = (isset($form["teams"]) ? $form["teams"] : array());
+            $source_search = (isset($form["sources"]) ? $form["sources"] : array());
+            $outcome_ids = isset($form["outcomes"]) ? $form["outcomes"] : array();
             $group = $form["group"];
 
 
@@ -681,12 +686,12 @@ $data_pot = $this->Form_model->get_pots();
             $totalDuration = 0;
             $totalExceptions = 0;
             $url = base_url() . "search/custom/history";
-            $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).(count($agent_search)>1?":in":"") : "");
-            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
+            $url .= (!empty($agent_search) ? "/user/" . implode("_", $agent_search) . (count($agent_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/" . implode("_", $campaign_search) . (count($campaign_search) > 1 ? ":in" : "") : "");
             $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
-            $url .= (!empty($team_search) ? "/team/".implode("_",$team_search).(count($team_search)>1?":in":"") : "");
-            $url .= (!empty($source_search) ? "/hsource/".implode("_",$source_search).(count($source_search)>1?":in":"") : "");
+            $url .= (!empty($team_search) ? "/team/" . implode("_", $team_search) . (count($team_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($source_search) ? "/hsource/" . implode("_", $source_search) . (count($source_search) > 1 ? ":in" : "") : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -695,19 +700,19 @@ $data_pot = $this->Form_model->get_pots();
                 //create the click through hyperlinks
                 if ($group == "contact") {
                     $allDialsUrl = $url . "/outcome/null:not/contact/" . $row['sql'];
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
+                    $outcomesUrl = $allDialsUrl . "/outcome/" . implode("_", $form['outcomes']) . (count($form['outcomes']) > 1 ? ":in" : "");
                 } else if ($group == "time") {
                     $allDialsUrl = $url . "/outcome/null:not/time/" . $row['sql'];
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
+                    $outcomesUrl = $allDialsUrl . "/outcome/" . implode("_", $form['outcomes']) . (count($form['outcomes']) > 1 ? ":in" : "");
                 } else if ($group == "agent") {
                     $allDialsUrl = $url . "/outcome/null:not/user/" . $id;
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
+                    $outcomesUrl = $allDialsUrl . "/outcome/" . implode("_", $form['outcomes']) . (count($form['outcomes']) > 1 ? ":in" : "");
                 } else if ($group == "reason") {
                     $allDialsUrl = $url . "/outcome/null:not/reason/" . $id;
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
+                    $outcomesUrl = $allDialsUrl . "/outcome/" . implode("_", $form['outcomes']) . (count($form['outcomes']) > 1 ? ":in" : "");
                 } else {
                     $allDialsUrl = $url . "/outcome/null:not/alldials/" . $id;
-                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
+                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/" . implode("_", $form['outcomes']) . (count($form['outcomes']) > 1 ? ":in" : "");
                 }
 
                 $data[] = array(
@@ -734,7 +739,7 @@ $data_pot = $this->Form_model->get_pots();
 
             $totalPercent = ($totalDials) ? number_format((($totalOutcomes) * 100) / $totalDials, 2) : 0;
 
-            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/" . implode("_", $campaign_search) . (count($campaign_search) > 1 ? ":in" : "") : "");
             $url .= ($group == "reason" ? "/reason/null:not" : "");
 
             array_push($data, array(
@@ -747,8 +752,8 @@ $data_pot = $this->Form_model->get_pots();
                 "total_dials_url" => $url,
                 "duration" => $totalDuration,
                 "exceptions" => $totalExceptions,
-                "rate" => (($totalDuration-$totalExceptions) > 0) ? round(($totalOutcomes) / (($totalDuration-$totalExceptions) / 3600), 3) : 0,
-                "dials_rate" => (($totalDuration-$totalExceptions) > 0) ? round(($totalDials) / (($totalDuration-$totalExceptions) / 3600), 2) : 0,
+                "rate" => (($totalDuration - $totalExceptions) > 0) ? round(($totalOutcomes) / (($totalDuration - $totalExceptions) / 3600), 3) : 0,
+                "dials_rate" => (($totalDuration - $totalExceptions) > 0) ? round(($totalDials) / (($totalDuration - $totalExceptions) / 3600), 2) : 0,
                 "group" => $group
             ));
 
@@ -792,6 +797,42 @@ $data_pot = $this->Form_model->get_pots();
         }
     }
 
+    /**
+     * Get the sources for the filter by campaign list
+     */
+    public function get_sources_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+
+            $campaign_sources = $this->Form_model->get_sources_by_campaign_list($campaigns);
+
+            echo json_encode(array(
+                "success" => true,
+                "campaign_sources" => $campaign_sources
+            ));
+        }
+    }
+
+    /**
+     * Get the pots for the filter by campaign list
+     */
+    public function get_pots_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+
+            $campaign_pots = $this->Form_model->get_pots_by_campaign_list($campaigns);
+
+            echo json_encode(array(
+                "success" => true,
+                "campaign_pots" => $campaign_pots
+            ));
+        }
+    }
+
     //this is the controller loads the initial view for the email reports
     public function email()
     {
@@ -827,9 +868,11 @@ $data_pot = $this->Form_model->get_pots();
         }
         $templates_by_campaign_group = $aux;
 
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+
         $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
         $agents = $this->Form_model->get_agents();
 
         $data = array(
@@ -848,7 +891,7 @@ $data_pot = $this->Form_model->get_pots();
             'templates_by_campaign_group' => $templates_by_campaign_group,
             'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
-'data_pot' => $data_pot,'team_managers' => $teamManagers,
+            'data_pot' => $data_pot, 'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
@@ -873,11 +916,11 @@ $data_pot = $this->Form_model->get_pots();
 
             $date_from_search = $form["date_from"];
             $date_to_search = $form["date_to"];
-            $agent_search = (isset($form["agents"])?$form["agents"]:array());
-            $campaign_search = (isset($form["campaigns"])?$form["campaigns"]:array());
-            $template_search = (isset($form["templates"])?$form["templates"]:array());
-            $team_search = (isset($form["teams"])?$form["teams"]:array());
-            $source_search = (isset($form["sources"])?$form["sources"]:array());
+            $agent_search = (isset($form["agents"]) ? $form["agents"] : array());
+            $campaign_search = (isset($form["campaigns"]) ? $form["campaigns"] : array());
+            $template_search = (isset($form["templates"]) ? $form["templates"] : array());
+            $team_search = (isset($form["teams"]) ? $form["teams"] : array());
+            $source_search = (isset($form["sources"]) ? $form["sources"] : array());
             $group = $form["group"];
 
 
@@ -899,13 +942,13 @@ $data_pot = $this->Form_model->get_pots();
             $totalEmailSent = 0;
             $emails_read = 0;
             $url = base_url() . "search/custom/records";
-            $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).(count($agent_search)>1?":in":"") : "");
-            $url .= (!empty($template_search) ? "/template/".implode("_",$template_search).(count($template_search)>1?":in":"") : "");
-            $url .= (!empty($campaign_search) ? "/campaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
+            $url .= (!empty($agent_search) ? "/user/" . implode("_", $agent_search) . (count($agent_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($template_search) ? "/template/" . implode("_", $template_search) . (count($template_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($campaign_search) ? "/campaign/" . implode("_", $campaign_search) . (count($campaign_search) > 1 ? ":in" : "") : "");
             $url .= (!empty($date_from_search) ? "/sent-email-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/sent-email-to/$date_to_search" : "");
-            $url .= (!empty($team_search) ? "/team/".implode("_",$team_search).(count($team_search)>1?":in":"") : "");
-            $url .= (!empty($source_search) ? "/source/".implode("_",$source_search).(count($source_search)>1?":in":"") : "");
+            $url .= (!empty($team_search) ? "/team/" . implode("_", $team_search) . (count($team_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($source_search) ? "/source/" . implode("_", $source_search) . (count($source_search) > 1 ? ":in" : "") : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -1042,8 +1085,8 @@ $data_pot = $this->Form_model->get_pots();
         }
         $campaign_outcomes = $aux;
 
-        $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -1060,7 +1103,7 @@ $data_pot = $this->Form_model->get_pots();
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-'data_pot' => $data_pot,'campaign_outcomes' => $campaign_outcomes,
+            'data_pot' => $data_pot, 'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
                 'dashboard.css',
@@ -1088,15 +1131,16 @@ $data_pot = $this->Form_model->get_pots();
 
             $outcomes = $this->input->post('outcomes');
             $campaigns = $this->input->post('campaigns');
-            $teams = $this->input->post('teams');$sources = $this->input->post('sources');
+            $teams = $this->input->post('teams');
+            $sources = $this->input->post('sources');
             $pots = $this->input->post('pots');
 
-            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
-            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
-            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).(count($teams)>1?":in":""):"");
-            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
-			$pots_url = (!empty($pots)?"/pot/".implode("_",$pots).(count($pots)>1?":in":""):"");
-            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url.$pots_url;
+            $outcomes_url = (!empty($outcomes) ? "/outcome/" . implode("_", $outcomes) . (count($outcomes) > 1 ? ":in" : "") : "");
+            $campaigns_url = (!empty($campaigns) ? "/campaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+            $teams_url = (!empty($teams) ? "/team/" . implode("_", $teams) . (count($teams) > 1 ? ":in" : "") : "");
+            $sources_url = (!empty($sources) ? "/source/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+            $pots_url = (!empty($pots) ? "/pot/" . implode("_", $pots) . (count($pots) > 1 ? ":in" : "") : "");
+            $filter_url = $outcomes_url . $campaigns_url . $teams_url . $sources_url . $pots_url;
 
             $outcome_colname = "Outcomes";
             if (!empty($outcomes)) {
@@ -1126,8 +1170,8 @@ $data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $outcomes = $this->Form_model->get_outcomes();
-		$campaigns = $this->Form_model->get_campaigns();
-		$teams = $this->Form_model->get_teams();
+        $campaigns = $this->Form_model->get_campaigns();
+        $teams = $this->Form_model->get_teams();
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -1142,7 +1186,7 @@ $data_pot = $this->Form_model->get_pots();
             ),
             'team_managers' => $teamManagers,
             'agents' => $agents,
-			'campaigns' => $campaigns,
+            'campaigns' => $campaigns,
             'outcomes' => $outcomes,
             'css' => array(
                 'dashboard.css',
@@ -1152,52 +1196,52 @@ $data_pot = $this->Form_model->get_pots();
         );
         $this->template->load('default', 'reports/realtime.php', $data);
     }
-	
-	    public function realtime_data()
+
+    public function realtime_data()
     {
         if ($this->input->is_ajax_request()) {
             $data = array();
             $total = 0;
             $history = $this->Report_model->get_realtime_history($this->input->post());
-			$hours = $this->Report_model->get_realtime_hours($this->input->post());
-			$hours_logged = $this->Report_model->get_realtime_hours_logged($this->input->post());
-			
-			//$this->firephp->log($history);
-			//$this->firephp->log($hours);
-			//$this->firephp->log($hours_logged);
-			if(count($history>0)){
-			foreach($history as $row){
-				$row['duration'] = 0;
-				$row['dph'] = 0;
-				$data[$row['user_id']] = $row;
-			}
-			}
-				if(count($hours>0)){
-			foreach($hours as $row){
-			if(!isset($data[$row['user_id']])){
-			$data[$row['user_id']] = $row;
-			$data[$row['user_id']]['count'] = 0;	
-			}
-			$data[$row['user_id']]['duration'] += $row['duration'];
-			}
-				}
-					if(count($hours_logged>0)){
-			foreach($hours_logged as $row){
-			if(!isset($data[$row['user_id']])){
-			$data[$row['user_id']] = $row;	
-			}
-			$data[$row['user_id']]['duration'] += $row['duration'];
-			}
-					}
-					
-			foreach($data as $k=>$row){
-			if($row['duration']>0){
-			$this->load->helper('date');
-			$data[$k]['dph'] = number_format($row['count']/($row['duration']/3600),2);
-			$data[$k]['duration'] = timespan(0,$row['duration']);
-			}
-			}
-					
+            $hours = $this->Report_model->get_realtime_hours($this->input->post());
+            $hours_logged = $this->Report_model->get_realtime_hours_logged($this->input->post());
+
+            //$this->firephp->log($history);
+            //$this->firephp->log($hours);
+            //$this->firephp->log($hours_logged);
+            if (count($history > 0)) {
+                foreach ($history as $row) {
+                    $row['duration'] = 0;
+                    $row['dph'] = 0;
+                    $data[$row['user_id']] = $row;
+                }
+            }
+            if (count($hours > 0)) {
+                foreach ($hours as $row) {
+                    if (!isset($data[$row['user_id']])) {
+                        $data[$row['user_id']] = $row;
+                        $data[$row['user_id']]['count'] = 0;
+                    }
+                    $data[$row['user_id']]['duration'] += $row['duration'];
+                }
+            }
+            if (count($hours_logged > 0)) {
+                foreach ($hours_logged as $row) {
+                    if (!isset($data[$row['user_id']])) {
+                        $data[$row['user_id']] = $row;
+                    }
+                    $data[$row['user_id']]['duration'] += $row['duration'];
+                }
+            }
+
+            foreach ($data as $k => $row) {
+                if ($row['duration'] > 0) {
+                    $this->load->helper('date');
+                    $data[$k]['dph'] = number_format($row['count'] / ($row['duration'] / 3600), 2);
+                    $data[$k]['duration'] = timespan(0, $row['duration']);
+                }
+            }
+
             echo json_encode(array(
                 "success" => (!empty($data)),
                 "data" => $data,
@@ -1207,7 +1251,7 @@ $data_pot = $this->Form_model->get_pots();
         }
     }
 
-	
+
     public function capture_data()
     {
 
@@ -1249,10 +1293,8 @@ $data_pot = $this->Form_model->get_pots();
         }
         $campaign_outcomes = $aux;
 
-        $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
-
-        $data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -1267,7 +1309,7 @@ $data_pot = $this->Form_model->get_pots();
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
-'data_pot' => $data_pot,
+            'data_pot' => $data_pot,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
@@ -1319,12 +1361,12 @@ $data_pot = $this->Form_model->get_pots();
             $sources = $this->input->post('sources');
             $pots = $this->input->post('pots');
 
-            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
-            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
-            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
-            $pots_url = (!empty($pots)?"/pot/".implode("_",$pots).(count($pots)>1?":in":""):"");
+            $outcomes_url = (!empty($outcomes) ? "/outcome/" . implode("_", $outcomes) . (count($outcomes) > 1 ? ":in" : "") : "");
+            $campaigns_url = (!empty($campaigns) ? "/campaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+            $sources_url = (!empty($sources) ? "/source/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+            $pots_url = (!empty($pots) ? "/pot/" . implode("_", $pots) . (count($pots) > 1 ? ":in" : "") : "");
 
-            $filter_url = $outcomes_url.$campaigns_url.$sources_url.$pots_url;
+            $filter_url = $outcomes_url . $campaigns_url . $sources_url . $pots_url;
 
             echo json_encode(array(
                 "success" => (!empty($total_records) || !empty($last_outcomes)),
@@ -1365,9 +1407,8 @@ $data_pot = $this->Form_model->get_pots();
         }
         $campaign_outcomes = $aux;
 
-        $sources = $this->Form_model->get_sources();
-
-        $data_pot = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -1382,6 +1423,7 @@ $data_pot = $this->Form_model->get_pots();
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
+            'data_pot' => $data_pot,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
@@ -1433,12 +1475,12 @@ $data_pot = $this->Form_model->get_pots();
             $sources = $this->input->post('sources');
             $pots = $this->input->post('pots');
 
-            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
-            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
-            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
-            $pots_url = (!empty($pots)?"/pot/".implode("_",$pots).(count($pots)>1?":in":""):"");
+            $outcomes_url = (!empty($outcomes) ? "/outcome/" . implode("_", $outcomes) . (count($outcomes) > 1 ? ":in" : "") : "");
+            $campaigns_url = (!empty($campaigns) ? "/campaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+            $sources_url = (!empty($sources) ? "/source/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+            $pots_url = (!empty($pots) ? "/pot/" . implode("_", $pots) . (count($pots) > 1 ? ":in" : "") : "");
 
-            $filter_url = $outcomes_url.$campaigns_url.$sources_url.$pots_url;
+            $filter_url = $outcomes_url . $campaigns_url . $sources_url . $pots_url;
 
             echo json_encode(array(
                 "success" => (!empty($total_dials) || !empty($dials_by_outcome)),
@@ -1468,7 +1510,7 @@ $data_pot = $this->Form_model->get_pots();
         $campaigns = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
-$data_pot = $this->Form_model->get_pots();
+        $data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
 
         $data = array(
@@ -1487,7 +1529,7 @@ $data_pot = $this->Form_model->get_pots();
             'templates' => $templates,
             'campaigns' => $campaigns,
             'sources' => $sources,
-'data_pot' => $data_pot,'team_managers' => $teamManagers,
+            'data_pot' => $data_pot, 'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
@@ -1517,7 +1559,7 @@ $data_pot = $this->Form_model->get_pots();
             $template_search = $form["template"];
             $team_search = $form["team"];
             $source_search = $form["source"];
-$pot_search = $form["pots"];
+            $pot_search = $form["pots"];
             $group = $form["group"];
 
 
@@ -1525,7 +1567,7 @@ $pot_search = $form["pots"];
             foreach ($results as $row) {
                 if ($row['sms_sent_count']) {
                     $aux[$row['id']]['sql'] = $row['sql'];
-                    $aux[$row['id']]['name'] = ($row['name']?$row['name']:($group === 'agent'?'Automatic':''));
+                    $aux[$row['id']]['name'] = ($row['name'] ? $row['name'] : ($group === 'agent' ? 'Automatic' : ''));
                     $aux[$row['id']]['credits'] = $row['credits'];
                     $aux[$row['id']]['sms_sent'] = $row['sms_sent_count'];
                     $aux[$row['id']]['sms_delivered'] = $row['sms_delivered_count'];
@@ -1552,7 +1594,7 @@ $pot_search = $form["pots"];
             $url .= (!empty($date_to_search) ? "/sent-sms-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
             $url .= (!empty($source_search) ? "/source/$source_search" : "");
-$url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
+            $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -1585,18 +1627,18 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
                     "sms_sent" => $sms_sent,
                     "sms_sent_url" => $smsUrl,
                     "sms_delivered" => $sms_delivered,
-                    "sms_delivered_url" => $smsUrl . "/sms-status/".SMS_STATUS_SENT,
+                    "sms_delivered_url" => $smsUrl . "/sms-status/" . SMS_STATUS_SENT,
                     "sms_pending" => $sms_pending,
-                    "sms_pending_url" => $smsUrl . "/sms-status/".SMS_STATUS_PENDING,
+                    "sms_pending_url" => $smsUrl . "/sms-status/" . SMS_STATUS_PENDING,
                     "sms_undelivered" => $sms_undelivered,
-                    "sms_undelivered_url" => $smsUrl . "/sms-status/".SMS_STATUS_UNDELIVERED,
+                    "sms_undelivered_url" => $smsUrl . "/sms-status/" . SMS_STATUS_UNDELIVERED,
                     "sms_unknown" => $sms_unknown,
-                    "sms_unknown_url" => $smsUrl . "/sms-status/".SMS_STATUS_UNKNOWN,
+                    "sms_unknown_url" => $smsUrl . "/sms-status/" . SMS_STATUS_UNKNOWN,
                     "sms_error" => $sms_error,
-                    "sms_error_url" => $smsUrl . "/sms-status/".SMS_STATUS_ERROR,
+                    "sms_error_url" => $smsUrl . "/sms-status/" . SMS_STATUS_ERROR,
                     "percent_sent" => (($sms_delivered > 0) ? number_format(($sms_delivered * 100) / $sms_sent, 2) : 0) . "%",
-                    "percent_pending" => (($sms_pending+$sms_unknown > 0) ? number_format((($sms_pending+$sms_unknown) * 100) / $sms_sent, 2) : 0) . "%",
-                    "percent_unsent" => (($sms_error+$sms_undelivered > 0) ? number_format((($sms_error+$sms_undelivered) * 100) / $sms_sent, 2) : 0) . "%",
+                    "percent_pending" => (($sms_pending + $sms_unknown > 0) ? number_format((($sms_pending + $sms_unknown) * 100) / $sms_sent, 2) : 0) . "%",
+                    "percent_unsent" => (($sms_error + $sms_undelivered > 0) ? number_format((($sms_error + $sms_undelivered) * 100) / $sms_sent, 2) : 0) . "%",
                     "group" => $group
                 );
                 $totalSmsSent += $sms_sent;
@@ -1608,9 +1650,9 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
                 $totalSmsError += $sms_error;
             }
 
-            $totalSmsPendingPercent = ($totalSmsPending||$totalSmsUnknown) ? number_format((($totalSmsPending+$totalSmsUnknown) * 100) / $totalSmsSent, 2) : 0;
+            $totalSmsPendingPercent = ($totalSmsPending || $totalSmsUnknown) ? number_format((($totalSmsPending + $totalSmsUnknown) * 100) / $totalSmsSent, 2) : 0;
             $totalSmsSentPercent = ($totalSmsDelivered) ? number_format(($totalSmsDelivered * 100) / $totalSmsSent, 2) : 0;
-            $totalSmsUnsentPercent = ($totalSmsError||$totalSmsUndelivered) ? number_format((($totalSmsError+$totalSmsUndelivered) * 100) / $totalSmsSent, 2) : 0;
+            $totalSmsUnsentPercent = ($totalSmsError || $totalSmsUndelivered) ? number_format((($totalSmsError + $totalSmsUndelivered) * 100) / $totalSmsSent, 2) : 0;
 
 
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
@@ -1623,15 +1665,15 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
                 "credits" => $totalCredits,
                 "sms_sent_url" => $url,
                 "sms_delivered" => $totalSmsDelivered,
-                "sms_delivered_url" => $url . "/sms-status/".SMS_STATUS_SENT,
+                "sms_delivered_url" => $url . "/sms-status/" . SMS_STATUS_SENT,
                 "sms_pending" => $totalSmsPending,
-                "sms_pending_url" => $url . "/sms-status/".SMS_STATUS_PENDING,
+                "sms_pending_url" => $url . "/sms-status/" . SMS_STATUS_PENDING,
                 "sms_undelivered" => $totalSmsUndelivered,
-                "sms_undelivered_url" => $url . "/sms-status/".SMS_STATUS_UNDELIVERED,
+                "sms_undelivered_url" => $url . "/sms-status/" . SMS_STATUS_UNDELIVERED,
                 "sms_unknown" => $totalSmsUnknown,
-                "sms_unknown_url" => $url . "/sms-status/".SMS_STATUS_UNKNOWN,
+                "sms_unknown_url" => $url . "/sms-status/" . SMS_STATUS_UNKNOWN,
                 "sms_error" => $totalSmsError,
-                "sms_error_url" => $url . "/sms-status/".SMS_STATUS_ERROR,
+                "sms_error_url" => $url . "/sms-status/" . SMS_STATUS_ERROR,
                 "percent_sent" => $totalSmsSentPercent . "%",
                 "percent_pending" => $totalSmsPendingPercent . "%",
                 "percent_unsent" => $totalSmsUnsentPercent . "%",
@@ -1658,7 +1700,7 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
         ));
     }
 
-	/* data counts for the data report */
+    /* data counts for the data report */
     public function data_counts()
     {
         if ($this->input->is_ajax_request()) {
@@ -1689,36 +1731,36 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
             }
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/records";
-                $url .= (!empty($campaigns) ? "/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
-                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
+                $url .= (!empty($campaigns) ? "/campaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+                $url .= (!empty($users) ? "/user/" . implode("_", $users) . (count($users) > 1 ? ":in" : "") : "");
                 $url .= (!empty($date_from) ? "/updated-from/$date_from" : "");
                 $url .= (!empty($date_to) ? "/updated-to/$date_to" : "");
-                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
-                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
-//tr,ta,tp,va,vp,wa,wp,fd,fc
+                $url .= (!empty($teams) ? "/team/" . implode("_", $teams) . (count($teams) > 1 ? ":in" : "") : "");
+                $url .= (!empty($sources) ? "/hsource/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+                //tr,ta,tp,va,vp,wa,wp,fd,fc
                 $total += $row['tr'];
                 $data = array(
                     "name" => $row['name'],
-					"id" => $row['id'],
-					"status" => $row['campaign_status'],
-                    "tr" => empty($row['tr'])?0:$row['tr'],
-					"ta" => empty($row['ta'])?0:$row['ta'],
-					"tp" => empty($row['tp'])?0:$row['tp'],
-					"va" => empty($row['va'])?0:$row['va'],
-					"vp" => empty($row['vp'])?0:$row['vp'],
-					"wa" => empty($row['wa'])?0:$row['wa'],
-					"wp" => empty($row['wp'])?0:$row['wp'],
-					"fd" => empty($row['fd'])?0:$row['fd'],
-					"fc" => empty($row['fc'])?0:$row['fc'],
+                    "id" => $row['id'],
+                    "status" => $row['campaign_status'],
+                    "tr" => empty($row['tr']) ? 0 : $row['tr'],
+                    "ta" => empty($row['ta']) ? 0 : $row['ta'],
+                    "tp" => empty($row['tp']) ? 0 : $row['tp'],
+                    "va" => empty($row['va']) ? 0 : $row['va'],
+                    "vp" => empty($row['vp']) ? 0 : $row['vp'],
+                    "wa" => empty($row['wa']) ? 0 : $row['wa'],
+                    "wp" => empty($row['wp']) ? 0 : $row['wp'],
+                    "fd" => empty($row['fd']) ? 0 : $row['fd'],
+                    "fc" => empty($row['fc']) ? 0 : $row['fc'],
                     "url_tr" => $url . "/campaign/" . $row['id'],
-					"url_ta" => $url . "/campaign/" . $row['id']."/status/1/parked-code/null",
-					"url_tp" => $url . "/campaign/" . $row['id']."/status/1/parked-code/null:not",
-					"url_va" => $url . "/campaign/" . $row['id']."/dials/0/status/1/parked-code/null",
-					"url_vp" => $url . "/campaign/" . $row['id']."/dials/0/status/1/parked-code/null:not",
-					"url_wa" => $url . "/campaign/" . $row['id']."/dials/0:more/parked-code/null/status/1",
-					"url_wp" => $url . "/campaign/" . $row['id']."/dials/0:more/parked-code/null:not/status/1",
-					"url_fd" => $url . "/campaign/" . $row['id']."/status/3",
-					"url_fc" => $url . "/campaign/" . $row['id']."/status/4",
+                    "url_ta" => $url . "/campaign/" . $row['id'] . "/status/1/parked-code/null",
+                    "url_tp" => $url . "/campaign/" . $row['id'] . "/status/1/parked-code/null:not",
+                    "url_va" => $url . "/campaign/" . $row['id'] . "/dials/0/status/1/parked-code/null",
+                    "url_vp" => $url . "/campaign/" . $row['id'] . "/dials/0/status/1/parked-code/null:not",
+                    "url_wa" => $url . "/campaign/" . $row['id'] . "/dials/0:more/parked-code/null/status/1",
+                    "url_wp" => $url . "/campaign/" . $row['id'] . "/dials/0:more/parked-code/null:not/status/1",
+                    "url_fd" => $url . "/campaign/" . $row['id'] . "/status/3",
+                    "url_fc" => $url . "/campaign/" . $row['id'] . "/status/4",
                 );
                 $data['colour'] = substr(dechex(crc32($row['name'])), 0, 6);
                 $data_array[] = $data;
@@ -1726,13 +1768,13 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
-                "total" =>  number_format($total,0)
+                "total" => number_format($total, 0)
             ));
         }
     }
 
 
-	/* data counts for the data report */
+    /* data counts for the data report */
     public function data_counts_by_pot()
     {
         if ($this->input->is_ajax_request()) {
@@ -1746,7 +1788,7 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
             $pots = $this->input->post("pots");
-			$campaign = $this->input->post("campaign");
+            $campaign = $this->input->post("campaign");
 
             $overall_array = array();
             $post = $this->input->post();
@@ -1764,36 +1806,36 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
 
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/records";
-                $url .= (!empty($campaigns) ? "/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
-                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
+                $url .= (!empty($campaigns) ? "/campaign/" . implode("_", $campaigns) . (count($campaigns) > 1 ? ":in" : "") : "");
+                $url .= (!empty($users) ? "/user/" . implode("_", $users) . (count($users) > 1 ? ":in" : "") : "");
                 $url .= (!empty($date_from) ? "/updated-from/$date_from" : "");
                 $url .= (!empty($date_to) ? "/updated-to/$date_to" : "");
-                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
-                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
-//tr,ta,tp,va,vp,wa,wp,fd,fc
+                $url .= (!empty($teams) ? "/team/" . implode("_", $teams) . (count($teams) > 1 ? ":in" : "") : "");
+                $url .= (!empty($sources) ? "/hsource/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
+                //tr,ta,tp,va,vp,wa,wp,fd,fc
                 $total += $row['tr'];
                 $data = array(
                     "name" => $row['name'],
-					"id" => $row['id'],
-					"status" => $row['campaign_status'],
-                    "tr" => empty($row['tr'])?0:$row['tr'],
-					"ta" => empty($row['ta'])?0:$row['ta'],
-					"tp" => empty($row['tp'])?0:$row['tp'],
-					"va" => empty($row['va'])?0:$row['va'],
-					"vp" => empty($row['vp'])?0:$row['vp'],
-					"wa" => empty($row['wa'])?0:$row['wa'],
-					"wp" => empty($row['wp'])?0:$row['wp'],
-					"fd" => empty($row['fd'])?0:$row['fd'],
-					"fc" => empty($row['fc'])?0:$row['fc'],
-                    "url_tr" => $url . "/pot/" . $row['id']."/campaign/".$campaign,
-					"url_ta" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/1/parked-code/null",
-					"url_tp" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/1/parked-code/null:not",
-					"url_va" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0/status/1/parked-code/null",
-					"url_vp" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0/status/1/parked-code/null:not",
-					"url_wa" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0:more/parked-code/null/status/1",
-					"url_wp" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0:more/parked-code/null:not/status/1",
-					"url_fd" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/3",
-					"url_fc" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/4",
+                    "id" => $row['id'],
+                    "status" => $row['campaign_status'],
+                    "tr" => empty($row['tr']) ? 0 : $row['tr'],
+                    "ta" => empty($row['ta']) ? 0 : $row['ta'],
+                    "tp" => empty($row['tp']) ? 0 : $row['tp'],
+                    "va" => empty($row['va']) ? 0 : $row['va'],
+                    "vp" => empty($row['vp']) ? 0 : $row['vp'],
+                    "wa" => empty($row['wa']) ? 0 : $row['wa'],
+                    "wp" => empty($row['wp']) ? 0 : $row['wp'],
+                    "fd" => empty($row['fd']) ? 0 : $row['fd'],
+                    "fc" => empty($row['fc']) ? 0 : $row['fc'],
+                    "url_tr" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign,
+                    "url_ta" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/status/1/parked-code/null",
+                    "url_tp" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/status/1/parked-code/null:not",
+                    "url_va" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/dials/0/status/1/parked-code/null",
+                    "url_vp" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/dials/0/status/1/parked-code/null:not",
+                    "url_wa" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/dials/0:more/parked-code/null/status/1",
+                    "url_wp" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/dials/0:more/parked-code/null:not/status/1",
+                    "url_fd" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/status/3",
+                    "url_fc" => $url . "/pot/" . $row['id'] . "/campaign/" . $campaign . "/status/4",
                 );
                 $data['colour'] = substr(dechex(crc32($row['name'])), 0, 6);
                 $data_array[] = $data;
@@ -1801,7 +1843,7 @@ $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
-                "total" => number_format($total,0)
+                "total" => number_format($total, 0)
             ));
         }
     }

@@ -84,7 +84,7 @@
             <?php } ?>
 
             <label style="margin-top: 5%;">Source</label>
-            <select name="sources[]" class="selectpicker source-filter" multiple data-width="100%"
+            <select name="sources[]" class="selectpicker source-filter" id="source-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                 <?php foreach ($sources as $row) { ?>
                     <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>

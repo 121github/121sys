@@ -82,6 +82,15 @@ var sms = {
             $(this).css("color", "green");
             sms.sms_panel()
         });
+        $(document).on("click", ".pot-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="pots"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+            sms.sms_panel()
+        });
         $(document).on('click', '.show-sms-btn', function (e) {
             e.preventDefault();
             sms.show_all_sms($(this), $(this).attr('sms-status'));

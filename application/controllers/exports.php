@@ -42,8 +42,8 @@ class Exports extends CI_Controller
         }
         $campaign_outcomes = $aux;
 
-        $sources = $this->Form_model->get_sources();
-        $pots = $this->Form_model->get_pots();
+        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
+        $pots = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $teams = $this->Form_model->get_teams();
         $agents = $this->Form_model->get_agents();

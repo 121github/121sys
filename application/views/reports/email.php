@@ -87,7 +87,7 @@
                     <?php } ?>
                 </select>
             <?php } ?>          <label style="margin-top: 5%;">Source</label>
-            <select name="sources[]" class="selectpicker source-filter" multiple data-width="100%"
+            <select name="sources[]" class="selectpicker source-filter" id="source-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                 <?php foreach ($sources as $row) { ?>
                     <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
@@ -95,7 +95,7 @@
             </select>
 
             <label style="margin-top: 5%;">Data Pot</label>
-            <select name="pots[]" class="selectpicker pot-filter" multiple data-width="100%"
+            <select name="pots[]" class="selectpicker pot-filter" id="pot-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                 <?php foreach ($data_pot as $row) { ?>
                     <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>

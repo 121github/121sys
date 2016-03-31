@@ -25,6 +25,7 @@
                             <input type="hidden" name="agent">
                               <?php } ?>
                             <input type="hidden" name="source">
+                            <input type="hidden" name="pots">
                             <button type="button" class="daterange btn btn-default btn-xs"><span
                                     class="glyphicon glyphicon-calendar"></span> <span
                                     class="date-text"> <?php echo "Today"; ?> </span></button>
@@ -91,6 +92,19 @@
                                 <?php endforeach ?>
                                 <li class="divider"></li>
                                 <li><a class="source-filter" ref="#" style="color: green;">All Sources</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                Pot <span class="caret"></span></button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <?php foreach ($data_pot as $row): ?>
+                                    <li><a href="#" class="pot-filter"
+                                           id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a></li>
+                                <?php endforeach ?>
+                                <li class="divider"></li>
+                                <li><a class="pot-filter" ref="#" style="color: green;">All Pots</a></li>
                             </ul>
                         </div>
                     </form>

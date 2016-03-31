@@ -44,6 +44,9 @@ var last_outcomes = {
             setTimeout(function () {
                 //Get outcomes by campaigns selected
                 last_outcomes.get_outcomes_filter();
+
+                last_outcomes.get_sources_filter();
+                last_outcomes.get_pots_filter();
             }, 500);
         });
 
@@ -61,6 +64,9 @@ var last_outcomes = {
             e.preventDefault();
             //Get outcomes by campaigns selected
             last_outcomes.get_outcomes_filter();
+
+            last_outcomes.get_sources_filter();
+            last_outcomes.get_pots_filter();
         });
 
         $(document).on("click", ".refresh-data", function (e) {
@@ -303,6 +309,41 @@ var last_outcomes = {
             }
         });
     },
+
+    get_sources_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_sources_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_sources, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#source-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_pots_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_pots_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_pots, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#pot-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
     get_graphs: function (response) {
 
         google.load('visualization', '1', {

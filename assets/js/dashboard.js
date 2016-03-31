@@ -58,6 +58,8 @@ var dashboard = {
             setTimeout(function () {
                 //Get outcomes by campaigns selected
                 dashboard.get_outcomes_filter();
+                //Get sources by campaigns selected
+                dashboard.get_sources_filter();
             }, 500);
         });
 
@@ -82,6 +84,8 @@ var dashboard = {
             e.preventDefault();
             //Get outcomes by campaigns selected
             dashboard.get_outcomes_filter();
+            //Get sources by campaigns selected
+            dashboard.get_sources_filter();
         });
 
         $(document).on("click", ".refresh-overview-data", function (e) {
@@ -891,6 +895,23 @@ var dashboard = {
                     options += "</optgroup>";
                 });
                 $('#outcome-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_sources_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_sources_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_sources, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#source-filter').html(options).selectpicker('refresh');
             }
         });
     },

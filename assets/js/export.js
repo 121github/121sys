@@ -52,6 +52,9 @@ var export_data = {
             setTimeout(function () {
                 //Get outcomes by campaigns selected
                 export_data.get_outcomes_filter();
+
+                export_data.get_sources_filter();
+                export_data.get_pots_filter();
             }, 500);
         });
 
@@ -69,6 +72,9 @@ var export_data = {
             e.preventDefault();
             //Get outcomes by campaigns selected
             export_data.get_outcomes_filter();
+
+            export_data.get_sources_filter();
+            export_data.get_pots_filter();
         });
 
         $(document).on("click", '.new-export-btn', function (e) {
@@ -793,6 +799,40 @@ var export_data = {
                     options += "</optgroup>";
                 });
                 $('#outcome-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_sources_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_sources_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_sources, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#source-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_pots_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_pots_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_pots, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#pot-filter').html(options).selectpicker('refresh');
             }
         });
     },
