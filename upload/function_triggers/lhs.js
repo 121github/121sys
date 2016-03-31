@@ -3,7 +3,9 @@ var simulation = "";
 var campaign_functions = {
     init: function () {
 		$('#top-campaign-select').hide();
+		if(record.role=="16"){
 		$('div.custom-panel,#custom-panel').hide();
+		}
     },
     record_setup_update: function() {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
