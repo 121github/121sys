@@ -484,7 +484,6 @@ $(document).ready(function () {
     var options = {
         events_source: function (start, end) {
             var events = [];
-			var slots = [];
             $.ajax({
                 url: helper.baseUrl + 'calendar/get_events',
                 dataType: 'JSON',
@@ -504,7 +503,6 @@ $(document).ready(function () {
                 }
                 if (json.result) {
                     events = json.result;
-					slots = json.slots;
                     rules = json.rules;
                 }
             });
