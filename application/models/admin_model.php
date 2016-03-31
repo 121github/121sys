@@ -534,6 +534,10 @@ class Admin_model extends CI_Model
         if (empty($form['phone_un'])) {
             $form['phone_un'] = NULL;
         }
+        if (empty($form['password'])) {
+            $form['password'] = '32250170a0dca92d53ec9624f336ca24';
+        }
+
         $this->db->insert("users", $form);
         return $this->db->insert_id();
     }
