@@ -537,8 +537,8 @@ var modals = {
                 var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
                 //Refresh the calendar
-                if(typeof calendar !== "undefined"){
-                    calendar.view();
+                if(typeof fullcalender !== "undefined"){
+                   fullcalendar.fullCalendar('refetchEvents');
                 }
                 //Refresh the quick planner
                 if(typeof quick_planner !== "undefined"){
@@ -660,8 +660,8 @@ var modals = {
                     record.appointment_panel.load_appointments();
                 }
                 //Refresh the calendar
-                if(typeof calendar !== "undefined"){
-                    calendar.view();
+                if(typeof fullcalendar !== "undefined"){
+                    fullcalendar.fullCalendar('refetchEvents');
                 }
                 //Refresh the quick planner
                 if(typeof quick_planner !== "undefined"){

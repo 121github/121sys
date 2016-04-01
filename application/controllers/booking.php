@@ -43,12 +43,12 @@ class Booking extends CI_Controller
 	
 	
 	public function index(){
-	 $data = array(
+		$data = array(
             'campaign_access' => $this->_campaigns,
-            'title' => 'Dashboard | Bookings',
+            'title' => 'Bookings',
             'page' => 'Bookings',
-			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css"),
-			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js","plugins/fullcalendar-2.6.1/gcal.js"));
+			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css'),
+			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js"));
 			
 		 $this->template->load('default', 'bookings/calendar.php', $data);	
 	}
@@ -74,10 +74,10 @@ class Booking extends CI_Controller
 	public function google(){
 		$data = array(
             'campaign_access' => $this->_campaigns,
-            'title' => 'Dashboard | Bookings',
+            'title' => 'Bookings',
             'page' => 'Bookings',
-			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css"),
-			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js","plugins/fullcalendar-2.6.1/gcal.js"));
+			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css'),
+			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js"));
 			
 		 $this->template->load('default', 'bookings/google.php', $data);	
 	}
