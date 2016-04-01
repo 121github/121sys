@@ -151,6 +151,7 @@ var campaign_functions = {
                 $modal.find('.branches-selection').show();
                 $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
                 $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
+				$modal.find('.typepicker option[value=4],.typepicker option[value=6],.typepicker option[value=7]').prop('disabled', true);
             }
         },
         hsl_coverletter_address: function() {
