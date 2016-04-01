@@ -295,6 +295,7 @@ class Planner extends CI_Controller
         $slots = array();
 
         $appointments = $this->Appointments_model->slot_availability(false, $driver_id);
+
         if (!isset($appointments['apps'])) {
             $error = "Availability has not been configured for this attendee";
             if (in_array("slot config", $_SESSION['permissions'])) {

@@ -70,7 +70,7 @@ class Appointments_model extends CI_Model
 
         //get any user specified days
         $defined_slots = array();
-        $get_slots = "select appointment_slot_id,`date`,max_slots,notes reason from appointment_slot_override where `date` > curdate() $where ";
+        $get_slots = "select appointment_slot_id,`date`,max_slots,notes reason from appointment_slot_override where `date` >= curdate() $where ";
         $get_slots_result = $this->db->query($get_slots)->result_array();
         foreach ($get_slots_result as $row) {
             $defined_slots[$row['date']][$row['appointment_slot_id']]["max_apps"] = $row['max_slots'];
