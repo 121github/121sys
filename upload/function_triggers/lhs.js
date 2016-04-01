@@ -177,7 +177,7 @@ var campaign_functions = {
 			 } else if(appointment.appointment_type_id=="3"){
 				  update_status = "Appointment Confirmed";
 				  //send the appointment confirmation email
-			lhs.send_template_email(record.urn, 3, "Client", appointment.contact_email, "","","Appointment confirmation",appointmment.appointment_id);				  
+			//lhs.send_template_email(record.urn, 3, "Client", appointment.contact_email, "","","Appointment confirmation",appointmment.appointment_id);				  
 			 }
 			 
 			}
