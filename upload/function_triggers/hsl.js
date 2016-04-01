@@ -101,6 +101,7 @@ var campaign_functions = {
 				
             } else {
 				$modal.find('.typepicker option[value=4],.typepicker option[value=6],.typepicker option[value=7]').prop('disabled', true);
+				$modal.find('.typepicker').selectpicker('refresh');
                 campaign_functions.hsl_coverletter_address();
 				if(start){
                 modals.set_appointment_start(start);
@@ -152,6 +153,7 @@ var campaign_functions = {
                 $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
                 $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
 				$modal.find('.typepicker option[value=4],.typepicker option[value=6],.typepicker option[value=7]').prop('disabled', true);
+				$modal.find('.typepicker').selectpicker('refresh');
             }
         },
         hsl_coverletter_address: function() {
