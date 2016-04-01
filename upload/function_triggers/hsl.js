@@ -100,6 +100,7 @@ var campaign_functions = {
 			});
 				
             } else {
+				$modal.find('.typepicker option[value=4],.typepicker option[value=6],.typepicker option[value=7]').prop('disabled', true);
                 campaign_functions.hsl_coverletter_address();
 				if(start){
                 modals.set_appointment_start(start);
