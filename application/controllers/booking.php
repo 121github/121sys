@@ -24,7 +24,6 @@ class Booking extends CI_Controller
 			$mins = $increment * $i;
 			$times[] = date('H:i',strtotime("$start +".$mins." minute"));
 		};
-		$this->firephp->log($times);
 		return $times;
 	}
 	
@@ -37,7 +36,6 @@ class Booking extends CI_Controller
 		for($i=0;$i<=$count;$i++){
 			 $days[date('Y-m-d',strtotime("previous monday +".$i." day"))] = array();
 		};
-		$this->firephp->log($days);
 		return $days;
 	}
 	
@@ -50,13 +48,14 @@ class Booking extends CI_Controller
 			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css'),
 			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js"));
 			
-		 $this->template->load('default', 'bookings/calendar.php', $data);	
+		 $this->template->load('default', 'bookings/booking.php', $data);	
 	}
 	
 	public function events(){
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
-		$events = $this->Booking_model->get_events($start,$end);
+		$attendee = $this->input->get('attendee');
+		$events = $this->Booking_model->get_events($start,$end,$attendee);
 		foreach($events as $k => $event){
 			$events[$k]['color'] = genColorCodeFromText($event['attendees']);
 		}
