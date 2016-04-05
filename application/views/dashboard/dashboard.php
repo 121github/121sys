@@ -123,7 +123,7 @@
                       <a type="button" class="btn btn-default" href="appointments" style="margin:0 3px 10px"><p>View Appointments</p><span class="fa fa-clock-o fa-3x"></span></a>
                      <?php } ?>
                           <?php if(in_array("full calendar",$_SESSION['permissions'])){ ?> 
-                        <a type="button" class="btn btn-default" href="calendar" style="margin:0 3px 10px"><p>View Calendar</p><span class="fa fa-calendar fa-3x"></span></a>
+                        <a type="button" class="btn btn-default" href="booking" style="margin:0 3px 10px"><p>View Calendar</p><span class="fa fa-calendar fa-3x"></span></a>
                         <?php } ?>
                          <?php if(in_array("view surveys",$_SESSION['permissions'])){ ?>
                  <a type="button" class="btn btn-default" href="survey/view" style="margin:0 3px 10px"><p>View Surveys</p><span class="fa fa-clipboard fa-3x"></span></a>
