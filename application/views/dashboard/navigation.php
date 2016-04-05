@@ -9,7 +9,7 @@
             <div id="collapseOne" class="accordion-body collapse <?php echo(!empty($dashboard) ? "in" : "") ?>">
                 <div class="accordion-group">
                     <div class="accordion-inner">
-                        <a href="<?php echo base_url() ?>dashboard/" <?php echo @($dashboard == 'overview' ? "class='active'" : "") ?>>Overview</a>
+                        <a href="<?php echo base_url() ?>dashboard" <?php echo @($dashboard == 'overview' ? "class='active'" : "") ?>>Overview</a>
                     </div>
                     <?php if (in_array("client dash", $_SESSION['permissions'])) { ?>
                         <div class="accordion-inner">
