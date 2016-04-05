@@ -59,7 +59,32 @@ var calendar = {
 $(element).attr("data-id",event._id).attr('data-modal','view-appointment').find('.fc-content').prepend('<span class="'+event.icon+'"></span> ');
 },
 	  viewRender:function( event, element, view ) { 
-calendar.load_rules();
+          calendar.load_rules();
+
+          if (typeof $('#datetimepicker2').data("DateTimePicker") != "undefined") {
+              var view_mode = "months";
+              var format = "YYYY-MM";
+              switch(view.name) {
+                  case "month":
+                      view_mode = "months";
+                      format = "YYYY-MM";
+                      break;
+                  case "agendaWeek":
+                      view_mode = "days";
+                      format = "YYYY-MM-DD";
+                      break;
+                  case "agendaDay":
+                      view_mode = "days";
+                      format = "YYYY-MM-DD";
+                      break;
+                  default:
+                      view_mode = "months";
+                      format = "YYYY-MM";
+                      break;
+              }
+
+              $('#datetimepicker2').data("DateTimePicker").format(format).viewMode(view_mode);
+          }
 	  },
 	  eventAfterAllRender:function( event, element, view ) {
 		  $('#calendar .fc-row td').addClass('context-menu-one');		  
@@ -86,21 +111,21 @@ calendar.load_rules();
 
        $('#calendar .fc-toolbar .fc-right').append(
            '<div class="form-group">'+
-               '<div class="input-group date" id="datetimepicker2">'+
-               '<input name="cal_date" type="hidden" class="form-control" />'+
-               '<span class="input-group-addon" style="border: none; background: transparent;">'+
-               '   <span class="fa fa-calendar"></span>'+
-               '</span>'+
-               '</div>'+
+           '<div class="input-group date" id="datetimepicker2">'+
+           '<input name="cal_date" type="hidden" class="form-control" />'+
+           '<span class="input-group-addon" style="border: none; background: transparent;">'+
+           '   <span class="fa fa-calendar"></span>'+
+           '</span>'+
+           '</div>'+
            '</div>'
        );
        $('#datetimepicker2').datetimepicker({
            defaultDate: moment(),
-           format: 'YYYY-MM-DD',
-           enabledHours:false
+           format: 'YYYY-MM',
+           enabledHours:false,
+           viewMode: 'months',
        }).on('dp.change', function(ev) {
            $('#calendar').fullCalendar('gotoDate',new Date($('input[name="cal_date"]').val()));
-           //$('#calendar').fullCalendar('changeView','agendaDay');
        });
    }, 
    set_event_time:function(id,start,end){
