@@ -148,9 +148,11 @@ class Calendar_model extends CI_Model
     }
 	
     public function get_appointment_overrides($distinct_user=false,$users=array()) {
-		if(!empty($users)){
+		if(is_array($users)&&!empty($users)){
 		$user_list = ",".implode(",",$users);
 		$user_where = " and user_id in('0' $user_list) ";
+		} else if(!is_array($users)&&!empty($users)){
+		$user_where = " and user_id = '$users' ";	
 		} else { $user_where = ""; }
         $qry = "select slot_override_id, `date` block_day, max_slots, users.name, notes reason
                 from appointment_slot_override
@@ -159,6 +161,7 @@ class Calendar_model extends CI_Model
 		if($distinct_user){
 		$qry .= " group by block_day,user_id";	
 		}
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     /**

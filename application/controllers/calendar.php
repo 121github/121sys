@@ -429,7 +429,7 @@ $google_email = false;
 				$distinct_user = false;
 			}
 			$users = $this->input->post('users');
-		
+			
             //$appointment_rules = $this->Calendar_model->get_appointment_rules($distinct_user);
 			$appointment_rules = $this->Calendar_model->get_appointment_overrides($distinct_user,$users);
             $aux = array();

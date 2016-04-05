@@ -162,7 +162,11 @@ var modals = {
 
         $(document).on('click', '[data-modal="create-appointment"]', function (e) {
             e.preventDefault();
-            modals.create_appointment($(this).attr('data-urn'));
+			var start = false;
+			if(typeof $(this).attr('data-start') !== "undefined"){
+			start = $(this).attr('data-start');	
+			}
+            modals.create_appointment($(this).attr('data-urn'),start);
         });
         $modal.on('click', '#cancel-add-address', function (e) {
             ;
@@ -290,7 +294,7 @@ var modals = {
 
         $modal.on('click','#search-records-btn',function(e){
             e.preventDefault();
-            modals.search_records_func($(this).attr('data-action'));
+            modals.search_records_func($(this).attr('data-action'),$(this).attr('data-start'));
         });
 
         $modal.on('click','#get-address',function(e){
@@ -1069,7 +1073,6 @@ var modals = {
 				if(typeof campaign_functions.appointment_setup !== "undefined"){
 				    campaign_functions.appointment_setup(start,false,urn);
 				}
-				
 
             modals.set_appointment_access_address();
         });
@@ -1235,7 +1238,7 @@ var modals = {
         });
     },
 
-    search_records: function (data_action) {
+    search_records: function (data_action,date) {
         $.ajax({
             url: helper.baseUrl + 'modals/search_records',
             type: 'POST',
@@ -1244,13 +1247,10 @@ var modals = {
             var mheader = "Search Record";
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
-                          '<button class="btn btn-primary pull-right" id="search-records-btn" data-action="'+data_action+'" type="button">Search</button>';
+                          '<button class="btn btn-primary pull-right" id="search-records-btn" data-action="'+data_action+'" data-start="'+date+'" type="button">Search</button>';
             modals.load_modal(mheader, mbody, mfooter);
             modal_body.css('overflow', 'visible');
             modal_dialog.css('width', "90%");
-            modal_body.find('#addresspicker-div').hide();
-            modal_body.find('.record-form').find('input[name="house-number"]').numeric();
-
             $('.record-form').on("keyup keypress", function (e) {
                 var code = e.keyCode || e.which;
                 if (code == 13) {
@@ -1260,7 +1260,7 @@ var modals = {
             });
         });
     },
-    search_records_func: function(data_action){
+    search_records_func: function(data_action,start){
         if(modal_body.find('#campaign').val()==""){
             flashalert.danger("Please select a campaign");
         } else {
@@ -1284,18 +1284,18 @@ var modals = {
                         }
                         var table = "<div class='table-responsive'><table class='small table-condensed table table-striped'><thead>"+camphead+"<th>Data</th><th>Name</th><th>Address</th><th>Postcode</th><th>Status</th><th>Date Added<th></thead><tbody>";
                         $.each(response.data,function(i,row){
-                            table += "<tr class='pointer' data-modal='"+data_action+"' data-urn='"+row.urn+"'>";
+                            table += "<tr class='pointer' data-modal='"+data_action+"' data-start='"+start+" 09:00' data-urn='"+row.urn+"'>";
                             if(campbody){ table +=  "<td>"+row.campaign_name+"</td>" }
                             table += "<td>"+row.source_name+"</td><td>"+row.name+"</td><td>"+row.add1+"</td><td>"+row.postcode+"</td><td>"+row.status_name+"</td><td>"+row.date_added+"</td></tr>";
                         });
                         table += "</tbody></table></div>";
                         modal_body.find('#dupes-found').html(table);
                     } else {
-                        modal_body.find('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-ok'></span> No Records were found.</p>");
+                        modal_body.find('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-remove'></span> No Records were found.</p>");
                     }
                 } else {
                     flashalert.danger(response.msg);
-                    modal_body.find('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-ok'></span> "+response.msg+"</p>");
+                    modal_body.find('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-remove'></span> "+response.msg+"</p>");
                 }
             })
         }

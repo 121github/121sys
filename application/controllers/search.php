@@ -339,7 +339,17 @@ class Search extends CI_Controller
 				exit;
 			}
             $clean_filter['campaign_id'] = $this->input->post('campaign_id');
-
+			if(isset($clean_filter['postcode'])){
+			if(validate_postcode($clean_filter['postcode'])){
+			$clean_filter['postcode'] = postcodeFormat($clean_filter['postcode']);
+			} else {
+				echo json_encode(array(
+				"success" => false,
+				"msg"=>"Postcode is not valid"
+			));
+			exit;
+			}
+			}
 			if(!in_array("search campaigns",$_SESSION['permissions'])){
 				$filter['campaign_id']=array($_SESSION['current_campaign']);
 			}

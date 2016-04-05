@@ -45,8 +45,8 @@ class Booking extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'title' => 'Bookings',
             'page' => 'Bookings',
-			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css'),
-			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js"));
+			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css','plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.css'),
+			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js","plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js"));
 			
 		 $this->template->load('default', 'bookings/booking.php', $data);	
 	}
@@ -86,6 +86,11 @@ class Booking extends CI_Controller
 			$events = array();
 			echo json_encode($events);
 		
+	}
+	
+	public function get_appointment_rules_by_date(){
+		  $appointment_rules = $this->Booking_model->get_appointment_rules_by_date_and_user($this->input->post('date'), $this->input->post('user_id'));
+		  echo json_encode(array("data"=>$appointment_rules));
 	}
 	
 }

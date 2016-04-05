@@ -45,4 +45,23 @@ class Booking_model extends CI_Model
 		//$this->firephp->log($this->db->last_query());
 	}
 	
+	   /**
+     * Get appointment rules by date
+     */
+    public function get_appointment_rules_by_date_and_user($date=false, $user_id=false)
+    {
+        $qry = "select slot_override_id,date_format(`date`,'%d/%m/%Y') uk_date, `date`, slot_name, notes, name, max_slots from appointment_slot_override left join appointment_slots using(appointment_slot_id) left join users using(user_id) where 1 ";
+				if($date){
+				$qry .= " and `date` = '" . $date . "'"; 
+				} else {
+				$qry .= " and date(`date`) >= curdate() "; 	
+				}
+				if(!empty($user_id)){
+				$qry .= " and user_id = '" . $user_id . "'";
+				}
+				$qry .= " order by `date`";
+				//$this->firephp->log($qry);
+        return $this->db->query($qry)->result_array();
+    }
+	
 }
