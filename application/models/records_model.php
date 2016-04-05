@@ -1175,7 +1175,7 @@ return $comments;
             ));
             
         }
-		if (intval($post["progress_id"]) > 0) {
+		if (isset($post["progress_id"])&&intval($post["progress_id"]) > 0) {
                 $update_array[] = "progress_id";
             }
 		

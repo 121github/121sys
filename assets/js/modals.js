@@ -734,10 +734,11 @@ var modals = {
         });
     },
     view_appointment_html: function (data) {
+		        mbody = '<div class="row">';
 		$.each(data.appointment,function(title,column){
 			
-		 mbody = '';	
- 		 if(column.display=="table"){
+		 mbody += '<div class="col-sm-6"><h4>'+title+'</h4>';	
+		 if(column.display=="table"){
 			 var list_icon = column.list_icon.length>0?"<i class='fa "+column.list_icon+"'></i> ":"";
 		var colbody = "<table class='"+column.table_class+"'>";	 
 		 $.each(column.fields,function(key,val){
@@ -759,8 +760,10 @@ var modals = {
 		 colbody += "</ul>";
 		 }
 		 mbody += colbody;
-		 //mbody +=  "</div>";
+		 mbody +=  "</div>";
 		});
+
+		mbody += '</div>';
         var mheader = "Appointment #" + data.id;
         /*var mbody = "<table class='table small'><tbody><tr><th>Company</th><td>" + data.coname + "</td></tr><tr><th>Date</th><td>" + data.starttext + "</td></tr><tr><th>Title</th><td>" + data.title + "</td></tr><tr><th>Notes</th><td>" + data.text + "</td></tr><tr><th>Attendees</th><td>" + attendees + "</td></tr><tr><th>Type</th><td>" + data.appointment_type + "</td></tr><tr><th>Location</th><td>" + data.address + "</td></tr>";
         if (data.distance && getCookie('current_postcode')) {
