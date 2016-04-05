@@ -44,6 +44,13 @@ class Booking_model extends CI_Model
 		$this->db->update("appointments",array("start"=>$start,"end"=>$end));	
 		//$this->firephp->log($this->db->last_query());
 	}
+
+	public function getGoogleToken($user_id, $api_name) {
+		$query = "SELECT * from apis where user_id = ".$user_id." and api_name = '".$api_name."'";
+
+		return $this->db->query($query)->result_array();
+
+	}
 	
 	   /**
      * Get appointment rules by date
