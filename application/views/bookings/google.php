@@ -67,6 +67,24 @@
             $('#calendar-select').selectpicker();
             $('.calendar-list').hide();
 
+            $('#calendar .fc-toolbar .fc-right').append(
+                '<div class="form-group">'+
+                    '<div class="input-group date" id="datetimepicker2">'+
+                        '<input name="cal_date" type="hidden" class="form-control" />'+
+                        '<span class="input-group-addon" style="border: none; background: transparent;">'+
+                        '   <span class="fa fa-calendar"></span>'+
+                        '</span>'+
+                    '</div>'+
+                '</div>'
+            );
+            $('#datetimepicker2').datetimepicker({
+                defaultDate: moment(),
+                format: 'YYYY-MM-DD',
+                enabledHours:false
+            }).on('dp.change', function(ev) {
+                $('#calendar').fullCalendar('gotoDate',new Date($('input[name="cal_date"]').val()));
+                //$('#calendar').fullCalendar('changeView','agendaDay');
+            });
 
             calendar.signin();
 
@@ -84,6 +102,24 @@
                 e.preventDefault();
                 $('#calendar').fullCalendar( 'refetchEvents' );
             });
+
+//            $('#datetimepicker2').change(function () {
+//                console.log("asdsad");
+//            });
+
+//            $("#datetimepicker2").on("dp.change",function (e) {
+//                e.preventDefault();
+//                alert('changed');
+//            });
+
+
+//            $('#datetimepicker2').datepicker({
+//                dateFormat: 'DD, d MM, yy',
+//                onSelect: function(dateText,dp){
+//                    $j('#calendar').fullCalendar('gotoDate',new Date(Date.parse(dateText)));
+//                    $j('#calendar').fullCalendar('changeView','agendaDay');
+//                }
+//            });
         },
         signin: function() {
             $.ajax({

@@ -60,6 +60,25 @@ calendar.loadAppointmentRules();
   events: calendar.event_source
     })
 	calendar.attendee_filter();
+
+       $('#calendar .fc-toolbar .fc-right').append(
+           '<div class="form-group">'+
+               '<div class="input-group date" id="datetimepicker2">'+
+               '<input name="cal_date" type="hidden" class="form-control" />'+
+               '<span class="input-group-addon" style="border: none; background: transparent;">'+
+               '   <span class="fa fa-calendar"></span>'+
+               '</span>'+
+               '</div>'+
+           '</div>'
+       );
+       $('#datetimepicker2').datetimepicker({
+           defaultDate: moment(),
+           format: 'YYYY-MM-DD',
+           enabledHours:false
+       }).on('dp.change', function(ev) {
+           $('#calendar').fullCalendar('gotoDate',new Date($('input[name="cal_date"]').val()));
+           //$('#calendar').fullCalendar('changeView','agendaDay');
+       });
    }, 
    set_event_time:function(id,start,end){
 	   $.ajax({ url: helper.baseUrl+'booking/set_event_time',
