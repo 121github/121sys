@@ -16,7 +16,7 @@
             <li <?php echo @($page == 'favorites_dash' ? "class='Selected'" : "") ?>><a
                     href="<?php echo base_url() ?>dashboard/favorites">Favorites</a></li>
             <li <?php echo @($page == 'overview' ? "class='Selected'" : "") ?>><a
-                    href="<?php echo base_url() ?>dashboard/">Overview</a></li>
+                    href="<?php echo base_url() ?>dashboard">Overview</a></li>
             <?php if (in_array("client dash", $_SESSION['permissions'])) { ?>
                 <li <?php echo @($page == 'client_dash' ? "class='Selected'" : "") ?>><a
                         href="<?php echo base_url() ?>dashboard/client">Client Dashboard</a></li>
