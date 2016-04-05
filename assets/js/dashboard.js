@@ -919,7 +919,7 @@ var dashboard = {
     /* Show the custom dashboards */
     custom_dash_panel: function () {
         $.ajax({
-            url: helper.baseUrl + 'dashboard/get_dashboards',
+            url: helper.baseUrl + 'dashboard/get_dashboards_to_manage',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),

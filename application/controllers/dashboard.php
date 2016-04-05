@@ -1221,6 +1221,18 @@ public function index(){
     }
 
     /**
+     * Get the custom dashboards to manage
+     */
+    public function get_dashboards_to_manage() {
+        $dashboards = $this->Dashboard_model->get_dashboards_to_manage();
+
+        echo json_encode(array(
+                "success" => (!empty($dashboards)),
+                "dashboards" => $dashboards)
+        );
+    }
+
+    /**
      * Get the dashboard viewers
      */
     public function get_dash_viewers() {

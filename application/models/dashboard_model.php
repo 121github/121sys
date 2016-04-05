@@ -575,6 +575,24 @@ class Dashboard_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+    //Get Dashboards to Manage
+    public function get_dashboards_to_manage() {
+        $where = "1 ";
+
+        if ($_SESSION['role'] != 1 && !in_array("dashboard viewers", $_SESSION['permissions'])) {
+            $where .= " AND du.user_id = ".$_SESSION['user_id'];
+        }
+        $qry = "SELECT
+                  d.*,
+                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers
+                  FROM dashboards d
+                  LEFT JOIN dashboard_by_user du USING (dashboard_id)
+                  WHERE ".$where."
+                GROUP BY d.dashboard_id";
+
+        return $this->db->query($qry)->result_array();
+    }
+
     //Get Dashboard by id
     public function get_dashboard_by_id($dashboard_id) {
         $where = "d.dashboard_id = ".$dashboard_id;
