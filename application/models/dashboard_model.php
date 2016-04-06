@@ -575,6 +575,24 @@ class Dashboard_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+    //Get Dashboards to Manage
+    public function get_dashboards_to_manage() {
+        $where = "1 ";
+
+        if ($_SESSION['role'] != 1 && !in_array("dashboard viewers", $_SESSION['permissions'])) {
+            $where .= " AND du.user_id = ".$_SESSION['user_id'];
+        }
+        $qry = "SELECT
+                  d.*,
+                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers
+                  FROM dashboards d
+                  LEFT JOIN dashboard_by_user du USING (dashboard_id)
+                  WHERE ".$where."
+                GROUP BY d.dashboard_id";
+
+        return $this->db->query($qry)->result_array();
+    }
+
     //Get Dashboard by id
     public function get_dashboard_by_id($dashboard_id) {
         $where = "d.dashboard_id = ".$dashboard_id;
@@ -733,6 +751,16 @@ class Dashboard_model extends CI_Model
         return $this->db->trans_status();
     }
 
+    /**
+     * Update report by Dashboard Id
+     */
+    public function update_report($dash_report) {
+
+        $this->db->where('dashboard_id', $dash_report['dashboard_id']);
+        $this->db->where('report_id', $dash_report['report_id']);
+        return $this->db->update("dashboard_reports", $dash_report);
+    }
+
 
     /**
      * Remove reports by Dashboard Id
@@ -771,11 +799,18 @@ class Dashboard_model extends CI_Model
     //Get Dashboard Reports by id
 
     public function get_dashboard_reports_by_id($dashboard_id) {
+        $where = "";
+
+        if ($_SESSION['role'] != 1) {
+            $where .= " AND drv.user_id = ".$_SESSION['user_id'];
+        }
+
         $qry = "SELECT
                   dr.*, e.name, e.description
                 FROM dashboard_reports dr
                 INNER JOIN export_forms e ON (e.export_forms_id = dr.report_id)
-                  WHERE dr.dashboard_id = ".$dashboard_id."
+                LEFT JOIN  export_to_viewers drv USING (export_forms_id)
+                  WHERE dr.dashboard_id = ".$dashboard_id." ".$where."
                   ORDER BY dr.position asc";
 
         return $this->db->query($qry)->result_array();

@@ -360,6 +360,22 @@ var export_data = {
                     $('#user_select').selectpicker('refresh');
                 }
             });
+
+            $.ajax({
+                url: helper.baseUrl + 'exports/get_export_viewers',
+                type: "POST",
+                dataType: "JSON",
+                data: {'export_forms_id': null}
+            }).done(function (response) {
+                if (response.success) {
+                    modals.load_modal(mheader, mbody, mfooter);
+                    //Load viewers
+                    $.each(response.users, function (k, v) {
+                        $('#viewers_select').prepend('<option value="' + v.id + '">' + v.name + '</option>');
+                    });
+                    $('#viewers_select').selectpicker('refresh');
+                }
+            });
         });
     },
     edit_export_form: function (btn) {
@@ -461,16 +477,20 @@ var export_data = {
                     data: {'export_forms_id': export_forms_id}
                 }).done(function (response) {
                     if (response.success) {
-                        modals.load_modal(mheader, mbody, mfooter);
-                        //modal_body.css('overflow','visible');
                         //Load users
-                        $.each(response.users, function (k, v) {
-                            var selected = "";
-                            if (inArray(v.id, response.data) && response.data) {
-                                selected = "selected";
-                            }
-                            $('#user_select').prepend('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+                        var options = '';
+                        $.each(response.users, function (type, data) {
+                            options += '<optgroup label="'+type+'">';
+                            $.each(data, function (k, v) {
+                                var selected = "";
+                                if (inArray(v.id, response.data) && response.data) {
+                                    selected = "selected";
+                                }
+                                options += '<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>';
+                            });
+                            options += '</optgroup>';
                         });
+                        $('#user_select').html(options);
                         $('#user_select').selectpicker('refresh');
                     }
                     else {
@@ -478,13 +498,50 @@ var export_data = {
                         mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                         modals.load_modal(mheader, mbody, mfooter);
                     }
-
                 }).fail(function () {
                     mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
                     mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 
                     modals.load_modal(mheader, mbody, mfooter);
                 });
+
+                //Get the export viewers
+                $.ajax({
+                    url: helper.baseUrl + 'exports/get_export_viewers',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {'export_forms_id': export_forms_id}
+                }).done(function (response) {
+                    if (response.success) {
+                        //Load users
+                        var options = '';
+                        $.each(response.users, function (type, data) {
+                            options += '<optgroup label="'+type+'">';
+                            $.each(data, function (k, v) {
+                                var selected = "";
+                                if (inArray(v.id, response.data) && response.data) {
+                                    selected = "selected";
+                                }
+                                options += '<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>';
+                            });
+                            options += '</optgroup>';
+                        });
+                        $('#viewers_select').html(options);
+                        $('#viewers_select').selectpicker('refresh');
+                    }
+                    else {
+                        mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
+                        mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                        modals.load_modal(mheader, mbody, mfooter);
+                    }
+                }).fail(function () {
+                    mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
+                    mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+
+                    modals.load_modal(mheader, mbody, mfooter);
+                });
+
+                modals.load_modal(mheader, mbody, mfooter);
             });
         });
 
