@@ -248,6 +248,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <!-- /content -->
 
 <!-- Modal -->
+<div class="isFixed">
 <div class="modal fade" id="modal" style="overflow:hidden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -274,7 +275,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         class="close close-alert">&times;</span></div>
 <div id="page-danger" class="alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-
+</div>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
@@ -403,7 +404,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             offCanvas: {
                 position: "right",
             }
-        });
+        }, {
+classNames: {
+fixedElements: {
+fixed: "isFixed"
+}
+}
+});
         <?php } ?>
         $('nav#menu-right').on('click', '#global-filter-submit', function (e) {
             e.preventDefault();
@@ -534,5 +541,7 @@ endif; ?>
         });
     </script>
 <?php } ?>
+
+
 </body>
 </html>

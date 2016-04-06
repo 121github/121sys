@@ -73,7 +73,7 @@ class Records extends CI_Controller
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
 				'map.css',
                 'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
-                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css',
             ),
             'javascript' => array(
                 'view.js?v' . $this->project_version,
@@ -83,7 +83,7 @@ class Records extends CI_Controller
 				'plugins/DataTables/datatables.min.js',
 				//'plugins/DataTables/js/dataTables.bootstrap.js',
 		'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
-                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
@@ -390,8 +390,12 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'lib/jquery.alphanum.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
-				'lib/bootstrap-datetimepicker.js'
-				//'lib/wavsurfer.js'
+				'lib/bootstrap-datetimepicker.js',
+				'plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js',
+				'plugins/fullcalendar-2.6.1/fullcalendar.min.js',
+				'plugins/fullcalendar-2.6.1/gcal.js',
+				'booking.js?v' . $this->project_version,
+				'plugins/mmenu2/addons/js/jquery.mmenu.fixedelements.min.js'
             ),
             'css' => array(
 				'bootstrap-datetimepicker.css',
@@ -401,7 +405,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'plugins/responsive-calendar/responsive-calendar.css',
                 'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css',
-				'plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css'
+				'plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css',
+				'plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.css',
+				'plugins/fullcalendar-2.6.1/fullcalendar.min.css'
             ),
             'nav' => array(
                 'prev' => $prev,

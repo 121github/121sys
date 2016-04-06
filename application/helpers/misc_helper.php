@@ -83,6 +83,8 @@ function join_array(){
 	$array['appointment_types'] = array("appointments","appointment_types");
 	$array['record_comments'] = array("record_comments");
 	$array['progress_description'] = array("progress_description");
+	$array['sticky_notes'] = array("sticky_notes");
+	$array['all_notes'] = array("sticky_notes","record_comments");
 	return $array;
 }
 
@@ -128,6 +130,7 @@ function table_joins(){
 		$join['appointment_locations'] = " left JOIN locations appointment_locations on a.location_id =  appointment_locations.location_id ";
 		$join['appointment_types'] = " left JOIN appointment_types using(appointment_type_id) ";
 		$join['record_comments'] = " left join record_comments on record_comments.urn = r.urn ";
+		$join['sticky_notes'] = " left join sticky_notes on sticky_notes.urn = r.urn ";
 		return $join;
 }
 

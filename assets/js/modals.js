@@ -742,7 +742,13 @@ var modals = {
 			 var list_icon = column.list_icon.length>0?"<i class='fa "+column.list_icon+"'></i> ":"";
 		var colbody = "<table class='"+column.table_class+"'>";	 
 		 $.each(column.fields,function(key,val){
-			 colbody += "<tr><td>"+list_icon+"</td><td><strong>"+key+"</strong></td><td>"+val+"</td></tr>";
+			 if(val.modal_keys=="1"){
+			 colbody += "<tr><td>"+list_icon+"</td><td><strong>"+key+"</strong></td><td>"+val.value+"</td></tr>";
+			 } else if(val.modal_keys=="2"){
+			 colbody += "<tr><td colspan='3'><strong>"+key+"</strong></td></tr><tr><td colspan='3'>"+val.value+"</td></tr>";	 
+			 } else {
+			 colbody += "<tr><td colspan='3'>"+val.value+"</td></tr>";	 
+			 }
 		 });
 		 colbody += "</table>";
 		 }
@@ -1642,7 +1648,13 @@ var modals = {
 			 var list_icon = column.list_icon.length>0?"<i class='fa "+column.list_icon+"'></i> ":"";
 		var colbody = "<table class='"+column.table_class+"'>";	 
 		 $.each(column.fields,function(key,val){
-			 colbody += "<tr><td>"+list_icon+"</td><td><strong>"+key+"</strong></td><td>"+val+"</td></tr>";
+			 if(val.modal_keys=="1"){
+			 colbody += "<tr><td>"+list_icon+"</td><td><strong>"+key+"</strong></td><td>"+val.value+"</td></tr>";
+			 } else if(val.modal_keys=="2"){
+			 colbody += "<tr><td colspan='3'><strong>"+key+"</strong></td></tr><tr><td colspan='3'>"+val.value+"</td></tr>";	 
+			 } else {
+			 colbody += "<tr><td colspan='3'>"+val.value+"</td></tr>";	 
+			 }
 		 });
 		 colbody += "</table>";
 		 }

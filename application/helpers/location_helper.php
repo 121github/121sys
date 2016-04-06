@@ -206,7 +206,17 @@ if (!function_exists('validate_postcode')) {
         } else
             return false;
     }
-	
+function postcode_from_string($string){
+$pattern = "/((GIR 0AA)|((([A-PR-UWYZ][0-9][0-9]?)|(([A-PR-UWYZ][A-HK-Y][0-9][0-9]?)|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY])))) [0-9][ABD-HJLNP-UW-Z]{2}))/i";
+preg_match($pattern, $string, $matches);
+
+if(isset($matches[0])){
+return postcodeFormat($matches[0]);
+}  else { 
+return ""; 
+}	
+
+}
 
 }
 

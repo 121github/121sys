@@ -369,6 +369,9 @@ var filter = {
                 }
                 $('.actions-qry').html(response.query);
             }
+			if(!response.success){
+				$('#search-result').find('.record-count').text('0');
+			}
         });
 
         filter.reload_actions();

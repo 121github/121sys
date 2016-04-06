@@ -46,7 +46,8 @@ class Booking extends CI_Controller
             'title' => 'Bookings',
             'page' => 'Bookings',
 			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css','plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.css'),
-			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js","plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js"));
+			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js","plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js",
+			'booking.js?v' . $this->project_version));
 			
 		 $this->template->load('default', 'bookings/booking.php', $data);	
 	}

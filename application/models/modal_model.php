@@ -156,21 +156,25 @@ foreach($visible_fields['headings'] as $k => $heading){
         //the joins for all the tables are stored in a helper
         $table_joins = table_joins();
         $join_array = join_array();
-	$tablenum=0;
+	 $tablenum=0;
+	  $tableappnum=0;
         foreach ($tables as $k=>$table) {
 			if($table=="custom_panels"){ $tablenum++;
 		
 			$field_id = $datafield_ids[$k];
 				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
 			}
-			
+			if($table=="custom_panels_appointments"){ $tableappnum++;
+			$field_id = $datafield_ids[$k];
+				$join[] = " left join (select id,appointment_id from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id') mc_$field_id on mc_$field_id.appointment_id =  a.appointment_id left join custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+			}
 			if($table<>"custom_panels"){
             if (array_key_exists($table, $join_array)) {
                 foreach ($join_array[$table] as $t) {
-                    $join[$t] = $table_joins[$t];
+                    $join[$t] = @$table_joins[$t];
                 }
             } else {
-                $join[$table] = $table_joins[$table];
+                 $join[$table] = @$table_joins[$table];
             }
         }
 		}

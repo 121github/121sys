@@ -14,6 +14,17 @@ class Cron extends CI_Controller
         $this->load->model('Export_model');
         $this->load->model('Data_model');
     }
+	public function set_postcode_from_address(){
+		//this can be ran after an import where the address is all in one field, it moves the postcode to the postcode field so it can be used in distance/map functions
+		$adds = $this->db->query("select address_id,add1 from company_addresses join companies using(company_id) join records using(urn)")->result_array();
+		foreach($adds as $add){
+			$postcode = postcode_from_string($add['add1']);
+			if(!empty($postcode)){
+			$this->db->query("update company_addresses set postcode = '$postcode' where address_id = '{$add['address_id']}' and postcode is null");	
+			}
+		}
+		$this->update_all_locations();
+	}
 
     public function morning_crons()
     {
