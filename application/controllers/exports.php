@@ -118,6 +118,53 @@ class Exports extends CI_Controller
             }
 
             $users = $this->Form_model->get_users_with_email();
+            $aux = array();
+            foreach ($users as $user) {
+                if (!isset($aux[$user['role_name']])) {
+                    $aux[$user['role_name']] = array();
+                }
+                array_push($aux[$user['role_name']],array(
+                    "id" => $user['id'],
+                    "name" => $user['name']
+                ));
+            }
+            $users = $aux;
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $results,
+                "users" => $users
+            ));
+        }
+    }
+
+    public function get_export_viewers() {
+        if ($this->input->post()) {
+            $export_forms_id = $this->input->post('export_forms_id');
+            $results = array();
+
+            if ($export_forms_id) {
+                $results = $this->Export_model->get_export_viewers_by_export_id($export_forms_id);
+
+                $auxList = array();
+                foreach ($results as $user) {
+                    array_push($auxList, $user["user_id"]);
+                }
+                $results = $auxList;
+            }
+
+            $users = $this->Form_model->get_users();
+            $aux = array();
+            foreach ($users as $user) {
+                if (!isset($aux[$user['role_name']])) {
+                    $aux[$user['role_name']] = array();
+                }
+                array_push($aux[$user['role_name']],array(
+                    "id" => $user['id'],
+                    "name" => $user['name']
+                ));
+            }
+            $users = $aux;
 
             echo json_encode(array(
                 "success" => true,
@@ -498,6 +545,9 @@ class Exports extends CI_Controller
                 $users = (isset($form['user_id'])?$form['user_id']:array());
                 unset($form['user_id']);
 
+                $viewers = (isset($form['viewer_id'])?$form['viewer_id']:array());
+                unset($form['viewer_id']);
+
                 $graph = array();
                 if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
                     $graph = array(
@@ -527,6 +577,7 @@ class Exports extends CI_Controller
                 if ($export_forms_id) {
 
                     $this->Export_model->update_export_user($users, $export_forms_id);
+                    $this->Export_model->update_export_viewers($viewers, $export_forms_id);
 
                     if (!empty($graph)) {
                         $this->Export_model->insert_export_graph($graph);

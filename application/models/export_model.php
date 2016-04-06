@@ -9,7 +9,17 @@ class Export_model extends CI_Model
     }
 
     public function get_export_forms() {
-        $qry = "select * from export_forms order by name";
+        $where = " 1";
+
+        if ($_SESSION['role'] != 1) {
+            $where .= " AND drv.user_id = ".$_SESSION['user_id'];
+        }
+
+        $qry = "select *
+                  from export_forms
+                  LEFT JOIN  export_to_viewers drv USING (export_forms_id)
+                  WHERE ".$where."
+                  order by name";
 
         return $this->db->query($qry)->result_array();
     }
@@ -37,6 +47,12 @@ class Export_model extends CI_Model
 
     public function get_export_users_by_export_id($export_forms_id) {
         $qry = "select * from export_to_users where export_forms_id = ".$export_forms_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function get_export_viewers_by_export_id($export_forms_id) {
+        $qry = "select * from export_to_viewers where export_forms_id = ".$export_forms_id;
 
         return $this->db->query($qry)->result_array();
     }
@@ -167,6 +183,33 @@ class Export_model extends CI_Model
 
         return $results;
 
+    }
+
+    /**
+     * Update export viewers. Delete the old_users and add the new_users selected
+     *
+     * @param Form $form
+     */
+    public function update_export_viewers($viewers, $export_forms_id)
+    {
+        //Delete all the users for this export before
+        $this->db->where("export_forms_id", $export_forms_id);
+        $results = $this->db->delete("export_to_viewers");
+
+        //Insert the new users selected
+        if (!empty($viewers) && $results) {
+            $aux = array();
+            foreach($viewers as $viewer) {
+                array_push($aux,array(
+                    'export_forms_id' => $export_forms_id,
+                    'user_id' => $viewer
+                ));
+            }
+            $viewers = $aux;
+
+            $results = $this->db->insert_batch("export_to_viewers", $viewers);
+        }
+        return $results;
     }
 
     /**

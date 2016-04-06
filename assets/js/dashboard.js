@@ -131,6 +131,11 @@ var dashboard = {
             dashboard.move_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'), $(this).attr('current-position'), $(this).attr('next-position'));
         });
 
+        $(document).on("click", ".resize-dashreport-btn", function (e) {
+            e.preventDefault();
+            dashboard.resize_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'), $(this).attr('column-size'));
+        });
+
         dashboard.filter_panel();
     },
 
@@ -1152,66 +1157,63 @@ var dashboard = {
             data: {'dashboard_id': dashboard_id}
         }).done(function (response) {
             var options = "";
-            if (response.success) {
-                options += "<option value=''> Select one report </option>";
-                $.each(response.data, function (i, val) {
-                    options += "<option data-subtext='"+val.description+"' value='"+val.export_forms_id+"'>"+val.name+"</option>";
-                });
 
-                var select_report =
-                    "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                        options +
-                    "</select>";
+            options += "<option value=''> Select one report </option>";
+            $.each(response.data, function (i, val) {
+                options += "<option data-subtext='"+val.description+"' value='"+val.export_forms_id+"'>"+val.name+"</option>";
+            });
 
-                var mheader = "Add report panel";
+            var select_report =
+                "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                    options +
+                "</select>";
 
-                var mbody = "<form id='add-report-form' >" +
-                    "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
-                    "<input type='hidden' name='position' value='"+response.position+"'/>" +
-                    "<div class='form-group input-group-sm'>" +
-                        '<div class="row">' +
-                            '<div class="col-lg-12">' +
-                                '<p>Select the report panel</p>' +
-                                select_report +
+            var mheader = "Add report panel";
+
+            var mbody = "<form id='add-report-form' >" +
+                "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                "<input type='hidden' name='position' value='"+response.position+"'/>" +
+                "<div class='form-group input-group-sm'>" +
+                    '<div class="row">' +
+                        '<div class="col-lg-12">' +
+                            '<p>Select the report panel</p>' +
+                            select_report +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="row">' +
+                        '<div class="col-lg-6">' +
+                            '<div class=""form-group input-group-sm">' +
+                                '<p>Select the panel size</p>' +
+                                '<select name="column_size" class="selectpicker" id="report_select" data-size="5">' +
+                                    '<option value="12">100%</option>' +
+                                    '<option value="9">75%</option>' +
+                                    '<option value="6" Selected>50%</option>' +
+                                    '<option value="4">33%</option>' +
+                                    '<option value="3">25%</option>' +
+                                '</select>' +
                             '</div>' +
                         '</div>' +
-                        '<div class="row">' +
-                            '<div class="col-lg-6">' +
-                                '<div class=""form-group input-group-sm">' +
-                                    '<p>Select the panel size</p>' +
-                                    '<select name="column_size" class="selectpicker" id="report_select" data-size="5">' +
-                                        '<option value="12">100%</option>' +
-                                        '<option value="9">75%</option>' +
-                                        '<option value="6" Selected>50%</option>' +
-                                        '<option value="4">33%</option>' +
-                                        '<option value="3">25%</option>' +
-                                    '</select>' +
-                                '</div>' +
-                            '</div>' +
-                            '<div class="col-lg-6">' +
-                                '<div class="btn-group show-default-graphs" data-toggle="buttons">' +
-                                    '<p>What do you want to show by default?</p>' +
-                                    '<label class="btn btn-default active">' +
-                                        '<input type="radio" value="data" checked="checked" aria-label="..." name="show_default"> Data' +
-                                    '</label>' +
-                                    '<label class="btn btn-default">' +
-                                        '<input type="radio" value="graphs" aria-label="..." name="show_default"> Graphs' +
-                                    '</label>' +
-                                '</div>' +
+                        '<div class="col-lg-6">' +
+                            '<div class="btn-group show-default-graphs" data-toggle="buttons">' +
+                                '<p>What do you want to show by default?</p>' +
+                                '<label class="btn btn-default active">' +
+                                    '<input type="radio" value="data" checked="checked" aria-label="..." name="show_default"> Data' +
+                                '</label>' +
+                                '<label class="btn btn-default">' +
+                                    '<input type="radio" value="graphs" aria-label="..." name="show_default"> Graphs' +
+                                '</label>' +
                             '</div>' +
                         '</div>' +
-                    "</div>" +
-                    "</form>";
+                    '</div>' +
+                "</div>" +
+                "</form>";
 
-                var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-report-btn">Add</button>' +
-                    '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+            var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-report-btn">Add</button>' +
+                '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
-                modals.load_modal(mheader, mbody, mfooter);
-                modal_body.css('overflow','visible');
-            }
-            else {
-                flashalert.danger(response.msg);
-            }
+            modals.load_modal(mheader, mbody, mfooter);
+            modal_body.css('overflow','visible');
+
 
         });
     },
@@ -1268,6 +1270,23 @@ var dashboard = {
         });
     },
 
+    resize_report: function(dashboard_id, report_id, column_size) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/resize_report',
+            data: {'dashboard_id': dashboard_id, 'report_id': report_id, 'column_size': column_size},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
     load_dash: function(dashboard_id) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_dashboard_reports_by_id',
@@ -1275,8 +1294,8 @@ var dashboard = {
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
+            $('.dashboard-area').empty();
             if(response.success){
-                $('.dashboard-area').empty();
                 var panels = "";
                 var data_divs = [];
                 var charts_divs = [];
@@ -1309,6 +1328,12 @@ var dashboard = {
                                                     '<li class="'+(parseInt(report.position)<=0?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(report.position)-1)+'"><i class="glyphicon glyphicon-arrow-left pointer"></i> Move Previous </a></li>' +
                                                     '<li class="'+(parseInt(report.position)>=response.reports.length-1?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(report.position)+1)+'"><i class="glyphicon glyphicon-arrow-right pointer"></i> Move Next </a></li>' +
                                                     '<li class="'+(parseInt(report.position)>=response.reports.length-1?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(response.reports.length)-1)+'"><i class="glyphicon glyphicon-import pointer"></i> Move Last </a></li>' +
+                                                    '<li class="divider"></li>' +
+                                                    '<li class="'+(parseInt(report.column_size)==3?"disabled":"")+'"><a href="#" column-size="3" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 25% </a></li>' +
+                                                    '<li class="'+(parseInt(report.column_size)==4?"disabled":"")+'"><a href="#" column-size="4" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 33% </a></li>' +
+                                                    '<li class="'+(parseInt(report.column_size)==6?"disabled":"")+'"><a href="#" column-size="6" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 50% </a></li>' +
+                                                    '<li class="'+(parseInt(report.column_size)==9?"disabled":"")+'"><a href="#" column-size="9" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 75% </a></li>' +
+                                                    '<li class="'+(parseInt(report.column_size)==12?"disabled":"")+'"><a href="#" column-size="12" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 100% </a></li>' +
                                                 '</ul>' +
                                             '</li>' +
                                         '</ul>' +

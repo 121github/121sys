@@ -1661,7 +1661,7 @@ public function index(){
     }
 
     /**
-     * Move a report on the dashboard, chane its position
+     * Move a report on the dashboard, change its position
      */
     public function move_report() {
 
@@ -1720,6 +1720,43 @@ public function index(){
         }
     }
 
+    /**
+     * Resize a report on the dashboard
+     */
+    public function resize_report() {
+
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if (isset($form['dashboard_id']) && $form['dashboard_id']!= "" && isset($form['report_id']) && $form['report_id'] != "" && isset($form['column_size'])) {
+
+                //Change report size
+                $result = $this->Dashboard_model->update_report($form);
+
+                echo json_encode(array(
+                        "success" => (!$result?false:true),
+                        "dashboard_id" => $form['dashboard_id'],
+                        "msg" => (!$result?"ERROR: The report panel couldn't be resized!":"Report panel resized from the dashboard successfully!")
+                    )
+                );
+            }
+            else {
+                echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: The dashboard or the report selected don't exist"
+                    )
+                );
+            }
+        }
+        else {
+            echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: It's not an ajax request!"
+                )
+            );
+        }
+    }
+
     public function get_export_forms() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
@@ -1744,7 +1781,6 @@ public function index(){
             echo json_encode(array(
                 "success" => (!empty($reports)),
                 "data" => $reports,
-                "msg" => (!empty($reports) ? $reports : "No export forms were created yet!"),
                 "position" => count($dash_reports),
                 "edit_permission" => (in_array("edit export", $_SESSION['permissions']))
             ));

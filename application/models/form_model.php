@@ -231,11 +231,11 @@ class Form_model extends CI_Model
     public function get_users_with_email()
     {
         if ($_SESSION['role'] == 1) {
-            $qry = "select user_id id,name from users where user_status = 1 and user_email is not null order by name";
+            $qry = "select user_id id,name, ur.role_name from users inner join user_roles ur using (role_id) where user_status = 1 and user_email is not null order by name";
         } else if (@in_array("search any owner", $_SESSION['permissions'])) {
-            $qry = "select user_id id,name from users_to_campaigns left join users using(user_id) where user_status = 1 and campaign_id in ({$_SESSION['campaign_access']['list']}) and user_email is not null group by user_id order by name";
+            $qry = "select user_id id,name, ur.role_name from users_to_campaigns left join users using(user_id) inner join user_roles ur using (role_id) where user_status = 1 and campaign_id in ({$_SESSION['campaign_access']['list']}) and user_email is not null group by user_id order by name";
         } else {
-            $qry = "select user_id id,name from users where user_id = '{$_SESSION['user_id']}' and user_email is not null";
+            $qry = "select user_id id,name, ur.role_name from users inner join user_roles ur using (role_id) where user_id = '{$_SESSION['user_id']}' and user_email is not null";
         }
         return $this->db->query($qry)->result_array();
     }
