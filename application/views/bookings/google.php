@@ -9,6 +9,7 @@
                 selectable: true,
                 minTime: '07:00',
                 maxTime: '20:00',
+                height: 700,
                 header: {
                     left: 'prev,next today localevents siginEvent logoutEvent loadingEvent',
                     center: 'title',
