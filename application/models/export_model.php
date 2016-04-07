@@ -19,6 +19,7 @@ class Export_model extends CI_Model
                   from export_forms
                   LEFT JOIN  export_to_viewers drv USING (export_forms_id)
                   WHERE ".$where."
+                  group by export_forms_id
                   order by name";
 
         return $this->db->query($qry)->result_array();
