@@ -93,6 +93,7 @@ class Exports extends CI_Controller
     }
 
     public function get_export_forms() {
+		session_write_close();
         $results = $this->Export_model->get_export_forms();
 
         echo json_encode(array(
@@ -103,6 +104,7 @@ class Exports extends CI_Controller
     }
 
     public function get_export_users() {
+		session_write_close();
         if ($this->input->post()) {
             $export_forms_id = $this->input->post('export_forms_id');
             $results = array();
@@ -139,6 +141,7 @@ class Exports extends CI_Controller
     }
 
     public function get_export_viewers() {
+		session_write_close();
         if ($this->input->post()) {
             $export_forms_id = $this->input->post('export_forms_id');
             $results = array();
@@ -220,7 +223,7 @@ class Exports extends CI_Controller
 
     //Load the data for the report
     public function load_export_report_data() {
-
+		session_write_close();
         if ($this->input->post()) {
             $options             = array();
             $nowDate = new \DateTime('now');

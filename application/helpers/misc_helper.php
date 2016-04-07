@@ -96,12 +96,12 @@ function table_joins(){
 		$join['data_pots'] = " left join data_pots dp on r.pot_id = dp.pot_id ";
 	    $join['record_planner'] = " left join (select urn,location_id,start_date,record_planner_id,postcode,user_id from record_planner where date(start_date)>=curdate() and planner_status = 1)rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
-        $join['appointments'] = " left join appointments a on a.urn = r.urn ";
+        $join['appointments'] = " left join appointments a on a.urn = r.urn  ";
         $join['companies'] = " left join companies com on com.urn = r.urn ";
-        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
+        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id and coma.`primary` = 1 ";
        
-        $join['contacts'] = " left join contacts con on con.urn = r.urn ";
-        $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
+        $join['contacts'] = " left join contacts con on con.urn = r.urn and con.`primary` = 1 ";
+        $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id and cona.`primary` = 1 ";
 		
         $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";

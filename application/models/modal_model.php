@@ -12,11 +12,9 @@ class Modal_model extends CI_Model
 	
 	public function get_modal_fields($id,$modal_type){
 		if($modal_type=="1"){
-			$this->firephp->log("record modal");
 		$campaign = $this->db->query("select campaign_id from records where urn = '$id'")->row()->campaign_id;	
 		}
 		if($modal_type=="2"){
-			$this->firephp->log("app modal");
 		$campaign = $this->db->query("select campaign_id from appointments join records using(urn) where appointment_id = '$id'")->row()->campaign_id;
 		}
 

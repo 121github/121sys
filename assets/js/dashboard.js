@@ -1358,9 +1358,10 @@ var dashboard = {
                 //Set the charts on the show-charts class in order to be shown when we click on this button
                 $('.show-charts').attr('data',data_divs.join());
                 $('.show-charts').attr('charts',charts_divs.join());
-
+										
                 //Get the data content of the panels
                 $.each(response.reports, function (i, report) {
+					 var show_first = true;
                     $('.filter-form').find('input[name="export_forms_id"]').val(report.report_id);
                     $.ajax({
                         url: helper.baseUrl + 'exports/load_export_report_data',
@@ -1407,18 +1408,21 @@ var dashboard = {
                                 "pagingType": "full",
 								
 								 "createdRow": function(row, data, dataIndex) {
+			
 									 if(resp.header[0]=="URN"){
+										show_first = false;
                 $(row).attr('data-urn', data[0]);
                 $(row).attr('data-modal', 'view-record');
                 $(row).addClass('pointer');
 									 } else if(resp.header[0]=="Appointment ID"){
+										 	show_first = false;
 				$(row).attr('data-id', data[0]);
                 $(row).attr('data-modal', 'view-appointment');
                 $(row).addClass('pointer');	 
 									 }
 								 },
 								 "columnDefs": [
-    { "visible": false, "targets": 0 }
+    { "visible": show_first, "targets": 0 }
   ]
                             });
                             //$(".bottom-"+report.report_id).css("min-height", "160px");

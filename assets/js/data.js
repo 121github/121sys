@@ -930,7 +930,7 @@ var add_record = {
                     $('.record-form').find('#city').attr('name','company_city');
                     $('.record-form').find('#county').attr('name','company_county');
                     $('.record-form').find('#country').attr('name','company_country');
-			 $('.record-form').find('#name').attr('name','company_name');
+			 $('.record-form').find('#name').attr('name','company_name').attr('placeholder','Please enter the name of the company');
 			  $('.record-form').find('#telephone').attr('name','company_telephone');
 					
 		}
@@ -948,7 +948,7 @@ var add_record = {
                     $('.record-form').find('#city').attr('name','contact_city');
                     $('.record-form').find('#county').attr('name','contact_county');
                     $('.record-form').find('#country').attr('name','contact_country');
-					  $('.record-form').find('#name').attr('name','contact_name');
+					$('.record-form').find('#name').attr('name','contact_name').attr('placeholder','Please enter the contact or client name');
 					   $('.record-form').find('#telephone').attr('name','contact_telephone');
         }
 		} else {
