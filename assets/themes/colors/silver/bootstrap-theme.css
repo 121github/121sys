@@ -1,3 +1,5 @@
+ .panel-title,.panel-heading { color:#FFF !important }
+.panel-title select,.panel-heading select { color:#333 !important }
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
