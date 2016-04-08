@@ -26,6 +26,11 @@ var modals = {
 			e.preventDefault();
 			modals.save_record_options();
 		});
+		$modal.on('change', '.typepicker', function () {
+            var type = $modal.find('.typepicker').val()!==""?$(this).find('option:selected').text():"Appointment";
+			var title = $('#contact-select option:selected').length>0?type+' with '+$('#contact-select option:selected').text():type;
+            $modal.find('[name="title"]').val(title);
+        }); 
 		$(document).on('click','[data-modal="contact-us"]',function(e){
 			  modals.contact_us();
 		});
@@ -877,48 +882,14 @@ var modals = {
 			$modal.find('#appointment-confirmed').hide();
 
             modals.set_appointment_access_address(data.access_address);
-
+			
                 if (typeof campaign_functions.appointment_edit_setup !== "undefined") {
                     campaign_functions.appointment_edit_setup();
                 }
         });
     },
-	/* using create-appointment function now 
-    add_appointment_html: function (urn) {
-        $.ajax({
-            url: helper.baseUrl + 'modals/add_appointment',
-            type: 'POST',
-            dataType: 'html',
-            data: {'urn': urn}
-        }).done(function (response) {
-            var mheader = "Add Appintment (URN: #"+urn+")";
-            var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'
-			if(helper.permissions['confirm appointment'] > 0){ 
-                     mfooter +=     '<input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox">'
-			}
-                       mfooter +=       '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
-
-            modals.load_modal(mheader, mbody, mfooter);
-
-            modal_body.css('overflow', 'visible');
-            modal_dialog.css('width', "50%");
-            modals.appointment_contacts(urn, false);
-            modals.set_appointment_confirmation();
-            $modal.find('#appointment-confirmed').hide();
-
-            modals.set_appointment_access_address();
-
-                if(typeof campaign_functions.appointment_setup !== "undefined"){
-                    campaign_functions.appointment_setup(false,false,urn);
-                }
-
-            modals.restore_appointment_form();
-        });
-    },
-	*/
 	appointment_setup: function (start,attendee,urn) {
-		if(typeof start == "undefined"){
+		if(typeof start == "undefined"&&$('#slots-panel').find('input:checked').length>0){
 			start = $('#slots-panel').find('input:checked').attr('data-date') +' '+ $('#slots-panel').find('input:checked').attr('data-time');	;	
 		}
 		if(start){
@@ -1039,13 +1010,9 @@ var modals = {
 				}
                 $('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
             });
-            //$('#contact-select').append('<option value="other">Other</option>');
+
             $('#contact-select').selectpicker();
-			$modal.on('change', '.typepicker', function () {
-            var type = $('#modal .typepicker').val()!==""?$(this).find('option:selected').text():"Appointment";
-			var title = $('#contact-select option:selected').length>0?type+' with '+$('#contact-select option:selected').text():type;
-            $('#modal [name="title"]').val(title);
-        }); 
+
 			} else {
 			$('.close-modal').trigger('click');
 			flashalert.danger("You must add a contact before setting an appointment");	
@@ -1076,9 +1043,8 @@ var modals = {
 			$modal.find('#appointment-confirmed').bootstrapToggle();
 			modals.set_appointment_confirmation(start);
             modals.appointment_contacts(urn,false);
-
-				modals.appointment_setup(start,attendee,false);
-
+			modals.appointment_setup(start,attendee,false);
+				
 				if(typeof campaign_functions.appointment_setup !== "undefined"){
 				    campaign_functions.appointment_setup(start,false,urn);
 				}
@@ -1134,26 +1100,6 @@ var modals = {
             if(typeof campaign_functions.set_access_address !== "undefined"){
                 campaign_functions.set_access_address();
         }
-    },
-    appointment_outcome_html: function (id) {
-        /*
-         $.ajax({url:helper.baseUrl+'ajax/appointment_outcome_options',
-         data:"POST",
-         dataType:"JSON",
-         data:{id:id}
-         }).done(function(response){
-         var outcome_options = "";
-         $.each(response.outcomes,function(k,v){
-         outcome_options += '<option value="'+k+'">'+v+'</option>';
-         });
-
-         var mbody = '<form class="form-horizontal appointment-outcome-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="'+id+'" /><div class="form-group"><label>Please select the outcome of the appointment?</label><select class="selectpicker" name="appointment_outcome">'+outcome_options+'</select></div>';
-
-         mbody += '<div class="form-group"><label>Please leave comments or feedback on the appointment</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="How"/></textarea></div></div></form>';
-         var mfooter = '<button data-modal="edit-appointment" data-event-id="'+id+'" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
-         modals.load_modal(mheader,mbody,mfooter);
-
-         });*/
     },
     delete_appointment_html: function (id, urn) {
         var mheader = 'Confirm Cancellation';

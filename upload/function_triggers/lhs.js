@@ -72,7 +72,6 @@ var campaign_functions = {
 
 		$modal.find('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
 		
-		
     },
 
     appointment_edit_setup: function () {
@@ -99,34 +98,12 @@ var campaign_functions = {
                 $modal.find('input[name="appointment_confirmed"]').val("0");
             }
         });
-		$('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
-    },
-
-    set_appointment_confirmation: function() {
-       /* var app = $('.startpicker').val()
-        var start_date = moment(app, 'DD/MM/YYYY HH:mm');
-        var m = moment();
-        var duration = moment.duration(start_date.diff(m)).days();
-        if(duration<3&&duration>=0){
-            $modal.find('#appointment-confirmed').bootstrapToggle('enable');
-            $modal.find('#appointment-confirmed').off('click');
-            modal_body.find('.typepicker').find('option[value="3"]').attr('disabled',false);
-        } else {
-            $modal.find('#appointment-confirmed').bootstrapToggle('disable');
-            modal_body.find('.typepicker').find('option[value="3"]').attr('disabled',true);
-        }
-        modal_body.find('.typepicker').selectpicker('refresh');
-
-        $('#appointment-confirmed').on('change',function(e){
-            if($(this).prop("checked")){
-                modal_body.find('.typepicker').selectpicker('val',3).selectpicker('refresh');
-            } else {
-                if (modal_body.find('.typepicker').selectpicker('val') == 3) {
-                    modal_body.find('.typepicker').selectpicker('val',2).selectpicker('refresh');
-                }
-            }
-        });
-		*/
+		$('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');		$modal.off('change', '.typepicker');
+		$modal.on('change', '.typepicker', function () {
+           get_appointment_title();
+            
+			
+        	}); 
     },
     save_appointment: function(appointment) {			
         //Get the additional info
@@ -136,8 +113,6 @@ var campaign_functions = {
             dataType: "JSON",
             data: {id:"1",urn: appointment.urn}
         }).done(function (response) {
-			console.log(response.data);
-			console.log(appointment);
             var start_date  = new Date(appointment.start.substr(0, 10));
             if (appointment.appointment_type_id == "3") {
 				var express = false;

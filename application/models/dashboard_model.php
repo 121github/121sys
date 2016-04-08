@@ -88,7 +88,7 @@ class Dashboard_model extends CI_Model
 
     public function get_history($filter = array())
     {
-        $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id,urn,if(com.name is null,fullname,com.name) cname from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) left join contacts using(urn) left join companies com using(urn) where 1 ";
+        $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id,h.urn,if(com.name is null,fullname,com.name) cname from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) left join contacts on contacts.urn = h.urn and contacts.`primary`=1 left join companies com on com.urn = h.urn where 1 ";
         //if a filter is selected then we just return history from that campaign, otehrwize get all the history
         if (!empty($filter['campaigns'])) {
             $qry .= " and h.campaign_id IN (".implode(",",$filter['campaigns']).")";
@@ -232,9 +232,9 @@ class Dashboard_model extends CI_Model
         } else if ($filter['comments'] == 3) {
             $qry = "select urn,note notes,s.date_updated `date`,if(companies.name is null,fullname,name) as fullname from sticky_notes s left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(note) > 40 $extra $notes_extra order by s.date_updated desc  limit 10";
         } else {
-            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,if(companies.name is null,fullname,name) as fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by an.answer_id 
-			union select urn,comments,contact,if(companies.name is null,fullname,name) as fullname from history left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(comments) > 40 $extra $comments_extra group by history.history_id 
-			union select urn,note,s.date_updated,if(companies.name is null,fullname,name) as fullname from sticky_notes s left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(note) > 40 $extra $notes_extra group by urn) t order by t.`date` desc limit 10";
+            $qry = "select urn,notes,`date`,fullname from (select records.urn,an.notes,completed_date `date`,if(companies.name is null,fullname,name) as fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn)  left join companies using(urn) left join contacts on contacts.urn = records.urn and contacts.`primary`=1 where char_length(an.notes) > 40 $survey_extra $extra group by an.answer_id 
+			union select history.urn,comments,contact,if(companies.name is null,fullname,name) as fullname from history left join records using(urn) left join companies using(urn)  left join contacts on contacts.urn = records.urn and contacts.`primary`=1 where char_length(comments) > 40 $extra $comments_extra group by history.history_id 
+			union select records.urn,note,s.date_updated,if(companies.name is null,fullname,name) as fullname from sticky_notes s left join records using(urn) left join companies using(urn) left join contacts on contacts.urn = records.urn and contacts.`primary`=1 where char_length(note) > 40 $extra $notes_extra group by records.urn) t order by t.`date` desc limit 10";
         }
         $result = $this->db->query($qry)->result_array();
         $now = time();
