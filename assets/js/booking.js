@@ -178,6 +178,15 @@ var calendar = {
             }
         }).done(function() {
             flashalert.success("Appointment was updated");
+            //Set appointmnt in google calendar if the attendee has a google account
+            $.ajax({
+                url: helper.baseUrl + 'booking/add_google_event',
+                data: {
+                    appointment_id: id
+                },
+                type: "POST",
+                dataType: "JSON"
+            });
         })
     },
     attendee_filter: function() {

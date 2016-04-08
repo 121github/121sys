@@ -83,7 +83,13 @@
                             };
                         }
                     }
-                ]
+                ],
+                eventClick: function(event) {
+                    if (event.url) {
+                        window.open(event.url);
+                        return false;
+                    }
+                }
             });
 
             $('.fc-logoutEvent-button').css('color','green');

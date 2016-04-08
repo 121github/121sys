@@ -546,8 +546,8 @@ var modals = {
                 var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
                 //Refresh the calendar
-                if(typeof fullcalender !== "undefined"){
-                   fullcalendar.fullCalendar('refetchEvents');
+                if(typeof $('#calendar').fullCalendar() !== "undefined"){
+                    $('#calendar').fullCalendar('refetchEvents');
                 }
                 //Refresh the quick planner
                 if(typeof quick_planner !== "undefined"){
@@ -611,15 +611,26 @@ var modals = {
                     });
                 }
                 //TODO send cover letter from hsl file
-                    if (typeof campaign_functions.appointment_saved !== "undefined") {
-                        campaign_functions.appointment_saved(appointment_id, response.state);
-					}
+                if (typeof campaign_functions.appointment_saved !== "undefined") {
+                    campaign_functions.appointment_saved(appointment_id, response.state);
+                }
                 //Notice for set the outcome before leave the page (only if we create the appointment from the record panel)
                 if(typeof record !== "undefined"){
                     $(window).on('beforeunload', function () {
                         return 'You need to set the outcome after setting an appointment. Are you sure you want to leave?';
                     });
                 }
+
+                //Set appointmnt in google calendar if the attendee has a google account
+                $.ajax({
+                    url: helper.baseUrl + 'booking/add_google_event',
+                    data: {
+                        appointment_id: appointment_id,
+                        data: response.data
+                    },
+                    type: "POST",
+                    dataType: "JSON"
+                });
 
             } else {
                 flashalert.danger(response.msg);

@@ -15,6 +15,15 @@ class Appointments_model extends CI_Model
 	//find the appointment slot number(s) that this falls into
 	}
 
+    public function get_appointment($appointment_id) {
+        $this->db->select("appointments.*, GROUP_CONCAT(appointment_attendees.user_id SEPARATOR ';') attendees", false);
+        $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
+        $this->db->group_by("appointment_attendees.user_id");
+        $this->db->where("appointments.appointment_id", $appointment_id);
+        $result = $this->db->get("appointments")->result_array();
+        return (!empty($result)?$result[0]:array());
+    }
+
     public function slot_availability($campaign_id=false, $user_id = false, $postcode = false, $distance = false, $source = false, $app_type = false)
     {
         $days = array(1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday", 7 => "Sunday");

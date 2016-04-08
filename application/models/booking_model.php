@@ -70,5 +70,17 @@ class Booking_model extends CI_Model
 				//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
+
+	/**
+	 * Set the google calendar
+	 */
+	public function set_google_calendar($user_id, $calendar_id) {
+
+		$this->db->where('user_id', $user_id);
+		$this->db->where('api_name', "google");
+		return  $this->db->update('apis', array(
+            "calendar_id" => $calendar_id
+        ));
+	}
 	
 }

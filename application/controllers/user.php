@@ -14,6 +14,7 @@ class User extends CI_Controller
         $this->load->model('User_model');
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
+        $this->load->model('Booking_model');
     }
 
 	public function layout(){
@@ -232,6 +233,10 @@ class User extends CI_Controller
         if ($this->input->post()) {
             $user = $this->User_model->get_user_by_id($this->input->post("user_id"));
 
+            //get the user access_token
+            $google_token = $this->Booking_model->getGoogleToken($user[0]['user_id'],'google');
+            $user[0]['google'] = (isset($google_token[0])?$google_token[0]:array());
+
             $aux = array();
             foreach ($user as $value) {
                 unset($value['password']);
@@ -241,7 +246,8 @@ class User extends CI_Controller
 
             echo json_encode(array(
                 "success" => (!empty($user)),
-                "data" => $user
+                "data" => $user,
+                "session_user_id" => $_SESSION['user_id']
             ));
         }
     }

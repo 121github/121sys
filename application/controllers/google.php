@@ -16,7 +16,7 @@ class Google extends CI_Controller
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/calendar-php-quickstart.json
         define('SCOPES', implode(' ', array(
-                Google_Service_Calendar::CALENDAR_READONLY,
+                Google_Service_Calendar::CALENDAR,
                 'https://www.googleapis.com/auth/userinfo.email'
             )
         ));
@@ -25,6 +25,7 @@ class Google extends CI_Controller
         $this->client->setApplicationName(APPLICATION_NAME);
         $this->client->setScopes(SCOPES);
         $this->client->setAuthConfigFile(CLIENT_SECRET_PATH);
+        $this->client->setPrompt("consent");
         $this->client->setAccessType('offline');
 
 //        $this->client = new Google_Client();
@@ -41,6 +42,8 @@ class Google extends CI_Controller
 
     public function authenticate()
     {
+        $_SESSION['last_page'] = $_SERVER['HTTP_REFERER'];
+
         $auth_url = $this->client->createAuthUrl();
         header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));
     }
@@ -59,14 +62,20 @@ class Google extends CI_Controller
                 "token_type" => $token['token_type'],
                 "expires_in" => $token['expires_in'],
                 "id_token" => $token['id_token'],
+                "refresh_token" => $token['refresh_token'],
                 "created" => $token['created'],
                 "user_id" => $_SESSION['user_id'],
                 "date_added" => date('Y-m-d H:i:s')
             );
+
             $this->db->where(array("user_id" => $_SESSION['user_id'], "api_name" => "google"));
             $this->db->insert_update("apis", $data);
 
-            $redirect_uri = base_url() . 'booking/google';
+            $last_page = $_SESSION['last_page'];
+            unset($_SESSION['last_page']);
+            $redirect_uri = $last_page;
+
+
             header('Location: ' . $redirect_uri);
         }
 
