@@ -217,6 +217,11 @@ class Form_model extends CI_Model
         $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where campaign_status = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) group by client_id order by client_name";
         return $this->db->query($qry)->result_array();
     }
+	public function get_all_clients()
+    {
+        $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) group by client_id order by client_name";
+        return $this->db->query($qry)->result_array();
+    }
     public function get_users()
     {
         if ($_SESSION['role'] == 1) {

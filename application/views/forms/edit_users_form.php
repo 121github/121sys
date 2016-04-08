@@ -37,6 +37,27 @@
 </select>
         </div>
                         <div class="form-group input-group-sm">
+          <p>Attendee <span data-toggle='tooltip' title='Can appointments be booked for this user?' class='fa fa-question-circle'></span></p>
+<select name="attendee" class="selectpicker">
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+        </div>
+        
+                                      <div class="form-group input-group-sm">
+          <p>User Default Postcode <span data-toggle='tooltip' title='This could be a the home or office postcode and is used in distance calculations when booking appointments' class='fa fa-question-circle'></span></p>
+<input type="text" class="form-control" name="home_postcode" title="Enter the default postcode" required/>
+        </div>
+        
+                         <div class="form-group input-group-sm">
+          <p>Enable ICS (calendar invites) <span data-toggle='tooltip' title='If enabled the user will be sent a calendar invite to their associated email address whenever an appointment is booked for them' class='fa fa-question-circle'></span></p>
+<select name="ics" class="selectpicker">
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+        </div>       
+        
+                        <div class="form-group input-group-sm">
           <p>Please set the user role</p>
 <select name="role_id" class="selectpicker">
 <?php foreach($roles as $row){ ?>

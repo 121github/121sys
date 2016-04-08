@@ -33,6 +33,7 @@ var admin = {
             });
             //start the function to load the groups into the table
             admin.users.load_users();
+			$('form [data-toggle="tooltip"]').tooltip();
         },
         //this function reloads the groups into the table body
         load_users: function() {
@@ -50,7 +51,7 @@ var admin = {
 							if(val.status_text=="Off"){
 							color="danger";	
 							}
-                            $tbody.append('<tr class="'+color+'"><td class="hidden ext">' + val.ext + '</td><td class="hidden ext">' + val.ext + '</td><td class="hidden phone_un">' + val.phone_un + '</td><td class="hidden phone_pw">' + val.phone_pw + '</td><td class="hidden user_email">' + val.user_email + '</td><td class="hidden user_telephone">' + val.user_telephone + '</td><td class="user_id">' + val.user_id + '</td><td class="name">' + val.name + '</td><td class="username">' + val.username + '</td>><td><span class="hidden group_id">' + val.group_id + '</span>' + val.group_name + '</td><td><span class="hidden team_id">' + val.team_id + '</span>' + val.team_name + '</td><td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td><td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td><td><button class="btn btn-default btn-xs edit-btn">Edit</button> <button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button></td></tr>');
+                            $tbody.append('<tr class="'+color+'"><td class="hidden ext">' + val.ext + '</td><td class="hidden home_postcode">' + val.home_postcode + '</td><td class="hidden ics">' + val.ics + '</td><td class="hidden attendee">' + val.attendee + '</td><td class="hidden phone_un">' + val.phone_un + '</td><td class="hidden phone_pw">' + val.phone_pw + '</td><td class="hidden user_email">' + val.user_email + '</td><td class="hidden user_telephone">' + val.user_telephone + '</td><td class="user_id">' + val.user_id + '</td><td class="name">' + val.name + '</td><td class="username">' + val.username + '</td>><td><span class="hidden group_id">' + val.group_id + '</span>' + val.group_name + '</td><td><span class="hidden team_id">' + val.team_id + '</span>' + val.team_name + '</td><td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td><td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td><td><button class="btn btn-default btn-xs edit-btn">Edit</button> <button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button></td></tr>');
                         }
                     });
                 } else {
@@ -64,9 +65,13 @@ var admin = {
             $('form').find('input[name="user_id"]').val(row.find('.user_id').text());
             $('form').find('input[name="name"]').val(row.find('.name').text());
             $('form').find('input[name="username"]').val(row.find('.username').text());
-            $('form').find('select[name="group_id"]').selectpicker('val', row.find('.group_id').text());
-            $('form').find('select[name="role_id"]').selectpicker('val', row.find('.role_id').text());
-            $('form').find('select[name="user_status"]').selectpicker('val', row.find('.user_status').text());
+          
+			 $('form').find('select[name="group_id"]').val(row.find('.group_id').text()).selectpicker('refresh');
+            $('form').find('select[name="role_id"]').val(row.find('.role_id').text()).selectpicker('refresh');
+			   $('form').find('select[name="user_status"]').val(row.find('.user_status').text()).selectpicker('refresh');
+			      $('form').find('select[name="team_id"]').val(row.find('.team_id').text()).selectpicker('refresh');
+				     $('form').find('select[name="attendee"]').val(row.find('.attendee').text()).selectpicker('refresh');
+            $('form').find('select[name="ics"]').selectpicker('val', row.find('.ics').text());
 			$('form').find('select[name="team_id"]').selectpicker('val', row.find('.team_id').text());
 			$('form').find('input[name="phone_un"]').val( row.find('.phone_un').text());
             $('form').find('input[name="phone_pw"]').val(row.find('.phone_pw').text());

@@ -314,17 +314,17 @@ var admin = {
             $('form').find('input[name="telephone_protocol"]').val(row.find('.telephone_protocol').text());
             $('form').find('input[name="telephone_prefix"]').val(row.find('.telephone_prefix').text());
             $('form').find('input[name="virgin_order_join"]').val(row.find('.virgin_order_join').text());
-            $('form').find('select[name="max_dials"]').val(row.find('.max_dials').text());
-            $('form').find('select[name="virgin_order_1"]').val(row.find('.virgin_order_1').text());
-            $('form').find('select[name="virgin_order_2"]').val(row.find('.virgin_order_2').text());
             $('form').find('input[name="campaign_id"]').val(row.find('.campaign_id').text());
             $('form').find('input[name="custom_panel_name"]').val(row.find('.custom_panel_name').text());
-			$('form').find('select[name="custom_panel_format"]').selectpicker('val', row.find('.custom_panel_format').text());
-            $('form').find('select[name="campaign_type_id"]').selectpicker('val', row.find('.campaign_type_id').text());
+			$('form').find('select[name="max_dials"]').val(row.find('.max_dials').text()).selectpicker('refresh');
+			$('form').find('select[name="virgin_order_1"]').val(row.find('.virgin_order_1').text()).selectpicker('refresh');
+			$('form').find('select[name="virgin_order_2"]').val(row.find('.virgin_order_2').text()).selectpicker('refresh');
+			$('form').find('select[name="custom_panel_format"]').val(row.find('.custom_panel_format').text()).selectpicker('refresh');
+				$('form').find('select[name="campaign_type_id"]').val(row.find('.campaign_type_id').text()).selectpicker('refresh');
             $('form').find('input[name="campaign_name"]').val(row.find('.campaign_name').text());
-            $('form').find('select[name="client_id"]').selectpicker('val', row.find('.client_id').text());
-            $('form').find('select[name="record_layout"]').selectpicker('val', row.find('.record_layout').text());
-            $('form').find('select[name="campaign_status"]').selectpicker('val', row.find('.campaign_status').text());
+            $('form').find('select[name="client_id"]').val(row.find('.client_id').text()).selectpicker('refresh');
+			$('form').find('select[name="record_layout"]').val(row.find('.record_layout').text()).selectpicker('refresh');
+			$('form').find('select[name="campaign_status"]').val(row.find('.campaign_status').text()).selectpicker('refresh');
             $('form').find('input[name="start_date"]').data('DateTimePicker').date(row.find('.start_date').text());
             $('form').find('input[name="end_date"]').data('DateTimePicker').date(row.find('.end_date').text());
             min_quote_days.val(row.find('.min_quote_days').text());
@@ -414,6 +414,8 @@ var admin = {
                 data: $btn.closest('form').serialize()
             }).done(function(response) {
                 if (response.success) {
+					$btn.closest('form')[0].reset();
+					$btn.closest('form').find('.selectpicker').selectpicker('refresh');
                     admin.campaigns.load_campaigns();
                     admin.hide_edit_form();
                     flashalert.success(response.message);
