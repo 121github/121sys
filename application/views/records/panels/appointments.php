@@ -39,10 +39,10 @@ html.mm-right.mm-opening .mm-slideout {
 </style>
  <script>
  $(document).ready(function(){
- $('body').append('<nav id="calendar-right" class="mm-menu mm--horizontal mm-offcanvas"><div id="calendar"></div></nav>');
+ $('body').append('<nav id="calendar-right" style="display:none" class="mm-menu mm--horizontal mm-offcanvas"><div id="calendar"></div></nav>');
   $('nav#calendar-right').mmenu({
             navbar: {
-                title: "Showing Calendar <span class='text-primary'>Week View</span>"
+                title: "Showing Calendar <span class='text-primary'>Booking View</span>"
             },
             extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
             offCanvas: {
@@ -57,11 +57,15 @@ fixed: "isFixed"
 });
 	var api = $('nav#calendar-right').data('mmenu');
 api.bind('opened', function () {
+	$('#calendar-right').fadeIn(400,function(){
     calendar.init();
 	$modal.css('z-index','9999999');
+	});
 });
-api.bind('closed', function () {
+api.bind('closing', function(){ 
+	$('#calendar-right').fadeOut(200,function(){
     calendar.destroy();
+	});
 });
   });
  </script>

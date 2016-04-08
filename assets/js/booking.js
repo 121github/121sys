@@ -8,24 +8,18 @@ var calendar = {
                 $modal.find('#save-rule-btn').show();
             }
         });
-
-
         $modal.on('change', '.attendee-select', function() {
             calendar.get_slots_in_group($(this).val());
         });
         $modal.on('click', '#save-rule-btn', function() {
             calendar.save_rules();
         });
-
         $modal.on('click', '.del-rule-btn', function() {
             calendar.delete_rule($(this).attr('item-id'), $(this).attr('item-date'));
         });
-
         $('#calendar').on('change', '#attendee-select', function() {
             calendar.load_rules();
-            $('#calendar').fullCalendar('removeEventSource', calendar.event_source)
-            calendar.event_source = helper.baseUrl + 'booking/events?attendee=' + $('#attendee-select').val()
-            $('#calendar').fullCalendar('addEventSource', calendar.event_source)
+            $('#calendar').fullCalendar('refetchEvents');
         });
         this.left_buttons = 'prev,next ';
         if (helper.permissions['slot availability'] > 0) {
@@ -104,11 +98,17 @@ var calendar = {
                     }
                 }
             },
-            events: calendar.event_source
+                            eventSources: [
+                    {
+                        url: helper.baseUrl + 'booking/events',
+                        type: 'POST',
+                        data: { attendee:$('#attendee-select').val() }
+                    }
+		]
         })
         calendar.attendee_filter();
         calendar.init_context_menu();
-       calendar.month_filter();
+      	calendar.month_filter();
     },
     destroy: function() {
         $('#calendar').fullCalendar('destroy');
