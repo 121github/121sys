@@ -122,11 +122,13 @@ var view = {
                 "defaultContent": "-"
             }],
             "createdRow": function(row, data, dataIndex) {
-                $(row).attr('data-urn', data.urn);
-                $(row).attr('data-id', data.marker_id);
 				if(page_name=="records"){
+				$(row).attr('data-urn', data.urn);
+                $(row).attr('data-id', data.marker_id);
                 $(row).attr('data-modal', 'view-record');
 				} else if(page_name=="appointment"){
+				$(row).attr('data-urn', data.urn);
+                $(row).attr('data-id', data.marker_id);
 				$(row).attr('data-modal', 'view-appointment');	
 				}
                 $(row).attr('postcode', data['postcode']);
@@ -134,6 +136,10 @@ var view = {
                 if (data['change_type'] == "delete") {
                     $(row).addClass('danger');
                 }
+				if(page_name=="recordings"){
+                $(row).attr('data-path', data.filepath);
+				$(row).attr('data-id', data.id);
+				}
             }
         });
 

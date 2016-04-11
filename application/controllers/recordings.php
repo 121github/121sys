@@ -11,6 +11,7 @@ class Recordings extends CI_Controller
         parent::__construct();
 		$this->load->model('Records_model');
 		$this->load->model('Recordings_model');
+		$this->project_version = $this->config->item('project_version');
     }
 
 public function find_calls(){
@@ -82,6 +83,63 @@ foreach($recordings as $k=>$row){
 }
 //$this->firephp->log($recordings);
 echo json_encode(array("success"=>true,"data"=>$recordings,"msg"=>"No recordings could be found for this record"));
+}
+
+public function view(){
+	user_auth_check();	
+	$columns = array();
+	$columns['columns'][] = array("data"=>"id");
+	$columns['columns'][] = array("data"=>"servicename");
+	$columns['columns'][] = array("data"=>"starttime");
+	$columns['columns'][] = array("data"=>"endtime");
+	$columns['columns'][] = array("data"=>"calldate");
+	$columns['columns'][] = array("data"=>"owner");
+	$columns['headings'] = array("ID","Telephone","Start","End","Date","Ext");
+	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i') starttime","date_format(endtime,'%d/%m/%Y %H:%i') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
+	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i')","date_format(endtime,'%d/%m/%Y %H:%i')","date_format(calldate,'%d/%m/%Y')","owner");
+	$columns['order'] = array("id","servicename","filepath","starttime","endtime","calldate","owner");
+	
+			$data = array("title"=>"recordings",
+			"columns"=>$columns,
+			"javascript"=>array( 'view.js?v' . $this->project_version,'plugins/DataTables/datatables.min.js'));
+	        $this->template->load('default', 'recordings/view.php', $data);
+}
+public function process_view(){
+		
+	$options = $this->input->post();
+	$columns = array();
+	$columns['columns'][] = array("data"=>"id");
+	$columns['columns'][] = array("data"=>"servicename");
+	$columns['columns'][] = array("data"=>"starttime");
+	$columns['columns'][] = array("data"=>"endtime");
+	$columns['columns'][] = array("data"=>"calldate");
+	$columns['columns'][] = array("data"=>"owner");
+	$columns['headings'] = array("ID","Telephone","File","Start","End","Date","Ext");
+	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i') starttime","date_format(endtime,'%d/%m/%Y %H:%i') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
+	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i')","date_format(endtime,'%d/%m/%Y %H:%i')","date_format(calldate,'%d/%m/%Y')","owner");
+	$columns['order'] = array("id","servicename","starttime","endtime","calldate","owner");
+	$options['visible_columns'] = $columns;
+		$recordings = $this->Recordings_model->get_all_recordings($options);	
+		$count = $recordings['count'];
+		unset($recordings['count']);
+		
+		foreach($recordings as $k=>$row){
+	//append some other stats to the array
+	//$recordings[$k]['duration']=timespan(strtotime($row['starttime']),strtotime($row['endtime']),true);
+	$recordings[$k]['filepath']=base64_encode($row['filepath']);
+
+}
+		
+		  $data = array(
+		  "process_time" => 0,
+				"query_time" => 0,
+                "draw" => $this->input->post('draw'),
+                "recordsTotal" => $count,
+                "recordsFiltered" => $count,
+                "data" => $recordings,
+				"planner_permission" => false
+            );
+            echo json_encode($data);
 }
 
 public function listen(){
