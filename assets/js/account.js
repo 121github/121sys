@@ -62,6 +62,23 @@ var details = {
             details.delete_address_user($(this).attr('data-user-id'), $(this).attr('data-address-id'),$(this).attr('data-primary'));
         });
 
+        $(document).on("click", '#google-login-btn', function (e) {
+            e.preventDefault();
+            details.login();
+        });
+
+        $(document).on("click", '#google-logout-btn', function (e) {
+            e.preventDefault();
+            details.logout();
+        });
+
+        $(document).on("change", "#calendar-select", function (e) {
+            e.preventDefault();
+             var calendar_selected = $("#calendar-select").selectpicker("val");
+            //Set this calendar as default to the user
+            details.set_google_calendar(calendar_selected);
+        });
+
         details.load_details();
     },
     load_details: function() {
@@ -96,6 +113,76 @@ var details = {
                 $('.pass_changed').html(response.data[0].pass_changed);
                 $('.attendee').html(response.data[0].attendee);
                 $('.reset_pass_token').html((response.data[0].reset_pass_token?"Yes":""));
+                if (!response.data[0].google.access_token) {
+                    if (response.session_user_id == user_id) {
+                        $('.google-account').html("<button class='btn btn-info btn-xs' id='google-login-btn'><i class='fa fa-google white'>oogle</i><span class='small'> [Sign In]</span></button>");
+                        $('.google-content').find('.google-login-msg').html("Login into your google account");
+                    }
+                    else {
+                        $('.google-account').html("");
+                        $('.google-content').find('.google-login-msg').html("This user is not connected to a google account");
+                    }
+                    $('.google-content').find('.google-login-msg').show();
+                    $('.google-content').find('.google-data').hide();
+                    $('.google-name').html("");
+                    $('.google-picture').html("");
+                }
+                else {
+                    if (response.session_user_id == user_id) {
+                        $('.google-account').html("<button class='btn btn-success btn-xs' id='google-logout-btn'><i class='fa fa-google white'>oogle</i><span class='small'> [Logout]</span></button>");
+                    }
+                    else {
+                        $('.google-account').html("");
+                    }
+                    $('.google-content').find('.google-login-msg').hide();
+                    $('.google-content').find('.google-data').show();
+
+                    //Get user info
+                    $.ajax({
+                        url: helper.baseUrl + 'booking/get_google_data',
+                        type: "POST",
+                        dataType: "JSON",
+                        data: {'google_token': response.data[0].google}
+                    }).done(function(user_response) {
+                        if (user_response.success) {
+                            $('.google-name').html(user_response.userInfo.name);
+                            $('.google-picture').html("<img src='"+user_response.userInfo.picture+"' width='100%'>");
+                            var google_details = "<tbody>" +
+                                    "<tr>" +
+                                        "<td style='font-weight: bold'>Name</td>" +
+                                        "<td style='text-align: right'>"+user_response.userInfo.name+"</td>" +
+                                    "</tr>" +
+                                    "<tr>" +
+                                        "<td style='font-weight: bold'>Email</td>" +
+                                        "<td style='text-align: right'>"+user_response.userInfo.email+"</td>" +
+                                    "</tr>" +
+                                    "<tr>" +
+                                        "<td style='font-weight: bold'>Google plus</td>" +
+                                        "<td style='text-align: right'><a href='"+user_response.userInfo.link+"' target='_blank'><i class='fa fa-google-plus'></i></a></td>" +
+                                    "</tr>" +
+                                "</tbody>";
+                            $('.google-details').html(google_details);
+
+                            var calendar_select = "<select title='Calendars' id='calendar-select'><option value=''></option>";
+                            $.each(user_response.calendarList, function (k, v) {
+                                var selected = "";
+                                if (v.id == response.data[0].google.calendar_id){
+                                    selected = "selected";
+                                }
+                                var disabled = "";
+                                if (v.accessRole != 'owner'){
+                                    disabled = "disabled";
+                                }
+                                calendar_select += "<option value='" + v.id + "' "+selected+" "+disabled+">" + v.name + "</options>";
+                            });
+                            calendar_select += "</select>";
+
+                            var google_calendars = "<span style='text-align: right'>"+calendar_select+"</span>";
+                            $('.google-calendars').html(google_calendars);
+                            $('#calendar-select').selectpicker();
+                        }
+                    });
+                }
 
                 $.ajax({
                     url: helper.baseUrl + 'user/get_user_addresses_by_id',
@@ -122,6 +209,29 @@ var details = {
             } else {
 			    flashalert.danger(response.error);
 			}
+        });
+    },
+
+    login: function() {
+        window.location.href = helper.baseUrl + 'google/authenticate';
+    },
+    logout: function() {
+        window.location.href = helper.baseUrl + 'google/logout';
+    },
+    set_google_calendar: function(calendar_id) {
+        $.ajax({
+            url: helper.baseUrl + 'booking/set_google_calendar',
+            type: "POST",
+            dataType: "JSON",
+            data: {'calendar_id': calendar_id}
+        }).done(function(response) {
+            if (response.success) {
+               flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+
         });
     },
     edit_details: function(btn) {

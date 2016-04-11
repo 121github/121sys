@@ -30,9 +30,6 @@
                 <i class="fa fa-user fa-fw"></i>
                 Details
             </div>
-            
-
-            
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="row">
@@ -99,6 +96,34 @@
                         </div>
                         <!-- Addresses -->
                         <div class="user-addresses"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary" style="display: none">
+            <div class="panel-heading">
+                <i class="fa fa-google">oogle Account</i>
+                <div class="google-account pull-right"></div>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="col-lg-3" >
+                    <div style="margin-top: 5px;" class="google-picture"></div>
+                    <div style="margin-top: 5px;" class="google-name"></div>
+                </div>
+                <div class="col-lg-9 google-content">
+                    <div class="google-login-msg" style="display: none">
+                        Login into your google account
+                    </div>
+                    <div class="google-data">
+                        <div style="margin-bottom: 10px; margin-top: 10px; font-weight: bold">
+                            DETAILS:
+                        </div>
+                        <table class="table google-details ajax-table"></table>
+
+                        <div style="margin-bottom: 10px; margin-top: 10px; font-weight: bold">
+                            <span class="table google-calendars ajax-table"></span>
+                        </div>
                     </div>
                 </div>
             </div>

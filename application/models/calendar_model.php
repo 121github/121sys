@@ -161,7 +161,7 @@ class Calendar_model extends CI_Model
 		if($distinct_user){
 		$qry .= " group by block_day,user_id";	
 		}
-		$this->firephp->log($qry);
+
         return $this->db->query($qry)->result_array();
     }
     /**
