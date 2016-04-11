@@ -1,4 +1,61 @@
+<div class="loading-overlay">
+    <div class="loader-img">
+        <img src="<?php echo base_url(); ?>assets/img/ajax-loader-snake-black.gif" width="5%"/>
+    </div>
+</div>
 <div id='calendar'></div>
+
+<style>
+    body {
+    }
+
+    .loading-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: 0.4;
+        filter: alpha(opacity=40);
+        z-index: 10;
+        top: 0;
+        left: 0
+    }
+
+    .loading-overlay .loader-img {
+        text-align: center;
+        height: 10em;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        opacity: 0.4;
+        background: transparent;
+        transform: translate(-50%, -50%);
+    }
+
+    .container-fluid {
+    }
+
+    .top-row {
+        padding: 10px 10px 0;
+    }
+
+    .bottom-row {
+        padding: 0px 10px 10px;
+    }
+
+    .panel-body {
+        overflow: hidden
+    }
+
+    #view-container {
+        margin: 0;
+        padding: 0 0px;
+        overflow-y: auto;
+        height: 100%;
+        overflow-x: hidden;
+    }
+</style>
+
 <script type="text/javascript">
 
 
@@ -21,6 +78,14 @@
                 },
                 eventAfterRender: function (event, element, view) {
                     $(element).attr("event-id", event._id).find('.fc-content').prepend('<span class="' + event.icon + '"></span> ');
+                },
+                loading: function(bool) {
+                    if (bool){
+                        $('.loading-overlay').fadeIn();
+                    }
+                    else {
+                        $('.loading-overlay').fadeOut();
+                    }
                 },
                 customButtons: {
                     localevents: {

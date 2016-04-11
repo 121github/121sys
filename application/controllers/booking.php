@@ -57,7 +57,8 @@ class Booking extends CI_Controller
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
 		$attendee = $this->input->post('attendee');
-		$events = $this->Booking_model->get_events($start,$end,$attendee);
+        $status = $this->input->post('status');
+		$events = $this->Booking_model->get_events($start,$end,$attendee,$status);
 		foreach($events as $k => $event){
 			$events[$k]['color'] = genColorCodeFromText($event['attendees']);
 		}
@@ -225,6 +226,7 @@ class Booking extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $appointment_id = $this->input->post("appointment_id");
             $data = $this->input->post("data");
+            $event_status = $this->input->post("event_status");
             if (!($data)) {
                 //Get the appointment data
                 $data = $this->Appointments_model->get_appointment($appointment_id);
@@ -256,6 +258,7 @@ class Booking extends CI_Controller
                         'summary' => $data['title'],
                         'location' => $data['postcode'],
                         'description' => $data['text'],
+                        'status' => ($event_status?$event_status:"confirmed"),
                         'start' => array(
                             'dateTime' => $start_date->format('Y-m-d\TH:i:s\Z'),
                         ),
@@ -275,7 +278,7 @@ class Booking extends CI_Controller
                                 array('method' => 'email', 'minutes' => 24 * 60),
                                 array('method' => 'popup', 'minutes' => 10),
                             ),
-                        ),
+                        )
                     ));
 
                     $event->setId("appointment".$appointment_id."attendee".$attendee);
@@ -295,7 +298,13 @@ class Booking extends CI_Controller
                             //If the event exists update the event and move to a new calendar if it is needed
                             $result = $service->events->move($calendar->id, $event->getId(), $calendarId);
                             $result = $service->events->update($calendarId, $event->getId(), $event);
-                            array_push($msg,"Event ".$event->getId()." updated on google calendar to the calendar ".$calendarId);
+                            if ($event_status && $event_status == 'cancelled') {
+                                array_push($msg,"Event ".$event->getId()." cancelled on google calendar on the calendar ".$calendarId);
+                            }
+                            else {
+                                array_push($msg,"Event ".$event->getId()." updated on google calendar to the calendar ".$calendarId);
+                            }
+
                             break;
 
                         } catch (Google_Exception $e) {
