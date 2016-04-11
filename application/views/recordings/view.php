@@ -37,7 +37,7 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
     $(document).ready(function () {
         view.init();
         view.has_filter = false;
-		 $('#view-container').on('click', 'tr', function (e) {
+		 $('#view-container').on('click', 'tr[data-path]', function (e) {
                 e.preventDefault();
                 modal.convert_recording($(this), $(this).attr('data-id'), $(this).attr('data-path'))
             })
@@ -50,27 +50,24 @@ var modal = {
                 type: "POST",
                 dataType: "JSON",
                 beforeSend: function () {
-                    $btn.next('.player-loading').removeClass("hidden");
+					 var mheader = 'Call Playback';
+        var mbody = '<div id="waveform"><img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /></div><div class="controls" style="display:none"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info btn-download" href="">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>';
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+        modals.load_modal(mheader, mbody, mfooter);
                 }
             }).fail(function(){
 				 flashalert.danger("There was a problem loading the recording");
 			}).done(function (response) {
-                $btn.next('.player-loading').addClass("hidden");
                 modal.call_player(response.filename, response.filetype)
             });
         },
  call_player: function (url, filetype) {
-        var mheader = 'Call Playback';
-        var mbody = '<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>';
-        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-        modals.load_modal(mheader, mbody, mfooter);
+	 	$('#waveform').empty();
+	 	$modal.find('.btn-download').attr('href',url.replace("ogg", "mp3"));
+	 	$modal.find('.controls').show();
         $modal.one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
-            modal_body.empty();
-        });
-
-        $modal.one("click", ".close-modal,.close", function () {
-            wavesurfer.destroy();
+			wavesurfer.destroy();
             modal_body.empty();
         });
         modal.wavesurfer(url.replace('ogg', 'mp3'));

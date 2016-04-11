@@ -3051,11 +3051,6 @@ var modal = {
             wavesurfer.destroy();
             modal_body.empty();
         });
-
-        $modal.one("click", ".close-modal,.close", function () {
-            wavesurfer.destroy();
-            modal_body.empty();
-        });
         modal.wavesurfer(url.replace('ogg', 'mp3'));
     },
     wavesurfer: function (fileurl) {
