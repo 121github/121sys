@@ -27,6 +27,7 @@ class Recordings_model extends CI_Model
 	}
 	
 	public function get_where($options, $table_columns){
+		 $where = "";
 		   //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause
@@ -38,6 +39,7 @@ class Recordings_model extends CI_Model
                 }
             }
         }
+		return $where;
 	}
 	
 	public function get_all_recordings($options){
