@@ -78,7 +78,7 @@ class Recordings_model extends CI_Model
 		}
         $qry .= $order;
 		if($length>0){
-        $qry .= "  limit $start,$length";
+        $qry .= "  limit $start,10";
 		}
 		$this->firephp->log($select.$qry);
         $recordings = $this->db->query($select.$qry)->result_array();
