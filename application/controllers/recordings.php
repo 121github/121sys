@@ -95,8 +95,8 @@ public function view(){
 	$columns['columns'][] = array("data"=>"calldate");
 	$columns['columns'][] = array("data"=>"owner");
 	$columns['headings'] = array("ID","Telephone","Start","End","Date","Ext");
-	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i') starttime","date_format(endtime,'%d/%m/%Y %H:%i') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
-	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i')","date_format(endtime,'%d/%m/%Y %H:%i')","date_format(calldate,'%d/%m/%Y')","owner");
+	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s') starttime","date_format(endtime,'%d/%m/%Y %H:%i:%s') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
+	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","date_format(endtime,'%d/%m/%Y %H:%i:%s')","date_format(calldate,'%d/%m/%Y')","owner");
 	$columns['order'] = array("id","servicename","filepath","starttime","endtime","calldate","owner");
 	
 			$data = array("title"=>"recordings",
@@ -115,8 +115,8 @@ public function process_view(){
 	$columns['columns'][] = array("data"=>"calldate");
 	$columns['columns'][] = array("data"=>"owner");
 	$columns['headings'] = array("ID","Telephone","File","Start","End","Date","Ext");
-	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i') starttime","date_format(endtime,'%d/%m/%Y %H:%i') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
-	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i')","date_format(endtime,'%d/%m/%Y %H:%i')","date_format(calldate,'%d/%m/%Y')","owner");
+	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s') starttime","date_format(endtime,'%d/%m/%Y %H:%i:%s') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
+	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","date_format(endtime,'%d/%m/%Y %H:%i:%s')","date_format(calldate,'%d/%m/%Y')","owner");
 	$columns['order'] = array("id","servicename","starttime","endtime","calldate","owner");
 	$options['visible_columns'] = $columns;
 		$recordings = $this->Recordings_model->get_all_recordings($options);	
@@ -152,7 +152,7 @@ $path = "https://recordings.121system.com:$port/";
 $remotepath = "https://www.121system.com:$port/";
 } else {
 $port = "8016";	
-$path = "http://recordings16.121system.com/";
+$path = "https://recordings16.121system.com:$port/";
 $remotepath = "https://www.121system.com:$port/";
 }
 $file34 = str_replace("xml","wav",str_replace("/mnt/16recordings/","",str_replace("/mnt/34recordings/","",$filename)));

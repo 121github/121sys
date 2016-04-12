@@ -62,7 +62,7 @@ class Recordings_model extends CI_Model
                 from recordings.calls where 1 ";
 		$numrows = "select count(*) numrows
                 from recordings.calls where 1 ";	 
-		$qry .= " and `calldate` > date_sub(curdate(),interval 1 month) ";
+		$qry .= " and `calldate` > date_sub(curdate(),interval 1 month) and TIMEDIFF(endtime,starttime) > '00:00:05' ";
 		$qry .= $this->get_where($options,$filter_columns);
 		$count = $db2->query($numrows)->row()->numrows;
 		if(isset($options['order'][0]['column'])){
