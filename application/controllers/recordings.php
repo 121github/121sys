@@ -91,14 +91,13 @@ public function view(){
 	$columns['columns'][] = array("data"=>"id");
 	$columns['columns'][] = array("data"=>"servicename");
 	$columns['columns'][] = array("data"=>"starttime");
-	$columns['columns'][] = array("data"=>"endtime");
+	$columns['columns'][] = array("data"=>"duration");
 	$columns['columns'][] = array("data"=>"calldate");
 	$columns['columns'][] = array("data"=>"owner");
-	$columns['headings'] = array("ID","Telephone","Start","End","Date","Ext");
-	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s') starttime","date_format(endtime,'%d/%m/%Y %H:%i:%s') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
-	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","date_format(endtime,'%d/%m/%Y %H:%i:%s')","date_format(calldate,'%d/%m/%Y')","owner");
-	$columns['order'] = array("id","servicename","filepath","starttime","endtime","calldate","owner");
-	
+	$columns['headings'] = array("ID","Telephone","Start","Duration","Date","Ext");
+	$columns['select'] = array("calls.id","calls.servicename","date_format(calls.starttime,'%d/%m/%Y %H:%i:%s') starttime","timediff(endtime,starttime) duration","date_format(calls.calldate,'%d/%m/%Y') calldate","calls.owner");
+	$columns['filter'] = array("calls.id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","timediff(endtime,starttime)","date_format(calldate,'%d/%m/%Y')","owner");
+	$columns['order'] = array("calls.id","servicename","calls.starttime","timediff(endtime,starttime) duration","calls.calldate","calls.owner");
 			$data = array("title"=>"recordings",
 			"columns"=>$columns,
 			"javascript"=>array( 'view.js?v' . $this->project_version,'plugins/DataTables/datatables.min.js'));
@@ -111,13 +110,13 @@ public function process_view(){
 	$columns['columns'][] = array("data"=>"id");
 	$columns['columns'][] = array("data"=>"servicename");
 	$columns['columns'][] = array("data"=>"starttime");
-	$columns['columns'][] = array("data"=>"endtime");
+	$columns['columns'][] = array("data"=>"duration");
 	$columns['columns'][] = array("data"=>"calldate");
 	$columns['columns'][] = array("data"=>"owner");
-	$columns['headings'] = array("ID","Telephone","File","Start","End","Date","Ext");
-	$columns['select'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s') starttime","date_format(endtime,'%d/%m/%Y %H:%i:%s') endtime","date_format(calldate,'%d/%m/%Y') calldate","owner");
-	$columns['filter'] = array("id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","date_format(endtime,'%d/%m/%Y %H:%i:%s')","date_format(calldate,'%d/%m/%Y')","owner");
-	$columns['order'] = array("id","servicename","starttime","endtime","calldate","owner");
+	$columns['headings'] = array("ID","Telephone","Start","Duration","Date","Ext");
+	$columns['select'] = array("calls.id","calls.servicename","date_format(calls.starttime,'%d/%m/%Y %H:%i:%s') starttime","timediff(endtime,starttime) duration","date_format(calls.calldate,'%d/%m/%Y') calldate","calls.owner");
+	$columns['filter'] = array("calls.id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","timediff(endtime,starttime)","date_format(calldate,'%d/%m/%Y')","owner");
+	$columns['order'] = array("calls.id","servicename","calls.starttime","timediff(endtime,starttime) duration","calls.calldate","calls.owner");
 	$options['visible_columns'] = $columns;
 		$recordings = $this->Recordings_model->get_all_recordings($options);	
 		$count = $recordings['count'];
