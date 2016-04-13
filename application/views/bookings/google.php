@@ -66,12 +66,14 @@
                 selectable: true,
                 minTime: '07:00',
                 maxTime: '20:00',
+                slotDuration: '00:30:00',
                 height: 700,
                 header: {
                     left: 'prev,next today localevents siginEvent logoutEvent loadingEvent',
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay'
                 },
+                defaultView: 'agendaWeek',
                 eventDrop: function (event) {
                     console.log(event);
                     calendar.set_event_time(event.id, event.start, event.end)
@@ -165,21 +167,19 @@
             $('#calendar-select').selectpicker();
             $('.calendar-list').hide();
 
-            $('#calendar .fc-toolbar .fc-right').append(
-                '<div class="form-group">'+
-                '<div class="input-group date" id="datetimepicker2">'+
-                '<input name="cal_date" type="hidden" class="form-control" />'+
-                '<span class="input-group-addon" style="border: none; background: transparent;">'+
-                '   <span class="fa fa-calendar"></span>'+
-                '</span>'+
-                '</div>'+
-                '</div>'
+            $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
+                "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
+                "<input type='text' name='cal_date' style='display:none' />" +
+                "<span class='input-group-addon' style='display:inline; padding:0; background:none; border:none'>" +
+                "<span class='fa fa-calendar'></span>" +
+                "</span>" +
+                "</div>"
             );
             $('#datetimepicker2').datetimepicker({
                 defaultDate: moment(),
-                format: 'YYYY-MM',
+                format: 'YYYY-MM-DD',
                 enabledHours:false,
-                viewMode: 'months',
+                viewMode: 'days',
             }).on('dp.change', function(ev) {
                 $('#calendar').fullCalendar('gotoDate',new Date($('input[name="cal_date"]').val()));
             });

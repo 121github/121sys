@@ -545,10 +545,6 @@ var modals = {
             if (response.success) {
                 var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
-                //Refresh the calendar
-                if(typeof $('#calendar').fullCalendar() !== "undefined"){
-                    $('#calendar').fullCalendar('refetchEvents');
-                }
                 //Refresh the quick planner
                 if(typeof quick_planner !== "undefined"){
                     var attendee_id = response.data.attendees[0];
@@ -560,9 +556,9 @@ var modals = {
                     quick_planner.driver_id = attendee_id;
                     quick_planner.load_planner();
                 }
-                    if(typeof campaign_functions.save_appointment !== "undefined"){
-                        campaign_functions.save_appointment(response.data);
-                    }
+                if(typeof campaign_functions.save_appointment !== "undefined"){
+                    campaign_functions.save_appointment(response.data);
+                }
                 if (response.trackvia) {
                     $.post(response.trackvia, {urn: response.urn});
                 }
@@ -621,16 +617,45 @@ var modals = {
                     });
                 }
 
+
+                //Refresh the calendar
+                if(typeof calendar.fullCalendar != "undefined"){
+                    setTimeout(function() {
+                        calendar.fullCalendar.fullCalendar('refetchEvents');
+                    }, 1000);
+                }
+
+
                 //Set appointmnt in google calendar if the attendee has a google account
+                var description = '';
                 $.ajax({
-                    url: helper.baseUrl + 'booking/add_google_event',
+                    url: helper.baseUrl + 'modals/view_appointment',
                     data: {
-                        appointment_id: appointment_id,
-                        data: response.data,
-                        event_status: "confirmed"
+                        id: appointment_id
                     },
                     type: "POST",
                     dataType: "JSON"
+                }).done(function(view_appointment_response){
+                    if (view_appointment_response.success) {
+                        $.each(view_appointment_response.data.appointment,function(title,column){
+                            description += '<h3><b>'+title+'</b></h3>\n';
+                            $.each(column.fields,function(name,data){
+                                description += name+' - '+data.value+'\n';
+                            });
+                            description += '\n\n';
+                        });
+                    }
+
+                    $.ajax({
+                        url: helper.baseUrl + 'booking/add_google_event',
+                        data: {
+                            appointment_id: appointment_id,
+                            event_status: "confirmed",
+                            description: description
+                        },
+                        type: "POST",
+                        dataType: "JSON"
+                    });
                 });
 
             } else {

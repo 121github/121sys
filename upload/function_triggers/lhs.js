@@ -73,6 +73,9 @@ var campaign_functions = {
 
         $modal.find('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
 
+        //Title no editable
+        $modal.find('input[name="title"]').prop('readonly', true);
+
     },
 
     appointment_edit_setup: function () {
@@ -102,10 +105,11 @@ var campaign_functions = {
         $('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
         $modal.off('change', '.typepicker');
         $modal.on('change', '.typepicker', function () {
-            get_appointment_title();
-
-
+            //get_appointment_title();
         });
+
+        //Title no editable
+        $modal.find('input[name="title"]').prop('readonly', true);
     },
     save_appointment: function (appointment) {
         //Get the additional info
@@ -154,9 +158,8 @@ var campaign_functions = {
                 } else if (appointment.appointment_type_id == "3") {
                     update_status = "Appointment Confirmed";
                     //send the appointment confirmation email
-                    //lhs.send_template_email(record.urn, 3, "Client", appointment.contact_email, "","","Appointment confirmation",appointmment.appointment_id);
+                    //lhs.send_template_email(appointment.urn, 3, "Client", appointment.contact_email, "","","Appointment confirmation",appointmment.appointment_id);
                 }
-
             }
             if (update_status) {
                 $.ajax({
@@ -164,7 +167,7 @@ var campaign_functions = {
                     type: "POST",
                     dataType: "JSON",
                     data: {
-                        urn: record.urn,
+                        urn: appointment.urn,
                         data_id: appointment.job_id,
                         field_id: 6,
                         value: update_status
@@ -177,13 +180,15 @@ var campaign_functions = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: record.urn,
+                    urn: appointment.urn,
                     data_id: appointment.job_id,
                     field_id: 9,
                     value: survey_date
                 }
             }).done(function (response) {
-                custom_panels.load_all_panels()
+                if (typeof custom_panels != "undefined") {
+                    custom_panels.load_all_panels()
+                }
             });
 
             //Add the attendee to the ownership record list
@@ -196,6 +201,17 @@ var campaign_functions = {
                     user_id: appointment.attendees[0]
                 }
             });
+
+            //Set the title
+            var appointment_id = appointment.appointment_id;
+            var appointment_type_id = appointment.appointment_type_id;
+            var address = appointment.address;
+            var access_address = appointment.access_address;
+            var job_id = appointment.job_id;
+            var job_status = response.data[appointment.job_id]['Job Status']['value'];
+            var type_of_survey = response.data[appointment.job_id]['Type of survey']['value'];
+            var additional_services = response.data[appointment.job_id]['Additional services']['value'];
+            campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
         });
 
     },
@@ -204,7 +220,9 @@ var campaign_functions = {
     edit_custom_fields: function () {
     },
     save_custom_panel: function ($form) {
+
         var appointment_id = false;
+        var urn = $form.find("[name='urn']").val();
         if ($form.find('input[name="3"]').val() !== "") {
             appointment_id = $form.find('input[name="3"]').val();
         }
@@ -216,14 +234,14 @@ var campaign_functions = {
         //Job Status is Paid
         if ($form.find("[name='6']").val() === "Paid") {
             //Send email Referral Scheme Email to Account Role group email
-            lhs.send_template_email(record.urn, 2, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Referral scheme email", appointment_id);
+            lhs.send_template_email(urn, 2, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Referral scheme email", appointment_id);
 
             //Send email Receipt of Payment Email to Client email address on the record
-            lhs.send_template_email(record.urn, 6, "Client", 'bradf@121customerinsight.co.uk', "", "", "Receipt of payement email", appointment_id);
+            lhs.send_template_email(urn, 6, "Client", 'bradf@121customerinsight.co.uk', "", "", "Receipt of payement email", appointment_id);
             //Hard Copy Required is Yes
             if ($form.find("[name='10']").val() === "Yes") {
                 //Send email Hard Copy Email to the Account Role group email
-                lhs.send_template_email(record.urn, 5, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Hard copy notification", appointment_id);
+                lhs.send_template_email(urn, 5, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Hard copy notification", appointment_id);
 
             }
 
@@ -231,14 +249,37 @@ var campaign_functions = {
         //Job Status is Paid & Issued
         else if ($form.find("[name='6']").val() === "Paid & Issued") {
             //Send email Feedback Email to Client email address on the record
-            lhs.send_template_email(record.urn, 8, "Client", 'bradf@121customerinsight.co.uk', "", "", "Feedback email", appointment_id);
+            lhs.send_template_email(urn, 8, "Client", 'bradf@121customerinsight.co.uk', "", "", "Feedback email", appointment_id);
         }
         //Job Status is Confirmed Appointment
         else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
             //Send email Appointment Confirmation Email to Client email
-            lhs.send_template_email(record.urn, 3, "Client", 'bradf@121customerinsight.co.uk', "", "", "Appointment confirmation", appointment_id);
+            lhs.send_template_email(urn, 3, "Client", 'bradf@121customerinsight.co.uk', "", "", "Appointment confirmation", appointment_id);
 
         }
+
+        //Set the title
+        var appointment_id = $form.find("[name='3']").val();
+        //Get the appointment data
+        $.ajax({
+            url: helper.baseUrl + 'appointments/get_appointment',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                appointment_id: appointment_id
+            }
+        }).done( function (response){
+            var appointment_type_id = response.data.appointment_type_id;
+            var address = response.data.address;
+            var access_address = response.data.access_address;
+            var job_id = $form.find("[name='data_id']").val();
+            var job_status = $form.find("[name='6']").val();
+            var type_of_survey = $form.find("[name='7']").val();
+            var additional_services = $form.find("[name='11']").val();
+            campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
+        }).fail( function() {
+            flashalert.danger("ERROR: Error saving the appointment title!")
+        });
 
         record.email_panel.load_panel();
     },
@@ -266,6 +307,106 @@ var campaign_functions = {
                 });
             }
         }
+    },
+    set_appointment_title: function(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services) {
+        var title = "";
+        var type = "";
+        var add_services = "";
+
+        if (job_status != "Invoiced") {
+            title += job_id;
+        }
+
+        switch (appointment_type_id) {
+            case "1":
+                title += " [poss]";
+                break;
+            case "2":
+                title += " [tbc]";
+                break;
+            case "3":
+                title += " [conf]";
+                break;
+        }
+
+        switch (type_of_survey) {
+            case "Building Survey":
+                type = "BS";
+                break;
+            case "Home Buyer Report":
+                type = "HBR";
+                break;
+            case "General Structural Inspection":
+                type = "GSI";
+                break;
+            case "Specific Inspection":
+                type = "SSI";
+                break;
+            case "Site Visit":
+                type = "SV";
+                break;
+            case "Valuation":
+                type = "VAL";
+                break;
+            case "Schedule Of Condition":
+                type = "SOC";
+                break;
+            case "Structural Calculations":
+                type = "SCALC";
+                break;
+            case "Party Wall":
+                type = "PW";
+                break;
+        }
+
+        switch (additional_services) {
+            case "Valuation":
+                add_services = "VAL";
+                break;
+            case "Express Write Up Service":
+                add_services = "EXP";
+                break;
+            case "Platinum Plus":
+                add_services = "PP";
+                break;
+            case "High Level Images":
+                add_services = "HRP";
+                break;
+            case "Thermal Images":
+                add_services = "TI";
+                break;
+        }
+
+        if (access_address) {
+            title += " KA "+type+" "+add_services+" "+address;
+            title += " - KA "+access_address;
+        }
+        else {
+            title += " STP "+type+" "+add_services+" "+address;
+        }
+
+        //Update appointment title
+        $.ajax({
+            url: helper.baseUrl+'upload/function_triggers/lhs.php',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                "action": "update_appointment_title",
+                "appointment_id": appointment_id,
+                "title": title
+            }
+        }).done(function (response) {
+            if (response.success) {
+                flashalert.success(response.msg);
+                if (typeof record != "undefined") {
+                    record.appointment_panel.load_appointments();
+                }
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+
+        });
     }
 
 }

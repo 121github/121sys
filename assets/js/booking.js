@@ -1,23 +1,23 @@
 var fullcalendar;
 var calendar = {
-    init: function() {
-        $modal.on('click', '[data-toggle="tab"]', function(e) {
+    init: function () {
+        $modal.on('click', '[data-toggle="tab"]', function (e) {
             if ($(this).attr('href') == "#apprules") {
                 $modal.find('#save-rule-btn').hide();
             } else {
                 $modal.find('#save-rule-btn').show();
             }
         });
-        $modal.on('change', '.attendee-select', function() {
+        $modal.on('change', '.attendee-select', function () {
             calendar.get_slots_in_group($(this).val());
         });
-        $modal.on('click', '#save-rule-btn', function() {
+        $modal.on('click', '#save-rule-btn', function () {
             calendar.save_rules();
         });
-        $modal.on('click', '.del-rule-btn', function() {
+        $modal.on('click', '.del-rule-btn', function () {
             calendar.delete_rule($(this).attr('item-id'), $(this).attr('item-date'));
         });
-        $('#calendar').on('change', '#attendee-select, #status-select', function() {
+        $('#calendar').on('change', '#attendee-select, #status-select', function () {
             calendar.load_rules();
             $('#calendar').fullCalendar('refetchEvents');
         });
@@ -35,20 +35,20 @@ var calendar = {
             minTime: '07:00',
             maxTime: '20:00',
             slotDuration: '00:30:00',
+            height: 700,
             header: {
                 left: calendar.left_buttons,
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
-            //height: 700,
             defaultView: 'agendaWeek',
-            eventDrop: function(event) {
+            eventDrop: function (event) {
                 calendar.set_event_time(event.id, event.start, event.end)
             },
-            eventResize: function(event) {
+            eventResize: function (event) {
                 calendar.set_event_time(event.id, event.start, event.end)
             },
-            eventAfterRender: function(event, element, view) {
+            eventAfterRender: function (event, element, view) {
                 var cancelled = "";
                 //Disable drag and drop if the event is cancelled
                 if (event.status == 0) {
@@ -57,7 +57,7 @@ var calendar = {
                 }
                 $(element).attr("data-id", event._id).attr('data-modal', 'view-appointment').find('.fc-content').prepend('<span class="' + event.icon + '"></span><span class="' + cancelled + ' red pull-right"></span>');
             },
-            viewRender: function(event, element, view) {
+            viewRender: function (event, element, view) {
                 calendar.load_rules();
 
                 if (typeof $('#datetimepicker2').data("DateTimePicker") != "undefined") {
@@ -85,12 +85,12 @@ var calendar = {
                     $('#datetimepicker2').data("DateTimePicker").format(format).viewMode(view_mode);
                 }
             },
-            eventAfterAllRender: function(event, element, view) {
+            eventAfterAllRender: function (event, element, view) {
                 $('#calendar .fc-row td').addClass('context-menu-one');
             },
             editable: true,
-            loading: function(bool) {
-                if (bool){
+            loading: function (bool) {
+                if (bool) {
                     $('.loading-overlay').fadeIn();
                 }
                 else {
@@ -100,13 +100,13 @@ var calendar = {
             customButtons: {
                 googleButton: {
                     text: 'Google Calendar',
-                    click: function() {
+                    click: function () {
                         window.location.href = helper.baseUrl + 'booking/google';
                     }
                 },
                 rulesButton: {
                     text: 'Rules',
-                    click: function() {
+                    click: function () {
                         calendar.rule_modal();
                         calendar.show_rules_in_day();
                     }
@@ -116,29 +116,29 @@ var calendar = {
                 {
                     url: helper.baseUrl + 'booking/events',
                     type: 'POST',
-                    data: function() { // a function that returns an object
+                    data: function () { // a function that returns an object
                         var attendee = $('#attendee-select').val();
-                        var status = (typeof $('#status-select').val() != "undefined"?$('#status-select').val():1);
+                        var status = (typeof $('#status-select').val() != "undefined" ? $('#status-select').val() : 1);
                         return {
                             attendee: attendee,
                             status: status
                         };
                     }
                 }
-		    ]
+            ]
         })
         calendar.attendee_filter();
         calendar.status_filter();
         calendar.init_context_menu();
-      	calendar.month_filter();
+        calendar.month_filter();
     },
-    destroy: function() {
+    destroy: function () {
         $('#calendar').fullCalendar('destroy');
     },
-    init_context_menu: function() {
+    init_context_menu: function () {
         $.contextMenu({
             selector: '.context-menu-one',
-            callback: function(key, options) {
+            callback: function (key, options) {
                 var elem = options.$trigger;
                 var cell = elem.closest('td');
                 var cellIndex = cell[0].cellIndex
@@ -162,21 +162,21 @@ var calendar = {
             items: {
                 "view": {
                     name: "View Day",
-                    icon: function(opt, $itemElement, itemKey, item) {
+                    icon: function (opt, $itemElement, itemKey, item) {
                         $itemElement.html('<span class="fa fa-calendar"></span> View Day');
                         return 'context-menu-icon-updated';
                     }
                 },
                 "create": {
                     name: "Create Event",
-                    icon: function(opt, $itemElement, itemKey, item) {
+                    icon: function (opt, $itemElement, itemKey, item) {
                         $itemElement.html('<span class="fa fa-plus"></span> Create Event');
                         return 'context-menu-icon-updated';
                     }
                 },
                 "rule": {
                     name: "Create Rule",
-                    icon: function(opt, $itemElement, itemKey, item) {
+                    icon: function (opt, $itemElement, itemKey, item) {
                         $itemElement.html('<span class="fa fa-edit"></span> Create Rule');
                         return 'context-menu-icon-updated';
                     }
@@ -188,7 +188,7 @@ var calendar = {
             }
         });
     },
-    set_event_time: function(id, start, end) {
+    set_event_time: function (id, start, end) {
         $.ajax({
             url: helper.baseUrl + 'booking/set_event_time',
             type: "POST",
@@ -198,7 +198,7 @@ var calendar = {
                 start: start.format("YYYY-MM-DD HH:mm"),
                 end: end.format("YYYY-MM-DD HH:mm")
             }
-        }).done(function() {
+        }).done(function () {
             flashalert.success("Appointment was updated");
             //Set appointmnt in google calendar if the attendee has a google account
             $.ajax({
@@ -212,41 +212,41 @@ var calendar = {
             });
         })
     },
-    attendee_filter: function() {
+    attendee_filter: function () {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Attendees" id="attendee-select"><option value=""></option></select></div>');
         var elem = $('#calendar').find('#attendee-select');
         elem.selectpicker();
         calendar.load_attendees(elem);
     },
-    status_filter: function() {
+    status_filter: function () {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Events" id="status-select">' +
-                '<option value="">All Events</option>' +
-                '<option value="1" selected>Confirmed</option>' +
-                '<option value="0">Cancelled</option>' +
+            '<option value="">All Events</option>' +
+            '<option value="1" selected>Confirmed</option>' +
+            '<option value="0">Cancelled</option>' +
             '</select></div>');
         var elem = $('#calendar').find('#status-select');
         elem.selectpicker();
     },
-	month_filter:function(){
-		 $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
-           "<div class='input-group date' id='month-picker' style='display:inline;width:50px;margin:5px 0 0 10px '>"+
-                    "<input type='text' name='cal_date' style='display:none' />"+
-                    "<span class='input-group-addon' style='display:inline; padding:0; background:none; border:none'>"+
-                        "<span class='fa fa-calendar'></span>"+
-                    "</span>"+
-                "</div>"
+    month_filter: function () {
+        $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
+            "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
+            "<input type='text' name='cal_date' style='display:none' />" +
+            "<span class='input-group-addon' style='display:inline; padding:0; background:none; border:none'>" +
+            "<span class='fa fa-calendar'></span>" +
+            "</span>" +
+            "</div>"
         );
-        $('#month-picker').datetimepicker({
+        $('#datetimepicker2').datetimepicker({
             defaultDate: moment(),
-            format: 'YYYY-MM',
+            format: 'YYYY-MM-DD',
             enabledHours: false,
-            viewMode: 'months',
-        }).on('dp.change', function(ev) {
+            viewMode: 'days',
+        }).on('dp.change', function (ev) {
             $('#calendar').fullCalendar('gotoDate', new Date($('input[name="cal_date"]').val()));
         });
 
-	},
-    load_attendees: function(elem, attendee) {
+    },
+    load_attendees: function (elem, attendee) {
         $.ajax({
             url: helper.baseUrl + 'calendar/get_calendar_users',
             type: "POST",
@@ -254,15 +254,15 @@ var calendar = {
             data: {
                 campaigns: $('#campaign-cal-select').val()
             }
-        }).done(function(response) {
+        }).done(function (response) {
             var $options = "<option value=''>All Attendees</options>";
-            $.each(response.data, function(k, v) {
+            $.each(response.data, function (k, v) {
                 $options += "<option " + (v.id == attendee ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
             });
             elem.html($options).selectpicker('refresh');
         });
     },
-    load_rules: function() {
+    load_rules: function () {
         $.ajax({
             url: helper.baseUrl + 'calendar/get_appointment_rules/by_user',
             type: "POST",
@@ -270,12 +270,12 @@ var calendar = {
             data: {
                 users: $('#attendee-select').val()
             }
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 calendar.clear_calendar_rules();
-                $.each(response.data, function(key, value) {
+                $.each(response.data, function (key, value) {
                     var title = '';
-                    $.each(value, function(i, rule) {
+                    $.each(value, function (i, rule) {
                         var reason = "";
                         if (rule.reason.length > 0) {
                             var reason = ": " + rule.reason;
@@ -292,7 +292,7 @@ var calendar = {
                     }
 
                 });
-                setInterval(function() {
+                setInterval(function () {
                     $('[data-toggle="tooltip"]').tooltip({
                         container: 'body',
                         placement: 'bottom',
@@ -302,18 +302,18 @@ var calendar = {
             }
         });
     },
-    clear_calendar_rules: function() {
-        $.each($('#calendar').find('.tt-month'), function(i, k) {
+    clear_calendar_rules: function () {
+        $.each($('#calendar').find('.tt-month'), function (i, k) {
             $(this).tooltip('destroy');
             $(this).removeClass('tt-month');
         });
-        $.each($('#calendar').find('.tt-week'), function(i, k) {
+        $.each($('#calendar').find('.tt-week'), function (i, k) {
             $(this).tooltip('destroy');
             $(this).remove();
         });
 
     },
-    rule_modal: function(date, create) {
+    rule_modal: function (date, create) {
         var mheader = "Appointment Rules";
         var mbody = '<ul class="nav nav-tabs" role="tablist">' +
             '<li role="presentation" ' + (!create ? 'class="active"' : '') + '><a href="#apprules" aria-controls="apprules" role="tab" data-toggle="tab">Rules</a></li>' +
@@ -368,12 +368,12 @@ var calendar = {
         $('#appointment-slot-select').selectpicker();
         $modal.find('.block-day').datetimepicker({
             format: 'DD/MM/YYYY'
-        }).on("dp.hide", function(e) {
+        }).on("dp.hide", function (e) {
             $modal.find('.block-day-end').data("DateTimePicker").minDate(e.date);
         });
         $modal.find('.block-day-end').datetimepicker({
             format: 'DD/MM/YYYY'
-        }).on("dp.hide", function(e) {
+        }).on("dp.hide", function (e) {
             $modal.find('.block-day').data("DateTimePicker").maxDate(e.date);
         });
         if (date) {
@@ -381,7 +381,7 @@ var calendar = {
             $modal.find('input[name="date_to"]').val(timestamp_to_uk(new Date(date)));
         }
     },
-    show_rules_in_day: function(date) {
+    show_rules_in_day: function (date) {
         $.ajax({
             url: helper.baseUrl + 'booking/get_appointment_rules_by_date',
             type: "POST",
@@ -390,14 +390,14 @@ var calendar = {
                 date: date,
                 user_id: $('#attendee-select').val()
             }
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.data.length > 0) {
                 var rules = "",
                     date_col = "";
                 scroller_class = "";
                 date_col += '<th>Date</th>';
                 rules += '<div id="scroller-div"><table class="table ajax-table small"><thead><tr><th>Date</th><th>Attendee</th><th>Slot</th><th>Availability</th><th>Reason</th><th>Remove</th></tr></thead><tbody>';
-                $.each(response.data, function(key, value) {
+                $.each(response.data, function (key, value) {
                     rules +=
                         '<tr>' +
                         '<td>' + value.uk_date + '</td>' +
@@ -417,7 +417,7 @@ var calendar = {
             }
         });
     },
-    get_slots_in_group: function(id) {
+    get_slots_in_group: function (id) {
         var slot_select = $('#appointment-slot-select');
         slot_select.prop('disabled', true).selectpicker('refresh');
         $.ajax({
@@ -427,10 +427,10 @@ var calendar = {
             data: {
                 id: id
             }
-        }).done(function(response) {
+        }).done(function (response) {
             slot_select.html('')
             if (response.length > 0) {
-                $.each(response, function(i, row) {
+                $.each(response, function (i, row) {
                     slot_select.append('<option data-subtext="' + row.slot_description + '" value="' + row.appointment_slot_id + '">' + row.slot_name + '</option>');
                 });
                 slot_select.prop('disabled', false).selectpicker('refresh');
@@ -441,14 +441,14 @@ var calendar = {
 
         });
     },
-    save_rules: function() {
+    save_rules: function () {
         $.ajax({
             url: helper.baseUrl + 'admin/save_date_slots',
             type: "POST",
 
             dataType: "JSON",
             data: $modal.find('form').serialize()
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 calendar.load_rules();
                 flashalert.success("Rule was saved");
@@ -458,7 +458,7 @@ var calendar = {
             }
         });
     },
-    delete_rule: function(id, date) {
+    delete_rule: function (id, date) {
         $.ajax({
             url: helper.baseUrl + 'admin/delete_date_slots',
             type: "POST",
@@ -466,7 +466,7 @@ var calendar = {
             data: {
                 id: id
             }
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 flashalert.success("Rule was deleted");
                 calendar.show_rules_in_day(date);
