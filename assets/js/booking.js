@@ -35,7 +35,7 @@ var calendar = {
             minTime: '07:00',
             maxTime: '20:00',
             slotDuration: '00:30:00',
-            height: 700,
+            //height: 700,
             header: {
                 left: calendar.left_buttons,
                 center: 'title',

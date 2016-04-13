@@ -13,17 +13,17 @@ class Cron_model extends CI_Model
     }
 	
 	public function set_primary(){
-	$qry = "select urn from records where urn not in(select urn from contacts where `primary`=1)";
+	$qry = "select distinct urn from contacts where urn not in(select urn from contacts where `primary`=1)";
 	foreach($this->db->query($qry)->result_array() as $row){
 			$update = "update contacts set `primary` = 1 where urn = '{$row['urn']}' order by contact_id limit 1";
 			$this->db->query($update);
 	}
-	$qry = "select contact_id from contacts where contact_id not in(select contact_id from contact_addresses where `primary`=1)";
+	$qry = "select distinct contact_id from contact_addresses where contact_id not in(select contact_id from contact_addresses where `primary`=1)";
 	foreach($this->db->query($qry)->result_array() as $row){
 			$update = "update contact_addresses set `primary` = 1 where contact_id = '{$row['contact_id']}' order by address_id limit 1";
 			$this->db->query($update);
 	}
-		$qry = "select contact_id from contacts where contact_id not in(select contact_id from contact_telephone where `primary`=1)";
+		$qry = "select distinct contact_id from contact_telephone where contact_telephone not in(select contact_id from contact_telephone where `primary`=1)";
 	foreach($this->db->query($qry)->result_array() as $row){
 			$update = "update contact_telephone set `primary` = 1 where contact_id = '{$row['contact_id']}' order by telephone_id limit 1";
 			$this->db->query($update);
