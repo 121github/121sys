@@ -13,6 +13,7 @@ class Booking extends CI_Controller
         $this->project_version = $this->config->item('project_version');
 		$this->load->model('Booking_model');
         $this->load->model('Appointments_model');
+        $this->load->model('Form_model');
 	}
 	
 		 public function get_times()
@@ -42,10 +43,19 @@ class Booking extends CI_Controller
 	
 	
 	public function index(){
+        //Get the campaign_triggers if exists
+        $campaign_triggers = array();
+        if(isset($_SESSION['current_campaign'])) {
+            if ($_SESSION['current_campaign']) {
+                $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($_SESSION['current_campaign']);
+            }
+        }
+
 		$data = array(
             'campaign_access' => $this->_campaigns,
             'title' => 'Bookings',
             'page' => 'Bookings',
+            "campaign_triggers" => $campaign_triggers,
 			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css','plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.css'),
 			'javascript'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.js",'plugins/bootstrap-toggle/bootstrap-toggle.min.js',"plugins/fullcalendar-2.6.1/gcal.js","plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js",
 			'booking.js?v' . $this->project_version));
@@ -226,6 +236,7 @@ class Booking extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $appointment_id = $this->input->post("appointment_id");
             $data = $this->input->post("data");
+            $description = $this->input->post("description");
             $event_status = $this->input->post("event_status");
             if (!($data)) {
                 //Get the appointment data
@@ -257,7 +268,7 @@ class Booking extends CI_Controller
                     $event = new Google_Service_Calendar_Event(array(
                         'summary' => $data['title'],
                         'location' => $data['postcode'],
-                        'description' => $data['text'],
+                        'description' => ($description?$description:$data['text']),
                         'status' => ($event_status?$event_status:"confirmed"),
                         'start' => array(
                             'dateTime' => $start_date->format('Y-m-d\TH:i:s\Z'),

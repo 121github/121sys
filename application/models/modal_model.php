@@ -9,44 +9,45 @@ class Modal_model extends CI_Model
         parent::__construct();
 
     }
-	
-	public function get_modal_fields($id,$modal_type){
-		if($modal_type=="1"){
-		$campaign = $this->db->query("select campaign_id from records where urn = '$id'")->row()->campaign_id;	
+
+	public function get_modal_fields($id, $modal_type)
+	{
+		if ($modal_type == "1") {
+			$campaign = $this->db->query("select campaign_id from records where urn = '$id'")->row()->campaign_id;
 		}
-		if($modal_type=="2"){
-		$campaign = $this->db->query("select campaign_id from appointments join records using(urn) where appointment_id = '$id'")->row()->campaign_id;
+		if ($modal_type == "2") {
+			$campaign = $this->db->query("select campaign_id from appointments join records using(urn) where appointment_id = '$id'")->row()->campaign_id;
 		}
 
-		$get_modal_query = "select id from modal_config where modal_id = '$modal_type' and ((user_id is null or user_id = '".$_SESSION['user_id']."') and (campaign_id is null or campaign_id = '$campaign')) order by user_id desc, campaign_id desc limit 1";
+		$get_modal_query = "select id from modal_config where modal_id = '$modal_type' and ((user_id is null or user_id = '" . $_SESSION['user_id'] . "') and (campaign_id is null or campaign_id = '$campaign')) order by user_id desc, campaign_id desc limit 1";
 		$modal_config_id = $this->db->query($get_modal_query)->row()->id;
-		
+
 		$query = "select * from modals join modal_config using(modal_id) join modal_columns on modal_config.id = modal_columns.modal_config_id join modal_datafields using(column_id) join datafields using(datafield_id) left join record_details_fields on datafield_title = field where modal_id = $modal_type and modal_config_id = '$modal_config_id' order by column_sort,modal_datafields.sort";
 
-		if($this->db->query($query)->num_rows()){
-		$fields = $this->db->query($query)->result_array();
+		if ($this->db->query($query)->num_rows()) {
+			$fields = $this->db->query($query)->result_array();
 		} else {
-		return false;	
+			return false;
 		}
-		
+
 		$visible_fields = array();
-		foreach($fields as $field){
-		$visible_fields['modal'][] = $field; 
-		$visible_fields['fields'][] = array("data" => !empty($field['datafield_alias'])?$field['datafield_alias']:$field['datafield_select']);
-		$visible_fields['headings'][] = empty($field['field_name'])?$field['datafield_title']:$field['field_name'];
-		$visible_fields['select'][] = "if(".$field['datafield_select']." is null,'-',".$field['datafield_select'].")" ." `".$field['datafield_title']."`";
-		$visible_fields['tables'][] = $field['datafield_table'];
+		foreach ($fields as $field) {
+			$visible_fields['modal'][] = $field;
+			$visible_fields['fields'][] = array("data" => !empty($field['datafield_alias']) ? $field['datafield_alias'] : $field['datafield_select']);
+			$visible_fields['headings'][] = empty($field['field_name']) ? $field['datafield_title'] : $field['field_name'];
+			$visible_fields['select'][] = "if(" . $field['datafield_select'] . " is null,'-'," . $field['datafield_select'] . ")" . " `" . $field['datafield_title'] . "`";
+			$visible_fields['tables'][] = $field['datafield_table'];
 		}
-		
-foreach($visible_fields['headings'] as $k => $heading){
-			if(in_array($heading,$this->custom_fields)){
-				$current_campaign = (isset($_SESSION['current_campaign'])?$_SESSION['current_campaign']:'');
-				$this->db->where(array("urn"=>$id,"field"=>$heading));
-				$this->db->join("records","records.campaign_id=record_details_fields.campaign_id",'LEFT');
-		$field = $this->db->get('record_details_fields')->row_array();
-		if(count($field)){
-		$visible_fields['headings'][$k] = @$field['field_name'];
-		}
+
+        foreach ($visible_fields['headings'] as $k => $heading) {
+			if (in_array($heading, $this->custom_fields)) {
+				$current_campaign = (isset($_SESSION['current_campaign']) ? $_SESSION['current_campaign'] : '');
+				$this->db->where(array("urn" => $id, "field" => $heading));
+				$this->db->join("records", "records.campaign_id=record_details_fields.campaign_id", 'LEFT');
+				$field = $this->db->get('record_details_fields')->row_array();
+                if (count($field)) {
+					$visible_fields['headings'][$k] = @$field['field_name'];
+				}
 			}
 		}
 		return $visible_fields;
@@ -60,129 +61,135 @@ foreach($visible_fields['headings'] as $k => $heading){
 		}	
 		return $field_names;
 	}
-	
-	public function get_record($options,$urn){
-			
-	 $tables = $options['tables'];	
-	$table_columns = $options['select'];
 
-		$datafield_ids = array();
-		
-		foreach($table_columns as $k=>$col){
-			$title = $options['headings'][$k];
-			$datafield_ids[$k] = 0;	
-		if(strpos($col,"custom_")!==false){
-			$split = explode("_",$col);
-			$datafield_ids[$k] = intval($split[1]);			
-			$table_columns[$k] = "t_".intval($split[1]).".value '$title'";
-		} 
-		}
-		
-		$required_select_columns = array("r.urn","r.campaign_id");
-	        foreach ($required_select_columns as $required) {
+    public function get_record($options, $urn)
+    {
+
+        $tables = $options['tables'];
+        $table_columns = $options['select'];
+
+        $datafield_ids = array();
+
+        foreach ($table_columns as $k => $col) {
+            $title = $options['headings'][$k];
+            $datafield_ids[$k] = 0;
+            if (strpos($col, "custom_") !== false) {
+                $split = explode("_", $col);
+                $datafield_ids[$k] = intval($split[1]);
+                $table_columns[$k] = "t_" . intval($split[1]) . ".value '$title'";
+            }
+        }
+
+        $required_select_columns = array("r.urn", "r.campaign_id");
+        foreach ($required_select_columns as $required) {
             if (!in_array($required, $table_columns)) {
                 $table_columns[] = $required;
             }
         }
-		
-	  $join = array();
-	  $selections = implode(",", $table_columns);
-        $qry = "select $selections
-                from records r ";	
 
-        //the joins for all the tables are stored in a helper
-        $table_joins = table_joins();
-        $join_array = join_array();
-		$tablenum=0;
-		
-  foreach ($tables as $k=>$table) {
-			if($table=="custom_panels"){ $tablenum++;
-			$field_id = $datafield_ids[$k];
-				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
-			}
-			
-			if($table<>"custom_panels"){
-            if (array_key_exists($table, $join_array)) {
-                foreach ($join_array[$table] as $t) {
-                    $join[$t] = $table_joins[$t];
-                }
-            } else {
-                $join[$table] = $table_joins[$table];
-            }
-        }
-		}
-
-        foreach ($join as $join_query) {
-            $qry .= $join_query;
-        }
-		$qry .= " where r.urn = '$urn' ";
-		return $this->db->query($qry)->row_array();
-	}
-
-	public function get_appointment($options,$id){
-		 $tables = $options['tables'];
-		$required_tables = array("appointments","campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users","appointment_types");
-		  foreach ($required_tables as $rt) {
-            if (!in_array($rt, $tables)) {
-                $tables[] = $rt;
-            }
-        }
-	$table_columns = $options['select'];
-	$datafield_ids = array();
-		
-		foreach($table_columns as $k=>$col){
-			$title = $options['headings'][$k];
-			$datafield_ids[$k] = 0;	
-		if(strpos($col,"custom_")!==false){
-			$split = explode("_",$col);
-			$datafield_ids[$k] = intval($split[1]);			
-			$table_columns[$k] = "t_".intval($split[1]).".value '$title'";
-		} 
-		}
-	
-	   $required_select_columns = array("a.appointment_id","r.campaign_id");
-	        foreach ($required_select_columns as $required) {
-            if (!in_array($required, $table_columns)) {
-                $table_columns[] = $required;
-            }
-        }
-	  $join = array();
-	  $selections = implode(",", $table_columns);
+        $join = array();
+        $selections = implode(",", $table_columns);
         $qry = "select $selections
                 from records r ";
 
         //the joins for all the tables are stored in a helper
         $table_joins = table_joins();
         $join_array = join_array();
-	 $tablenum=0;
-	  $tableappnum=0;
-        foreach ($tables as $k=>$table) {
-			if($table=="custom_panels"){ $tablenum++;
-		
-			$field_id = $datafield_ids[$k];
-				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
-			}
-			if($table=="custom_panels_appointments"){ $tableappnum++;
-			$field_id = $datafield_ids[$k];
-				$join[] = " left join (select id,appointment_id from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id') mc_$field_id on mc_$field_id.appointment_id =  a.appointment_id left join custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
-			}
-			if($table<>"custom_panels"){
-            if (array_key_exists($table, $join_array)) {
-                foreach ($join_array[$table] as $t) {
-                    $join[$t] = @$table_joins[$t];
+        $tablenum = 0;
+
+        foreach ($tables as $k => $table) {
+            if ($table == "custom_panels") {
+                $tablenum++;
+                $field_id = $datafield_ids[$k];
+                $join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+            }
+
+            if ($table <> "custom_panels") {
+                if (array_key_exists($table, $join_array)) {
+                    foreach ($join_array[$table] as $t) {
+                        $join[$t] = $table_joins[$t];
+                    }
+                } else {
+                    $join[$table] = $table_joins[$table];
                 }
-            } else {
-                 $join[$table] = @$table_joins[$table];
             }
         }
-		}
 
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
-		$qry .= " where a.appointment_id = '$id' group by a.appointment_id";
-		return $this->db->query($qry)->row_array();
-	}
+        $qry .= " where r.urn = '$urn' ";
+
+        return $this->db->query($qry)->row_array();
+    }
+
+    public function get_appointment($options, $id)
+    {
+        $tables = $options['tables'];
+        $required_tables = array("appointments", "campaigns", "companies", "company_addresses", "contacts", "contact_addresses", "contact_locations", "company_locations", "appointment_locations", "ownership", "record_planner", "record_planner_user", "ownership", "outcomes", "appointment_attendees", "appointment_users", "appointment_types");
+        foreach ($required_tables as $rt) {
+            if (!in_array($rt, $tables)) {
+                $tables[] = $rt;
+            }
+        }
+        $table_columns = $options['select'];
+        $datafield_ids = array();
+
+        foreach ($table_columns as $k => $col) {
+            $title = $options['headings'][$k];
+            $datafield_ids[$k] = 0;
+            if (strpos($col, "custom_") !== false) {
+                $split = explode("_", $col);
+                $datafield_ids[$k] = intval($split[1]);
+                $table_columns[$k] = "t_" . intval($split[1]) . ".value '$title'";
+            }
+        }
+
+        $required_select_columns = array("a.appointment_id", "r.campaign_id");
+        foreach ($required_select_columns as $required) {
+            if (!in_array($required, $table_columns)) {
+                $table_columns[] = $required;
+            }
+        }
+        $join = array();
+        $selections = implode(",", $table_columns);
+        $qry = "select $selections
+                from records r ";
+
+        //the joins for all the tables are stored in a helper
+        $table_joins = table_joins();
+        $join_array = join_array();
+        $tablenum = 0;
+        $tableappnum = 0;
+        foreach ($tables as $k => $table) {
+            if ($table == "custom_panels") {
+                $tablenum++;
+
+                $field_id = $datafield_ids[$k];
+                $join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+            }
+            if ($table == "custom_panels_appointments") {
+                $tableappnum++;
+                $field_id = $datafield_ids[$k];
+                $join[] = " left join (select id,appointment_id from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id') mc_$field_id on mc_$field_id.appointment_id =  a.appointment_id left join custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+            }
+            if ($table <> "custom_panels") {
+                if (array_key_exists($table, $join_array)) {
+                    foreach ($join_array[$table] as $t) {
+                        $join[$t] = @$table_joins[$t];
+                    }
+                } else {
+                    $join[$table] = @$table_joins[$table];
+                }
+            }
+        }
+
+        foreach ($join as $join_query) {
+            $qry .= $join_query;
+        }
+        $qry .= " where a.appointment_id = '$id' group by a.appointment_id";
+        return $this->db->query($qry)->row_array();
+    }
 	
 	
 	public function get_record_options($urn){
