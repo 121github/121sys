@@ -23,11 +23,6 @@ class Cron_model extends CI_Model
 			$update = "update contact_addresses set `primary` = 1 where contact_id = '{$row['contact_id']}' order by address_id limit 1";
 			$this->db->query($update);
 	}
-		$qry = "select distinct contact_id from contact_telephone where contact_telephone not in(select contact_id from contact_telephone where `primary`=1)";
-	foreach($this->db->query($qry)->result_array() as $row){
-			$update = "update contact_telephone set `primary` = 1 where contact_id = '{$row['contact_id']}' order by telephone_id limit 1";
-			$this->db->query($update);
-	}
 	}
 	
 	public function set_null_pots(){
