@@ -575,7 +575,7 @@ class Data extends CI_Controller
         $form['added_by'] = $_SESSION['user_id'];
 
         $company = array();
-        $contact = array();
+        $contact = array("primary"=>"1");
 
 
         if (!empty($form['company_name'])) {

@@ -29,6 +29,8 @@ class Cron extends CI_Controller
     public function morning_crons()
     {
 		session_write_close();
+		//set single contacts/addresses/numbers as primary
+		$this->set_primary();		
 		//fix 0 pots - they should be null
 		$this->set_null_pots();
 		//set all company/contact telephone numbers where
@@ -48,6 +50,10 @@ class Cron extends CI_Controller
 		//restrict any agents that have left //this uses the agent name so if we ever get 2 users with the same name it could cause problems
 		$this->remove_leavers();
     }
+	
+public function set_primary(){
+		$this->Cron_model->set_primary();
+}	
 public function set_null_pots(){
 		$this->Cron_model->set_null_pots();
 }
