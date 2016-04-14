@@ -30,6 +30,7 @@ var campaign_functions = {
         $('.tps-contact-label').hide();
     },
     appointment_setup: function (start, attendee, urn) {
+		console.log("LHS app setup");
         $.ajax({
             url: helper.baseUrl + 'appointments/get_unlinked_data_items',
             data: {urn: urn},
@@ -79,7 +80,8 @@ var campaign_functions = {
     },
 
     appointment_edit_setup: function () {
-        $modal.find('.attendees-selection').html($modal.find('.attendees-selection').html().replace('Please choose the attendee(s) ', 'Please choose the surveyor '));
+		console.log("LHS app edit setup");
+        $modal.find('.attendees-selection p').html($modal.find('.attendees-selection p').html().replace('Choose the attendee(s) ', 'Choose the surveyor '));
 
 
         $modal.find('.startpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);

@@ -903,7 +903,7 @@ var modals = {
             if (!option_exists && data.access_address) {
                 $mbody.find('#accessaddresspicker').prepend('<option value="' + data.access_address + '|' + data.access_postcode + '">' + data.access_address + '</option>');
             }
-
+			var attendee=false;
             //cycle through the rest of the fields and set them in the form
             $.each(data, function (k, v) {
                 $mbody.find('[name="' + k + '"]').val(v);
@@ -913,7 +913,8 @@ var modals = {
                 }
                 if (k == "attendees") {
                     $.each(v, function (i, user_id) {
-                        $mbody.find('#attendee-select option[value="' + user_id + '"]').prop('selected', true).attr('selected','selected');
+                        $mbody.find('#attendee-select option[value="' + user_id + '"]');
+						attendee = user_id;
                     });
                 }
                 if (k == "branch_id") {
@@ -931,7 +932,9 @@ var modals = {
 
             modals.set_appointment_confirmation();
 			$modal.find('#appointment-confirmed').hide();
-
+			if(attendee){
+			modals.set_appointment_attendee(attendee);
+			}
             modals.set_appointment_access_address(data.access_address);
 			
                 if (typeof campaign_functions.appointment_edit_setup !== "undefined") {
@@ -951,7 +954,7 @@ var modals = {
 		}
 	},
 	set_appointment_attendee: function (attendee) {
-        $modal.find('.attendeepicker').selectpicker('val', [attendee]);
+        $modal.find('#attendee-select').selectpicker('val', [attendee]);
     },
     set_appointment_start: function (start) {
         var m = moment(start, "YYYY-MM-DD HH:mm");
@@ -1043,14 +1046,15 @@ var modals = {
             dataType: "JSON",
             type: "POST",
             beforeSend: function () {
-                $('#contact-select').hide();
+                $modal.find('#contact-select').hide();
             },
             error: function () {
-                $('#contact-select').parent().append('<p class="text-error"><small>Please add a contact before setting an appointment<small></p>');
+               $modal.find('#contact-select').parent().append('<p class="text-error"><small>Please add a contact before setting an appointment<small></p>');
             },
         }).done(function (result) {
+			console.log(result);
 			if(result.length>0){
-            $('#contact-select').show();
+            $modal.find('#contact-select').show();
             $.each(result, function (k, v) {
                 var selected = "";
                 if (v.id == contact_id || result.length=="1") {
@@ -1059,13 +1063,13 @@ var modals = {
 					//select the first contact by default
 					  selected = "selected";
 				}
-                $('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+                $modal.find('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
             });
 
-            $('#contact-select').selectpicker();
+            $modal.find('#contact-select').selectpicker();
 
 			} else {
-			$('.close-modal').trigger('click');
+			$modal.find('.close-modal').trigger('click');
 			flashalert.danger("You must add a contact before setting an appointment");	
 			}
         });
