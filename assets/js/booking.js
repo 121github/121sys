@@ -112,7 +112,7 @@ var calendar = {
                         window.location.href = helper.baseUrl + 'booking/google';
                     }
                 },
-                rulesButton: {
+                rulesButton: { 
                     text: 'Rules',
                     click: function () {
                         calendar.rule_modal();
@@ -125,7 +125,7 @@ var calendar = {
                     url: helper.baseUrl + 'booking/events',
                     type: 'POST',
                     data: function () { // a function that returns an object
-                        var attendee = $('#attendee-select').val();
+                        var attendee = $('#calendar').find('#attendee-select').val();
                         var status = (typeof $('#status-select').val() != "undefined" ? $('#status-select').val() : 1);
                         return {
                             attendee: attendee,
@@ -280,7 +280,7 @@ var calendar = {
             type: "POST",
             dataType: "JSON",
             data: {
-                users: $('#attendee-select').val()
+                users: $('#calendar').find('#attendee-select').val()
             }
         }).done(function (response) {
             if (response.success) {
@@ -400,7 +400,7 @@ var calendar = {
             dataType: "JSON",
             data: {
                 date: date,
-                user_id: $('#attendee-select').val()
+                user_id: $('#calendar').find('#attendee-select').val()
             }
         }).done(function (response) {
             if (response.data.length > 0) {
