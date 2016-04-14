@@ -253,10 +253,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         $this->email->initialize($config);
         
         $this->email->from('no-reply@121system.com');
-        $this->email->to('bradf@121customerinsight.co.uk,nicolab@121customerinsight.co.uk,rachaeln@121customerinsight.co.uk,charlotte.jenning@121customerinsight.co.uk');
-        //$this->email->to('cvproject@121customerinsight.co.uk');
-        $this->email->cc('');
-        $this->email->bcc('');
+        $this->email->to('bradf@121customerinsight.co.uk,nicolab@121customerinsight.co.uk,rachaeln@121customerinsight.co.uk,charlotte.jennings@121customerinsight.co.uk');
         $this->email->subject('A new file was uploaded to '.$_SESSION['base']);
         $this->email->message('A new file was uploaded to '.$_SESSION['base'].' by ' . $_SESSION['name']);
         

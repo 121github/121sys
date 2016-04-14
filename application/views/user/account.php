@@ -100,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-primary" style="display: none">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 <i class="fa fa-google">oogle Account</i>
                 <div class="google-account pull-right"></div>

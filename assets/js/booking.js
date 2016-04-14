@@ -1,6 +1,8 @@
 var fullcalendar;
 var calendar = {
     init: function () {
+		this.click_date = "";
+		this.view = "agendaWeek";
         $modal.on('click', '[data-toggle="tab"]', function (e) {
             if ($(this).attr('href') == "#apprules") {
                 $modal.find('#save-rule-btn').hide();
@@ -32,6 +34,7 @@ var calendar = {
 
         this.fullCalendar = $('#calendar').fullCalendar({
             timeFormat: 'H:mm',
+			columnFormat: 'ddd D/M',
             minTime: '07:00',
             maxTime: '20:00',
             slotDuration: '00:30:00',
@@ -48,6 +51,11 @@ var calendar = {
             eventResize: function (event) {
                 calendar.set_event_time(event.id, event.start, event.end)
             },
+			 dayClick: function (date, jsEvent, view) {
+				calendar.click_date=date;
+				calendar.view=view;
+				return false;
+    },
             eventAfterRender: function (event, element, view) {
                 var cancelled = "";
                 //Disable drag and drop if the event is cancelled
@@ -86,7 +94,7 @@ var calendar = {
                 }
             },
             eventAfterAllRender: function (event, element, view) {
-                $('#calendar .fc-row td').addClass('context-menu-one');
+                $('#calendar .fc-row td,#calendar .fc-time-grid .fc-widget-content').addClass('context-menu-one');
             },
             editable: true,
             loading: function (bool) {
@@ -136,25 +144,29 @@ var calendar = {
         $('#calendar').fullCalendar('destroy');
     },
     init_context_menu: function () {
-        $.contextMenu({
+       $.contextMenu({
+		   autoHide:true,
+		   trigger:'left',
             selector: '.context-menu-one',
-            callback: function (key, options) {
+            callback: function(key, options) {
                 var elem = options.$trigger;
                 var cell = elem.closest('td');
                 var cellIndex = cell[0].cellIndex
-                if (elem.closest('div').hasClass('fc-content-skeleton')) {
-                    var date = elem.closest('.fc-row').find('.fc-bg td:eq(' + cellIndex + ')').attr('data-date');
-                } else {
-                    var date = elem.attr('data-date');
-                }
                 if (key == "view") {
+					var date = moment(calendar.click_date).format('YYYY-MM-DD')
                     $('#calendar').fullCalendar('changeView', 'agendaDay');
-                    $('#calendar').fullCalendar('gotoDate', moment(date, 'YYYY-MM-DD'));
+                    $('#calendar').fullCalendar('gotoDate', date);
                 }
-                if (key == "create") {
-                    modals.search_records("create-appointment", date);
+				 if (key == "create") {
+					var date = moment(calendar.click_date).format('YYYY-MM-DD HH:mm')
+                   if(typeof record == "undefined"){
+				    modals.search_records("create-appointment", date);
+				   } else {
+                    modals.create_appointment(record.urn,date);
+				   }
                 }
                 if (key == "rule") {
+					var date = moment(calendar.click_date).format('YYYY-MM-DD')
                     calendar.rule_modal(date, 'create');
                     calendar.show_rules_in_day(date);
                 }
