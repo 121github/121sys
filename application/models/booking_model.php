@@ -54,6 +54,23 @@ class Booking_model extends CI_Model
 		return $this->db->query($query)->result_array();
 
 	}
+
+	public function getGoogleEventId($appointment_id) {
+		$query = "SELECT google_id from appointments where appointment_id = ".$appointment_id;
+
+		$result = $this->db->query($query)->result_array();
+
+		return (!empty($result)?$result[0]['google_id']:null);
+
+	}
+
+	public function saveGoogleEventId($appointment_id, $google_id) {
+
+		$this->db->where('appointment_id', $appointment_id);
+		return  $this->db->update('appointments', array(
+			"google_id" => $google_id
+		));
+	}
 	
 	   /**
      * Get appointment rules by date

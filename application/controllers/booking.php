@@ -292,7 +292,8 @@ class Booking extends CI_Controller
                         )
                     ));
 
-                    $event->setId("appointment".$appointment_id."attendee".$attendee);
+                    $google_event_id = $this->Booking_model->getGoogleEventId($appointment_id);
+                    $event->setId(($google_event_id?$google_event_id:"appointment".$appointment_id."attendee".$attendee));
 
                     $calendarId = ($google_token[0]['calendar_id']?$google_token[0]['calendar_id']:'primary');
 
@@ -316,12 +317,16 @@ class Booking extends CI_Controller
                                 array_push($msg,"Event ".$event->getId()." updated on google calendar to the calendar ".$calendarId);
                             }
 
+                            $google_event_id = $this->Booking_model->saveGoogleEventId($appointment_id, $event->getId());
+
                             break;
 
                         } catch (Google_Exception $e) {
                             //If the event doesn't exist, and is the last calendar checked on the list insert a new one
                             if ($calendar == end($calendarList)) {
                                 $result = $service->events->insert($calendarId, $event);
+                                //Save the google_event_id on the appointment
+                                $google_event_id = $this->Booking_model->saveGoogleEventId($appointment_id, $event->getId());
                                 array_push($msg,"Event ".$event->getId()." added on google calendar on the calendar ".$calendarId);
                                 break;
                             }
