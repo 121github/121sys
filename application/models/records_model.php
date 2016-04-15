@@ -1210,7 +1210,7 @@ return $comments;
         $hist["role_id"] = $_SESSION['role'];
         $hist["group_id"] = $_SESSION['group'];
         $hist["team_id"] = (!empty($_SESSION['team']) ? $_SESSION['team'] : NULL);
-		$hist['loaded'] = $_SESSION['record_loaded'];
+		$hist['loaded'] = isset($_SESSION['record_loaded'])?$_SESSION['record_loaded']:date('Y-m-d H:i:s');
         $this->db->insert("history", elements(array(
             "urn",
             "campaign_id",

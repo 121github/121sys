@@ -19,6 +19,29 @@ class Modals extends CI_Controller
         $this->load->model('Filter_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+	
+	public function update_record($urn=false){
+	if(isset($_SESSION['record_loaded'])){
+	unset($_SESSION['record_loaded']);	
+	}
+	$features=array();
+	if(!$urn){
+		$urn = $this->input->post('urn');	
+	}
+	$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
+	$details  = $this->Records_model->get_details($urn, $features);	
+	$progress_options = $this->Form_model->get_progress_descriptions();
+    $outcomes         = $this->Records_model->get_outcomes($campaign_id);
+	$outcome_reasons  = $this->Records_model->get_outcome_reasons($campaign_id);	
+	$data = array("outcome_reasons"=>$outcome_reasons,"outcomes"=>$outcomes,"progress_options"=>$progress_options,"details"=>$details);
+	if ($this->input->is_ajax_request()) {
+
+	$this->load->view('forms/record_update_form.php',$data);
+	} else {
+	return $data;
+	}
+	}
+	
     public function user_account_details()
     {
         if ($this->input->is_ajax_request()) {
@@ -207,7 +230,6 @@ class Modals extends CI_Controller
                 }
             endforeach;
             $data['addresses'] = $addresses;
-
             echo json_encode(array("success" => true, "data" => $data));
         }
     }

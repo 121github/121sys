@@ -2,6 +2,7 @@
 var $modal = $('#modal');
 var modals = {
     init: function () {
+		this.urn = "";
         modal_footer = $modal.find('.modal-footer');
         modal_header = $modal.find('.modal-title');
         modal_body = $modal.find('.modal-body');
@@ -31,6 +32,12 @@ var modals = {
 			var title = $('#contact-select option:selected').length>0?type+' with '+$('#contact-select option:selected').text():type;
             $modal.find('[name="title"]').val(title);
         }); 
+		$modal.on('click','#update-record-tab',function(e){
+			modals.update_record($(this).attr('data-urn'));
+			$('#tabs li a').one('click',function(){
+				modal_footer.find('a').show();
+			});
+		});
 		$(document).on('click','[data-modal="contact-us"]',function(e){
 			  modals.contact_us();
 		});
@@ -324,6 +331,23 @@ var modals = {
                  modals.show_table_views(table);
             });
         },
+	update_record:function(urn){
+		$.ajax({
+            url: helper.baseUrl + 'modals/update_record',
+			data: { urn:urn },
+            type: "POST",
+            dataType: "HTML",
+			beforeSend:function(){
+			 $modal.find('#update-record-panel').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");	
+			 modal_footer.find('a').hide();
+			}
+        }).done(function(response) {
+			modals.urn = urn;
+			$modal.find('#update-record-panel').html(response);
+			modals.load_plugins();
+		});
+		
+	},
 	delete_view:function(view,table){
 		$.ajax({
             url: helper.baseUrl + 'ajax/delete_view',
@@ -1430,21 +1454,7 @@ var modals = {
         if (!$modal.hasClass('in')) {
             modals.show_modal();
         }
-
-        $modal.find('.selectpicker').selectpicker();
-
-        $modal.find('.tt').tooltip();
-        $modal.find('.datetime').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm',
-			sideBySide:true
-        });
-        $modal.find('.dateonly').datetimepicker({
-            format: 'DD/MM/YYYY'
-        });
-        $modal.find('.dateyears').datetimepicker({
-            viewMode: 'years',
-            format: 'DD/MM/YYYY'
-        });
+		modals.load_plugins();
         //this function automatically sets the end date for the appointment 1 hour ahead of the start date
 		$(".startpicker").on("dp.show", function (e) {
 			/*$('#attendee-select').prop('disabled',true).html('<option value="loading">Please wait</option>').selectpicker('refresh').selectpicker('val','loading');*/
@@ -1462,6 +1472,23 @@ var modals = {
         $modal.find("#tabs").tab();
 		modals.set_size();
     },
+	load_plugins:function(){
+		
+        $modal.find('.selectpicker').selectpicker();
+
+        $modal.find('.tt').tooltip();
+        $modal.find('.datetime').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm',
+			sideBySide:true
+        });
+        $modal.find('.dateonly').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
+        $modal.find('.dateyears').datetimepicker({
+            viewMode: 'years',
+            format: 'DD/MM/YYYY'
+        });
+	},
 	get_available_attendees:function(sql){
 		$.ajax({
 			url:helper.baseUrl+'appointments/get_available_attendees',
@@ -1638,7 +1665,10 @@ var modals = {
         if (helper.permissions['planner'] > 0) {
             mbody += '<li><a role="tab" data-toggle="tab" href="#tab-planner">Planner</a></li>';
         }
-
+		helper.permissions['update'] = 1;
+ 		if (helper.permissions['update'] > 0) {
+            mbody += '<li><a role="tab" data-toggle="tab" data-urn="'+data.urn+'" id="update-record-tab" href="#update-record-panel">Update</a></li>';
+        }
         mbody += '</ul><div class="tab-content">';
         //records tab
         mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row">';
@@ -1764,14 +1794,14 @@ var modals = {
                 mbody += planner_form;
 				mbody += ' <button class="marl btn btn-info pull-right" id="save-planner" data-urn="' + data.urn + '" href="#">Save to planner</button> ';
                 mbody += ' <button style="display:none" class="btn btn-danger pull-right" style="display:none" id="remove-from-planner" data-urn="' + data.urn + '" href="#">Remove from planner</button> ';
+				   mbody += '<div class="clearfix"></div>'
             }
-			mbody += '<div class="clearfix"></div>'
-
-        }
-
-
+			mbody += '</div>'
+			mbody += '<div role="tabpanel" class="tab-pane" id="update-record-panel">';
         mbody += '</div>';
-        merge_btn = "";
+    
+        }
+		  merge_btn = "";
         if (typeof record !== "undefined"&&record.urn!==data.urn) {
             merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
         }

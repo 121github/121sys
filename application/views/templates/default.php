@@ -284,8 +284,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
 <script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- Campaign triggers-->
 <?php if (!empty($campaign_triggers)) { ?>
     <?php foreach($campaign_triggers as $trigger) { ?>
@@ -299,11 +299,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript">
 	helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['user_id'])){ ?>
-    helper.user_id = $.parseJSON('<?php echo $_SESSION['user_id'] ?>');
+    helper.user_id = '<?php echo $_SESSION['user_id'] ?>';
     <?php } ?>
     <?php if(isset($_SESSION['permissions'])){ ?>
     helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
-    helper.roles = $.parseJSON('<?php echo $_SESSION['role'] ?>');
+    helper.role = '<?php echo $_SESSION['role'] ?>';
     helper.current_postcode = false;
     <?php } ?>
     <?php if(@!empty($_SESSION['current_postcode'])){ ?>
@@ -431,12 +431,15 @@ fixed: "isFixed"
 
     });
 </script>
-<?php //load specific javascript files set in the controller
+<script src="<?php echo base_url() . "assets/js/record_update.js?v" . $this->config->item('project_version'); ?>"></script>
+<?php 
+//load specific javascript files set in the controller
 if (isset($javascript)):
     foreach ($javascript as $file):?>
         <script src="<?php echo base_url(); ?>assets/js/<?php echo $file ?>"></script>
     <?php endforeach;
 endif; ?>
+
 <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript) || @in_array("location.js?v" . $this->config->item('project_version'), $javascript)) { ?>
     <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript)) {
         $callback = "&callback=initializemaps";

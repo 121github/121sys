@@ -1,5 +1,5 @@
 <?php if(isset($collapsable)){ ?> 
-  <div id="record-panel" class="panel panel-primary">
+  <div id="update-record-panel" class="panel panel-primary">
       <div class="panel-heading clearfix" role="button" data-toggle="collapse"  data-target="#record-panel-slide" aria-expanded="true" aria-controls="record-panel-slide">Update Record
         </div>
       <div id="record-panel-slide" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
