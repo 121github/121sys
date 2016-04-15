@@ -118,6 +118,9 @@ php_go() {
 	sed -i "s/display_startup_errors = Off/display_startup_errors = On/g" ${php_config_file}
 	sed -i "s/display_errors = Off/display_errors = On/g" ${php_config_file}
 
+    #Set the timezone
+    sudo sed -i "s/;date.timezone =.*/date.timezone = Europe\/London/" ${php_config_file}
+
 	if [ ! -f "{$xdebug_config_file}" ]; then
 		cat << EOF > ${xdebug_config_file}
 zend_extension=xdebug.so
