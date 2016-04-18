@@ -21,6 +21,14 @@ class Ajax extends CI_Controller
         $this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+	public function delete_data_panel(){
+		$data_id = $this->input->post('data_id');
+		$this->db->where(array("data_id"=>$data_id));	
+		$this->db->delete("custom_panel_data");
+		$this->db->where(array("data_id"=>$data_id));	
+		$this->db->delete("custom_panel_values");
+		echo json_encode(array("success"=>true));	
+	}
 
 	public function delete_view(){
 	$id = $this->input->post('id');

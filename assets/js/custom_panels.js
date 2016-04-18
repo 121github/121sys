@@ -31,8 +31,41 @@ var custom_panels = {
             $(this).addClass('active').addClass('btn-primary').removeClass('btn-default');
             $(this).closest('.toggle-buttons').next('input').val($(this).text());
         });
-
+		
+		 $modal.on('click', '#delete-custom-panel', function() {
+			var urn = false;
+            var data_id = $(this).attr('custom-data-id');
+			if(typeof record!=="undefined"){
+			urn = record.urn;
+			}
+            custom_panels.confirm_delete_data(data_id,urn);
+        });
     },
+	confirm_delete_data: function (data_id,urn) {
+            var mheader = "Delete data";
+            var mbody = "Are you sure you want to delete this?";
+            modals.load_modal(mheader, mbody);
+			modals.default_buttons();
+            $('.confirm-modal').click(function () {
+				$modal.modal('hide');
+                custom_panels.delete_data(data_id,urn);
+            });
+        },
+	 delete_data: function(data_id,urn) {
+        $.ajax({
+            url: helper.baseUrl + 'ajax/delete_data_panel',
+            data: {
+               data_id:data_id,
+			   urn:urn
+            },
+            dataType: "JSON",
+            type: "POST"
+		}).done(function(){
+			custom_panels.load_all_panels();
+		}).fail(function(){
+			flashalert.danger("There was an error deleting the data");
+		});
+		},
     load_all_panels: function() {
         $('.custom-panel').each(function() {
             var id = $(this).attr('custom-panel-id');
@@ -53,6 +86,11 @@ var custom_panels = {
                 $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.panel-body').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
             }
         }).done(function(response) {
+			if(response.data.length==0){
+				$('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.edit-custom-btn').hide();
+			} else {
+				$('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.edit-custom-btn').show();
+			}
             if (display == "table") {
                 var html = custom_panels.load_table(response);
             } else {
@@ -254,7 +292,12 @@ var custom_panels = {
             });
             html += "</div></form>";
             var mheader = $('.custom-panel[custom-panel-id="' + panel_id + '"] .panel-heading').find('.title').text();
-            var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-custom-panel" custom-panel-id="' + panel_id + '">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+            var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-custom-panel" custom-panel-id="' + panel_id + '">Save</button> '
+			if(data_id){
+			mfooter += '<button type="submit" class="btn btn-danger pull-right" id="delete-custom-panel" custom-data-id="' + data_id + '">Delete</button>'	
+			}
+			
+			mfooter +=  ' <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 			//load the modal
             modals.load_modal(mheader, html, mfooter);
 			

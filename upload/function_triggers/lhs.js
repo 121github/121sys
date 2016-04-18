@@ -149,7 +149,7 @@ var campaign_functions = {
                 survey_date = null;
             }
             var update_status = false;
-            if (response.data[appointment.job_id]['Job Status']['value'].length < 2 || response.data[appointment.job_id]['Job Status']['value'] == "Appointment Possible"
+            if (response.data[appointment.job_id]['Job Status']['value'].length < 2 || response.data[appointment.job_id]['Job Status']['value'] == "Prospect" || response.data[appointment.job_id]['Job Status']['value'] == "Appointment Possible"
                 || response.data[appointment.job_id]['Job Status']['value'] == "Appointment TBC"
                 || response.data[appointment.job_id]['Job Status']['value'] == "Appointment Confirmed") {
 
@@ -229,21 +229,21 @@ var campaign_functions = {
             appointment_id = $form.find('input[name="3"]').val();
         }
         //Get the Client email address on the record (contact on the appointment)
-        if ($('[name="appointment_contact_email"]').val().length > 0) {
+        if ($('[name="appointment_contact_email"]').length > 0) {
             var client_email = $('[name="appointment_contact_email"]').val();
         }
 
         //Job Status is Paid
         if ($form.find("[name='6']").val() === "Paid") {
             //Send email Referral Scheme Email to Account Role group email
-            lhs.send_template_email(urn, 2, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Referral scheme email", appointment_id);
+            lhs.send_template_email(urn, 2, "Role Group Account", 'rowena@lhsurveying.co.uk', "", "", "Referral scheme email", appointment_id);
 
             //Send email Receipt of Payment Email to Client email address on the record
-            lhs.send_template_email(urn, 6, "Client", 'bradf@121customerinsight.co.uk', "", "", "Receipt of payement email", appointment_id);
+            lhs.send_template_email(urn, 6, "Client", 'rowena@lhsurveying.co.uk', "", "", "Receipt of payement email", appointment_id);
             //Hard Copy Required is Yes
             if ($form.find("[name='10']").val() === "Yes") {
                 //Send email Hard Copy Email to the Account Role group email
-                lhs.send_template_email(urn, 5, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Hard copy notification", appointment_id);
+                lhs.send_template_email(urn, 5, "Role Group Account", 'rowena@lhsurveying.co.uk', "", "", "Hard copy notification", appointment_id);
 
             }
 
@@ -251,17 +251,15 @@ var campaign_functions = {
         //Job Status is Paid & Issued
         else if ($form.find("[name='6']").val() === "Paid & Issued") {
             //Send email Feedback Email to Client email address on the record
-            lhs.send_template_email(urn, 8, "Client", 'bradf@121customerinsight.co.uk', "", "", "Feedback email", appointment_id);
+            lhs.send_template_email(urn, 8, "Client", 'rowena@lhsurveying.co.uk', "", "", "Feedback email", appointment_id);
         }
         //Job Status is Confirmed Appointment
         else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
             //Send email Appointment Confirmation Email to Client email
-            lhs.send_template_email(urn, 3, "Client", 'bradf@121customerinsight.co.uk', "", "", "Appointment confirmation", appointment_id);
+            lhs.send_template_email(urn, 3, "Client", 'rowena@lhsurveying.co.uk', "", "", "Appointment confirmation", appointment_id);
 
         }
-
-        //Set the title
-        var appointment_id = $form.find("[name='3']").val();
+		if(appointment_id){
         //Get the appointment data
         $.ajax({
             url: helper.baseUrl + 'appointments/get_appointment',
@@ -280,9 +278,9 @@ var campaign_functions = {
             var additional_services = $form.find("[name='11']").val();
             campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
         }).fail( function() {
-            flashalert.danger("ERROR: Error saving the appointment title!")
+            flashalert.danger("Error saving the appointment title")
         });
-
+		}
         record.email_panel.load_panel();
     },
     custom_items_loaded: function () {

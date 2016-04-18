@@ -35,21 +35,21 @@
                   <p>
                     <label id="name-label">Company Name</label>
                   </p>
-                  <input type="text" name="" id="name" class="form-control"  placeholder="Enter the name of the company"/>
+                  <input type="text" name="" id="name" class="form-control  input-sm"  placeholder="Enter the name of the company"/>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                  <div class="panel panel-default" style="overflow:visible">
-                    <div class="panel-heading" role="tab" id="headingOne">
+                  <div class="panel" style="overflow:visible">
+                    <div class="" role="tab" id="headingOne">
 
                           <div style="display:inline-block;width:30%">
                           <label>Postcode</label>
-                            <input type="text" style="display:inline-block" name="postcode" id="postcode"  class="form-control" placeholder="Postcode"/>
+                            <input type="text" style="display:inline-block" name="postcode" id="postcode"  class="form-control input-sm" placeholder="Postcode"/>
                             </div>
                         
 
                                  <div style="display:inline-block;width:35%">
                             <label>House No.</label>
-                            <input style="display:inline-block" type="text" class="form-control" placeholder="House number" id="house-number" name="" value="">
+                            <input style="display:inline-block" type="text" class="form-control  input-sm" placeholder="House number" id="house-number" name="" value="">
                             </div>
 
                                <div style="display:inline-block;width:30%">
@@ -58,13 +58,14 @@
                           </div>
                           <div class="form-group"  style="padding-top:10px">
                             <div id="addresspicker-div" style="display:none">
-                              <select class="form-control addresspicker" placeholder="Address" id="addresspicker">
+                              <select class="form-control  input-sm addresspicker" placeholder="Address" id="addresspicker">
                               </select>
                             </div>
                           </div>
                    
               
-                      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse" aria-expanded="true" aria-controls="collapseOne" id="complete-company-address">Show the complete address... </a>
+                      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse" aria-expanded="true" aria-controls="collapseOne" id="complete-company-address">Toggle full address view <i class="fa fa-caret-down"></i>
+</a>
                       <div id="collapse" class="panel-collapse collapse" style="padding-top:5px">
                         <div class="form-group">
                           <input type="text" name="" id="add1" class="form-control input-sm" placeholder="First line of address"/>
@@ -98,7 +99,7 @@
                   <p>
                     <label>Telephone (optional)</label>
                   </p>
-                  <input type="text" name="" id="telephone"  class="form-control" placeholder="Enter the telephone"/>
+                  <input type="text" name="" id="telephone"  class="form-control  input-sm" placeholder="Enter the telephone"/>
                 </div>
               </div>
               

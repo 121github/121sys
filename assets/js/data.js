@@ -828,15 +828,15 @@ var backup_restore = {
 /*the class below is for the add_record page. It gets initialized by the add_record.php view*/
 var add_record = {
     init: function () {
-        $(document).on('change', '#campaign', function () {
+         $('#record-form').on('change', '#campaign', function () {
             add_record.show_campaign_type();
         });
-		 $(document).on("click", "#continue-btn", function (e) {
+		 $('#record-form').on("click", "#continue-btn", function (e) {
 			  e.preventDefault();
-			  add_record.check_dupes();
+			  add_record.check_form();
 
 		 });
-        $(document).on("click", "#save-btn", function (e) {
+         $('#record-form').on("click", "#save-btn", function (e) {
             e.preventDefault();
 			if($('#campaign').val()==""){
 				flashalert.danger("Please select a campaign");	
@@ -854,15 +854,15 @@ var add_record = {
         $('#addresspicker-div').hide();
         $('.record-form').find('input[name="house-number"]').numeric();
 
-        $(document).on('click', '#get-address', function (e) {
+         $('#record-form').on('click', '#get-address', function (e) {
             e.preventDefault();
             add_record.get_addresses();
         });
-
- 
-
+ $('#record-form').on('keypress','#postcode',function(e){
+	$('#postcode').css('border-color','');
+ });
     },
-	check_dupes: function(){
+	check_form: function(){
         if($('#name').val()==""){
             flashalert.danger("Please enter a name");
         }
@@ -873,11 +873,30 @@ var add_record = {
 			$('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> Can not check for duplicates without a postcode. Click the create new button to add it anyway</p>");
 			$('#save-btn').show();
 		} else {
+			 $.ajax({
+            url: helper.baseUrl + 'ajax/validate_postcode',
+            data: {
+                postcode: $('#postcode').val()
+            },
+            dataType: 'JSON',
+            type: 'POST'
+        }).done(function (response) {
+            //if postcode is valid
+            if (response.success) {
+				add_record.check_dupes();
+			} else {
+				flashalert.danger("Postcode is not valid");
+				$('#postcode').css('border-color','red');
+			}
+		});
+		}
+	},
+	check_dupes:function(){
 		 $.ajax({
             url: helper.baseUrl + 'search/quicksearch',
             type: "POST",
             dataType: "JSON",
-            data: $('#container-fluid form').serialize(),
+            data: $('#record-form').serialize(),
 			beforeSend:function(){
 			  $('#dupes-found').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
 			}
@@ -908,7 +927,7 @@ var add_record = {
 		flashalert.danger(response.error);
 		}
 		})
-		}
+		
 	},
     show_campaign_type: function () {
 		if($('#campaign').val().length>0){

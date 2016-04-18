@@ -1,308 +1,448 @@
 var simulation = "";
 
 var campaign_functions = {
-        init: function() {
-            $(record.record_panel).find('.panel-heading').html($(record.record_panel).find('.panel-heading').html().replace("Record Details", "Progress Summary"));
+    init: function () {
+        $('#top-campaign-select').hide();
+        if (record.role == "16") {
+            $('div.custom-panel,#custom-panel,#email-panel').hide();
+        }
+    },
+    record_setup_update: function () {
+        $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
+        $('.progress-outcome').selectpicker('refresh');
+    },
+    contact_form_setup: function () {
+        $('input[name="dob"]').closest('.form-group').hide();
+        $('input[name="website"]').closest('.form-group').hide();
+        $('input[name="facebook"]').closest('.form-group').hide();
+        $('input[name="linkedin"]').closest('.form-group').hide();
 
-            if (helper.role > 2) {
-                $(record.record_panel).find(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
+        $('.position-label').html("Company");
+        $('input[name="position"]').attr('placeholder', 'Company Name')
+
+        $('select[name="tps"]').closest('.form-group').hide();
+    },
+    contact_panel_setup: function () {
+        $('.Job-panel-label').html("Company");
+        $('.tps-btn').hide();
+    },
+    contact_tabs_setup: function () {
+        $('.tps-contact-label').hide();
+    },
+    appointment_setup: function (start, attendee, urn) {
+		console.log("LHS app setup");
+        $.ajax({
+            url: helper.baseUrl + 'appointments/get_unlinked_data_items',
+            data: {urn: urn},
+            dataType: "JSON",
+            type: "POST"
+        }).done(function (response) {
+            $options = "";
+            if (response.data.length > 0) {
+                data_options = "";
+                $.each(response.data, function (k, row) {
+                    data_options += "<option value='" + row.data_id + "'>Delivery #" + row.data_id + ": Created on " + row.created_on + "</option>";
+                });
+                $data_items = $("<div class='form-group'><p>Which job is this appointment related to?</p><select data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
+
+                $data_items.insertBefore($('#select-appointment-address'));
+                $('#data-items').selectpicker();
             }
-            $(document).on('click', '[data-modal="delete-appointment"]', function() {
-                $('[name="cancellation_reason"]').text("Appointment cancelled").hide();
-            });
-            //Find closest branches on load
-            var interval = setInterval(function() {
-                campaign_functions.get_branch_info();
-                clearInterval(interval);
-            }, 3000);
+        });
 
-            $(document).on("click", ".branch-filter", function(e) {
-                e.preventDefault();
-                $(this).closest('ul').prev('button').text($(this).find('.branch_name').text());
-                $(this).closest('ul').find('a').css("color", "black");
-                quick_planner.branch_id = $(this).attr('id');
-                quick_planner.branch_name = $(this).attr('branch-name');
-                quick_planner.driver_id = $(this).attr('data-bus-attendees');
 
-                $(this).closest('tr').find('input[name="hub-choice"]').attr('data-branch', quick_planner.branch_id);
-                $(this).closest('tr').find('input[name="hub-choice"]').attr('data-branch-name', quick_planner.branch_name);
-                $(this).closest('tr').find('input[name="hub-choice"]').val(quick_planner.driver_id)
+        $modal.find('.startpicker').data("DateTimePicker").destroy();
+        $modal.find('.endpicker').data("DateTimePicker").destroy();
+        $modal.find('.startpicker').datetimepicker({
+            stepping: 30,
+            format: 'DD/MM/YYYY HH:mm',
+            sideBySide: true,
+            enabledHours: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+            daysOfWeekDisabled: [0, 6]
+        });
+        $modal.find('.endpicker').datetimepicker({
+            stepping: 30,
+            format: 'DD/MM/YYYY HH:mm',
+            sideBySide: true,
+            enabledHours: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+            daysOfWeekDisabled: [0, 6]
+        });
 
-                if ($(this).closest('tr').find('input[name="hub-choice"]').prop('checked')) {
-                    $("#quick-planner-panel .branch-name-text").text(quick_planner.branch_name);
-                    quick_planner.load_planner();
+        if (start) {
+            modals.set_appointment_start(start);
+        }
+
+        $modal.find('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
+
+        //Title no editable
+        $modal.find('input[name="title"]').prop('readonly', true);
+
+    },
+
+    appointment_edit_setup: function () {
+		console.log("LHS app edit setup");
+        $modal.find('.attendees-selection p').html($modal.find('.attendees-selection p').html().replace('Choose the attendee(s) ', 'Choose the surveyor '));
+
+
+        $modal.find('.startpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+        $modal.find('.startpicker').data("DateTimePicker").daysOfWeekDisabled([0, 6]);
+
+        $modal.find('.endpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+        $modal.find('.endpicker').data("DateTimePicker").daysOfWeekDisabled([0, 6]);
+
+        //When the type is changed
+        modal_body.find('.typepicker').change(function () {
+            var selectedId = $(this).val();
+
+            //If we select Confirmed, confirmedButton -> on
+            if (selectedId == 3) {
+                $('#appointment-confirmed').bootstrapToggle('on');
+                $modal.find('input[name="appointment_confirmed"]').val("1");
+            }
+            else {
+                $('#appointment-confirmed').bootstrapToggle('off');
+                $modal.find('input[name="appointment_confirmed"]').val("0");
+            }
+        });
+        $('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
+        $modal.off('change', '.typepicker');
+        $modal.on('change', '.typepicker', function () {
+            //get_appointment_title();
+        });
+
+        //Title no editable
+        $modal.find('input[name="title"]').prop('readonly', true);
+    },
+    save_appointment: function (appointment) {
+        //Get the additional info
+        $.ajax({
+            url: helper.baseUrl + 'ajax/load_custom_panel',
+            type: "POST",
+            dataType: "JSON",
+            data: {id: "1", urn: appointment.urn}
+        }).done(function (response) {
+            var start_date = new Date(appointment.start.substr(0, 10));
+            if (appointment.appointment_type_id == "3") {
+                var express = false;
+                if (typeof response.data[appointment.job_id]['Express report'] !== "undefined") {
+                    if (response.data[appointment.job_id]['Express report']['value'] == "Yes") {
+                        express = "Yes";
+                    }
                 }
-                $('.branch-distance-' + $(this).attr('data-region')).text($(this).attr('data-distance'));
-                $(this).css("color", "green");
-                $('#closest-branch').prop('class', 'pointer btn btn-xs btn-default');
-            });
-            $(document).on('change', 'input[name="hub-choice"]', function() {
-                quick_planner.driver_id = $(this).val();
-                quick_planner.branch_id = $(this).attr('data-branch');
-                quick_planner.branch_name = $(this).attr('data-branch-name');
-                quick_planner.region_id = $(this).attr('data-region');
-                $("#quick-planner-panel .branch-name-text").text(quick_planner.branch_name);
-                //$('a.filter[data-val="' + driver_id + '"]').trigger('click');
-               quick_planner.load_planner()
-            })
-            //Find closest branches on new address
-            $modal.on("click", ".save-contact-address", function(e) {
-                var interval = setInterval(function() {
-                    campaign_functions.get_branch_info();
-                    clearInterval(interval);
-                }, 1000);
-            });
-
-            if (record.role == "11") {
-                $('#availability-attendee-filter').find('[data-val="47"]').trigger('click');
-                $('#custom-panel .collapse').collapse('show');
-                $('.custom-panel .collapse').collapse('show');
-                $('#appointment-panel .collapse').collapse('show');
-                $('#quick-planner-panel .collapse').collapse('show');
-				//quick_planner.branch_id = 4;
-				quick_planner.driver_id = 47;
-            }
-
-        },
-        contact_form_setup: function() {
-            $('input[name="dob"]').closest('.form-group').hide();
-            $('input[name="position"]').closest('.form-group').hide();
-            $('input[name="website"]').closest('.form-group').hide();
-            $('input[name="facebook"]').closest('.form-group').hide();
-            $('input[name="linkedin"]').closest('.form-group').hide();
-        },
-        appointment_setup: function(start) {
-            if (record.role == "11") {
-                //set up the form for the delivery role
-                modal_header.text("Create Delivery");
-                $modal.find('.branches-selection').prop('disabled', true);
-                $modal.find('.typepicker option[value=3],.typepicker option[value=5]').prop('disabled', true);
-                $modal.find('.attendeepicker option[value=47]').prop('selected', true);
-                $modal.find('.typepicker,.attendeepicker').selectpicker('refresh');
-				$options = $('#addresspicker').html();
-				
-				$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
-				data:{urn:record.urn},
-				dataType:"JSON",
-				type:"POST"
-				}).done(function(response){
-				$options = "";
-				if(response.data.length>0){
-					data_options = "";
-					$.each(response.data,function(k,row){
-						data_options += "<option value='"+row.data_id+"'>Delivery #"+row.data_id+": Created on "+row.created_on+"</option>";
-					});
-            $data_items = $("<div class='form-group'><p>Which delivery is this appointment related to?</p><select data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
-
-            $data_items.insertBefore($('#select-appointment-address'));
-            $('#data-items').selectpicker();
-				}
-			});
-				
-            } else {
-                campaign_functions.hsl_coverletter_address();
-                quick_planner.set_appointment_start(start);
-                quick_planner.set_appointment_attendee(quick_planner.driver_id);
-                campaign_functions.set_appointment_contact();
-
-                $modal.find('.branches-selection').show();
-                $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
-                $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
-            }
-            if (quick_planner.branch_id !== false) {
-                $modal.find('.branchpicker').selectpicker('val', quick_planner.branch_id).selectpicker('refresh');
-            }
-            $modal.find('.typepicker').trigger('change');
-        },
-        set_appointment_contact: function() {
-            $.ajax({
-                url: helper.baseUrl + 'webforms/get_webform_answers',
-                data: {
-                    urn: record.urn,
-                    webform_id: "1"
-                },
-                dataType: "JSON",
-                type: "POST"
-            }).done(function(response) {
-                if (response.success) {
-                    $modal.find('.contactpicker').selectpicker('val', [response.answers.a1]);
-                } else {
-                    alert("You have not completed the webform yet!");
+                //If the 'Express Report' tick box is selected
+                if (express === 'Yes') {
+                    //Survey Delivery Date should be populated with a date that is 2 working days post the start date
+                    start_date.setDate(start_date.getDate() + 2);
                 }
-            }).fail(function() {
-                flashalert.danger("There was an error finding the default contact");
-            });;
-        },
-        appointment_edit_setup: function() {
-            if (record.role == "11") {
-                modal_header.text("Create Delivery");
-                $modal.find('.branches-selection').prop('disabled', true);
-                $modal.find('.typepicker option[value=3],.typepicker option[value=5]').prop('disabled', true);
-                $modal.find('.typepicker').selectpicker('refresh');
-
-		
-            } else {
-                campaign_functions.hsl_coverletter_address();
-                $modal.find('.branches-selection').show();
-                $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
-                $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
+                else {
+                    //Survey Delivery Date should be populated with a date that is 5 working days post the start date
+                    start_date.setDate(start_date.getDate() + 5);
+                }
+                var month = start_date.getMonth() + 1;
+                var day = start_date.getDate();
+                survey_date = (('' + day).length < 2 ? '0' : '') + day + '/' +
+                    (('' + month).length < 2 ? '0' : '') + month + '/' +
+                    start_date.getFullYear();
             }
-        },
-        hsl_coverletter_address: function() {
-            $options = $('#addresspicker').html();
-            $cover_letter_address = $("<div class='form-group'><p>Please select the recipient address for the appointment confirmation letter</p><select data-width='100%' id='cl_addresspicker'><option value=''>Same as the appointment</option>" + $options + "</select></div>");
-            $cover_letter_address.find('option[value="Other"]').remove();
+            else {
+                //Set the date to null if the appointment is not confirmed
+                survey_date = null;
+            }
+            var update_status = false;
+            if (response.data[appointment.job_id]['Job Status']['value'].length < 2 || response.data[appointment.job_id]['Job Status']['value'] == "Appointment Possible"
+                || response.data[appointment.job_id]['Job Status']['value'] == "Appointment TBC"
+                || response.data[appointment.job_id]['Job Status']['value'] == "Appointment Confirmed") {
 
-            $cover_letter_address.insertBefore($('#select-appointment-address'));
-            $('#cl_addresspicker').selectpicker();
-
-            $modal.on('change', '#cl_addresspicker', function() {
+                if (appointment.appointment_type_id == "1") {
+                    update_status = "Appointment Possible";
+                } else if (appointment.appointment_type_id == "2") {
+                    update_status = "Appointment TBC";
+                } else if (appointment.appointment_type_id == "3") {
+                    update_status = "Appointment Confirmed";
+                    //send the appointment confirmation email
+                    //lhs.send_template_email(appointment.urn, 3, "Client", appointment.contact_email, "","","Appointment confirmation",appointmment.appointment_id);
+                }
+            }
+            if (update_status) {
                 $.ajax({
-                    url: helper.baseUrl + 'ajax/add_cover_letter_address',
-                    data: {
-                        coverletter_address: $(this).val()
-                    },
+                    url: helper.baseUrl + 'records/update_custom_data_field',
+                    type: "POST",
                     dataType: "JSON",
-                    type: "POST"
+                    data: {
+                        urn: appointment.urn,
+                        data_id: appointment.job_id,
+                        field_id: 6,
+                        value: update_status
+                    }
                 })
-            });
-        },
-        get_branch_info: function() {
-            var $panel = $('#branch-info');
+            }
+            //Save the appointment additional info.
             $.ajax({
-                url: helper.baseUrl + 'ajax/get_branch_info',
+                url: helper.baseUrl + 'records/update_custom_data_field',
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    postcode: quick_planner.contact_postcode,
-                    branch_id: quick_planner.branch_id
+                    urn: appointment.urn,
+                    data_id: appointment.job_id,
+                    field_id: 9,
+                    value: survey_date
                 }
-            }).done(function(response) {
-                if (response) {
-                    var branch_info = "";
-                    branch_info += "<table class='table small table-condensed table-striped'>" +
-                        "<thead><tr><th>Hub</th><th>Branch</th><th>Distance</th></tr><thead>" +
-                        "<tbody>";
-
-                    $.each(response.branches, function(i, region) {
-                        var options = "";
-                        var default_branch_id = region.branches[0].id;
-                        var default_branch_name = region.branches[0].name;
-                        var default_distance = region.branches[0].distance;
-                        var first_attendee = region.brus_attendees;
-                        if (first_attendee.indexOf(',') >= 0) {
-                            first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
-                        }
-                        $.each(region.branches, function(i, branch) {
-                            var option_color = 'black';
-                            if (branch.id == region.default_branch_id) {
-                                default_branch_id = branch.id;
-                                default_branch_name = branch.name;
-                                default_distance = branch.distance;
-                                option_color = 'green';
-                            }
-                            options += "<li><a href='#' class='branch-filter' id='" + branch.id + "' style='color: " + option_color + "' branch-name='" + branch.name + "' data-bus-attendees='" + first_attendee + "' data-region='" + region.id + "' data-distance='" + branch.distance + "'>" +
-                                "<span class='branch_name'>" + branch.name + "</span>" +
-                                "<span style='font-size: 10px;'>" + " - " + branch.distance + "</span>" +
-                                "</a></li>";
-                        });
-
-                        branch_info += "<tr>" +
-                            "<td>" + region.name + "</td>" +
-                            "<td><div class='btn-group' style='width: 100%;'>" +
-                            "<button class='btn btn-default btn-xs dropdown-toggle' style='width: 100%; text-align: left' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
-                            default_branch_name +
-                            "</button>" +
-                            "<ul class='dropdown-menu'>" + options + "</ul>" +
-                            "</td>" +
-                            "<td class='branch-distance-" + region.id + "'>" + default_distance + "</td>" +
-                            "<td><input type='radio' name='hub-choice' data-branch='" + default_branch_id + "' data-branch-name='" + default_branch_name + "' data-region='" + region.id + "' value='" + first_attendee + "'/></td></tr>";
-                    });
-                    branch_info += "</tbody></table>";
-                    $panel.find('.panel-body').html(branch_info);
-
-                } else {
-                    $panel.find('.panel-body').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
+            }).done(function (response) {
+                if (typeof custom_panels != "undefined") {
+                    custom_panels.load_all_panels()
                 }
-            }).fail(function() {
-                $panel.find('.panel-body').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
             });
 
-
-        },
-        appointment_saved: function(appointment_id, state) {
-            if (record.role == 11) {
-				custom_panels.load_all_panels();	
-            }
-
-            //Send appointment_confirmation + cover_letter to hsl
-            var branch_id = null;
+            //Add the attendee to the ownership record list
             $.ajax({
-                url: helper.baseUrl + 'email/send_appointment_confirmation',
-                data: {
-                    appointment_id: appointment_id,
-                    branch_id: branch_id,
-                    state: state,
-                    send_to: 'bradf@121customerinsight.co.uk'//'HCletters@hslchairs.com'
-                },
+                url: helper.baseUrl + 'ajax/add_ownership',
                 type: "POST",
-                dataType: "JSON"
-            }).done(function(response) {
-
-            });
-        },
-		custom_items_loaded:function(){
-			    $('.custom-panel').find('.id-title').text("Delivery Number");
-		},
-		new_custom_item_setup:function(){
-			$modal.find('select[name=7] option[value=11]').prop('selected',true);
-			$modal.find('select[name=7]').selectpicker('refresh');
-		},
-        set_access_address: function() {
-            if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {
-                if ($('.accessaddresspicker option:selected').val().length <= 0) {
-                    $.each($('#accessaddresspicker option'), function() {
-                        if ($(this).attr('data-title') == "Access Detail Address") {
-                            $('#access-add-check').bootstrapToggle('on');
-                            $('#accessaddresspicker').selectpicker('val', $(this).val()).selectpicker('refresh');
-                        }
-                    });
+                dataType: "JSON",
+                data: {
+                    urn: appointment.urn,
+                    user_id: appointment.attendees[0]
                 }
+            });
+
+            //Set the title
+            var appointment_id = appointment.appointment_id;
+            var appointment_type_id = appointment.appointment_type_id;
+            var address = appointment.address;
+            var access_address = appointment.access_address;
+            var job_id = appointment.job_id;
+            var job_status = response.data[appointment.job_id]['Job Status']['value'];
+            var type_of_survey = response.data[appointment.job_id]['Type of survey']['value'];
+            var additional_services = response.data[appointment.job_id]['Additional services']['value'];
+            campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
+        });
+
+    },
+    load_custom_fields: function () {
+    },
+    edit_custom_fields: function () {
+    },
+    save_custom_panel: function ($form) {
+
+        var appointment_id = false;
+        var urn = $form.find("[name='urn']").val();
+        if ($form.find('input[name="3"]').val() !== "") {
+            appointment_id = $form.find('input[name="3"]').val();
+        }
+        //Get the Client email address on the record (contact on the appointment)
+        if ($('[name="appointment_contact_email"]').val().length > 0) {
+            var client_email = $('[name="appointment_contact_email"]').val();
+        }
+
+        //Job Status is Paid
+        if ($form.find("[name='6']").val() === "Paid") {
+            //Send email Referral Scheme Email to Account Role group email
+            lhs.send_template_email(urn, 2, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Referral scheme email", appointment_id);
+
+            //Send email Receipt of Payment Email to Client email address on the record
+            lhs.send_template_email(urn, 6, "Client", 'bradf@121customerinsight.co.uk', "", "", "Receipt of payement email", appointment_id);
+            //Hard Copy Required is Yes
+            if ($form.find("[name='10']").val() === "Yes") {
+                //Send email Hard Copy Email to the Account Role group email
+                lhs.send_template_email(urn, 5, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Hard copy notification", appointment_id);
+
+            }
+
+        }
+        //Job Status is Paid & Issued
+        else if ($form.find("[name='6']").val() === "Paid & Issued") {
+            //Send email Feedback Email to Client email address on the record
+            lhs.send_template_email(urn, 8, "Client", 'bradf@121customerinsight.co.uk', "", "", "Feedback email", appointment_id);
+        }
+        //Job Status is Confirmed Appointment
+        else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
+            //Send email Appointment Confirmation Email to Client email
+            lhs.send_template_email(urn, 3, "Client", 'bradf@121customerinsight.co.uk', "", "", "Appointment confirmation", appointment_id);
+
+        }
+
+        //Set the title
+        var appointment_id = $form.find("[name='3']").val();
+        //Get the appointment data
+        $.ajax({
+            url: helper.baseUrl + 'appointments/get_appointment',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                appointment_id: appointment_id
+            }
+        }).done( function (response){
+            var appointment_type_id = response.data.appointment_type_id;
+            var address = response.data.address;
+            var access_address = response.data.access_address;
+            var job_id = $form.find("[name='data_id']").val();
+            var job_status = $form.find("[name='6']").val();
+            var type_of_survey = $form.find("[name='7']").val();
+            var additional_services = $form.find("[name='11']").val();
+            campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
+        }).fail( function() {
+            flashalert.danger("ERROR: Error saving the appointment title!")
+        });
+
+        record.email_panel.load_panel();
+    },
+    custom_items_loaded: function () {
+        $('.custom-panel').find('.id-title').text("Job Number");
+        if (record.role == "16") {
+            $('.edit-detail-btn').hide();
+            $('#custom-panel').find('tr:contains(Quote)').hide();
+            $('.custom-panel').find('tr:contains(Quote)').hide();
+            $('.custom-panel').find('tr:contains(Invoice)').hide();
+            $('div.custom-panel,#custom-panel').show();
+        }
+    },
+    new_custom_item_setup: function () {
+
+    },
+    set_access_address: function () {
+        if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {
+            if ($('.accessaddresspicker option:selected').val().length <= 0) {
+                $.each($('#accessaddresspicker option'), function () {
+                    if ($(this).attr('data-title') == "Access Detail Address") {
+                        $('#access-add-check').bootstrapToggle('on');
+                        $('#accessaddresspicker').selectpicker('val', $(this).val()).selectpicker('refresh');
+                    }
+                });
             }
         }
+    },
+    set_appointment_title: function(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services) {
+        var title = "";
+        var type = "";
+        var add_services = "";
+
+        if (job_status != "Invoiced") {
+            title += job_id;
+        }
+
+        switch (appointment_type_id) {
+            case "1":
+                title += " [poss]";
+                break;
+            case "2":
+                title += " [tbc]";
+                break;
+            case "3":
+                title += " [conf]";
+                break;
+        }
+
+        switch (type_of_survey) {
+            case "Building Survey":
+                type = "BS";
+                break;
+            case "Home Buyer Report":
+                type = "HBR";
+                break;
+            case "General Structural Inspection":
+                type = "GSI";
+                break;
+            case "Specific Inspection":
+                type = "SSI";
+                break;
+            case "Site Visit":
+                type = "SV";
+                break;
+            case "Valuation":
+                type = "VAL";
+                break;
+            case "Schedule Of Condition":
+                type = "SOC";
+                break;
+            case "Structural Calculations":
+                type = "SCALC";
+                break;
+            case "Party Wall":
+                type = "PW";
+                break;
+        }
+
+        switch (additional_services) {
+            case "Valuation":
+                add_services = "VAL";
+                break;
+            case "Express Write Up Service":
+                add_services = "EXP";
+                break;
+            case "Platinum Plus":
+                add_services = "PP";
+                break;
+            case "High Level Images":
+                add_services = "HRP";
+                break;
+            case "Thermal Images":
+                add_services = "TI";
+                break;
+        }
+
+        if (access_address) {
+            title += " KA "+type+" "+add_services+" "+address;
+            title += " - KA "+access_address;
+        }
+        else {
+            title += " STP "+type+" "+add_services+" "+address;
+        }
+
+        //Update appointment title
+        $.ajax({
+            url: helper.baseUrl+'upload/function_triggers/lhs.php',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                "action": "update_appointment_title",
+                "appointment_id": appointment_id,
+                "title": title
+            }
+        }).done(function (response) {
+            if (response.success) {
+                flashalert.success(response.msg);
+                if (typeof record != "undefined") {
+                    record.appointment_panel.load_appointments();
+                }
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+
+        });
     }
-    /*
-    var quick_planner = {
-        planner_summary_hsl: function (data) {
-            simulation = data;
-            var table = "";
-            table += "<div class='table-responsive' style='overflow:auto; max-height:215px'><table class='small table table-condensed'><thead><tr><th>Date</th><th>Slots</th><th>Total Distance</th><th>Total Duration</th><th>Route</th><tr></thead><tbody>";
-            $.each(data.waypoints, function (date, waypoint) {
-                var btn_text = "Simulate";
-                var slots = data.slots[date];
-                var stats = data.stats[date];
-                var force = "";
-                if (slots.apps == slots.max_apps) {
-                    var btn_text = "Show";
-                }
-                if (typeof waypoint.datetime !== "undefined") {
-                    var time = waypoint.datetime;
-                }
-                if (typeof waypoint.datetime !== "undefined") {
-                    var time = waypoint.datetime;
-                }
-                var empty_tooltip = slots.apps == "0" ? " data-toggle='tooltip' data-html='true' data-placement='top' title='No appointments booked'" : "";
-                var tooltip = slots.reason ? " data-toggle='tooltip' data-html='true' data-placement='top' title='Not available: " + slots.reason + "'" : empty_tooltip;
-                var holiday = slots.reason ? "class='purple'" : "";
-                color = slots.apps >= slots.max_apps && slots.max_apps > 0 ? "class='danger'" : holiday;
-                table += "<tr " + color + "><td>" + waypoint[0].uk_date + "</td><td><div class='pointer show-apps' data-date='" + date + "' data-user='" + simulation.user_id + "' " + tooltip + " >" + slots.apps + "/" + slots.max_apps + "</div></td><td>" + stats[stats.length-1].distance.text + "</td><td>" + stats[stats.length-1].duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint[0].uk_date + "' " + force + " >Simulate</button></td></tr>";
 
+}
+
+var lhs = {
+    send_template_email: function (urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, email_name, appointment_id) {
+        if (recipients_to != "") {
+            $.ajax({
+                url: helper.baseUrl + 'email/send_template_email',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: urn,
+                    template_id: template_id,
+                    recipients_to_name: recipients_to_name,
+                    recipients_to: recipients_to,
+                    recipients_cc: recipients_cc,
+                    recipients_bcc: recipients_bcc,
+                    email_name: email_name,
+                    appointment_id: appointment_id
+                }
+            }).done(function (response) {
+                if (response.success === true) {
+                    flashalert.success(response.msg);
+                }
+                else if (response.success == false) {
+                    flashalert.danger(response.msg);
+                }
+            }).fail(function () {
+                flashalert.danger(msg);
             });
-            table += "</tbody></table></div>";
-            $('#quick-planner').html(table);
-            $('#quick-planner .show-apps[data-toggle="tooltip"]').tooltip();
-
+        }
+        else {
+            flashalert.danger("ERROR: No email address on: " + msg);
         }
     }
-    */
-    //add function to add to planner when an appointment is added/updated
+}
