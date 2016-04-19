@@ -193,12 +193,15 @@ class User extends CI_Controller
             }
 
         }
-		
-		if($this->uri->segment(3)&&in_array("admin users",$_SESSION['permissions'])){
-		$user_id = intval($this->uri->segment(3));
-		} else {
-        $user_id = $_SESSION['user_id'];
-		}
+
+        if (isset($_POST['user_id']) && in_array("admin users", $_SESSION['permissions'])) {
+            $user_id = $_POST['user_id'];
+        }
+        else if ($this->uri->segment(3) && in_array("admin users", $_SESSION['permissions'])) {
+            $user_id = intval($this->uri->segment(3));
+        } else {
+            $user_id = $_SESSION['user_id'];
+        }
 
         $users = $this->Form_model->get_users();
         $roles = $this->Form_model->get_roles();
@@ -235,7 +238,7 @@ class User extends CI_Controller
 
             //get the user access_token
             $google_token = $this->Booking_model->getGoogleToken($user[0]['user_id'],'google');
-            $user[0]['google'] = (isset($google_token[0])?$google_token[0]:array());
+            $user[0]['google'] = (isset($google_token[0]['access_token']));
 
             $aux = array();
             foreach ($user as $value) {

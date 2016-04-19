@@ -36,6 +36,8 @@ class Google extends CI_Controller
 //        $this->client->setScopes(array("https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/userinfo.email"));
 //        $this->client->setDeveloperKey('AIzaSyBimUzlpAP3mDdBVMlQLiG9K76rUU1ifKM');
 
+        $_SESSION['google_user_id'] = (isset($_SESSION['google_user_id'])?$_SESSION['google_user_id']:(isset($_GET['id'])?$_GET['id']:$_SESSION['user_id']));
+
         $scriptUri = base_url() . 'google/authcode';
         $this->client->setRedirectUri($scriptUri);
     }
@@ -56,6 +58,9 @@ class Google extends CI_Controller
             $this->client->authenticate($_GET['code']);
             $token = json_decode($this->client->getAccessToken(), true);
             //$_SESSION['api']['google']['token'] = $token;
+
+            $user_id = $_SESSION['google_user_id'];
+
             $data = array(
                 "api_name" => "google",
                 "access_token" => $token['access_token'],
@@ -64,19 +69,27 @@ class Google extends CI_Controller
                 "id_token" => $token['id_token'],
                 "refresh_token" => $token['refresh_token'],
                 "created" => $token['created'],
-                "user_id" => $_SESSION['user_id'],
+                "user_id" => $user_id,
                 "date_added" => date('Y-m-d H:i:s')
             );
 
-            $this->db->where(array("user_id" => $_SESSION['user_id'], "api_name" => "google"));
+            $this->db->where(array("user_id" => $user_id, "api_name" => "google"));
             $this->db->insert_update("apis", $data);
 
             $last_page = $_SESSION['last_page'];
+
             unset($_SESSION['last_page']);
+            unset($_SESSION['google_user_id']);
+
             $redirect_uri = $last_page;
-
-
             header('Location: ' . $redirect_uri);
+
+//            if ($user_id != $_SESSION['user_id']) {
+//                $redirect_uri = substr($redirect_uri, 0, strrpos( $redirect_uri, '/'));
+//            }
+//
+//            header('Location: ' . $redirect_uri.'/'.$user_id);
+
         }
 
         echo json_encode(array("success" => true));
@@ -88,10 +101,22 @@ class Google extends CI_Controller
         //if (isset($_SESSION['api']['google'])) {
         //    unset($_SESSION['api']['google']);
         //}
-        $this->db->where(array('user_id' => $_SESSION['user_id'], 'api_name' => 'google'));
+
+        $user_id = (isset($_GET['id'])?$_GET['id']:$_SESSION['user_id']);
+
+
+        $this->db->where(array('user_id' => $user_id, 'api_name' => 'google'));
         $this->db->delete('apis');
+
         $redirect_uri = $_SERVER['HTTP_REFERER'];
+
         header('Location: ' . $redirect_uri);
+
+//        if ($user_id != $_SESSION['user_id']) {
+//            $redirect_uri = substr($redirect_uri, 0, strrpos( $redirect_uri, '/'));
+//        }
+//
+//        header('Location: ' . $redirect_uri.'/'.$user_id);
     }
 }
 

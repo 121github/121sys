@@ -2988,6 +2988,187 @@ var modals = {
         }
     },
 
+    users: {
+        init: function() {
+            $(document).on('click','.add-google-calendar',function(e){
+                e.preventDefault();
+                modals.users.set_google_calendar();
+            });
+
+            $(document).on('click','.remove-google-calendar',function(e){
+                e.preventDefault();
+                modals.users.remove_google_calendar($(this).attr('data-id'), $(this).attr('data-calendar-id'));
+            });
+
+            $(document).on("change", "#campaign-select", function (e) {
+                e.preventDefault();
+                var campaign_selected = $('.add-google-calendar-form').find('#campaign-select option:selected').text();
+                $('.add-google-calendar-form').find('input[name="campaign_name"]').val(campaign_selected);
+            });
+
+            $(document).on("change", "#calendar-select", function (e) {
+                e.preventDefault();
+                var calendar_selected = $('.add-google-calendar-form').find('#calendar-select option:selected').text();
+                $('.add-google-calendar-form').find('input[name="calendar_name"]').val(calendar_selected);
+            });
+
+            $(document).on('click','.nav-tabs a[href="#view-calendars-tab"]',function(e){
+                $('.add-google-calendar').hide();
+            });
+
+            $(document).on('click','.nav-tabs a[href="#add-calendar-tab"]',function(e){
+                $('.add-google-calendar').show();
+            });
+
+            $modal.on("click", '.sync-google-calendar', function(e) {
+                e.preventDefault();
+                console.log("asds");
+                modals.users.sync_google_cal($(this).attr('data-id'), $(this).attr('data-user-id'));
+            });
+        },
+        add_google_calendar: function (user_id) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/load_add_google_calendar_form',
+                type: "POST",
+                data: {
+                    'user_id': user_id,
+                    'format': "html"
+                },
+                dataType: "HTML"
+            }).done(function (response) {
+                var mheader = "Google calendar";
+
+                var mbody = $(response);
+
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+                    '<button type="submit" class="btn btn-primary add-google-calendar">Save changes</button>';
+
+                modals.load_modal(mheader, mbody, mfooter);
+
+                modal_body.css('overflow','visible');
+                $('.info').tooltip();
+
+            });
+        },
+        set_google_calendar: function() {
+            //Validate fields are selected
+            var campaign_id = $('#campaign-select').selectpicker("val");
+            var calendar_id = $("#calendar-select").selectpicker("val");
+            if ((campaign_id && campaign_id != '') && (calendar_id && calendar_id != '')) {
+                $.ajax({
+                    url: helper.baseUrl + 'booking/set_google_calendar',
+                    type: "POST",
+                    data: $('.add-google-calendar-form').serialize(),
+                    dataType: "JSON",
+                }).done(function(response) {
+                    if (response.success) {
+                        flashalert.success(response.msg);
+                        //Add to add calendars tab
+                        modals.users.load_add_calendar_tab(response.data.user_id);
+
+                        //Add to calendars tab
+                        modals.users.load_calendar_tab(response.data.user_id);
+
+                        //Set on the dropdown disabled
+                        $('.add-google-calendar-form').find('#calendar-select option[value="'+response.data.calendar_id+'"]').prop('disabled',true);
+                        $('#calendar-select').selectpicker('val',"").selectpicker('refresh');
+
+                        //Hide save button
+                        $('.add-google-calendar').hide();
+
+                        //Show calendars tabs
+                        $('.nav-tabs a[href="#view-calendars-tab"]').tab('show');
+                    }
+                    else {
+                        flashalert.danger(response.msg);
+                    }
+                });
+            }
+            else {
+                flashalert.danger("Please select all the fields");
+            }
+        },
+        remove_google_calendar: function(id, calendar_id) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/remove_google_calendar',
+                type: "POST",
+                data: {'id': id},
+                dataType: "JSON",
+            }).done(function(response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                    //Remove from calendars tab
+                    $('.calendars-table').find('.google-calendar-id-'+id).html("");
+                    //Set on the dropdown available
+                    $('.add-google-calendar-form').find('#calendar-select option[value="'+calendar_id+'"]').prop('disabled',false);
+                    $('#calendar-select').selectpicker('refresh');
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        },
+        sync_google_cal: function(google_calendar_id, user_id) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/sync_google_cal',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    'google_calendar_id': google_calendar_id,
+                    'user_id': user_id
+                }
+            });
+        },
+        load_add_calendar_tab: function (user_id) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/load_add_google_calendar_form',
+                type: "POST",
+                data: {
+                    'user_id': user_id,
+                    'format': "json"
+                },
+                dataType: "JSON"
+            }).done(function (response) {
+                var options = '';
+                $.each(response.campaigns,function(k,val){
+                    var selected = ((response.campaigns.length == 1)?"selected":"");
+                    options += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
+                });
+
+                $('#campaign-select').html(options).selectpicker('refresh');
+
+                options = '';
+                $.each(response.calendars,function(k,val){
+                    var disabled = ((val.selected || val.accessRole == 'reader')?"disabled":"");
+                    options += '<option value="'+val.id+'" '+disabled+'>'+val.name+'</option>';
+                });
+
+                $('#calendar-select').html(options).selectpicker('refresh');
+            });
+        },
+
+        load_calendar_tab: function (user_id) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/get_google_calendars_by_user',
+                type: "POST",
+                data: {'user_id': user_id},
+                dataType: "JSON"
+            }).done(function (response) {
+                var calendar = '';
+                $.each(response.data,function(k,val){
+                    calendar += '<tr class="google-calendar-id-'+val.id+'">' +
+                        '<td>'+val.campaign_name+'</td>' +
+                        '<td>'+val.calendar_name+'</td>' +
+                        '<td><i class="fa fa-remove red pointer remove-google-calendar" data-id="'+val.id+'" data-calendar-id="'+val.calendar_id+'"></i></td>' +
+                        '<td><i class="fa fa-refresh info green pointer sync-google-calendar" data-user-id="'+val.user_id+'" data-id="'+val.id+'" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the events from this calendar into this user calendar)"></i></td>' +
+                        '</tr>';
+                });
+
+                $('.calendars-table').find('tbody').html(calendar);
+            });
+        },
+    },
+
 
     company_tel: function () {
         /* add the modal code here */
