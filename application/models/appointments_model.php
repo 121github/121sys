@@ -16,8 +16,10 @@ class Appointments_model extends CI_Model
 	}
 
     public function get_appointment($appointment_id) {
-        $this->db->select("appointments.*, GROUP_CONCAT(appointment_attendees.user_id SEPARATOR ';') attendees", false);
+        $this->db->select("appointments.*, campaigns.*, GROUP_CONCAT(appointment_attendees.user_id SEPARATOR ';') attendees", false);
         $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
+        $this->db->join("records", "records.urn=appointments.urn", "INNER");
+        $this->db->join("campaigns", "campaigns.campaign_id=records.campaign_id", "INNER");
         $this->db->group_by("appointment_attendees.user_id");
         $this->db->where("appointments.appointment_id", $appointment_id);
         $result = $this->db->get("appointments")->result_array();

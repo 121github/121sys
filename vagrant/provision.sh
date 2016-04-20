@@ -248,6 +248,9 @@ compass_go() {
 }
 
 app_actions_go() {
+    echo "Set timezone manually inside the VM"
+    timedatectl set-timezone Europe/London;
+
     echo "Access to the app path"
     cd /vagrant/
 

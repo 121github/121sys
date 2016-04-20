@@ -1485,18 +1485,18 @@ return $comments;
 	return NULL;	
 	}
 	}
-	
+
     public function save_appointment($post)
     {
-		if(isset($post['data_id'])){
-		$data_id = $post['data_id'];
-		unset($post['data_id']);
-		}
-		$attendees = $post['attendees'];
+        if (isset($post['data_id'])) {
+            $data_id = $post['data_id'];
+            unset($post['data_id']);
+        }
+        $attendees = $post['attendees'];
         unset($post['attendees']);
-		if(empty($post['branch_id'])){
-		 $post['branch_id'] = NULL;
-		}
+        if (empty($post['branch_id'])) {
+            $post['branch_id'] = NULL;
+        }
         if ($post['contact_id'] == 'other') {
             $post['contact_id'] = NULL;
         }
@@ -1510,7 +1510,6 @@ return $comments;
                     "user_id" => $attendee
                 ));
             }
-
 
             $this->db->where(
                 "appointment_id", $post['appointment_id']

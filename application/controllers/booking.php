@@ -12,8 +12,10 @@ class Booking extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $this->project_version = $this->config->item('project_version');
 		$this->load->model('Booking_model');
+        $this->load->model('Contacts_model');
         $this->load->model('Appointments_model');
         $this->load->model('Form_model');
+        $this->load->model('Records_model');
 	}
 	
 		 public function get_times()
@@ -206,8 +208,8 @@ class Booking extends CI_Controller
                         //'maxResults' => 10,
                         'orderBy' => 'startTime',
                         'singleEvents' => TRUE,
-                        'timeMin' => $this->input->post('start').'T10:07:00Z',
-                        'timeMax' => $this->input->post('end').'T10:23:59Z'
+                        'timeMin' => $this->input->post('start').'T07:00:00Z',
+                        'timeMax' => $this->input->post('end').'T23:59:59Z'
                     );
                     $results = $service->events->listEvents($calendarListEntry->id, $optParams);
                     if (count($results->getItems()) > 0) {
@@ -224,6 +226,7 @@ class Booking extends CI_Controller
 					array_push($events, array(
 						'id' => $event->id,
 						'title' => $event->summary,
+                        'description' => $event->description,
 						'start' => ($event->getStart()->dateTime?$event->getStart()->dateTime:$event->getStart()->date),
 						'end' => ($event->getEnd()->dateTime?$event->getEnd()->dateTime:$event->getEnd()->date),
 						'color' => genColorCodeFromText($id),
@@ -258,6 +261,7 @@ class Booking extends CI_Controller
                 $data = $this->Appointments_model->get_appointment($appointment_id);
                 $data['attendees'] = explode(";",$data['attendees']);
             }
+
             $msg = array();
             foreach ($data['attendees'] as $attendee) {
                 //get the user access_token
@@ -310,7 +314,9 @@ class Booking extends CI_Controller
                     $google_event_id = $this->Booking_model->getGoogleEventId($appointment_id);
                     $event->setId(($google_event_id?$google_event_id:"appointment".$appointment_id."attendee".$attendee));
 
-                    $calendarId = ($google_token[0]['calendar_id']?$google_token[0]['calendar_id']:'primary');
+
+                    $calendar = $this->Booking_model->get_google_calendars_by_user_and_campaign($attendee, $data['campaign_id']);
+                    $calendarId = (!empty($calendar)?$calendar['calendar_id']:'primary');
 
                     $service = new Google_Service_Calendar($google_client);
 
@@ -361,39 +367,44 @@ class Booking extends CI_Controller
     }
 
     public function get_google_data() {
-        $google_token = $this->input->post("google_token");
+        $user_id = $this->input->post("user_id");
+        $userInfo = array();
+        $calendarList = array();
 
-        $google_client = new Google_Client;
+        $google_token = $this->Booking_model->getGoogleToken($user_id,'google');
+        if (isset($google_token[0]['access_token'])) {
+            $google_client = new Google_Client;
 
-        $google_client->setAccessToken(json_encode(array(
-            "access_token" => $google_token['access_token'],
-            "token_type" => $google_token['token_type'],
-            "expires_in" => $google_token['expires_in'],
-            "id_token" => $google_token['id_token'],
-            "created" => $google_token['created'],
-        )));
+            $google_client->setAccessToken(json_encode(array(
+                "access_token" => $google_token[0]['access_token'],
+                "token_type" => $google_token[0]['token_type'],
+                "expires_in" => $google_token[0]['expires_in'],
+                "id_token" => $google_token[0]['id_token'],
+                "created" => $google_token[0]['created']
+            )));
 
-        if ($google_client->isAccessTokenExpired()) {
-            $google_client = $this->refreshToken($google_token[0]);
+            if ($google_client->isAccessTokenExpired()) {
+                $google_client = $this->refreshToken($google_token[0]);
+            }
+
+            //Get the user info
+            $service = new Google_Service_Oauth2($google_client);
+            $userInfo = $service->userinfo->get();
+
+            //Get the calendars
+            $service = new Google_Service_Calendar($google_client);
+            $calendarList  = $service->calendarList->listCalendarList()->getItems();
+
+            $aux = array();
+            foreach ($calendarList as $calendar) {
+                array_push($aux, array(
+                    'id' => $calendar->id,
+                    'name' => $calendar->summary,
+                    'accessRole' => $calendar->accessRole
+                ));
+            }
+            $calendarList = $aux;
         }
-
-        //Get the user info
-        $service = new Google_Service_Oauth2($google_client);
-        $userInfo = $service->userinfo->get();
-
-        //Get the calendars
-        $service = new Google_Service_Calendar($google_client);
-        $calendarList  = $service->calendarList->listCalendarList()->getItems();
-
-        $aux = array();
-        foreach ($calendarList as $calendar) {
-            array_push($aux, array(
-                'id' => $calendar->id,
-                'name' => $calendar->summary,
-                'accessRole' => $calendar->accessRole
-            ));
-        }
-        $calendarList = $aux;
 
         echo json_encode(array(
             'success' => (!empty($userInfo)),
@@ -404,14 +415,39 @@ class Booking extends CI_Controller
 
     public function set_google_calendar() {
         $form = $this->input->post();
-        $calendar_id = ($form["calendar_id"]?$form["calendar_id"]:NULL);
-        $user_id = (isset($form["user_id"])?$this->input->post("user_id"):$_SESSION['user_id']);
+        $data = $form;
 
-        $result = $this->Booking_model->set_google_calendar($user_id, $calendar_id);
+        unset($form['campaign_name']);
+
+        $result = $this->Booking_model->set_google_calendar($form);
+        $data['id'] = $result;
 
         echo json_encode(array(
-            'success' => $result,
+            'success' => ($result!=0),
+            'data' => $data,
             'msg' => ($result?"Calendar saved successfully!":"ERROR: The calendar was not saved for this user!")
+        ));
+    }
+
+    public function remove_google_calendar() {
+        $id = $this->input->post('id');
+
+        $result = $this->Booking_model->remove_google_calendar($id);
+
+        echo json_encode(array(
+            'success' => (!empty($result)),
+            'msg' => (!empty($result)?"Calendar removed successfully!":"ERROR: The calendar was not removed from this user!")
+        ));
+    }
+
+    public function get_google_calendars_by_user() {
+        $form = $this->input->post();
+
+        $result = $this->Booking_model->get_google_calendars_by_user($form['user_id']);
+
+        echo json_encode(array(
+            'success' => (!empty($result)),
+            'data' => $result
         ));
     }
 
@@ -452,5 +488,172 @@ class Booking extends CI_Controller
         $this->db->insert_update("apis", $data);
 
         return $client;
+    }
+
+
+    public function sync_google_cal() {
+        $user_id = $this->input->post("user_id");
+        $google_calendar_id = $this->input->post("google_calendar_id");
+        $google_calendar = $this->Booking_model->getGoogleCalendar($google_calendar_id);
+
+        //get the user access_token
+        $google_token = $this->Booking_model->getGoogleToken($user_id,'google');
+        //get google events and put them into array
+        if (isset($google_token[0]['access_token'])) {
+            $google_client = new Google_Client;
+
+            $google_client->setAccessToken(json_encode(array(
+                "access_token" => $google_token[0]['access_token'],
+                "token_type" => $google_token[0]['token_type'],
+                "expires_in" => $google_token[0]['expires_in'],
+                "id_token" => $google_token[0]['id_token'],
+                "created" => $google_token[0]['created'],
+            )));
+
+            if ($google_client->isAccessTokenExpired()) {
+                $google_client = $this->refreshToken($google_token[0]);
+            }
+
+            $calendars_selected = ((!empty($google_calendar))?$google_calendar['calendar_id']:'primary');
+
+            //Get the Calendars
+            $service = new Google_Service_Calendar($google_client);
+            $calendar = $service->calendars->get($calendars_selected);
+
+            $optParams = array(
+                'orderBy' => 'startTime',
+                'singleEvents' => TRUE,
+                //Get the events since the previous month
+                'timeMin' => date("Y-m-d", strtotime("first day of previous month")).'T07:00:00Z'
+            );
+            $events = $service->events->listEvents($calendar->id, $optParams);
+
+
+            $appointments = array(
+                "added" => array(),
+                "updated" => array()
+            );
+            foreach ($events as $event) {
+                $data = array(
+                    'google_id' => $event->id,
+                    'title' => $event->summary,
+                    'text' => ($event->description?$event->description:''),
+                    'start' => ($event->getStart()->dateTime?$event->getStart()->dateTime:$event->getStart()->date),
+                    'end' => ($event->getEnd()->dateTime?$event->getEnd()->dateTime:$event->getEnd()->date),
+                    'address' => $event->location,
+                    'attendees' => array($user_id),
+                    'contact_id' => 'other'
+                );
+
+                //Check if the appointment already exist on the system
+                $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
+
+                if (!empty($appointment)) {
+                    //Update the appointments to 121system
+                    $data['appointment_id'] = $appointment['appointment_id'];
+                    $data['urn'] = $appointment['urn'];
+                    $appointment_id = $this->Records_model->save_appointment($data);
+                    array_push($appointments['updated'], $appointment_id);
+                }
+                else {
+                    //Create record
+                    $urn = $this->Records_model->save_record(array(
+                        "campaign_id" => 7
+                    ));
+                    //Add a contact with no name
+                    $contact_id = $this->Contacts_model->save_contact(array(
+                        "urn" => $urn,
+                        "fullname" => ""
+                    ));
+
+                    //Add the appointments to 121system
+                    $data['urn'] = $urn;
+                    $appointment_id = $this->Records_model->save_appointment($data);
+                    array_push($appointments['added'], $appointment_id);
+                }
+            }
+
+        } else {
+            $appointments = array();
+        }
+
+        echo json_encode($appointments);
+    }
+
+    public function load_add_google_calendar_form()
+    {
+
+        $user_id = $this->input->post("user_id");
+        $campaign_id = $this->input->post("campaign_id");
+        $data = array();
+
+        $google_token = $this->Booking_model->getGoogleToken($user_id,'google');
+        if (isset($google_token[0]['access_token'])) {
+            $google_client = new Google_Client;
+
+            $google_client->setAccessToken(json_encode(array(
+                "access_token" => $google_token[0]['access_token'],
+                "token_type" => $google_token[0]['token_type'],
+                "expires_in" => $google_token[0]['expires_in'],
+                "id_token" => $google_token[0]['id_token'],
+                "created" => $google_token[0]['created']
+            )));
+
+            if ($google_client->isAccessTokenExpired()) {
+                $google_client = $this->refreshToken($google_token[0]);
+            }
+
+            $calendarList = array();
+
+            if ($campaign_id) {
+                //Get the calendars
+                $service = new Google_Service_Calendar($google_client);
+                $calendarList  = $service->calendarList->listCalendarList()->getItems();
+
+                $aux = array();
+                $calendars_selected = $this->Booking_model->get_google_calendars_selected_by_campaign($campaign_id);
+                foreach ($calendars_selected as $calendar) {
+                    array_push($aux, $calendar['calendar_id']);
+                }
+                $calendars_selected = $aux;
+
+                $aux = array();
+                foreach ($calendarList as $calendar) {
+                    array_push($aux, array(
+                        'id' => $calendar->id,
+                        'name' => $calendar->summary,
+                        'accessRole' => $calendar->accessRole,
+                        'selected' => (in_array($calendar->id,$calendars_selected))
+                    ));
+                }
+                $calendarList = $aux;
+            }
+
+            $userCalendars = $this->Booking_model->get_google_calendars_by_user($user_id);
+            $campaigns = $this->Form_model->get_campaigns();
+
+            $data = array(
+                "campaigns"=>$campaigns,
+                "calendars"=>$calendarList,
+                "userCalendars"=>$userCalendars,
+                "user_id" => $user_id,
+                "api_id" => $google_token[0]['api_id']
+            );
+        }
+
+        if ($this->input->is_ajax_request()) {
+            switch($this->input->post("format")) {
+                case "html":
+                    $this->load->view('forms/add_google_calendar_form.php', $data);
+                    break;
+                case "json":
+                    echo json_encode($data);
+                    break;
+                default:
+                    $this->load->view('forms/add_google_calendar_form.php', $data);
+                    break;
+            }
+
+        }
     }
 }

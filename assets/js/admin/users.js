@@ -1,3 +1,6 @@
+$(document).ready(function () {
+    modals.users.init();
+});
 var admin = {
     //initialize all the generic javascript datapickers etc for this page
     init: function() {
@@ -5,7 +8,6 @@ var admin = {
             e.preventDefault();
             admin.hide_edit_form();
         });
-
     },
     hide_edit_form: function() {
         $('form').fadeOut(1000, function() {
@@ -34,6 +36,27 @@ var admin = {
             //start the function to load the groups into the table
             admin.users.load_users();
 			$('form [data-toggle="tooltip"]').tooltip();
+
+            $(document).on("click", '#google-login-btn', function (e) {
+                e.preventDefault();
+                admin.users.login($(this).attr('data-user-id'));
+            });
+
+            $(document).on("click", '#google-logout-btn', function (e) {
+                e.preventDefault();
+                admin.users.logout($(this).attr('data-user-id'));
+            });
+
+            $(document).on("click", '.google-calendar-btn', function (e) {
+                e.preventDefault();
+                modals.users.add_google_calendar($(this).attr('data-user-id'));
+            });
+        },
+        login: function(user_id) {
+            window.location.href = helper.baseUrl + 'google/authenticate?id='+user_id;
+        },
+        logout: function(user_id) {
+            window.location.href = helper.baseUrl + 'google/logout?id='+user_id;
         },
         //this function reloads the groups into the table body
         load_users: function() {
@@ -47,11 +70,48 @@ var admin = {
                 if (response.success) {
                     $.each(response.data, function(i, val) {
                         if (response.data.length) {
+                            var google_signin = '';
+                            var google_cal = '';
+                            if (helper.permissions['google sync'] > 0) {
+                                if (!val.google) {
+                                    google_signin = "<button class='btn btn-info btn-xs' data-user-id='"+val.user_id+"' id='google-login-btn'><i class='fa fa-google white'>oogle</i><span class='small'> [Sign In]</span></button>";
+                                }
+                                else {
+                                    google_signin = "<button class='btn btn-success btn-xs' data-user-id='"+val.user_id+"' id='google-logout-btn'><i class='fa fa-google white'>oogle</i><span class='small'> [Logout]</span></button>";
+                                    google_cal = "<i class='fa fa-calendar google-calendar-btn pointer' data-user-id='"+val.user_id+"'></i>";
+                                }
+                            }
 							var color="";
 							if(val.status_text=="Off"){
-							color="danger";	
+							    color="danger";
 							}
-                            $tbody.append('<tr class="'+color+'"><td class="hidden ext">' + val.ext + '</td><td class="hidden home_postcode">' + val.home_postcode + '</td><td class="hidden ics">' + val.ics + '</td><td class="hidden attendee">' + val.attendee + '</td><td class="hidden phone_un">' + val.phone_un + '</td><td class="hidden phone_pw">' + val.phone_pw + '</td><td class="hidden user_email">' + val.user_email + '</td><td class="hidden user_telephone">' + val.user_telephone + '</td><td class="user_id">' + val.user_id + '</td><td class="name">' + val.name + '</td><td class="username">' + val.username + '</td>><td><span class="hidden group_id">' + val.group_id + '</span>' + val.group_name + '</td><td><span class="hidden team_id">' + val.team_id + '</span>' + val.team_name + '</td><td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td><td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td><td><button class="btn btn-default btn-xs edit-btn">Edit</button> <button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button></td></tr>');
+                            $tbody.append('<tr class="'+color+'">' +
+                                    '<td class="hidden ext">' + val.ext + '</td>' +
+                                    '<td class="hidden home_postcode">' + val.home_postcode + '</td>' +
+                                    '<td class="hidden ics">' + val.ics + '</td>' +
+                                    '<td class="hidden attendee">' + val.attendee + '</td>' +
+                                    '<td class="hidden phone_un">' + val.phone_un + '</td>' +
+                                    '<td class="hidden phone_pw">' + val.phone_pw + '</td>' +
+                                    '<td class="hidden user_email">' + val.user_email + '</td>' +
+                                    '<td class="hidden user_telephone">' + val.user_telephone + '</td>' +
+                                    '<td class="user_id">' + val.user_id + '</td>' +
+                                    '<td class="name">' + val.name + '</td>' +
+                                    '<td class="username">' + val.username + '</td>>' +
+                                    '<td><span class="hidden group_id">' + val.group_id + '</span>' + val.group_name + '</td>' +
+                                    '<td><span class="hidden team_id">' + val.team_id + '</span>' + val.team_name + '</td>' +
+                                    '<td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td>' +
+                                    '<td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td>' +
+                                    '<td>' +
+                                        '<button class="btn btn-default btn-xs edit-btn">Edit</button>' +
+                                        '<button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button>' +
+                                    '</td>' +
+                                    '<td style="text-align: right">' +
+                                        google_signin +
+                                    '</td>' +
+                                    '<td>' +
+                                        google_cal +
+                                    '</td>' +
+                                '</tr>');
                         }
                     });
                 } else {

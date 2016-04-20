@@ -15,12 +15,11 @@ class PrepareAcceptLhsDeployment extends AbstractTask
     {
         $commandList = array(
             'mv application/config/database.php.accept_lhsurveying application/config/database.php',
-            'mv .htaccess_lhs .htaccess',
             'rm -rf application/config/database.php.*',
             'setfacl -R -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
             'setfacl -dR -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
-            'find . -type f -exec chmod 664 {} \;',
-            'find . -type d -exec chmod 775 {} \;',
+            'find . -type f -exec chmod 644 {} \;',
+            'find . -type d -exec chmod 755 {} \;',
             'chmod -R 777 importcsv.sh',
             'mkdir -p upload/function_triggers',
         );

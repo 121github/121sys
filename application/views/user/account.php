@@ -113,12 +113,15 @@
                     </div>
                     <div class="google-data">
                         <div style="margin-bottom: 10px; margin-top: 10px; font-weight: bold">
-                            DETAILS:
+                            DETAILS
                         </div>
                         <table class="table google-details ajax-table"></table>
 
                         <div style="margin-bottom: 10px; margin-top: 10px; font-weight: bold">
-                            <span class="table google-calendars ajax-table"></span>
+                            CALENDARS
+                        </div>
+                        <div style="margin-bottom: 10px; margin-top: 10px; font-weight: bold">
+                            <table class="table google-calendars ajax-table"></table>
                         </div>
                     </div>
                 </div>

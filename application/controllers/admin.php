@@ -16,6 +16,7 @@ class Admin extends CI_Controller
         $this->load->model('Admin_model');
         $this->load->model('User_model');
         $this->load->model('File_model');
+        $this->load->model('Booking_model');
     }
 	public function update_campaign_status(){
 		  if ($this->input->is_ajax_request()) {
@@ -552,6 +553,7 @@ class Admin extends CI_Controller
     public function user_data()
     {
         if ($this->input->is_ajax_request()) {
+            $aux = array();
             $results = $this->Admin_model->get_users();
             foreach ($results as $rownum => $row) {
                 foreach ($row as $k => $v) {
@@ -559,7 +561,15 @@ class Admin extends CI_Controller
                         $results[$rownum][$k] = "";
                     }
                 }
+                //get the user access_token
+                $google_token = $this->Booking_model->getGoogleToken($row['user_id'],'google');
+                $row['google'] = (isset($google_token[0]['access_token']));
+
+                array_push($aux, $row);
             }
+
+            $results = $aux;
+
             echo json_encode(array(
                 "success" => true,
                 "data" => $results,
