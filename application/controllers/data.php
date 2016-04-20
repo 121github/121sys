@@ -48,33 +48,6 @@ class Data extends CI_Controller
     }
 
     //this loads the data management view
-    public function import()
-    {
-        $campaigns = $this->Form_model->get_campaigns();
-        $sources = $this->Form_model->get_sources();
-        $pots = $this->Form_model->get_pots();
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-
-            'pageId' => 'Admin',
-            'title' => 'Admin | Import',
-            'page' => 'import',
-            'javascript' => array(
-                'plugins/jqfileupload/vendor/jquery.ui.widget.js',
-                'plugins/jqfileupload/jquery.iframe-transport.js',
-                'plugins/jqfileupload/jquery.fileupload.js',
-                'data.js?v' . $this->project_version
-            ),
-            'campaigns' => $campaigns,
-            'sources' => $sources,
-            'pots' => $pots,
-            'css' => array(
-                'dashboard.css',
-                'plugins/jqfileupload/jquery.fileupload.css'
-            )
-        );
-        $this->template->load('default', 'data/import.php', $data);
-    }
 
     public function import_fields($echo = true)
     {
@@ -243,7 +216,7 @@ class Data extends CI_Controller
 
     }
 
-
+/*
     public function import()
     {
         $options = array();
@@ -251,7 +224,7 @@ class Data extends CI_Controller
         $options['upload_url'] = base_url() . '/datafiles/';
         $upload_handler = new Upload($options, true);
     }
-
+*/
     public function get_sample()
     {
         $file = $this->input->post('file');
