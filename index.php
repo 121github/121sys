@@ -69,17 +69,15 @@ switch ($domain) {
         $theme = "hsl";
 		$timeout = 6000; //100 minutes
         break;
-		
-	case 'hsl.':
-        define('ENVIRONMENT', 'acceptance');
-        $session_name = '121sys_lhs';
-        $theme = "hsl";
-		$timeout = 6000; //100 minutes
-    break;
 
     case 'accept.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept';
+        break;
+
+    case 'accept.lhs.':
+        define('ENVIRONMENT', 'acceptance');
+        $session_name = '121sys_accept_lhs';
         break;
 
     case 'eldon.':
@@ -118,10 +116,12 @@ switch ($domain) {
         define('ENVIRONMENT', 'demo');
         $session_name = '121sys_demo';
         break;
+
     case 'pro.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_prosales';
         break;
+
     default:
         switch ($domain_ukfast) {
             case 'prosales.':
