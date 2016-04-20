@@ -1657,7 +1657,7 @@ var modals = {
 		  mbody +=	'<li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
 		}
         if (data.custom_info.length > 0) {
-            mbody += '<li><a role="tab" data-toggle="tab" href="#tab-custom">' + data.custom_panel_name + '</a></li>';
+            mbody += '<li><a role="tab" data-toggle="tab" href="#tab-custom">Other</a></li>';
         }
         if (helper.permissions['planner'] > 0) {
             mbody += '<li><a role="tab" data-toggle="tab" href="#tab-planner">Planner</a></li>';
@@ -1737,7 +1737,7 @@ var modals = {
         if (data.custom_info.length > 0) {
             mbody += '<div role="tabpanel" class="tab-pane" id="tab-custom">';
             //build the custom table
-            var table = "<div class='table-responsive'><table class='table table-striped table-condensed'>";
+            var table = "<div class='table-responsive' style='overflow-x:auto'><table class='table small table-striped table-condensed'>";
             var thead, detail_id;
             var tbody = "<tbody>";
             var contents = "";
@@ -1797,6 +1797,7 @@ var modals = {
         }
 			mbody += '<div role="tabpanel" class="tab-pane" id="update-record-panel">';
         mbody += '</div>';
+		mbody += '<div class="clearfix"></div>';
 		  merge_btn = "";
         if (typeof record !== "undefined"&&record.urn!==data.urn) {
             merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
