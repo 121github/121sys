@@ -1794,10 +1794,9 @@ var modals = {
 				   mbody += '<div class="clearfix"></div>'
             }
 			mbody += '</div>'
+        }
 			mbody += '<div role="tabpanel" class="tab-pane" id="update-record-panel">';
         mbody += '</div>';
-    
-        }
 		  merge_btn = "";
         if (typeof record !== "undefined"&&record.urn!==data.urn) {
             merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
