@@ -34,6 +34,11 @@ switch ($domain) {
 		$session_name = '121sys_accept';
 		break;
 
+	case 'accept.lhs.':
+		define('ENVIRONMENT', 'acceptance');
+		$session_name = '121sys_accept_lhs';
+		break;
+
 	case 'eldon.':
 		define('ENVIRONMENT', 'production');
 		$session_name = '121sys_eldon';
@@ -63,6 +68,12 @@ switch ($domain) {
         define('ENVIRONMENT', 'demo');
 		$session_name = '121sys_demo';
 		break;
+
+    case 'pro.':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_prosales';
+        break;
+
     default:
 		switch ($domain_ukfast) {
 			case 'prosales.':
