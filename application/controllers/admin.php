@@ -23,6 +23,17 @@ class Admin extends CI_Controller
 		  }
 	}
 	
+	public function index()
+    {	
+	
+	$tab = 	$this->uri->segment(3);
+		$data = array("campaign_access"=>$this->_campaigns,
+		"page"=>"Admin",
+		"title"=>"Admin",
+		"tab"=>$tab);
+		$this->template->load('default', 'admin/index', $data);
+	}
+	
     public function save_day_slots()
     {
         check_page_permissions('slot availability');

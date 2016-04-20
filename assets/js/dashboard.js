@@ -1042,7 +1042,7 @@ var dashboard = {
                 var select = "";
                 if (helper.permissions['dashboard viewers'] > 0) {
                     select +=
-                        "<p>Viewers </p>" +
+                        "<p>Allowed users <i data-toggle='tooltip' data-title='The users that have access to this dashboard' class='tt pointer glyphicon glyphicon-info-sign'></i>'</p>" +
                         "<select name='viewers[]' class='selectpicker' multiple id='viewer_select' data-width='100%' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
                         options +
                         "</select>";
@@ -1072,7 +1072,7 @@ var dashboard = {
                     "<p>Description </p>" +
                     "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>"+dashboard_description+"</textarea>" +
                     "</div>" +
-                    "<div class='form-group input-group-sm'>" +
+                    "<p>Should this page be included in the dashboard menu or the report menu?</p><div class='form-group input-group-sm'>" +
                     "<input type='checkbox' id='dash-type' data-toggle='toggle' data-width='200' data-onstyle='success' data-offstyle='info' data-on='Dashboard' data-off='Report'>" +
                     "<input type='hidden' name='dash_type' value='Dashboard'>" +
                     "</div>" +
@@ -1087,7 +1087,7 @@ var dashboard = {
                     '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
                 modals.load_modal(mheader, mbody, mfooter);
-
+				$modal.find('.tt').tooltip();
                 dashboard.set_dashboard_type(dashboard_type);
             });
         });

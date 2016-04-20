@@ -184,7 +184,7 @@ Date.prototype.addHours = function (h) {
     return this;
 }
 
-
+var menu_api = false;
 var helper = {};
 
 /* AJAX GLOBAL EVENT - This happens after ajax request. We check if the response is timeout then it redirects the user to the login page */

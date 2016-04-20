@@ -175,6 +175,16 @@ class Form_model extends CI_Model
         //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
+	
+	 public function get_calendar_types($campaign_ids = array())
+    {
+        $where = "";
+        if (count($campaign_ids) > 0) {
+            $where = " and campaign_id in(" . implode(",", $campaign_ids) . ")";
+        }
+        $qry = "select appointment_type_id id,appointment_type name from appointment_types left join campaign_appointment_types using(appointment_type_id) left join campaigns using(campaign_id) where (campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 $where ) or (appointment_type_id not in(select appointment_type_id from campaign_appointment_types)) group by appointment_type_id order by name";
+        return $this->db->query($qry)->result_array();
+    }
     
     public function get_campaigns_by_user($user_id)
     {

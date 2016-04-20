@@ -83,7 +83,8 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-        calendar.init();
-        //$('#calendar').fullCalendar('chnageView','agendaWeek');
+        calendar.init('<?php echo $view ?>');
+		
+        //$('#calendar').fullCalendar('changeView','agendaWeek');
     })
 </script>

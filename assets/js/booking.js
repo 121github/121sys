@@ -1,8 +1,12 @@
 var fullcalendar;
 var calendar = {
-    init: function () {
+    init: function (view) {
 		this.click_date = "";
+		if(view){
+			this.view = view
+		} else {
 		this.view = "agendaWeek";
+		}
         $modal.on('click', '[data-toggle="tab"]', function (e) {
             if ($(this).attr('href') == "#apprules") {
                 $modal.find('#save-rule-btn').hide();
@@ -19,7 +23,7 @@ var calendar = {
         $modal.on('click', '.del-rule-btn', function () {
             calendar.delete_rule($(this).attr('item-id'), $(this).attr('item-date'));
         });
-        $('#calendar').on('change', '#attendee-select, #status-select', function () {
+        $('#calendar').on('change', '#attendee-select, #status-select, #type-select', function () {
             calendar.load_rules();
             $('#calendar').fullCalendar('refetchEvents');
         });
@@ -44,7 +48,7 @@ var calendar = {
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
-            defaultView: 'agendaWeek',
+            defaultView: calendar.view,
             eventDrop: function (event) {
                 calendar.set_event_time(event.id, event.start, event.end)
             },
@@ -126,6 +130,7 @@ var calendar = {
                     type: 'POST',
                     data: function () { // a function that returns an object
                         var attendee = $('#calendar').find('#attendee-select').val();
+						var appointment_type = $('#calendar').find('#type-select').val();
                         var status = (typeof $('#status-select').val() != "undefined" ? $('#status-select').val() : 1);
                         return {
                             attendee: attendee,
@@ -136,7 +141,9 @@ var calendar = {
             ]
         })
         calendar.attendee_filter();
-        calendar.status_filter();
+        //calendar.status_filter();
+		calendar.type_filter();
+		
         calendar.init_context_menu();
         calendar.month_filter();
     },
@@ -230,6 +237,12 @@ var calendar = {
         elem.selectpicker();
         calendar.load_attendees(elem);
     },
+	 type_filter: function () {
+        $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Types" id="type-select"><option value=""></option></select></div>');
+        var elem = $('#calendar').find('#type-select');
+        elem.selectpicker();
+        calendar.load_appointment_types(elem);
+    },
     status_filter: function () {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Events" id="status-select">' +
             '<option value="">All Events</option>' +
@@ -258,7 +271,7 @@ var calendar = {
         });
 
     },
-    load_attendees: function (elem, attendee) {
+    load_attendees: function (elem, selected) {
         $.ajax({
             url: helper.baseUrl + 'calendar/get_calendar_users',
             type: "POST",
@@ -269,7 +282,23 @@ var calendar = {
         }).done(function (response) {
             var $options = "<option value=''>All Attendees</options>";
             $.each(response.data, function (k, v) {
-                $options += "<option " + (v.id == attendee ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
+                $options += "<option " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
+            });
+            elem.html($options).selectpicker('refresh');
+        });
+    },
+	    load_appointment_types: function (elem, selected) {
+        $.ajax({
+            url: helper.baseUrl + 'calendar/get_calendar_types',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaigns: $('#campaign-cal-select').val()
+            }
+        }).done(function (response) {
+            var $options = "<option value=''>All Types</options>";
+            $.each(response.data, function (k, v) {
+                $options += "<option " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
             });
             elem.html($options).selectpicker('refresh');
         });

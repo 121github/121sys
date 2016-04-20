@@ -5,15 +5,10 @@
  ========================================================================== */
 var details = {
     init: function() {
-        $(document).on("click", ".user-filter", function(e) {
+        $(document).on("change", "#user-filter", function(e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('ul').find('a').css("color","black");
-            $(this).css("color","green");
-
-            $('#edit-details-btn').attr('data-id',$(this).attr('id'));
-            $('#add-user-address').attr('data-user-id',$(this).attr('id'));
+            $('#edit-details-btn').attr('data-id',$(this).val());
+            $('#add-user-address').attr('data-user-id',$(this).val());
             details.load_details();
         });
 

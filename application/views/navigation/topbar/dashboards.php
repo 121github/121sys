@@ -1,6 +1,7 @@
 <?php if (@in_array("view dashboard", $_SESSION['permissions'])) { ?>
-    <li><a href="#dashboards">Dashboard</a>
-        <ul id="dashboards" class="dashboards-main-menu">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dashboards <span class="caret"></span></a>
+          <ul class="dropdown-menu" id="dashboard-dropdown">
             <?php if ($_SESSION['sn'] == 'eldon.121system.com') { ?>
                 <li <?php echo @($page == 'eldon_dash' ? "class='Selected'" : "") ?>><a
                         href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
@@ -34,6 +35,7 @@
                 <li <?php echo @($page == 'management_dash' ? "class='Selected'" : "") ?>><a
                         href="<?php echo base_url() ?>dashboard/management">Management Dash</a></li>
             <?php } ?>
+                 <li role="separator" class="divider"></li>
         </ul>
     </li>
 <?php } ?>
@@ -46,15 +48,20 @@
             dataType: "JSON"
         }).done(function (response) {
             var dashboards = "";
+			var reports = "";
             if (response.success) {
                 $.each(response.dashboards, function (i, val) {
 					if (val.dash_type === "Dashboard") {
                         var page = "<?php echo @$page ?>";
                         dashboards += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
                     }
+					 if (val.dash_type === "Report") {
+                        var page = "<?php echo @$page ?>";
+                        reports += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
+                    }
                 });
-
-                $('#menu').find('.dashboards-main-menu').append(dashboards);
+ 				$('#dashboard-dropdown').append(dashboards);
+                $('#report-dropdown').append(reports);
             }
         });
     });

@@ -1,7 +1,7 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Data Admin <span id="campaign-name-title" class="small"></span> <span class="small" id="campaign-type-title"></span></h1>
+                    <h1 class="page-header">Data Import <span id="campaign-name-title" class="small"></span> <span class="small" id="campaign-type-title"></span></h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>

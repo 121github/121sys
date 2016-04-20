@@ -3,7 +3,7 @@
 <div id="message"> <?php echo $message; ?> </div>
 <?php } ?>
 <div class="panel panel-primary">
-  <div class="panel-heading">Admin Dashboard </div>
+  <div class="panel-heading">Sales module configuration</div>
   <div class="panel-body" style="padding:0">
     <ul class="nav nav-tabs" style=" background:#eee; width:100%;">
       <li class="items-tab active"><a href="#items" class="tab" data-toggle="tab">Items</a></li>

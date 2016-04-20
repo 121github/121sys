@@ -66,7 +66,9 @@ class Flexicart_admin extends CI_Controller {
 	function index() 
 	{		
 		$this->data['title'] = "Store Dashboard";
-		$this->template->load('default', 'flexicart/admin_examples/dashboard_view', $this->data); 
+		$this->data['campaign_access'] = $this->_campaigns;
+		$this->data['page'] = "shop";
+$this->template->load('default', 'flexicart/admin_examples/dashboard_view', $this->data); 
 	}
 
 	public function category_details(){
@@ -84,7 +86,9 @@ class Flexicart_admin extends CI_Controller {
 		$this->data['categories'] = $this->orders_admin_model->get_item_categories();
 		$this->data['subcategories'] = $this->orders_admin_model->get_item_subcategories();
 		$this->data['javascript'] =  array('flexicart/categories.js?v' . time());
-		$this->template->load('default', 'flexicart/admin_examples/config/categories', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default', 'flexicart/admin_examples/config/categories', $this->data);
 	}
 
 	public function save_category(){
@@ -140,7 +144,9 @@ class Flexicart_admin extends CI_Controller {
 		
 		$this->data['title'] = "View Items";
 		
-		$this->template->load('default', 'flexicart/admin_examples/items/items_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default', 'flexicart/admin_examples/items/items_view', $this->data);
 
 	}	
 	
@@ -162,7 +168,9 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');	
 		$this->data['title'] ="orders"; 
-		$this->template->load('default', 'flexicart/admin_examples/orders/orders_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default', 'flexicart/admin_examples/orders/orders_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -201,7 +209,9 @@ class Flexicart_admin extends CI_Controller {
 		$this->data['message'] = $this->session->flashdata('message');	
 		
 				$this->data['title'] ="Order details"; 
-		$this->template->load('default', 'flexicart/admin_examples/orders/order_details_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default', 'flexicart/admin_examples/orders/order_details_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -257,7 +267,9 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');	
 		
-		$this->template->load('default','flexicart/admin_examples/orders/order_details_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/orders/order_details_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -325,6 +337,8 @@ class Flexicart_admin extends CI_Controller {
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 
 		$this->data['title'] = "Location types";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/locations/location_type_update_view', $this->data);
 	}
 
@@ -348,6 +362,8 @@ $this->template->load('default','flexicart/admin_examples/locations/location_typ
 		$this->data['location_type_data'] = $this->flexi_cart_admin->get_db_location_type_array();
 
 		$this->data['title'] = "Insert location type";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/locations/location_type_insert_view', $this->data);
 	}
 
@@ -387,6 +403,8 @@ $this->template->load('default','flexicart/admin_examples/locations/location_typ
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		
 		$this->data['title'] = "Locations";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/locations/location_update_view', $this->data);
 	}
 	
@@ -419,6 +437,8 @@ $this->template->load('default','flexicart/admin_examples/locations/location_upd
 		$this->data['location_type_data'] = $this->flexi_cart_admin->get_db_location_type_row_array(FALSE, $sql_where);
 		
 		$this->data['title'] = "Insert location";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/locations/location_insert_view', $this->data);
 	}
 
@@ -444,6 +464,8 @@ $this->template->load('default','flexicart/admin_examples/locations/location_ins
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
 		$this->data['title'] = "";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/locations/zone_update_view', $this->data);
 	}
 	
@@ -464,6 +486,8 @@ $this->template->load('default','flexicart/admin_examples/locations/zone_update_
 		}
 
 		$this->data['title'] = "";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/locations/zone_insert_view', $this->data);
 	}
 	
@@ -503,6 +527,8 @@ $this->template->load('default','flexicart/admin_examples/locations/zone_insert_
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		
 		$this->data['title'] = "Shipping";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/shipping/shipping_update_view', $this->data);
 	}
 
@@ -530,6 +556,8 @@ $this->template->load('default','flexicart/admin_examples/shipping/shipping_upda
 		$this->data['shipping_zones'] = $this->flexi_cart_admin->location_zones('shipping');
 	
 		$this->data['title'] = "Insert shipping";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/shipping/shipping_insert_view', $this->data);
 	}
 
@@ -561,6 +589,8 @@ $this->template->load('default','flexicart/admin_examples/shipping/shipping_inse
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
 		$this->data['title'] = "Shipping rate";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/shipping/shipping_rate_update_view', $this->data);
 	}
 
@@ -585,6 +615,8 @@ $this->template->load('default','flexicart/admin_examples/shipping/shipping_rate
 		$this->data['shipping_data'] = $this->flexi_cart_admin->get_db_shipping_row_array(FALSE, $sql_where);
 	
 		$this->data['title'] = "Insert shipping rate";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/shipping/shipping_rate_insert_view', $this->data);
 	}
 	
@@ -623,6 +655,8 @@ $this->template->load('default','flexicart/admin_examples/shipping/shipping_rate
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
 		$this->data['title'] = "";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/items/item_shipping_update_view', $this->data);
 	}
 
@@ -655,6 +689,8 @@ $this->template->load('default','flexicart/admin_examples/items/item_shipping_up
 		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_items', FALSE, $sql_where);
 	
 		$this->data['title'] = "";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/items/item_shipping_insert_view', $this->data);
 	}
 
@@ -694,6 +730,8 @@ $this->template->load('default','flexicart/admin_examples/items/item_shipping_in
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
 		$this->data['title'] = "Tax";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/tax/tax_update_view', $this->data);
 	}
 	
@@ -721,6 +759,8 @@ $this->template->load('default','flexicart/admin_examples/tax/tax_update_view', 
 		$this->data['tax_zones'] = $this->flexi_cart_admin->location_zones('tax');
 
 		$this->data['title'] = "Insert tax";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/tax/tax_insert_view', $this->data);
 	}
 
@@ -759,6 +799,8 @@ $this->template->load('default','flexicart/admin_examples/tax/tax_insert_view', 
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
 		$this->data['title'] = "Item tax";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/items/item_tax_update_view', $this->data);
 	}
 
@@ -790,6 +832,8 @@ $this->template->load('default','flexicart/admin_examples/items/item_tax_update_
 		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_items', FALSE, $sql_where);
 	
 		$this->data['title'] = "Insert item tax";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/items/item_tax_insert_view', $this->data);
 	}
 	
@@ -829,6 +873,8 @@ $this->template->load('default','flexicart/admin_examples/items/item_tax_insert_
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 		$this->data['title'] = "Discounts";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/discounts/discounts_view', $this->data);
 	}
 
@@ -858,6 +904,8 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		$this->data['message'] = $this->session->flashdata('message');
 
 		$this->data['title'] = "Summary Discounts";
+$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
 $this->template->load('default','flexicart/admin_examples/discounts/discounts_view', $this->data);
 	}
 	
@@ -906,7 +954,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		$this->data['title'] = "Discount Codes";
-		$this->template->load('default','flexicart/admin_examples/discounts/discount_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/discounts/discount_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -947,7 +997,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get an array of all demo items.		
 		$this->data['items'] = $this->flexi_cart_admin->get_db_table_data_array('flexicart_items');
 		$this->data['title'] = "Insert Discount";
-		$this->template->load('default','flexicart/admin_examples/discounts/discount_insert_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/discounts/discount_insert_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -971,7 +1023,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	$this->data['title'] = "Discount Groups";
-		$this->template->load('default','flexicart/admin_examples/discounts/discount_groups_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/discounts/discount_groups_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1004,7 +1058,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		$this->data['title'] = "Update discount group";
-		$this->template->load('default','flexicart/admin_examples/discounts/discount_group_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/discounts/discount_group_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1023,7 +1079,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 			$this->orders_admin_model->demo_insert_discount_group();
 		}
 	$this->data['title'] = "Insert discount group";
-		$this->template->load('default','flexicart/admin_examples/discounts/discount_group_insert_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/discounts/discount_group_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1046,7 +1104,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		$sql_where = array($this->flexi_cart_admin->db_column('discount_groups', 'id') => $group_id);
 		$this->data['group_data'] = $this->flexi_cart_admin->get_db_discount_group_row_array(FALSE, $sql_where);
 		$this->data['title'] = "Discount groups";		
-		$this->template->load('default','flexicart/admin_examples/discounts/discount_group_items_insert_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/discounts/discount_group_items_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1069,7 +1129,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get an array of all demo users and their related reward points from a custom demo model function.
 		$this->data['user_data'] = $this->orders_admin_model->demo_reward_point_summary();
 		$this->data['title'] = "Reward points";
-		$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_points_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_points_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1100,7 +1162,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Call a custom function that returns a nested array of reward voucher codes and the reward point data used to create the voucher.
 		$this->data['points_converted_data'] = $this->orders_admin_model->demo_converted_reward_point_history($user_id);
 		$this->data['title'] = "Reward history";
-		$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_point_history_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_point_history_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1132,7 +1196,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 		$this->data['title'] = "Reward vouchers";
-		$this->template->load('default','flexicart/admin_examples/reward_points/user_vouchers_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/reward_points/user_vouchers_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1158,7 +1224,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 		$this->data['title'] = "Vouchers";
-		$this->template->load('default','flexicart/admin_examples/reward_points/vouchers_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/reward_points/vouchers_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1188,7 +1256,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		$conversion_tiers = $this->data['user_data'][$this->flexi_cart_admin->db_column('reward_points', 'total_points_active')];
 		$this->data['conversion_tiers'] = $this->flexi_cart_admin->get_reward_point_conversion_tiers($conversion_tiers);
 		$this->data['title'] = "Convert Rewards";
-		$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_point_convert_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_point_convert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1214,7 +1284,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		$this->data['title']="Currency";
-		$this->template->load('default','flexicart/admin_examples/currency/currency_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/currency/currency_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1233,7 +1305,9 @@ $this->template->load('default','flexicart/admin_examples/discounts/discounts_vi
 			$this->orders_admin_model->demo_insert_currency();
 		}
 $this->data['title']="Insert currency";
-		$this->template->load('default','flexicart/admin_examples/currency/currency_insert_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/currency/currency_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1259,7 +1333,9 @@ $this->data['title']="Insert currency";
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		$this->data['title']="Order Status";
-		$this->template->load('default','flexicart/admin_examples/orders/order_status_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/orders/order_status_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1278,7 +1354,9 @@ $this->data['title']="Insert currency";
 			$this->orders_admin_model->demo_insert_order_status();
 		}
 		$this->data['title']="Insert order status";
-		$this->template->load('default','flexicart/admin_examples/orders/order_status_insert_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/orders/order_status_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1304,7 +1382,9 @@ $this->data['title']="Insert currency";
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 		$this->data['title']="Config";
-		$this->template->load('default','flexicart/admin_examples/config/config_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/config/config_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1345,7 +1425,9 @@ $this->data['title']="Insert currency";
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 		$this->data['title'] = "Default Options";
-		$this->template->load('default','flexicart/admin_examples/config/defaults_update_view', $this->data);
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/config/defaults_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1365,7 +1447,9 @@ $this->data['title']="Insert currency";
 		// over multiple html select menus.
 		$this->data['locations_tiered'] = $this->flexi_cart_admin->locations_tiered();
 		$this->data['title'] = "Location menu demo";
-		$this->template->load('default','flexicart/admin_examples/locations/location_menu_demo_view', $this->data);		
+		$this->data['campaign_access'] = $this->_campaigns;
+$this->data['page'] = "shop";
+$this->template->load('default','flexicart/admin_examples/locations/location_menu_demo_view', $this->data);		
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	

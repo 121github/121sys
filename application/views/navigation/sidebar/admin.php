@@ -233,7 +233,7 @@
             <?php } ?>
 
             <?php if (in_array("admin shop", $_SESSION['permissions'])) { ?>
-                <?php $this->view('navigation/shop.php'); ?>
+                <?php $this->view('navigation/sidebar/shop.php'); ?>
             <?php } ?>
         </ul>
     </li>

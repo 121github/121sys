@@ -34,6 +34,22 @@ class Data extends CI_Controller
     //this loads the data management view
     public function index()
     {
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Admin',
+            'title' => 'Admin | Data',
+            'page' => 'data',
+            'css' => array(
+                'dashboard.css'
+            )
+        );
+        $this->template->load('default', 'admin/index.php', $data);
+    }
+
+    //this loads the data management view
+    public function import()
+    {
         $campaigns = $this->Form_model->get_campaigns();
         $sources = $this->Form_model->get_sources();
         $pots = $this->Form_model->get_pots();

@@ -42,7 +42,20 @@ class Booking extends CI_Controller
 	}
 	
 	
-	public function index(){
+	public function week(){
+	$this->index("agendaWeek");	
+	}
+	public function day(){
+	$this->index("agendaDay");	
+	}
+	public function month(){
+	$this->index("month");	
+	}
+	
+	public function index($view=false){
+		if(!$view){
+			$view = "agendaWeek";
+		}
         //Get the campaign_triggers if exists
         $campaign_triggers = array();
         if(isset($_SESSION['current_campaign'])) {
@@ -54,6 +67,7 @@ class Booking extends CI_Controller
 		$data = array(
             'campaign_access' => $this->_campaigns,
             'title' => 'Bookings',
+			'view' =>$view,
             'page' => 'Bookings',
             "campaign_triggers" => $campaign_triggers,
 			'css'=>array("plugins/fullcalendar-2.6.1/fullcalendar.min.css",      'plugins/bootstrap-toggle/bootstrap-toggle.min.css','plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.css'),
@@ -67,8 +81,9 @@ class Booking extends CI_Controller
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
 		$attendee = $this->input->post('attendee');
+		$appointment_type = $this->input->post('appointment_type');
         $status = $this->input->post('status');
-		$events = $this->Booking_model->get_events($start,$end,$attendee,$status);
+		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type);
 		foreach($events as $k => $event){
 			$events[$k]['color'] = genColorCodeFromText($event['attendees']);
 		}

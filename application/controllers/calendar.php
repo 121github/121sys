@@ -21,6 +21,7 @@ class Calendar extends CI_Controller
         $this->load->model('Booking_model');
     }
 
+
     public function switch_view()
     {
         $view = $this->input->post('view');
@@ -37,6 +38,17 @@ class Calendar extends CI_Controller
         }
         $users = $this->Form_model->get_calendar_users($campaigns);
         echo json_encode(array("success" => true, "data" => $users));
+    }
+
+    public function get_calendar_types()
+    {
+        if ($this->input->post('campaigns')) {
+            $campaigns = $this->input->post('campaigns');
+        } else {
+            $campaigns = array();
+        }
+        $types = $this->Form_model->get_calendar_types($campaigns);
+        echo json_encode(array("success" => true, "data" => $types));
     }
 
     public function get_slots_for_attendee()

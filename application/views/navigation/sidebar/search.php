@@ -1,5 +1,4 @@
-
-<li><a href="#" style="display:none">Search</a>
+<li><a href="#searchnav" style="display:none">Search</a>
   <ul id="searchnav">
     <li>
       <form style="padding:20px" id="quicksearchform">

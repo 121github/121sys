@@ -1,23 +1,19 @@
 <div class="page-header">
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-6">
             <h2>My account</h2>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg-6">
+        <div class="pull-right">
             <?php if($_SESSION['role'] == 1): ?>
-                <div class="">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Select other user</button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a class="campaign-filter" ref="#" style="color: green;">Select other user</a> </li>
-                            <?php foreach($users as $row): ?>
-                                <li><a href="#" class="user-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                        <select data-title="Switch User" data-size="15" id="user-filter" class="selectpicker"></button>
+							<?php foreach($users as $row): ?>
+                                <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                             <?php endforeach ?>
-                            <li class="divider"></li>
-                        </ul>
-                    </div>
-                </div>
+                        </select>
+
             <?php endif ?>
+            </div>
         </div>
     </div>
 </div>
@@ -68,7 +64,7 @@
                         <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
                             CONTACT DETAILS 
 
-                                <span class="glyphicon glyphicon-edit pointer marl pull-right" id="edit-details-btn" data-id="<?php echo $user_id ?>"></span>
+                                <span class="btn btn-default btn-xs marl pull-right" id="edit-details-btn" data-id="<?php echo $user_id ?>"><i class="glyphicon glyphicon-edit"></i> Edit</span>
                      
                         </div>
                         <table class="table ajax-table">
@@ -92,7 +88,7 @@
 
                         <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
                             ADDRESSES
-                            <span class="glyphicon glyphicon-plus pointer marl pull-right" id="add-user-address" data-modal="add-user-address" data-user-id="<?php echo $user_id ?>" data-address-id=""></span>
+                            <span class="btn btn-default btn-xs marl pull-right" id="add-user-address" data-modal="add-user-address" data-user-id="<?php echo $user_id ?>" data-address-id=""><i class="glyphicon glyphicon-plus"></i> Add</span>
                         </div>
                         <!-- Addresses -->
                         <div class="user-addresses"></div>

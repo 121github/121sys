@@ -16,7 +16,7 @@ class Booking_model extends CI_Model
      * @param $urn
      * @return mixed
      */
-    public function get_events($start,$end,$attendee,$status) {
+    public function get_events($start=false,$end=false,$attendee=false,$status=false,$appointment_type=false) {
 		//$where = " and campaign_id in(".$_SESSION['campaign_access']['list'].")";
 		$where = "";
 		if($start){
@@ -27,6 +27,9 @@ class Booking_model extends CI_Model
 		}
 		if($attendee){
 			$where .= " and appointment_attendees.user_id = '$attendee'";
+		}
+		if($appointment_type){
+			$where .= " and appointment_attendees.appoitnment_type_id = '$appointment_type'";
 		}
 		if($status != ""){
 			$where .= " and status = '$status'";

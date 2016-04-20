@@ -1,16 +1,17 @@
-<div class="row">
+
     <form class="dashboard-filter-form" method="post">
         <input type="hidden" name="dashboard_id">
         <input type="hidden" name="date_from" value="<?php echo ((isset($filters['date_from']))?$filters['date_from']['values'][0]:"2014-02-07"); ?>">
         <input type="hidden" name="date_to" value="<?php echo ((isset($filters['date_to']))?$filters['date_to']['values'][0]:date('Y-m-d')); ?>">
-
-        <div class="col-lg-6">
+<div class="row">
+        <div class="col-lg-12">
             <button type="button" class="daterange btn btn-default" data-width="100%">
                 <span class="glyphicon glyphicon-calendar"></span>
                 <span class="date-text"> <?php echo "Any Time"; ?> </span>
             </button>
         </div>
-
+</div>
+<div class="row">
         <div class="col-lg-6">
             <label style="margin-top: 5%; width: 100%">
                 <div class="row">
@@ -34,9 +35,7 @@
                     </optgroup>
                 <?php } ?>
             </select>
-        </div>
 
-        <div class="col-lg-6">
             <?php if (count($campaign_outcomes) > 0) { ?>
                 <label style="margin-top: 5%; width: 100%">
                     <div class="row">
@@ -62,9 +61,11 @@
                     <?php } ?>
                 </select>
             <?php } ?>
-        </div>
+            
+            
+            
+       
 
-        <div class="col-lg-6">
             <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                 <label style="margin-top: 5%; width: 100%">
                     <div class="row">
@@ -85,54 +86,7 @@
                     <?php } ?>
                 </select>
             <?php } ?>
-        </div>
-
-        <div class="col-lg-6">
-            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                <label style="margin-top: 5%; width: 100%">
-                    <div class="row">
-                        <div class="col-lg-6">Agent</div>
-                        <div class="col-lg-6">
-                            <input type='checkbox' id='dash-agents-check' name='dash_agents_check' data-toggle='toggle' data-width='100' data-size="mini" data-onstyle='success' data-offstyle='danger' data-on='Editable' data-off='Not Editable'
-                                value=<?php echo ((isset($filters['agents']))?$filters['agents']['editable']:"1"); ?>
-                                <?php echo (isset($filters['agents'])?($filters['agents']['editable'] == "1"?"checked":""):"checked"); ?>>
-                        </div>
-                    </div>
-                </label>
-                <select name="agents[]" class="selectpicker agent-filter" multiple data-width="100%"
-                        data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                    <?php foreach ($agents as $row) { ?>
-                        <option <?php if ((isset($filters['agents'])) && (in_array($row['id'],$filters['agents']['values'])))  {
-                            echo "Selected";
-                        } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                    <?php } ?>
-                </select>
-            <?php } ?>
-        </div>
-
-        <div class="col-lg-6">
-            <label style="margin-top: 5%; width: 100%">
-                <div class="row">
-                    <div class="col-lg-6">Source</div>
-                    <div class="col-lg-6">
-                        <input type='checkbox' id='dash-sources-check' name='dash_sources_check' data-toggle='toggle' data-width='100' data-size="mini" data-onstyle='success' data-offstyle='danger' data-on='Editable' data-off='Not Editable'
-                            value=<?php echo ((isset($filters['sources']))?$filters['sources']['editable']:"1"); ?>
-                            <?php echo (isset($filters['sources'])?($filters['sources']['editable'] == "1"?"checked":""):"checked"); ?>>
-                    </div>
-                </div>
-            </label>
-            <select name="sources[]" class="selectpicker source-filter" multiple data-width="100%"
-                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                <?php foreach ($sources as $row) { ?>
-                    <option <?php if ((isset($filters['sources'])) && (in_array($row['id'],$filters['sources']['values'])))  {
-                        echo "Selected";
-                    } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                <?php } ?>
-            </select>
-        </div>
-
-        <div class="col-lg-6">
-            <label style="margin-top: 5%; width: 100%">
+                        <label style="margin-top: 5%; width: 100%">
                 <div class="row">
                     <div class="col-lg-6">Pot</div>
                     <div class="col-lg-6">
@@ -150,9 +104,9 @@
                     } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                 <?php } ?>
             </select>
-        </div>
+ </div>
 
-        <div class="col-lg-6">
+  <div class="col-lg-6">
             <label style="margin-top: 5%; width: 100%">
                 <div class="row">
                     <div class="col-lg-6">User</div>
@@ -175,10 +129,54 @@
                     </optgroup>
                 <?php } ?>
             </select>
-        </div>
-    </form>
-</div>
 
+
+            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
+                <label style="margin-top: 5%; width: 100%">
+                    <div class="row">
+                        <div class="col-lg-6">Agent</div>
+                        <div class="col-lg-6">
+                            <input type='checkbox' id='dash-agents-check' name='dash_agents_check' data-toggle='toggle' data-width='100' data-size="mini" data-onstyle='success' data-offstyle='danger' data-on='Editable' data-off='Not Editable'
+                                value=<?php echo ((isset($filters['agents']))?$filters['agents']['editable']:"1"); ?>
+                                <?php echo (isset($filters['agents'])?($filters['agents']['editable'] == "1"?"checked":""):"checked"); ?>>
+                        </div>
+                    </div>
+                </label>
+                <select name="agents[]" class="selectpicker agent-filter" multiple data-width="100%"
+                        data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                    <?php foreach ($agents as $row) { ?>
+                        <option <?php if ((isset($filters['agents'])) && (in_array($row['id'],$filters['agents']['values'])))  {
+                            echo "Selected";
+                        } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                    <?php } ?>
+                </select>
+            <?php } ?>
+
+            <label style="margin-top: 5%; width: 100%">
+                <div class="row">
+                    <div class="col-lg-6">Source</div>
+                    <div class="col-lg-6">
+                        <input type='checkbox' id='dash-sources-check' name='dash_sources_check' data-toggle='toggle' data-width='100' data-size="mini" data-onstyle='success' data-offstyle='danger' data-on='Editable' data-off='Not Editable'
+                            value=<?php echo ((isset($filters['sources']))?$filters['sources']['editable']:"1"); ?>
+                            <?php echo (isset($filters['sources'])?($filters['sources']['editable'] == "1"?"checked":""):"checked"); ?>>
+                    </div>
+                </div>
+            </label>
+            <select name="sources[]" class="selectpicker source-filter" multiple data-width="100%"
+                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                <?php foreach ($sources as $row) { ?>
+                    <option <?php if ((isset($filters['sources'])) && (in_array($row['id'],$filters['sources']['values'])))  {
+                        echo "Selected";
+                    } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php } ?>
+            </select>
+
+
+        </div>
+
+      
+</div>
+ </form>
 <script>
     dashboard.init();
     modal_body.find('#dash-campaigns-check, #dash-outcomes-check, #dash-teams-check, #dash-agents-check, #dash-sources-check, #dash-pot-check, #dash-user-check').bootstrapToggle();

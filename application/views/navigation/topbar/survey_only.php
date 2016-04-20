@@ -1,0 +1,1 @@
+<li><a href="<?php echo base_url() ?>records/detail" >Start Survey</a></li>

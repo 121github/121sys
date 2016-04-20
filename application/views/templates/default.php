@@ -38,10 +38,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
     <script type="text/javascript"
             src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-    <!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-    <!--Need to make a new icon for this
-          <link rel="apple-touch-icon" href="<?php echo base_url(); ?>assets/img/apple-touch-icon.png" />-->
-</head>
+             </head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
         id="opentimer" class="glyphicon glyphicon-earphone pointer"></span> <span
@@ -55,9 +52,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <!--ajax generated footer stats go here -->
     </div>
 <?php } ?>
-<div class="navbar navbar-default navbar-fixed-top">
+<div class="navbar navbar-default navbar-fixed-top" style="padding-left:20px">
     <?php if (isset($_SESSION['permissions'])) { ?>
-        <a href="#menu" class="btn btn-default navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+        <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
         <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0 && isset($global_filter)) { ?>
             <?php if (isset($_SESSION['current_pot'])) {
@@ -71,8 +68,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php } ?>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
-    <div id="top-campaign-container" <?php if(count($_SESSION['campaign_access']['array'])<3){ echo 'class="hidden"'; } ?> style="padding-top:8px; width:230px; display:none">
-        <select id="top-campaign-select" class="selectpicker" data-width="230px">
+        <div id="top-campaign-container" <?php if(count($_SESSION['campaign_access']['array'])<3){ echo 'class="hidden"'; } ?> style="padding-top:8px; width:160px; display:none; float:left">
+        <select id="top-campaign-select" class="selectpicker" data-width="160px">
             <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
                 <option
                     value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
@@ -88,6 +85,18 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <?php } ?>
         </select>
     </div>
+    <ul class="nav navbar-nav desktop-only" id="desktop-nav">
+    <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
+		 <li><a href="#" id='open-quicksearch'>Search <i class="fa fa-search"></i></a></li>
+         <?php } ?>
+        <?php $this->view('navigation/topbar/dashboards.php', $page); ?>
+        <?php $this->view('navigation/topbar/view.php', $page); ?> 
+           <?php $this->view('navigation/topbar/calendar.php', $page); ?>  
+             <?php $this->view('navigation/topbar/reports.php', $page); ?>  
+               <?php $this->view('navigation/topbar/admin.php', $page); ?>  
+               <?php $this->view('navigation/topbar/account.php', $page); ?>   
+                       
+      </ul>
     <?php if ($_SESSION['environment'] == 'demo') { ?>
         <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!! </span>
     <?php } ?>
@@ -169,9 +178,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </li>
             <?php } ?>
             <?php if (in_array("files only", $_SESSION['permissions'])) {
-                $this->view('navigation/files_only.php');
+                $this->view('navigation/sidebar/files_only.php');
             } else if (in_array("survey only", $_SESSION['permissions'])) {
-                $this->view('navigation/survey_only.php');
+                $this->view('navigation/sidebar/survey_only.php');
             } else if (in_array("mix campaigns", $_SESSION['permissions']) || isset($_SESSION['current_campaign'])) {
                 ?>
                 <?php
@@ -185,16 +194,16 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 				/* make the menu start on the first panel - ignore selected page BF march 2016*/
 				$page = "";
 				/* end */
-                $this->view('navigation/dashboards.php', $page);
-                $this->view('navigation/records.php', $page);
-                $this->view('navigation/files.php', $page);
-                $this->view('navigation/appointments.php', $page);
-                $this->view('navigation/planner.php', $page);
-                $this->view('navigation/surveys.php', $page);
-                $this->view('navigation/calendar.php', $page);
-                $this->view('navigation/admin.php', $page);
-                $this->view('navigation/reports.php', $page);
-                $this->view('navigation/search.php', $page);
+                $this->view('navigation/sidebar/dashboards.php', $page);
+                $this->view('navigation/sidebar/records.php', $page);
+                $this->view('navigation/sidebar/files.php', $page);
+                $this->view('navigation/sidebar/appointments.php', $page);
+                $this->view('navigation/sidebar/planner.php', $page);
+                $this->view('navigation/sidebar/surveys.php', $page);
+                $this->view('navigation/sidebar/calendar.php', $page);
+                $this->view('navigation/sidebar/admin.php', $page);
+                $this->view('navigation/sidebar/reports.php', $page);
+                $this->view('navigation/sidebar/search.php', $page);
             } else { ?>
                 <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
                 <li>
@@ -295,7 +304,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript">campaign_functions = {};</script>
 <?php } ?>
 <!-- End of campaign triggers-->
-
 <script type="text/javascript">
 	helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['user_id'])){ ?>
@@ -380,7 +388,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     "content": [
                         "<a href='" + helper.baseUrl + "<?php echo @$_SESSION['home'] ?>'><span class='fa fa-home'></span> Home</a>",
                         "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>"
-                        <?php if(@in_array('search records',$_SESSION['permissions'])){ ?>,"<a class='mm-next' data-target='#searchnav' href='#searchnav'><span class='fa fa-search'></span> Search</a>"<?php } ?>
+                        <?php if(@in_array('search records',$_SESSION['permissions'])){ ?>,"<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>"<?php } ?>
                     ]
                 },
                 {
@@ -394,7 +402,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             ]
             , "extensions": ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"]
         });
-
+		 menu_api = $("nav#menu").data( "mmenu" );
         <?php if(isset($global_filter)){ ?>
         $('nav#menu-right').mmenu({
             navbar: {
@@ -454,6 +462,15 @@ endif; ?>
     </div>
     <script>
         $(document).ready(function () {
+			$('#open-quicksearch').on('click',function(e){
+				e.preventDefault();
+				$('#nav-menu-btn').trigger('click');
+				$('#quicksearch-btn').trigger('click');
+			});
+			
+
+			
+			
             $('#color-box').on('click', '.color-btn', function () {
                 var mheader = "Appearance";
                 var report_btn= '' ;

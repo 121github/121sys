@@ -9,15 +9,12 @@ width:30%; height: 100px; margin-right: 5px
 }
 
 .custom-panel[custom-panel-display="list"] table { margin-top:25px }
-.navbar-toggle {
-	display: block;
-	float: left;
-	margin-left: 15px;
-}
+
 .nav-tabs {
 	background:#eee;
 	width:100%;
 }
+.nav a { outline: 0 !important; }
 #color-box {
 	position:fixed;
 	right:0px;
@@ -398,4 +395,22 @@ div.tooltip-inner {
 .scroll td, .scroll th {
 	min-width: 200px;
 	border: dashed 1px lightblue;
+}
+ .navbar-toggle {
+	float: left;
+}
+@media (min-width:992px) {
+    .desktop-only {
+        display:block !important;
+    }
+}
+@media (max-width: 991px) {
+    .mobile-only {
+        display:block !important;
+    }
+
+ 
+    .desktop-only {
+        display:none !important;
+    }
 }
