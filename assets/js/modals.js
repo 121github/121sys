@@ -1657,7 +1657,7 @@ var modals = {
 		  mbody +=	'<li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
 		}
         if (data.custom_info.length > 0) {
-           '<li><a role="tab" data-toggle="tab" href="#tab-custom">' + data.custom_panel_name + '</a></li>';
+            mbody += '<li><a role="tab" data-toggle="tab" href="#tab-custom">' + data.custom_panel_name + '</a></li>';
         }
         if (helper.permissions['planner'] > 0) {
             mbody += '<li><a role="tab" data-toggle="tab" href="#tab-planner">Planner</a></li>';
