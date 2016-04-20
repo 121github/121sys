@@ -12,6 +12,7 @@ class Booking extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $this->project_version = $this->config->item('project_version');
 		$this->load->model('Booking_model');
+        $this->load->model('Contacts_model');
         $this->load->model('Appointments_model');
         $this->load->model('Form_model');
         $this->load->model('Records_model');
@@ -543,6 +544,11 @@ class Booking extends CI_Controller
                     //Create record
                     $urn = $this->Records_model->save_record(array(
                         "campaign_id" => 7
+                    ));
+                    //Add a contact with no name
+                    $contact_id = $this->Contacts_model->save_contact(array(
+                        "urn" => $urn,
+                        "fullname" => ""
                     ));
 
                     //Add the appointments to 121system
