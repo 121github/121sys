@@ -84,12 +84,6 @@ class Google extends CI_Controller
             $redirect_uri = $last_page;
             header('Location: ' . $redirect_uri);
 
-//            if ($user_id != $_SESSION['user_id']) {
-//                $redirect_uri = substr($redirect_uri, 0, strrpos( $redirect_uri, '/'));
-//            }
-//
-//            header('Location: ' . $redirect_uri.'/'.$user_id);
-
         }
 
         echo json_encode(array("success" => true));
@@ -98,25 +92,17 @@ class Google extends CI_Controller
 
     public function logout()
     {
-        //if (isset($_SESSION['api']['google'])) {
-        //    unset($_SESSION['api']['google']);
-        //}
 
         $user_id = (isset($_GET['id'])?$_GET['id']:$_SESSION['user_id']);
 
 
+        //Delete token from apis table
         $this->db->where(array('user_id' => $user_id, 'api_name' => 'google'));
         $this->db->delete('apis');
 
         $redirect_uri = $_SERVER['HTTP_REFERER'];
 
         header('Location: ' . $redirect_uri);
-
-//        if ($user_id != $_SESSION['user_id']) {
-//            $redirect_uri = substr($redirect_uri, 0, strrpos( $redirect_uri, '/'));
-//        }
-//
-//        header('Location: ' . $redirect_uri.'/'.$user_id);
     }
 }
 

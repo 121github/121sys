@@ -111,7 +111,9 @@ class Booking_model extends CI_Model
     public function remove_google_calendar($id) {
 
         $this->db->where('google_calendar_id', $id);
-        return $this->db->delete("google_calendar");
+        $this->db->delete("google_calendar");
+
+        return $this->db->affected_rows();
     }
 
     public function get_appointments_by_google_id($google_id) {
@@ -131,6 +133,12 @@ class Booking_model extends CI_Model
 
 	public function get_google_calendars_selected() {
 		$query = "select * from google_calendar gc inner join campaigns c using(campaign_id)";
+
+		return $this->db->query($query)->result_array();
+	}
+
+	public function get_google_calendars_selected_by_campaign($campaign_id) {
+		$query = "select * from google_calendar gc inner join campaigns c using(campaign_id) where gc.campaign_id = ".$campaign_id;
 
 		return $this->db->query($query)->result_array();
 	}

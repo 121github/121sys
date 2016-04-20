@@ -420,8 +420,8 @@ class Booking extends CI_Controller
         $result = $this->Booking_model->remove_google_calendar($id);
 
         echo json_encode(array(
-            'success' => $result,
-            'msg' => ($result?"Calendar removed successfully!":"ERROR: The calendar was not removed from this user!")
+            'success' => (!empty($result)),
+            'msg' => (!empty($result)?"Calendar removed successfully!":"ERROR: The calendar was not removed from this user!")
         ));
     }
 
@@ -569,6 +569,7 @@ class Booking extends CI_Controller
     {
 
         $user_id = $this->input->post("user_id");
+        $campaign_id = $this->input->post("campaign_id");
         $data = array();
 
         $google_token = $this->Booking_model->getGoogleToken($user_id,'google');
@@ -587,30 +588,33 @@ class Booking extends CI_Controller
                 $google_client = $this->refreshToken($google_token[0]);
             }
 
-            //Get the calendars
-            $service = new Google_Service_Calendar($google_client);
-            $calendarList  = $service->calendarList->listCalendarList()->getItems();
+            $calendarList = array();
 
-            $aux = array();
-            $calendars_selected = $this->Booking_model->get_google_calendars_selected();
-            foreach ($calendars_selected as $calendar) {
-                array_push($aux, $calendar['calendar_id']);
+            if ($campaign_id) {
+                //Get the calendars
+                $service = new Google_Service_Calendar($google_client);
+                $calendarList  = $service->calendarList->listCalendarList()->getItems();
+
+                $aux = array();
+                $calendars_selected = $this->Booking_model->get_google_calendars_selected_by_campaign($campaign_id);
+                foreach ($calendars_selected as $calendar) {
+                    array_push($aux, $calendar['calendar_id']);
+                }
+                $calendars_selected = $aux;
+
+                $aux = array();
+                foreach ($calendarList as $calendar) {
+                    array_push($aux, array(
+                        'id' => $calendar->id,
+                        'name' => $calendar->summary,
+                        'accessRole' => $calendar->accessRole,
+                        'selected' => (in_array($calendar->id,$calendars_selected))
+                    ));
+                }
+                $calendarList = $aux;
             }
-            $calendars_selected = $aux;
 
             $userCalendars = $this->Booking_model->get_google_calendars_by_user($user_id);
-
-            $aux = array();
-            foreach ($calendarList as $calendar) {
-                array_push($aux, array(
-                    'id' => $calendar->id,
-                    'name' => $calendar->summary,
-                    'accessRole' => $calendar->accessRole,
-                    'selected' => (in_array($calendar->id,$calendars_selected))
-                ));
-            }
-            $calendarList = $aux;
-
             $campaigns = $this->Form_model->get_campaigns();
 
             $data = array(

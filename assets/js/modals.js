@@ -3004,6 +3004,8 @@ var modals = {
                 e.preventDefault();
                 var campaign_selected = $('.add-google-calendar-form').find('#campaign-select option:selected').text();
                 $('.add-google-calendar-form').find('input[name="campaign_name"]').val(campaign_selected);
+
+                modals.users.load_add_calendar_tab($('.add-google-calendar-form').find('input[name="user_id"]').val());
             });
 
             $(document).on("change", "#calendar-select", function (e) {
@@ -3022,7 +3024,6 @@ var modals = {
 
             $modal.on("click", '.sync-google-calendar', function(e) {
                 e.preventDefault();
-                console.log("asds");
                 modals.users.sync_google_cal($(this).attr('data-id'), $(this).attr('data-user-id'));
             });
         },
@@ -3069,9 +3070,8 @@ var modals = {
                         //Add to calendars tab
                         modals.users.load_calendar_tab(response.data.user_id);
 
-                        //Set on the dropdown disabled
-                        $('.add-google-calendar-form').find('#calendar-select option[value="'+response.data.calendar_id+'"]').prop('disabled',true);
-                        $('#calendar-select').selectpicker('val',"").selectpicker('refresh');
+                        //Set value to ""
+                        $('#calendar-select').selectpicker("val","").selectpicker('refresh');
 
                         //Hide save button
                         $('.add-google-calendar').hide();
@@ -3089,6 +3089,7 @@ var modals = {
             }
         },
         remove_google_calendar: function(id, calendar_id) {
+            var user_id = $('.add-google-calendar-form').find('input[name="user_id"]').val();
             $.ajax({
                 url: helper.baseUrl + 'booking/remove_google_calendar',
                 type: "POST",
@@ -3099,9 +3100,15 @@ var modals = {
                     flashalert.success(response.msg);
                     //Remove from calendars tab
                     $('.calendars-table').find('.google-calendar-id-'+id).html("");
-                    //Set on the dropdown available
-                    $('.add-google-calendar-form').find('#calendar-select option[value="'+calendar_id+'"]').prop('disabled',false);
-                    $('#calendar-select').selectpicker('refresh');
+                    //Add to add calendars tab
+                    modals.users.load_add_calendar_tab(user_id);
+
+                    //Add to calendars tab
+                    modals.users.load_calendar_tab(user_id);
+
+                    //Set value to ""
+                    $('#calendar-select').selectpicker("val","").selectpicker('refresh');
+
                 }
                 else {
                     flashalert.danger(response.msg);
@@ -3125,19 +3132,25 @@ var modals = {
                 type: "POST",
                 data: {
                     'user_id': user_id,
+                    'campaign_id': $('.add-google-calendar-form').find('#campaign-select option:selected').val(),
                     'format': "json"
                 },
                 dataType: "JSON"
             }).done(function (response) {
                 var options = '';
-                $.each(response.campaigns,function(k,val){
-                    var selected = ((response.campaigns.length == 1)?"selected":"");
-                    options += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
-                });
+                //$.each(response.campaigns,function(k,val){
+                //    var selected = ((response.campaigns.length == 1)?"selected":"");
+                //    options += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
+                //});
+                //
+                //$('#campaign-select').html(options).selectpicker('refresh');
+                //
+                //options = '';
 
-                $('#campaign-select').html(options).selectpicker('refresh');
+                //Set on the dropdown available
+                $('.add-google-calendar-form').find('#calendar-select').prop('disabled',false);
+                $('#calendar-select').selectpicker('refresh');
 
-                options = '';
                 $.each(response.calendars,function(k,val){
                     var disabled = ((val.selected || val.accessRole == 'reader')?"disabled":"");
                     options += '<option value="'+val.id+'" '+disabled+'>'+val.name+'</option>';
@@ -3159,8 +3172,8 @@ var modals = {
                     calendar += '<tr class="google-calendar-id-'+val.id+'">' +
                         '<td>'+val.campaign_name+'</td>' +
                         '<td>'+val.calendar_name+'</td>' +
-                        '<td><i class="fa fa-remove red pointer remove-google-calendar" data-id="'+val.id+'" data-calendar-id="'+val.calendar_id+'"></i></td>' +
-                        '<td><i class="fa fa-refresh info green pointer sync-google-calendar" data-user-id="'+val.user_id+'" data-id="'+val.id+'" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the events from this calendar into this user calendar)"></i></td>' +
+                        '<td><i class="fa fa-remove red pointer remove-google-calendar" data-id="'+val.google_calendar_id+'" data-calendar-id="'+val.calendar_id+'"></i></td>' +
+                        '<td><i class="fa fa-refresh info green pointer sync-google-calendar" data-user-id="'+val.user_id+'" data-id="'+val.google_calendar_id+'" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the events from this calendar into this user calendar)"></i></td>' +
                         '</tr>';
                 });
 

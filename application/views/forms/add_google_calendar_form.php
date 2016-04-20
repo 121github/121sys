@@ -27,11 +27,7 @@
                             Calendar
                             <i class="fa fa-info-circle info" data-toggle="tooltip" data-placement="top" title="Select the google calendar associated to this user for the calendar events"></i>
                         </label>
-                        <select title='Calendar' name="calendar_id" class="selectpicker" id='calendar-select'>
-                            <?php foreach ($calendars as $row): ?>
-                                <option value="<?php echo $row['id'] ?>" <?php echo (($row['selected'] || $row['accessRole'] == 'reader')?"disabled":"") ?>><?php echo $row['name'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <select title='Calendar' name="calendar_id" class="selectpicker" id='calendar-select' disabled></select>
                     </div>
                 </div>
             </form>
@@ -67,6 +63,8 @@
         if (<?php echo count($campaigns); ?> == 1) {
             var campaign_selected = $('.add-google-calendar-form').find('#campaign-select option:selected').text();
             $('.add-google-calendar-form').find('input[name="campaign_name"]').val(campaign_selected);
+
+            modals.users.load_add_calendar_tab($('.add-google-calendar-form').find('input[name="user_id"]').val());
         }
     });
 
