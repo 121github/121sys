@@ -811,6 +811,7 @@ class Dashboard_model extends CI_Model
                 INNER JOIN export_forms e ON (e.export_forms_id = dr.report_id)
                 LEFT JOIN  export_to_viewers drv USING (export_forms_id)
                   WHERE dr.dashboard_id = ".$dashboard_id." ".$where."
+                  GROUP BY  dr.dashboard_id
                   ORDER BY dr.position asc";
 
         return $this->db->query($qry)->result_array();
