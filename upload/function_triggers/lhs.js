@@ -232,7 +232,32 @@ var campaign_functions = {
         if ($('[name="appointment_contact_email"]').length > 0) {
             var client_email = $('[name="appointment_contact_email"]').val();
         }
-
+		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced"||$form.find("[name='6']").val() === "Paid & Issued"||$form.find("[name='6']").val() === "Invoiced & Report Ready")) {
+			 $.ajax({
+                    url: helper.baseUrl + 'upload/function_triggers/lhs.php',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+						action:'create_job_number',
+                        data_id: $modal.find('[name="data_id"]').val(),
+                    }
+                })
+		 }
+		 //if they want to clear the job number if an status gets put back just uncomment this
+		 /*
+		 if ($form.find('input[name="1"]').val()!==""&&($form.find("[name='6']").val() !== "Paid"&&$form.find("[name='6']").val() !== "Invoiced"&&$form.find("[name='6']").val() !== "Paid & Issued"&&$form.find("[name='6']").val() !== "Invoiced & Report Ready")) {
+			 $.ajax({
+                    url: helper.baseUrl + 'upload/function_triggers/lhs.php',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+						action:'clear_job_number',
+                        data_id: $modal.find('[name="data_id"]').val(),
+                    }
+                })
+		 }
+		*/
+		
         //Job Status is Paid
         if ($form.find("[name='6']").val() === "Paid") {
             //Send email Referral Scheme Email to Account Role group email
@@ -284,7 +309,7 @@ var campaign_functions = {
         record.email_panel.load_panel();
     },
     custom_items_loaded: function () {
-        $('.custom-panel').find('.id-title').text("Job Number");
+        $('.custom-panel').find('.id-title').closest('tr').hide();
         if (record.role == "16") {
             $('.edit-detail-btn').hide();
             $('#custom-panel').find('tr:contains(Quote)').hide();

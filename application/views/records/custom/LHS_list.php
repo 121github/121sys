@@ -103,7 +103,7 @@
            <?php $this->view('records/panels/contacts.php', $details); ?>
             <?php $this->view('records/panels/referral.php', $details); ?>
              <?php $this->view('records/panels/history.php', $details); ?>
-               <?php $this->view('records/panels/custom_info.php', $details); ?>
+               <?php //$this->view('records/panels/custom_info.php', $details); ?>
            <?php if(isset($custom_panels)){ 
 		   foreach ($custom_panels as $k => $v) { 
                     $this->view('records/panels/' . "custom_panels.php", $custom_panels[$k]);

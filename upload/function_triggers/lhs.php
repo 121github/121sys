@@ -52,5 +52,22 @@ switch ($action) {
             ));
         }
         break;
+	    case "create_job_number":
+		$sql = "select `value` from custom_panel_values where field_id = 1 and `value` like 'LH%' order by `value` limit 1";
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();	
+		$job_number = "LH".date('y')."-".intval(str_replace("LH".date('y')."-","",$row['value']))+1;		
+		} else {
+		$job_number = "LH".date('y')."-1";	
+		}
+		$update = "replace into custom_panel_values set data_id = '{$_POST['data_id']}',field_id='1',`value`='$job_number'";
+		$conn->query($update);
+		echo json_encode(array("success"=>true,"job_number"=>$job_number));
+		break;
+		case "clear_job_number":
+		$sql = "update custom_panel_values set `value` = '' where field_id = 1 and data_id = '{$_POST['data_id']}'";
+		$result = $conn->query($sql);
+		break;
 }
 ?> 
