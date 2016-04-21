@@ -18,9 +18,9 @@ class PrepareAcceptLhsDeployment extends AbstractTask
             'rm -rf application/config/database.php.*',
             'setfacl -R -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
             'setfacl -dR -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
-            'find . -type f -exec chmod 644 {} \;',
-            'find . -type d -exec chmod 755 {} \;',
-            'chmod -R 777 importcsv.sh',
+            'find . -type f ! -path "./datafiles/*" -exec chmod 644 {} \;',
+            'find . -type d ! -path "./datafiles" -exec chmod 755 {} \;',
+            'chmod 777 importcsv.sh',
             'mkdir -p upload/function_triggers',
         );
 
