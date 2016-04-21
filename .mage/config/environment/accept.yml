@@ -17,6 +17,7 @@ tasks:
   pre-deploy:
   on-deploy:
     - uploadFolder
+	- datafilesFolder
     - logFolder
     - prepareAcceptDeployment
     - permissionsGroup
