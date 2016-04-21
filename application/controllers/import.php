@@ -97,7 +97,7 @@ echo json_encode(array("success"=>true));
 	public function checkfile($file=NULL){
 	$row = 1;
 	if(!file_exists(FCPATH."datafiles/".$file)){
-	echo "File not uploaded (".FCPATH."datafiles/".$file>")";
+	echo "File not uploaded (".FCPATH."datafiles/".$file.")";
 	exit;
 	}
 if (($handle = fopen(FCPATH."datafiles/".$file, "r")) !== FALSE) {
@@ -162,6 +162,7 @@ if (($handle = fopen(FCPATH."datafiles/".$file, "r")) !== FALSE) {
 		}
 		//run the bash script
 		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database. ' '.$this->db->username. ' '.$this->db->password;
+		$this->firephp->log($command);
         $output = shell_exec($command);
 		$this->firephp->log($output);
 		if($this->Import_model->check_import()){

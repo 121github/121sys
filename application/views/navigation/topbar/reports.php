@@ -10,7 +10,7 @@
     <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>> <a href="<?php echo base_url() ?>reports/activity">Activity</a> </li>
     <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>> <a href="<?php echo base_url() ?>reports/overview">Activity Overview</a> </li>
     <?php } ?>
-    <li> <a href="#reports-outcomes">Campaign Performance</a> </li>
+    <li> <a href="<?php echo base_url() ?>reports/outcomes/campaign/1">Campaign Performance</a> </li>
     <?php if (in_array("productivity", $_SESSION['permissions'])) { ?>
     <li <?php echo @($page == 'productivity' ? "class='Selected'" : "") ?>> <a href="<?php echo base_url() ?>reports/productivity"> Productivity </a> </li>
     <?php } ?>
@@ -22,10 +22,10 @@
     <li <?php echo @($page == 'data' ? "class='Selected'" : "") ?>> <a href="<?php echo base_url() ?>reports/data">Data Counts</a> </li>
     <?php } ?>
     <?php if (in_array("email", $_SESSION['permissions'])) { ?>
-    <li> <a href="#reports-emails">Emails</a> </li>
+    <li> <a href="<?php echo base_url() ?>reports/email/campaign/1">Emails</a> </li>
     <?php } ?>
     <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
-    <li> <a href="#reports-sms">SMS</a> </li>
+    <li> <a href="<?php echo base_url() ?>reports/sms/campaign/1>SMS</a> </li>
     <?php } ?>
     <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a
                     href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
