@@ -3512,11 +3512,11 @@ TRUNCATE TABLE `hours_logged`;
 DROP TABLE IF EXISTS `hour_exception`;
 CREATE TABLE IF NOT EXISTS `hour_exception` (
   `exception_id` int(11) NOT NULL AUTO_INCREMENT,
-  `hour_id` int(11) NOT NULL,
+  `hours_id` int(11) NOT NULL,
   `exception_type_id` int(11) NOT NULL,
   `duration` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`exception_id`),
-  KEY `hour_id` (`hour_id`),
+  KEY `hours_id` (`hours_id`),
   KEY `exception_type_id` (`exception_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -6742,7 +6742,7 @@ ALTER TABLE `datatables_view_columns`
 -- Filtros para la tabla `hour_exception`
 --
 ALTER TABLE `hour_exception`
-  ADD CONSTRAINT `hour_exception_ibfk_1` FOREIGN KEY (`hour_id`) REFERENCES `hours` (`hours_id`),
+  ADD CONSTRAINT `hour_exception_ibfk_1` FOREIGN KEY (`hours_id`) REFERENCES `hours` (`hours_id`),
   ADD CONSTRAINT `hour_exception_ibfk_2` FOREIGN KEY (`exception_type_id`) REFERENCES `hour_exception_type` (`exception_type_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
