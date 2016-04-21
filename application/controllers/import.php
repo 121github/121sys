@@ -97,7 +97,7 @@ echo json_encode(array("success"=>true));
 	public function checkfile($file=NULL){
 	$row = 1;
 	if(!file_exists(FCPATH."datafiles/".$file)){
-	echo "File not uploaded (".FCPATH."datafiles/".$file.")";
+	$this->firephp->log("File not uploaded (".FCPATH."datafiles/".$file.")");
 	exit;
 	}
 if (($handle = fopen(FCPATH."datafiles/".$file, "r")) !== FALSE) {
