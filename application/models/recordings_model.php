@@ -73,9 +73,6 @@ class Recordings_model extends CI_Model
 		
 		$start = $options['start'];
         $length = $options['length'];
-		if($options['draw']=="1"){
-		$length = 10;	
-		}
         $qry .= $order;
 		if($length>0){
         $qry .= "  limit $start,10";

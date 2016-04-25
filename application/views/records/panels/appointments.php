@@ -39,6 +39,7 @@ html.mm-right.mm-opening .mm-slideout {
 </style>
  <script>
  $(document).ready(function(){
+	 slot_duration = '00:15:00'
  $('body').append('<nav id="calendar-right" style="display:none" class="mm-menu mm--horizontal mm-offcanvas"><div id="calendar"></div></nav>');
   $('nav#calendar-right').mmenu({
             navbar: {
@@ -55,10 +56,13 @@ fixed: "isFixed"
 }
 }
 });
+
+
 	var api = $('nav#calendar-right').data('mmenu');
 api.bind('opened', function () {
 	$('#calendar-right').fadeIn(400,function(){
-    calendar.init();
+	calendar.remove_button_triggers()	
+	calendar.init();
 	$modal.css('z-index','9999999');
 	});
 });

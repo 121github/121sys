@@ -52,12 +52,12 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
-
+		$title = 'Overview';
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Activity',
+            'title' => $title,
             'page' => 'activity'
         ,
             'javascript' => array(
@@ -75,7 +75,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/overview.php', $data);
 
@@ -250,11 +251,12 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
+		$title = "Data Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Data',
+            'title' => $title,
             'page' => 'data'
         ,
             'javascript' => array(
@@ -273,7 +275,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/data.php', $data);
     }
@@ -315,12 +318,12 @@ class Reports extends CI_Controller
         $data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
         $outcomes = $this->Form_model->get_outcomes();
-
+		$title = "Data Capture Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Data Capture',
+            'title' => $title,
             'page' => 'data_capture',
             'campaigns' => $campaigns,
             'sources' => $sources,
@@ -337,7 +340,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title),
         );
         $this->template->load('default', 'reports/data_capture.php', $data);
     }
@@ -346,12 +350,12 @@ class Reports extends CI_Controller
     //this controller loads the view for the targets page on the dashboard
     public function targets()
     {
-
+		$title = "Targets Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Targets',
+            'title' => $title,
             'page' => 'targets'
         ,
             'javascript' => array(
@@ -365,7 +369,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/targets.php', $data);
     }
@@ -381,6 +386,7 @@ class Reports extends CI_Controller
     {
         $surveys = $this->Form_model->get_surveys();
         $results = $this->Report_model->all_answers_data();
+		$title = "Survey Answer Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -397,7 +403,8 @@ class Reports extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css'
-            )
+            ),
+			'submenu' => array("file"=>'answers_report.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/answers.php', $data);
     }
@@ -458,14 +465,12 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
-
+		$title = "Activity Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Reports',
-            'title' => 'Reports | Activity',
-            'page' => 'activity'
-        ,
+            'title' => $title,
+            'page' => 'activity',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'report/activity.js?v' . $this->project_version,
@@ -481,7 +486,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/activity.php', $data);
     }
@@ -603,12 +609,12 @@ class Reports extends CI_Controller
             }
         }
         $campaign_outcomes = $aux;
-
+		$title = "Performance Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Campaign Outcme',
+            'title' => $title,
             'page' => "outcome_report_$group",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -626,7 +632,8 @@ class Reports extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'outcomes_report.php',"page"=>$group,"title"=>$title)
         );
         $this->template->load('default', 'reports/outcomes.php', $data);
     }
@@ -838,12 +845,14 @@ class Reports extends CI_Controller
     {
         if ($this->uri->segment(3) == "campaign") {
             $group = "campaign";
-        } else if ($this->uri->segment(3) == "agent") {
-            $group = "agent";
+        } else if ($this->uri->segment(3) == "user") {
+            $group = "user";
         } else if ($this->uri->segment(3) == "date") {
             $group = "date";
         } else if ($this->uri->segment(3) == "time") {
             $group = "time";
+        } else if ($this->uri->segment(3) == "template") {
+            $group = "template";
         } else {
             $group = "campaign";
         }
@@ -874,12 +883,12 @@ class Reports extends CI_Controller
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
         $agents = $this->Form_model->get_agents();
-
+		$title = "Email Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Email',
+            'title' =>$title,
             'page' => "email_report_$group",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -896,7 +905,8 @@ class Reports extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'email_report.php',"page"=>$group,"title"=>$title)
         );
 
         $this->template->load('default', 'reports/email.php', $data);
@@ -961,7 +971,7 @@ class Reports extends CI_Controller
                     $emailUrl = $url . "/sent-email-date/" . $row['sql'];
                 } else if ($group == "time") {
                     $emailUrl = $url . "/sent-email-time/" . $row['sql'];
-                } else if ($group == "agent") {
+                } else if ($group == "user") {
                     $emailUrl = $url . "/user-email-sent-id/" . $id;
                 } else if ($group == "campaign") {
                     $emailUrl = $url . "/campaign/" . $id;
@@ -1087,12 +1097,12 @@ class Reports extends CI_Controller
 
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
-
+		$title = "Productivity";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Productivity',
+            'title' =>$title,
             'page' => 'productivity',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -1109,7 +1119,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+				'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/productivity.php', $data);
     }
@@ -1295,12 +1306,12 @@ class Reports extends CI_Controller
 
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
-
+		$title = "Last Outcome Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Last Outcomes',
+            'title' => $title,
             'page' => 'client_report_outcomes',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -1316,7 +1327,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/last_outcomes.php', $data);
     }
@@ -1409,12 +1421,12 @@ class Reports extends CI_Controller
 
         $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
         $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
-
+$title = "Dials Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Dials',
+            'title' => $title,
             'page' => 'client_report_dials',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -1430,7 +1442,8 @@ class Reports extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+				'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
         );
         $this->template->load('default', 'reports/dials.php', $data);
     }
@@ -1503,21 +1516,42 @@ class Reports extends CI_Controller
             $group = "date";
         } else if ($this->uri->segment(3) == "time") {
             $group = "time";
+        } else if ($this->uri->segment(3) == "template") {
+            $group = "template";
         } else {
             $group = "campaign";
         }
-        $templates = $this->Form_model->get_sms_templates();
-        $campaigns = $this->Form_model->get_user_campaigns();
+		  $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+		
+        $templates_by_campaign_group = $this->Form_model->get_sms_templates_ordered_by_campaign_group();
+        $aux = array();
+        foreach ($templates_by_campaign_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $templates_by_campaign_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
         $data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
-
+		$title = "SMS Report";
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'pageId' => 'Reports',
-            'title' => 'Reports | Sms',
+            'title' => $title,
             'page' => "sms_report_$group",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -1525,16 +1559,17 @@ class Reports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
+			'campaigns_by_group' => $campaigns_by_group,
+			'templates_by_campaign_group' => $templates_by_campaign_group,
             'group' => $group,
-            'templates' => $templates,
-            'campaigns' => $campaigns,
             'sources' => $sources,
             'data_pot' => $data_pot, 'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'submenu' => array("file"=>'sms_report.php',"page"=>$group,"title"=>$title)
         );
 
         $this->template->load('default', 'reports/sms.php', $data);
@@ -1552,14 +1587,13 @@ class Reports extends CI_Controller
             $form["date_to"] = ($this->input->post("date_to")) ? $this->input->post("date_to") : date('Y-m-d');
             $results = $this->Report_model->get_sms_data($form);
 
-            $date_from_search = $form["date_from"];
+                  $date_from_search = $form["date_from"];
             $date_to_search = $form["date_to"];
-            $agent_search = $form["agent"];
-            $campaign_search = $form["campaign"];
-            $template_search = $form["template"];
-            $team_search = $form["team"];
-            $source_search = $form["source"];
-            $pot_search = $form["pots"];
+            $agent_search = (isset($form["agents"]) ? $form["agents"] : array());
+            $campaign_search = (isset($form["campaigns"]) ? $form["campaigns"] : array());
+            $template_search = (isset($form["templates"]) ? $form["templates"] : array());
+            $team_search = (isset($form["teams"]) ? $form["teams"] : array());
+            $source_search = (isset($form["sources"]) ? $form["sources"] : array());
             $group = $form["group"];
 
 
@@ -1567,7 +1601,7 @@ class Reports extends CI_Controller
             foreach ($results as $row) {
                 if ($row['sms_sent_count']) {
                     $aux[$row['id']]['sql'] = $row['sql'];
-                    $aux[$row['id']]['name'] = ($row['name'] ? $row['name'] : ($group === 'agent' ? 'Automatic' : ''));
+                    $aux[$row['id']]['name'] = ($row['name'] ? $row['name'] : ($group === 'user' ? 'Automatic' : ''));
                     $aux[$row['id']]['credits'] = $row['credits'];
                     $aux[$row['id']]['sms_sent'] = $row['sms_sent_count'];
                     $aux[$row['id']]['sms_delivered'] = $row['sms_delivered_count'];
@@ -1586,15 +1620,14 @@ class Reports extends CI_Controller
             $totalSmsUnknown = 0;
             $totalSmsError = 0;
             $totalSmsUnsent = 0;
-            $url = base_url() . "search/custom/records";
-            $url .= (!empty($agent_search) ? "/user-sms-sent-id/$agent_search" : "");
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($template_search) ? "/template-sms/$template_search" : "");
+			 $url = base_url() . "search/custom/records";
+           $url .= (!empty($agent_search) ? "/user_sms_sent_id/" . implode("_", $agent_search) . (count($agent_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($template_search) ? "/template/" . implode("_", $template_search) . (count($template_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($campaign_search) ? "/campaign/" . implode("_", $campaign_search) . (count($campaign_search) > 1 ? ":in" : "") : "");
             $url .= (!empty($date_from_search) ? "/sent-sms-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/sent-sms-to/$date_to_search" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            $url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
+            $url .= (!empty($team_search) ? "/team/" . implode("_", $team_search) . (count($team_search) > 1 ? ":in" : "") : "");
+            $url .= (!empty($source_search) ? "/source/" . implode("_", $source_search) . (count($source_search) > 1 ? ":in" : "") : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -1611,7 +1644,7 @@ class Reports extends CI_Controller
                     $smsUrl = $url . "/sent-sms-date/" . $row['sql'];
                 } else if ($group == "time") {
                     $smsUrl = $url . "/sent-smss-time/" . $row['sql'];
-                } else if ($group == "agent") {
+                } else if ($group == "user") {
                     $smsUrl = $url . "/user-sms-sent-id/" . $id;
                 } else if ($group == "campaign") {
                     $smsUrl = $url . "/campaign/" . $id;
@@ -1655,7 +1688,7 @@ class Reports extends CI_Controller
             $totalSmsUnsentPercent = ($totalSmsError || $totalSmsUndelivered) ? number_format((($totalSmsError + $totalSmsUndelivered) * 100) / $totalSmsSent, 2) : 0;
 
 
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+        $url .= (!empty($campaign_search) ? "/campaign/" . implode("_", $campaign_search) . (count($campaign_search) > 1 ? ":in" : "") : "");
 
             array_push($data, array(
                 "id" => "TOTAL",

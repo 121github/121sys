@@ -165,14 +165,22 @@ class Form_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
     
-    public function get_calendar_users($campaign_ids = array())
+    public function get_calendar_users($campaign_ids = array(),$postcode=false,$type=false)
     {
         $where = "";
+		$join = "";
+		$select = "";
+		$order = " order by name ";
         if (count($campaign_ids) > 0) {
-            $where = " and campaign_id in(" . implode(",", $campaign_ids) . ")";
-        }
-        $qry = "select user_id id,name name from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 and attendee = 1 $where group by user_id order by name";
-        //$this->firephp->log($qry);
+            $where .= " and campaign_id in(" . implode(",", $campaign_ids) . ")";
+        } else if(isset($_SESSION['current_campaign'])){
+		$where = " and campaign_id = " . $_SESSION['current_campaign'];	
+		}
+		if($type){
+			$join .= " join user_appointment_types using(user_id) ";
+			$where .= " and user_appointment_types.appointment_type_id = '$type'";
+		}
+        $qry = "select user_id id,name name,home_postcode postcode from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 and attendee = 1 $where group by user_id ";
         return $this->db->query($qry)->result_array();
     }
 	
@@ -181,8 +189,11 @@ class Form_model extends CI_Model
         $where = "";
         if (count($campaign_ids) > 0) {
         $where = " and campaign_id in(" . implode(",", $campaign_ids) . ")";
-        }
-        $qry = "select appointment_type_id id,appointment_type name from appointment_types join campaign_appointment_types using(appointment_type_id) join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 $where group by appointment_type_id order by name";        
+        } else if(isset($_SESSION['current_campaign'])){
+		$where = " and campaign_id = " . $_SESSION['current_campaign'];	
+		}
+        $qry = "select appointment_type_id id,appointment_type name from appointment_types join campaign_appointment_types using(appointment_type_id) join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 $where group by appointment_type_id order by name";  
+		$this->firephp->log($qry);      
 		$query = $this->db->query($qry);
 		if($query->num_rows()){
         return  $query->result_array();
@@ -464,6 +475,28 @@ class Form_model extends CI_Model
                   IF(campaign_group_name IS NOT NULL,campaign_group_name,'_OTHERS') group_name
             from email_templates
             left join email_template_to_campaigns using (template_id)
+            left join campaigns using (campaign_id)
+            left join campaign_groups using (campaign_group_id)
+            where
+                campaign_id in({$_SESSION['campaign_access']['list']})
+                and campaign_status = 1
+            group by campaign_id
+            order by group_name, campaign_name";
+
+        return $this->db->query($qry)->result_array();
+    }
+    /**
+     * Get templates ordered by campaign group
+     *
+     */
+    public function get_sms_templates_ordered_by_campaign_group()
+    {
+        $qry = "select
+                  template_id id,
+                  template_name name,
+                  IF(campaign_group_name IS NOT NULL,campaign_group_name,'_OTHERS') group_name
+            from email_templates
+            left join sms_template_to_campaigns using (template_id)
             left join campaigns using (campaign_id)
             left join campaign_groups using (campaign_group_id)
             where

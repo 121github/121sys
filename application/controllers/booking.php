@@ -83,9 +83,10 @@ class Booking extends CI_Controller
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
 		$attendee = $this->input->post('attendee');
+		$postcode = $this->input->post('postcode');
 		$appointment_type = $this->input->post('appointment_type');
         $status = $this->input->post('status');
-		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type);
+		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type,$postcode);
 		foreach($events as $k => $event){
 			$events[$k]['color'] = genColorCodeFromText($event['attendees']);
 		}

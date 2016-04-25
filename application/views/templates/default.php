@@ -31,6 +31,17 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/<?php echo $file ?>">
         <?php endforeach;
     endif; ?>
+    <?php if(isset($submenu)){ ?>
+    <style>
+	.container-fluid {
+    padding: 110px 15px 60px;
+	}
+	.navbar-nav {
+	margin: 0 !important;	
+	}
+	</style>
+    <?php } ?>
+    
     <link rel="shortcut icon"
           href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/icon.png">
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
@@ -52,7 +63,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <!--ajax generated footer stats go here -->
     </div>
 <?php } ?>
-<div class="navbar navbar-default navbar-fixed-top" style="padding-left:20px">
+<?php if(isset($submenu)){ ?>
+       <?php $this->view('submenus/'.$submenu['file'],$submenu); ?>
+<?php } ?>
+<div class="navbar navbar-default navbar-fixed-top" style="padding-left:15px">
     <?php if (isset($_SESSION['permissions'])) { ?>
         <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
@@ -63,8 +77,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 $filter_style = "";
             } ?>
             <a href="#menu-right" class="navbar-toggle navbar-right"
-               style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter"
-                                                                                style="padding-left:3px"></span></a>
+               style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter" style="padding-left:3px"></span></a>
         <?php } ?>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
@@ -94,11 +107,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
            <?php $this->view('navigation/topbar/calendar.php', $page); ?>  
              <?php $this->view('navigation/topbar/reports.php', $page); ?>  
                <?php $this->view('navigation/topbar/admin.php', $page); ?>  
-               <?php $this->view('navigation/topbar/account.php', $page); ?>   
-                       
+               <?php $this->view('navigation/topbar/account.php', $page); ?>           
       </ul>
+     
     <?php if ($_SESSION['environment'] == 'demo') { ?>
-        <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!! </span>
+        <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!!</span>
     <?php } ?>
     <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
                                                      src="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/small-logo.png"><img
@@ -107,6 +120,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </div>
 <?php } ?>
 </div>
+
 <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0) { ?>
     <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">
@@ -159,8 +173,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         Welcome <?php echo $_SESSION['name'] ?></small>
                 </a></li>
             <?php if (isset($campaign_access) && count($_SESSION['campaign_access']['array']) > "2") { ?>
-                <li style="padding:0 20px;">
-                    <select id="side-campaign-select" class="selectpicker" data-width="100%">
+                <li style="padding:0;">
+                    <select id="side-campaign-select" class="form-control">
                         <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
                             <option
                                 value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>

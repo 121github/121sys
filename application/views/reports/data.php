@@ -1,32 +1,3 @@
-<div class="row">
-    <div class="col-lg-8">
-        <h1 class="page-header">Data Counts Report</h1>
-    </div>
-    <div class="col-lg-4 page-header" style="text-align: right;">
-        <ul class="nav">
-            <li>
-                <div class="btn-group">
-                    <span class="btn btn-default btn show-charts" data-item="0" charts="chart_div" data="filters">
-                        <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
-                    </span>
-                    <span class="btn btn-default btn refresh-data">
-                        <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
-                    </span>
-                    <a href="#filter-right" class="btn btn-default btn">
-                        <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                    </a>
-                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a class='view-filters' href="#">View current filters</a></li>
-                        <li><a class='clear-filters' href="#">Set default filters</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-
 <nav id="filter-right" class="mm-menu mm--horizontal mm-offcanvas">
     <div style="padding:30px 20px 3px">
         <form class="filter-form">
@@ -112,7 +83,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
-            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Data Report
+            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i><span class="mobile-only"><?php echo $title ?></span>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body productivity-panel  table-responsive" style="padding: 0px;">

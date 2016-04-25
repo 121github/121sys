@@ -302,11 +302,15 @@ if (!empty($pots)) {
 
     public function get_email_data($options)
     {
-        if ($options['group'] == "agent") {
+        if ($options['group'] == "user") {
             $group_by = "eh.user_id";
             $id = "eh.user_id `sql`, eh.user_id";
             $name = "u.name";
-        } else if ($options['group'] == "date") {
+        } else if ($options['group'] == "template") {
+            $group_by = "eh.template_id";
+            $id = "eh.template_id `sql`, eh.template_id";
+            $name = "template_name";
+		} else if ($options['group'] == "date") {
             $group_by = "date(eh.sent_date)";
             $id = "date(eh.sent_date) `sql`,date_format(eh.sent_date,'%d/%m/%y')";
             $name = "'All'";
@@ -381,7 +385,7 @@ if (!empty($pots)) {
                 if(email_read_count is null,0,email_read_count) email_read_count,
 				if(email_pending_count is null,0,email_pending_count) email_pending_count,
                 if(email_unsent_count is null,0,email_unsent_count) email_unsent_count
-        from email_history eh left join users using(user_id) 
+        from email_history eh left join email_templates using(template_id) left join users using(user_id) 
           $joins
           left join (select count(*) email_read_count,$group_by gb from email_history eh $joins where eh.read_confirmed = 1 $where group by $group_by) erc on erc.gb = $group_by
 		   left join (select count(*) email_pending_count,$group_by gb from email_history eh $joins where eh.pending = 1 $where group by $group_by) epc on epc.gb = $group_by
@@ -845,10 +849,14 @@ $this->firephp->log($qry);
      */
     public function get_sms_data($options)
     {
-        if ($options['group'] == "agent") {
+        if ($options['group'] == "user") {
             $group_by = "sh.user_id";
             $id = "sh.user_id `sql`, sh.user_id";
             $name = "u.name";
+		} else if ($options['group'] == "template") {
+            $group_by = "sh.template_id";
+            $id = "sh.template_id `sql`, sh.template_id";
+            $name = "template_name";
         } else if ($options['group'] == "date") {
             $group_by = "date(sh.sent_date)";
             $id = "date(sh.sent_date) `sql`,date_format(sh.sent_date,'%d/%m/%y')";
@@ -863,13 +871,13 @@ $this->firephp->log($qry);
             $name = "campaign_name";
         }
 
-        $date_from = $options['date_from'];
-        $agent = $options['agent'];
+       $date_from = $options['date_from'];
         $date_to = $options['date_to'];
-        $template = $options['template'];
-        $campaign = $options['campaign'];
-        $team_manager = $options['team'];
-        $source = $options['source'];
+        $agents = isset($options['agents']) ? $options['agents'] : array();
+        $templates = isset($options['templates']) ? $options['templates'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $team_managers = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
         $hours_where = "";
         $where = "";
         if (!empty($date_from)) {
@@ -878,21 +886,24 @@ $this->firephp->log($qry);
         if (!empty($date_to)) {
             $where .= " and date(sh.sent_date) <= '$date_to' ";
         }
-        if (!empty($template)) {
-            $where .= " and sh.template_id = '$template' ";
+        if (!empty($templates)) {
+            $where .= " and sh.template_id IN (".implode(",",$templates).") ";
         }
-        if (!empty($campaign)) {
-            $where .= " and c.campaign_id = '$campaign' ";
+        if (!empty($campaigns)) {
+            $where .= " and c.campaign_id IN (".implode(",",$campaigns).") ";
         }
-        if (!empty($team_manager)) {
-            $where .= " and u.team_id = '$team_manager' ";
+        if (!empty($team_managers)) {
+            $where .= " and u.team_id IN (".implode(",",$team_managers).") ";
         }
-        if (!empty($agent)) {
-            $where .= " and sh.user_id = '$agent' ";
+        if (!empty($agents)) {
+            $where .= " and sh.user_id IN (".implode(",",$agents).") ";
             $name = "u.name";
         }
-        if (!empty($source)) {
-            $where .= " and r.source_id = '$source' ";
+        if (!empty($sources)) {
+            $where .= " and r.source_id IN (".implode(",",$sources).") ";
+        }
+if (!empty($pots)) {
+            $where .= " and r.pot_id IN (".implode(",",$pots).") ";
         }
 
         //if the user does not have the agent reporting permission they can only see their own stats
@@ -924,7 +935,7 @@ $this->firephp->log($qry);
 				if(sms_undelivered_count is null,0,sms_undelivered_count) sms_undelivered_count,
 				if(sms_unknown_count is null,0,sms_unknown_count) sms_unknown_count,
 				if(sms_error_count is null,0,sms_error_count) sms_error_count
-        from sms_history sh
+        from sms_history sh left join sms_templates using(template_id)
           left join users using(user_id)
           $joins
           left join (select count(*) sms_delivered_count,$group_by gb from sms_history sh $joins where sh.status_id = " . SMS_STATUS_SENT . " $where group by $group_by) ssc on ssc.gb = $group_by

@@ -36,8 +36,38 @@ class Calendar extends CI_Controller
         } else {
             $campaigns = array();
         }
-        $users = $this->Form_model->get_calendar_users($campaigns);
-        echo json_encode(array("success" => true, "data" => $users));
+		$postcode = $this->input->post('postcode');
+		$type = $this->input->post('appointment_type');
+        $users = $this->Form_model->get_calendar_users($campaigns,$postcode,$type);
+	/*this section appends the distance and puts them in order */
+		if($postcode){
+			$data = array();
+			$x=0;
+			$coords = postcode_to_coords($postcode);
+		foreach($users as $k => $row){ 
+		$data[$row['name']]=$row;
+			if(!empty($row['postcode'])){
+            $ucoords = postcode_to_coords($row['postcode']);
+			$distance = distance($coords['lat'],$coords['lng'],$ucoords['lat'],$ucoords['lng']);
+			$data[$row['name']]['distance'] = $distance;
+			} else {
+			$data[$row['name']]['distance'] = "";
+			}
+		}
+		
+		uasort($data,'arraySort_distance');
+		foreach($data as $k=>$row){
+		if($row['distance']==""){
+		unset($data[$k]);
+		$data[$row['name']] = $row;	
+		} else {
+		$data[$row['name']]['distance'] = number_format($row['distance'],2). " Miles";		
+		}
+		}
+		} else {
+		$data = $users;
+		}
+        echo json_encode(array("success" => true, "data" => $data));
     }
 
     public function get_calendar_types()

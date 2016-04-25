@@ -7,6 +7,9 @@ $(document).ready(function () {
 
 var sms = {
     init: function () {
+
+        filters.init();
+
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
@@ -15,7 +18,8 @@ var sms = {
                     'Last 7 Days': [moment().subtract('days', 6), moment()],
                     'Last 30 Days': [moment().subtract('days', 29), moment()],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
+					'Last Year': [moment().subtract('month', 12).startOf('month'),  moment()]
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",
@@ -28,100 +32,74 @@ var sms = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                sms.sms_panel()
             });
         $(document).on("click", '.daterange', function (e) {
             e.preventDefault();
         });
 
-        $(document).on("click", ".template-filter", function (e) {
-            e.preventDefault();
-            $(this).closest('form').find('input[name="template"]').val($(this).attr('id'));
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            sms.sms_panel()
+               //optgroup
+        $('li.dropdown-header').on('click', function (e) {
+            setTimeout(function () {
+                //Get outcomes by campaigns selected
+                sms.get_outcomes_filter();
+
+                sms.get_sources_filter();
+                sms.get_pots_filter();
+            }, 500);
         });
 
-        $(document).on("click", ".campaign-filter", function (e) {
+        $(document).on("click", '#filter-submit', function (e) {
             e.preventDefault();
-            $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            sms.sms_panel()
+            sms.sms_panel();
+            $('#filter-right').data("mmenu").close();
         });
-        $(document).on("click", ".agent-filter", function (e) {
+
+        $(document).on("click", '.daterange', function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
-            $(this).closest('form').find('input[name="team"]').val('');
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            sms.sms_panel()
         });
-        $(document).on("click", ".team-filter", function (e) {
+
+        $(document).on("change", ".campaign-filter", function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
-            $(this).closest('form').find('input[name="agent"]').val('');
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            sms.sms_panel()
+            //Get outcomes by campaigns selected
+            sms.get_outcomes_filter();
+
+            sms.get_sources_filter();
+            sms.get_pots_filter();
         });
-        $(document).on("click", ".source-filter", function (e) {
+
+        $(document).on("click", ".refresh-data", function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            sms.sms_panel()
+            sms.sms_panel();
         });
-        $(document).on("click", ".pot-filter", function (e) {
-            e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="pots"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            sms.sms_panel()
-        });
+
         $(document).on('click', '.show-sms-btn', function (e) {
             e.preventDefault();
-            sms.show_all_sms($(this), $(this).attr('sms-status'));
-        });
-        $(document).on('click', '.close-sms-all', function (e) {
-            e.preventDefault();
-            sms.close_all_sms($(this));
+            sms.show_sms($(this), $(this).attr('sms-sent'), $(this).attr('sms-read'), $(this).attr('sms-pending'));
         });
         $(document).on('click', '.view-sms-btn', function (e) {
             e.preventDefault();
             sms.view_sms($(this).attr('item-id'));
         });
-        $(document).on('click', '.close-sms', function (e) {
-            e.preventDefault();
-            sms.close_sms($(this));
-        });
-        sms.sms_panel()
+        sms.sms_panel();
     },
-    sms_panel: function (sms) {
+    sms_panel: function () {
+        var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined' ? ($('.graph-color').css('display') == 'none' ? 'none' : 'inline-block') : 'none');
+
         $.ajax({
             url: helper.baseUrl + 'reports/sms_data',
             type: "POST",
             dataType: "JSON",
-            data: $('.filter-form').serialize()
+            data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('.sms-panel').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             var $row = "";
             $tbody = $('.sms-data .ajax-table').find('tbody');
             $tbody.empty();
             if (response.success) {
                 $('#sms-name').text(response.sms);
-                $.each(response.data, function (i, val) {
+              $.each(response.data, function (i, val) {
                     if (response.data.length) {
 
                         var style = "";
@@ -176,9 +154,86 @@ var sms = {
                     + response.msg
                     + "</td></tr>");
             }
+
+            //////////////////////////////////////////////////////////
+            //Filters/////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////
+            var filters = "";
+
+            filters += "<span class='btn btn-default btn-xs clear-filters pull-right'>" +
+                "<span class='glyphicon glyphicon-remove' style='padding-left:3px; color:black;'></span> Clear" +
+                "</span>";
+
+            //Date
+            filters += "<h5><strong>Date </strong></h5>" +
+                "<ul>" +
+                "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_from']").val() + "</li>" +
+                "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_to']").val() + "</li>" +
+                "</ul>";
+
+            //Campaigns
+            var size = ($('.campaign-filter  option:selected').size() > 0 ? "(" + $('.campaign-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Campaigns</strong> " + size + "</h5><ul>";
+            $('.campaign-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+            //Templates
+            var size = ($('.template-filter  option:selected').size() > 0 ? "(" + $('.template-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Templates</strong> " + size + "</h5><ul>";
+            $('.template-filter option:selected').each(function (index) {
+                var color = "black";
+                if ($(this).parent().attr('label') === 'positive') {
+                    color = "green";
+                }
+                filters += "<li style='list-style-type:none'><span style='color: " + color + "'>" + $(this).text() + "</span></li>";
+            });
+            filters += "</ul>";
+
+            //Teams
+            var size = ($('.team-filter  option:selected').size() > 0 ? "(" + $('.team-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Teams</strong> " + size + "</h5><ul>";
+            $('.team-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+
+            //Agents
+            var size = ($('.agent-filter  option:selected').size() > 0 ? "(" + $('.agent-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Agents</strong> " + size + "</h5><ul>";
+            $('.agent-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+
+                        //Sources
+            var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Sources</strong> " + size + "</h5><ul>";
+            $('.source-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+			
+			//Pots
+            var size = ($('.pot-filter  option:selected').size() > 0 ? "(" + $('.pot-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Pots</strong> " + size + "</h5><ul>";
+            $('.pot-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+            $('#filters').html(filters);
+
+            //////////////////////////////////////////////////////////
+            //Graphics/////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////
+            sms.get_graphs(response);
         });
     },
-    close_all_sms: function () {
+  close_all_sms: function () {
         $('.modal-backdrop.all-sms').fadeOut();
         $('.sms-container').fadeOut(500, function () {
             $('.sms-content').show();
@@ -308,6 +363,135 @@ var sms = {
                 "<td class='comments'>" + response.data.comments + "</td>" +
                 "</tr>";
             $('#sms-view-table').html(tbody);
+        });
+    },
+    get_outcomes_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_outcomes_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_outcomes, function (type, data) {
+                    options += "<optgroup label=" + type + ">";
+                    $.each(data, function (i, val) {
+                        options += "<option value=" + val.id + ">" + val.name + "</option>";
+                    });
+                    options += "</optgroup>";
+                });
+                $('#outcome-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_sources_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_sources_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_sources, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#source-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_pots_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_pots_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_pots, function (i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#pot-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+
+    get_graphs: function (response) {
+
+        google.load('visualization', '1', {
+            packages: ['corechart'], 'callback': function () {
+                // Create the data table.
+                var data_sent = new google.visualization.DataTable();
+                data_sent.addColumn('string', 'Topping');
+                data_sent.addColumn('number', 'Sent');
+
+                var data_read = new google.visualization.DataTable();
+                data_read.addColumn('string', 'Topping');
+                data_read.addColumn('number', 'Read');
+
+                var data_pending = new google.visualization.DataTable();
+                data_pending.addColumn('string', 'Topping');
+                data_pending.addColumn('number', 'Pending');
+
+                var data_unsent = new google.visualization.DataTable();
+                data_unsent.addColumn('string', 'Topping');
+                data_unsent.addColumn('number', 'Unsent');
+
+                var rows_sent = [];
+                var rows_read = [];
+                var rows_pending = [];
+                var rows_unsent = [];
+
+                var colors = [];
+
+                if (response.data.length > 1) {
+                    $.each(response.data, function (i, val) {
+                        if (response.data.length && val.id != "TOTAL") {
+                            var name = ((val.name != "All")?val.name:val.id);
+                            colors.push('#' + val.colour);
+                            if (parseInt(val.sms_sent) > 0) {
+                                rows_sent.push([name, parseInt(val.sms_sent)]);
+                            }
+                            if (parseInt(val.sms_read) > 0) {
+                                rows_read.push([name, parseInt(val.sms_read)]);
+                            }
+                            if (parseInt(val.sms_pending) > 0) {
+                                rows_pending.push([name, parseInt(val.sms_pending)]);
+                            }
+                            if (parseInt(val.sms_unsent) > 0) {
+                                rows_unsent.push([name, parseInt(val.sms_unsent)]);
+                            }
+                        }
+                    });
+                    data_sent.addRows(rows_sent);
+                    data_read.addRows(rows_read);
+                    data_pending.addRows(rows_pending);
+                    data_unsent.addRows(rows_unsent);
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_sent'));
+                    chart.draw(data_sent, {'legend': {position: 'none'},'colors': colors,'title': "sms Sent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_read'));
+                    chart.draw(data_read, {'legend': {position: 'none'},'colors': colors,'title': "sms Read",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_pending'));
+                    chart.draw(data_pending, {'legend': {position: 'none'},'colors': colors,'title': "sms Pending",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_unsent'));
+                    chart.draw(data_unsent, {'legend': {position: 'none'},'colors': colors,'title': "sms Unsent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                }
+                else {
+                    $('#chart_div_sent').html("No data");
+                    $('#chart_div_read').html("");
+                    $('#chart_div_pending').html("");
+                    $('#chart_div_unsent').html("");
+                }
+            }
         });
     }
 }

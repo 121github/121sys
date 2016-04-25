@@ -1,4 +1,5 @@
 var fullcalendar;
+var slot_duration = '00:30:00'
 var calendar = {
     init: function (view) {
 		this.click_date = "";
@@ -34,14 +35,13 @@ var calendar = {
         if (helper.permissions['google calendar'] > 0) {
             this.left_buttons += ' googleButton';
         }
-        this.event_source = helper.baseUrl + 'booking/events';
 
         this.fullCalendar = $('#calendar').fullCalendar({
             timeFormat: 'H:mm',
 			columnFormat: 'ddd D/M',
             minTime: '07:00',
             maxTime: '20:00',
-            slotDuration: '00:30:00',
+            slotDuration: slot_duration,
             //height: 700,
             header: {
                 left: calendar.left_buttons,
@@ -132,17 +132,26 @@ var calendar = {
                         var attendee = $('#calendar').find('#attendee-select').val();
 						var appointment_type = $('#calendar').find('#type-select').val();
                         var status = (typeof $('#status-select').val() != "undefined" ? $('#status-select').val() : 1);
+							var postcode = false;
+		if(typeof quick_planner.company_postcode !=="undefined"){
+		postcode = quick_planner.contact_postcode;	
+		} else {
+		postcode = quick_planner.contact_postcode	
+		}
                         return {
                             attendee: attendee,
-                            status: status
+                            status: status,
+							appointment_type: appointment_type,
+							postcode:postcode
                         };
                     }
                 }
             ]
         })
+		calendar.type_filter();
         calendar.attendee_filter();
         //calendar.status_filter();
-		calendar.type_filter();
+		
 		
         calendar.init_context_menu();
         calendar.month_filter();
@@ -272,17 +281,25 @@ var calendar = {
 
     },
     load_attendees: function (elem, selected) {
+		var postcode = false;
+		if(typeof quick_planner.company_postcode !=="undefined"){
+		postcode = quick_planner.contact_postcode;	
+		} else {
+		postcode = quick_planner.contact_postcode	
+		}
         $.ajax({
             url: helper.baseUrl + 'calendar/get_calendar_users',
             type: "POST",
             dataType: "JSON",
             data: {
-                campaigns: $('#campaign-cal-select').val()
+                campaigns: $('#campaign-cal-select').val(),
+				postcode: postcode,
+				appointment_type: $('#calendar').find('#type-select').val()
             }
         }).done(function (response) {
             var $options = "<option value=''>All Attendees</options>";
             $.each(response.data, function (k, v) {
-                $options += "<option " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
+                $options += "<option data-subtext='"+v.distance+"' " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
             });
             elem.html($options).selectpicker('refresh');
         });
@@ -517,4 +534,11 @@ var calendar = {
             }
         });
     },
+	remove_button_triggers:function(){
+		$modal.off('click', '[data-toggle="tab"]')
+        $modal.off('change', '.attendee-select')
+        $modal.off('click', '#save-rule-btn')
+        $modal.off('click', '.del-rule-btn')
+        $('#calendar').off('change', '#attendee-select, #status-select, #type-select')
+	}
 }

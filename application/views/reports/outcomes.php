@@ -1,4 +1,4 @@
-<div class="row">
+<!--<div class="row">
     <div class="col-lg-8">
         <h1 class="page-header">Campaign Performance Report</h1>
     </div>
@@ -24,8 +24,7 @@
             </li>
         </ul>
     </div>
-    <!-- /.col-lg-12 -->
-</div>
+</div>-->
 <nav id="filter-right" class="mm-menu mm--horizontal mm-offcanvas">
     <div style="padding:30px 20px 3px">
         <form class="filter-form">
@@ -114,12 +113,7 @@
 <div class="panel panel-primary">
     <div class="panel-heading clearfix">
         <i class="fa fa-bar-chart-o fa-fw"></i>
-        Campaign Performance Report
-        <div class="pull-right" style="border:0px solid black;">
-            <a href="#filter-right" class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-            </a>
-        </div>
+        <span class="mobile-only"><?php echo $title ?></span>
     </div>
     <!-- /.panel-heading -->
     <div class="panel-body outcome-data table-responsive" style="padding: 0px;">

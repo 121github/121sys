@@ -1,28 +1,8 @@
-
-      <div class="row">
-        <div class="col-lg-12">
-          <h1 class="page-header">Answers Report</h1>
-        </div>
-        <!-- /.col-lg-12 --> 
-      </div>
-      <!-- /.row -->
       <div class="row">
         <div class="col-lg-12">
           
            <div class="panel panel-primary">
-            <div class="panel-heading clearfix"> <i class="fa fa-bar-chart-o fa-fw"></i> Answers
-             <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($surveys as $row): ?>
-                    <li><a href="#" id="answers-filter" data-id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a id="answers-filter" ref="#">All Surveys</a> </li>
-                  </ul>
-                </div>
-              </div>
+            <div class="panel-heading clearfix"> <i class="fa fa-bar-chart-o fa-fw"></i>         <span class="mobile-only"><?php echo $title ?></span>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body answers_panel  table-responsive">
@@ -48,18 +28,6 @@
           
            <div class="panel panel-primary">
             <div class="panel-heading clearfix"> <i class="fa fa-bar-chart-o fa-fw"></i> <span class="panel-title">Answers Chart</span> 
-             <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($surveys as $row): ?>
-                    <li><a href="#" id="answers-filter" data-id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="answers-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
-              </div>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
