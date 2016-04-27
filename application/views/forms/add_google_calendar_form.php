@@ -25,7 +25,7 @@
                     <div class="col-lg-6 col-sm-12">
                         <label>
                             Calendar
-                            <i class="fa fa-info-circle info" data-toggle="tooltip" data-placement="top" title="Select the google calendar associated to this user for the calendar events"></i>
+                            <i class="fa fa-info-circle info" data-toggle="tooltip" data-placement="top" title="Select which Google calendar appointments should be linked to for this user"></i>
                         </label>
                         <select title='Calendar' name="calendar_id" class="selectpicker" id='calendar-select' disabled></select>
                     </div>
@@ -38,7 +38,7 @@
                     <tr>
                         <th>Campaign</th>
                         <th>Calendar</th>
-                        <th colspan="2">Options</th>
+                        <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,8 +46,7 @@
                         <tr class="google-calendar-id-<?php echo $row['google_calendar_id'] ?>">
                             <td><?php echo $row['campaign_name'] ?></td>
                             <td><?php echo $row['calendar_name'] ?></td>
-                            <td><i class="fa fa-remove info red pointer remove-google-calendar" data-id="<?php echo $row['google_calendar_id'] ?>" data-calendar-id="<?php echo $row['calendar_id'] ?>" data-toggle="tooltip" data-placement="top" title="Remove the google calendar associated to this user"></i></td>
-                            <td><i class="fa fa-refresh info green pointer sync-google-calendar" data-user-id="<?php echo $row['user_id'] ?>" data-id="<?php echo $row['google_calendar_id'] ?>" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the events from this calendar into this user calendar)"></i></td>
+                            <td><button class="tt pull-left btn btn-default btn-xs remove-google-calendar" data-id="<?php echo $row['google_calendar_id'] ?>" data-calendar-id="<?php echo $row['calendar_id'] ?>" data-toggle="tooltip" data-placement="top" title="Detatch the Google calendar from this user"><i class="fa fa-remove info red"></i> Delete</button><button class="tt pull-left marl btn btn-default btn-xs sync-google-calendar" data-user-id="<?php echo $row['user_id'] ?>" data-id="<?php echo $row['google_calendar_id'] ?>" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the Google calendar events to the local system calendar for this user)"><i class="fa fa-refresh info green"></i> Sync</button></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -66,6 +65,7 @@
 
             modals.users.load_add_calendar_tab($('.add-google-calendar-form').find('input[name="user_id"]').val());
         }
+		$modal.find('.tt').tooltip();
     });
 
 </script>
