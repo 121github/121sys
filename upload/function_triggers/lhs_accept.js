@@ -129,7 +129,7 @@ var campaign_functions = {
                         express = "Yes";
                     }
                 }
-                //If the 'Express Report' tick box is selected
+
                 if (express === 'Yes') {
                     //Survey Delivery Date should be populated with a date that is 2 working days post the start date
                     start_date.setDate(start_date.getDate() + 2);
@@ -257,6 +257,7 @@ var campaign_functions = {
                 })
 		 }
 		*/
+
         //Job Status is Paid
         if ($form.find("[name='6']").val() === "Paid") {
             //Send email Referral Scheme Email to Account Role group email
