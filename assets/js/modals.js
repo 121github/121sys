@@ -570,7 +570,7 @@ var modals = {
                 var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
                 //Refresh the quick planner
-                if(typeof quick_planner !== "undefined" && typeof quick_planner.load_planner() !== "undefined"){
+                if(typeof quick_planner.load_planner !== "undefined"){
                     var attendee_id = response.data.attendees[0];
                     var attendee_name = $('#planner-attendee-filter').find('[data-val="'+attendee_id+'"]').find('.filter-text').text()
                     $('#slot-attendee').val(attendee_id);
@@ -731,7 +731,7 @@ var modals = {
                     fullcalendar.fullCalendar('refetchEvents');
                 }
                 //Refresh the quick planner
-                if(typeof quick_planner !== "undefined" && typeof quick_planner.load_planner !== "undefined"){
+                if(typeof quick_planner.load_planner !== "undefined"){
                     var attendee_id = response.appointment[0].user_id;
                     var attendee_name = $('#planner-attendee-filter').find('[data-val="'+attendee_id+'"]').find('.filter-text').text()
                     $('#slot-attendee').val(attendee_id);
