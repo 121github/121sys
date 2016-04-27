@@ -129,7 +129,7 @@ var campaign_functions = {
                         express = "Yes";
                     }
                 }
-
+                //If the 'Express Report' tick box is selected
                 if (express === 'Yes') {
                     //Survey Delivery Date should be populated with a date that is 2 working days post the start date
                     start_date.setDate(start_date.getDate() + 2);
@@ -193,6 +193,20 @@ var campaign_functions = {
                 }
             });
 
+			//create job number
+			  if (appointment.appointment_type_id == "3") {
+			 $.ajax({
+                    url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+						action:'create_job_number',
+                        data_id: response.data[appointment.job_id],
+                    }
+                })
+		 }
+			
+
             //Add the attendee to the ownership record list
             $.ajax({
                 url: helper.baseUrl + 'ajax/add_ownership',
@@ -247,7 +261,7 @@ var campaign_functions = {
 		 /*
 		 if ($form.find('input[name="1"]').val()!==""&&($form.find("[name='6']").val() !== "Paid"&&$form.find("[name='6']").val() !== "Invoiced"&&$form.find("[name='6']").val() !== "Paid & Issued"&&$form.find("[name='6']").val() !== "Invoiced & Report Ready")) {
 			 $.ajax({
-                    url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
+                    url: helper.baseUrl + 'upload/function_triggers/lhs.php',
                     type: "POST",
                     dataType: "JSON",
                     data: {
@@ -257,7 +271,7 @@ var campaign_functions = {
                 })
 		 }
 		*/
-
+		
         //Job Status is Paid
         if ($form.find("[name='6']").val() === "Paid") {
             //Send email Referral Scheme Email to Account Role group email
