@@ -201,9 +201,11 @@ var campaign_functions = {
                     dataType: "JSON",
                     data: {
 						action:'create_job_number',
-                        data_id: response.data[appointment.job_id],
+                        data_id: appointment.job_id,
                     }
-                })
+                }).done(function(){
+					custom_panels.load_all_panels();
+				});
 		 }
 			
 
@@ -255,7 +257,9 @@ var campaign_functions = {
 						action:'create_job_number',
                         data_id: $modal.find('[name="data_id"]').val(),
                     }
-                })
+                }).done(function(){
+					custom_panels.load_all_panels();
+				})
 		 }
 		 //if they want to clear the job number if an status gets put back just uncomment this
 		 /*
