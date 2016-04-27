@@ -22,7 +22,7 @@ class PrepareLhsDeployment extends AbstractTask
             'find . -type f ! -path "./datafiles/*" -exec chmod 644 {} \;',
             'find . -type d ! -path "./datafiles" -exec chmod 755 {} \;',
             'chmod 777 importcsv.sh',
-            'mkdir -p upload/function_triggers',
+//            'mkdir -p upload/function_triggers',
         );
 
         $command = implode(" && ", $commandList);
