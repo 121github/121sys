@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -9,6 +9,7 @@ class Search extends CI_Controller
     public function __construct()	 
     {
         parent::__construct();
+		
         user_auth_check();
 		$this->_campaigns = campaign_access_dropdown();
         $this->project_version = $this->config->item('project_version');
@@ -273,7 +274,7 @@ class Search extends CI_Controller
     {
     	if ($this->input->is_ajax_request()) {
     		$postcode = postcodeCheckFormat($this->input->post('postcode'));
-    		$postcode_qry = "select id,longitude lng,latitude,lat uk_postcodes.PostcodeIo where postcode = '$postcode'";
+    		$postcode_qry = "select id,longitude lng,latitude lat from uk_postcodes.PostcodeIo where postcode = '$postcode'";
 			$geodata =$this->db2->query($postcode_qry);
 			if($geodata->num_rows()>0){
 			$coords = $geodata->row_array();	
@@ -311,7 +312,6 @@ class Search extends CI_Controller
             ));
 			exit;	
 			}
-			
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}

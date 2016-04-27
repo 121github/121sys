@@ -598,18 +598,18 @@ return $query->result_array();
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                     $join['users']     = " left join users u on u.user_id = ow.user_id";
                 }
-                if ($filter_options[$field]['table'] == "address") {
+                if ($filter_options[$field]['table'] == "address"||$field == 'postcode') {
                     if (!isset($join['companies'])) {
                         $join['companies'] = " left join companies com on com.urn = r.urn ";
                     }
                     if (!isset($join['company_addresses'])) {
-                        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id left join locations com_pc on coma.location_id = com_pc.location_id ";
+                        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id left join locations company_locations on coma.location_id = company_locations.location_id ";
                     }
                     if (!isset($join['contacts'])) {
                         $join['contacts'] = " left join contacts  con on con.urn = r.urn ";
                     }
                     if (!isset($join['contact_addresses'])) {
-                        $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join locations con_pc on coma.location_id = con_pc.location_id";
+                        $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join locations contact_locations on cona.location_id = contact_locations.location_id";
                     }
 
                 }
@@ -685,30 +685,39 @@ return $query->result_array();
 				}
 				
                 if ($field == 'postcode' && count($filter[$field])) {
+				if(validate_postcode($filter['postcode'])){
+				$clean_filter['postcode'] = postcodeFormat($filter['postcode']);
+				
+				if(!isset($filter['lat'])){
+				$coords = postcode_to_coords($clean_filter['postcode']);
+				$filter['lat'] = $coords['lat'];
+				$filter['lng'] = $coords['lng'];
+				}
+				}
                     $distance = (isset($filter['distance']) ? $filter['distance'] : 0);
-                    
+					
                     if (isset($filter['lat']) && isset($filter['lng'])&& $filter['distance']>"0") {
                         
                         $where .= " and ( ";
                         //Distance from the company or the contacts addresses
                         $where .= " (";
-                        $where .= $filter['lat'] . " BETWEEN (com_pc.lat-" . $distance . ") AND (com_pc.lat+" . $distance . ")";
-                        $where .= " and " . $filter['lng'] . " BETWEEN (com_pc.lng-" . $distance . ") AND (com_pc.lng+" . $distance . ")";
+                        $where .= $filter['lat'] . " BETWEEN (company_locations.lat-" . $distance . ") AND (company_locations.lat+" . $distance . ")";
+                        $where .= " and " . $filter['lng'] . " BETWEEN (company_locations.lng-" . $distance . ") AND (company_locations.lng+" . $distance . ")";
                         $where .= " and ((((
 							ACOS(
-								SIN(" . $filter['lat'] . "*PI()/180) * SIN(com_pc.lat*PI()/180) +
-								COS(" . $filter['lat'] . "*PI()/180) * COS(com_pc.lat*PI()/180) * COS(((" . $filter['lng'] . " - com_pc.lng)*PI()/180)
+								SIN(" . $filter['lat'] . "*PI()/180) * SIN(company_locations.lat*PI()/180) +
+								COS(" . $filter['lat'] . "*PI()/180) * COS(company_locations.lat*PI()/180) * COS(((" . $filter['lng'] . " - company_locations.lng)*PI()/180)
 							)
 						)*180/PI())*160*0.621371192)) <= " . $distance . ")";
                         
                         $where .= " ) or (";
                         
-                        $where .= $filter['lat'] . " BETWEEN (con_pc.lat-" . $distance . ") AND (con_pc.lat+" . $distance . ")";
-                        $where .= " and " . $filter['lng'] . " BETWEEN (con_pc.lng-" . $distance . ") AND (con_pc.lng+" . $distance . ")";
+                        $where .= $filter['lat'] . " BETWEEN (contact_locations.lat-" . $distance . ") AND (contact_locations.lat+" . $distance . ")";
+                        $where .= " and " . $filter['lng'] . " BETWEEN (contact_locations.lng-" . $distance . ") AND (contact_locations.lng+" . $distance . ")";
                         $where .= " and ((((
 							ACOS(
-								SIN(" . $filter['lat'] . "*PI()/180) * SIN(con_pc.lat*PI()/180) +
-								COS(" . $filter['lat'] . "*PI()/180) * COS(con_pc.lat*PI()/180) * COS(((" . $filter['lng'] . " - con_pc.lng)*PI()/180)
+								SIN(" . $filter['lat'] . "*PI()/180) * SIN(contact_locations.lat*PI()/180) +
+								COS(" . $filter['lat'] . "*PI()/180) * COS(contact_locations.lat*PI()/180) * COS(((" . $filter['lng'] . " - contact_locations.lng)*PI()/180)
 							)
 						)*180/PI())*160*0.621371192)) <= " . $distance . ")";
                         
@@ -1404,4 +1413,78 @@ return $query->result_array();
     public function schedule_emails_to_send($data) {
         return $this->db->insert_batch('email_history', $data);
     }
+	
+	public function build_global_filter(){
+		$filter = array();
+		$campaign = (isset($_SESSION['current_campaign'])?" and campaigns.campaign_id = '".$_SESSION['current_campaign']."'":"");
+		$campaign_user_table = "";
+		$campaign_user = "";
+		if(!in_array("all campaigns",$_SESSION['permissions'])){	
+		$campaign_user_table = " join users_to_campaigns on users_to_campaigns.campaign_id = campaigns.campaign_id ";
+		$campaign_user = " and users_to_campaigns.user_id = ".$_SESSION['user_id'];
+		}
+			//get sources
+			$qry = "select source_id id,source_name name,campaign_name from campaigns join records using(campaign_id) join data_sources using(source_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by source_id,campaigns.campaign_id order by campaign_name,source_name";
+			$filter['sources'] = $this->db->query($qry)->result_array();
+			//get pots
+			$qry = "select pot_id id,pot_name name,campaign_name from campaigns join records using(campaign_id) join data_pots using(pot_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by pot_id,campaigns.campaign_id order by campaign_name,pot_name";
+			$filter['pots'] = $this->db->query($qry)->result_array();	
+			//get owners
+			$qry = "select users.user_id id,name, group_name from users join ownership using(user_id) join records using(urn) join campaigns using(campaign_id) join user_groups using(group_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by users.user_id,group_id order by group_name,name";
+			$filter['owners'] = $this->db->query($qry)->result_array();		
+			//get branches
+			$qry = "select branch_id id,branch_name name,campaign_name from branch join branch_campaigns using(branch_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by branch_id,campaigns.campaign_id order by campaign_name,branch_name";
+			$filter['branches'] = $this->db->query($qry)->result_array();
+			
+			$filter['special'][] = array("id"=>1,"name"=>"New");
+			$filter['special'][] = array("id"=>2,"name"=>"Lapsed Tasks");
+			$filter['special'][] = array("id"=>3,"name"=>"Todays Tasks");
+			$filter['special'][] = array("id"=>4,"name"=>"Complete");
+			$filter['special'][] = array("id"=>5,"name"=>"Removed");
+			$filter['special'][] = array("id"=>6,"name"=>"Parked");
+			$filter['special'][] = array("id"=>7,"name"=>"Urgent");
+			$filter['special'][] = array("id"=>8,"name"=>"Favorite");
+			$filter['special'][] = array("id"=>9,"name"=>"With survey");
+			$filter['special'][] = array("id"=>10,"name"=>"Without survey");
+			$filter['special'][] = array("id"=>11,"name"=>"With webform");
+			$filter['special'][] = array("id"=>12,"name"=>"Without webform");
+			
+			$filter['appointments'][] = array("id"=>1,"name"=>"No appointment");
+			$filter['appointments'][] = array("id"=>2,"name"=>"Any appointment");
+			$filter['appointments'][] = array("id"=>3,"name"=>"Appointment pending");
+			$filter['appointments'][] = array("id"=>4,"name"=>"Cancelled appointment");
+			$filter['appointments'][] = array("id"=>5,"name"=>"Confirmed appointment");
+			$filter['appointments'][] = array("id"=>6,"name"=>"Completed appointment");
+			
+			//outcomes
+			$qry = "select outcome_id id,outcome name from outcomes join outcomes_to_campaigns using(outcome_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by outcome_id order by outcome";
+			$filter['outcomes'] = $this->db->query($qry)->result_array();
+			
+			//live/dead/complete/parked
+			
+			//dials
+			$filter['dials'][] = array("id"=>1,"name"=>"1 Dial");
+			$filter['dials'][] = array("id"=>2,"name"=>"2 Dials");
+			$filter['dials'][] = array("id"=>3,"name"=>"3 Dials");
+			$filter['dials'][] = array("id"=>4,"name"=>"4 Dials");
+			$filter['dials'][] = array("id"=>5,"name"=>"5 Dials");
+
+			//color
+			$qry = "select record_color id, record_color name from records join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by record_color";
+			$filter['record_colors'] = $this->db->query($qry)->result_array();
+						
+			$newfilter = array();
+			foreach($filter as $field=>$result){
+				foreach($filter[$field] as $row){
+					if(isset($row['campaign_name'])){
+				$newfilter[$field][$row['campaign_name']][] = $row;
+					} else {
+				$newfilter[$field][] = $row;	
+					}
+				}		
+			}
+			$this->firephp->log($newfilter);
+			return $newfilter;
+	}
+	
 }

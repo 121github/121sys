@@ -1311,7 +1311,7 @@ var dashboard = {
                                             '</a>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 650px; padding: 0px;">' +
+                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="padding: 0px;">' +
                                         '<ul class="nav nav-tabs" id="panel-tabs-'+report.report_id+'" style=" background:#eee; width:100%;">' +
                                             '<li class="data-tab '+(report.show_default === 'data'?'active':'')+'"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
                                             '<li class="plots-tab '+(report.show_default === 'graphs'?'active':'')+'"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +

@@ -358,7 +358,7 @@
                 <input <?php if(@isset($_SESSION['filter']['values']['lng'])){ echo "value='".$_SESSION['filter']['values']['lng']."'"; } ?> name="lng" type="hidden">
               </div>
               <div class="form-group">
-                <label>Distance <span class="distance"> 0</span></label>
+                <label>Distance (Miles)<!--<span class="distance"> 0</span>--></label>
                 <input <?php if(@isset($_SESSION['filter']['values']['distance'])){ echo "value='".$_SESSION['filter']['values']['distance']."'"; } ?> name="distance" type="text" id="slide_id" class="form-control slider" data-slider-min="0" data-slider-max="300" data-slider-step="5" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="before" data-slider-formater="zerona">
               </div>
               <button type="submit" class="btn btn-default pull-right submit-filter">View Records</button>
@@ -507,6 +507,9 @@ $(document).ready(function(){
 		setTimeout(function() {
 	    filter.check_distance();
 		},300);
+	});
+	$(document).on('blur','.filter-form [name="postcode"],.filter-form [name="distance"]',function(e){
+		 filter.check_distance();
 	});
 
 	$('#collapseZero').find('.panel-body').show();

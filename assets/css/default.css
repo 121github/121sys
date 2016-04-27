@@ -3,7 +3,9 @@
 width:30%; height: 100px; margin-right: 5px	
 }
 
-ul.navbar-nav.pull-right li { margin-right:15px !important }
+ul.navbar-nav.pull-right > li { float:right; margin-left:5px }
+ul.navbar-nav.pull-right { padding-right:15px !important;  }
+
 
 
 .panel a.disabled {
@@ -372,7 +374,9 @@ div.tooltip-inner {
 	float: none;
 }
 
+.dashboard-area .panel-body {
 
+}
 .scroll table {
 	border-collapse: collapse;
 	width: 100%;
@@ -384,13 +388,12 @@ div.tooltip-inner {
 	background-color: #EFEFEF;
 }
 .scroll thead, .scroll tbody {
-	display: block;
-	width: 100%;
+	/*display: block;
+	width: 100%;*/
 }
 .scroll tbody {
-	overflow-y: auto;
+	overflow-y: scroll;
 	overflow-x: hidden;
-	max-height: 350px;
 }
 .scroll tr {
 	height: 25px;
@@ -409,6 +412,9 @@ div.tooltip-inner {
 	  .mobile-only {
         display:none !important;
     }
+		.mobile-only-block {
+	display:none;	
+	}
 }
 @media (max-width: 991px) {
     .mobile-only {
@@ -417,6 +423,9 @@ div.tooltip-inner {
     .desktop-only {
         display:none !important;
     }
+	.mobile-only-block {
+	display:block;	
+	}
 }
 
 /* submenu nav bar on desktop /*

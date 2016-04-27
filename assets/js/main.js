@@ -352,16 +352,20 @@ $(document).ready(function () {
 	});
 });
 
-$(document).on("click","#showquicksearchresults",function(e){
+$(document).on("click","form .apply-filter",function(e){
 	e.preventDefault();
         $.ajax({
             url: helper.baseUrl + 'search/apply_filter',
             type: "POST",
             dataType: "JSON",
-            data: $('#quicksearchform').serialize()
+            data: $(this).closest('form').serialize()
         }).done(function(response) {
+			if(typeof record !== "undefined"){
+			window.location.href = helper.baseUrl + 'records/detail';	
+			} else {
             window.location.href = helper.baseUrl + 'records/view';
-            localStorage.removeItem('DataTables_' + settings.sInstance + '_' + '/records/view');
+			}
+            //localStorage.removeItem('DataTables_' + settings.sInstance + '_' + '/records/view');
         });
 });
 

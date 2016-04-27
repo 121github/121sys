@@ -10,7 +10,15 @@
       <label>Reference Number</label>
       <input class="form-control input-sm" type="text" name="client_ref" placeholder="Search by client reference number"/>
       </div>
+      <div class="form-group">
+      <label>Name</label>
+      <input class="form-control input-sm" type="text" name="all_names" placeholder="Search by company or contact name"/>
+      </div>
        <div class="form-group">
+      <label>Postcode</label>
+      <input class="form-control input-sm" type="text" name="postcode" placeholder="Search by postcode"/>
+      </div>
+        <div class="form-group">
       <label>Email Address</label>
       <input class="form-control input-sm" type="text" name="contact_email" placeholder="Search by email address"/>
       </div>
@@ -19,11 +27,7 @@
       <input class="form-control input-sm" type="text" name="all_phone" placeholder="Search by full or part telephone number"/>
       </div>
       <div class="form-group">
-      <label>Name</label>
-      <input class="form-control input-sm" type="text" name="all_names" placeholder="Search by company or contact name"/>
-      </div>
-      <div class="form-group">
-      <button class="btn btn-primary btn-sm" id="startsearch">Search</button> <div class="pull-right" id="quicksearchresult"></div>
+      <button class="btn btn-primary btn-sm" id="startsearch">Search</button> <div class="pull-right apply-filter" id="quicksearchresult"></div>
       </div>
       </form>
     </li>

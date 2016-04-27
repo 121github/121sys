@@ -70,15 +70,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php if (isset($_SESSION['permissions'])) { ?>
         <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
-        <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0 && isset($global_filter)) { ?>
-            <?php if (isset($_SESSION['current_pot'])) {
-                $filter_style = "color:#fff;background:#a94442";
-            } else {
-                $filter_style = "";
-            } ?>
-            <a href="#menu-right" class="navbar-toggle navbar-right"
-               style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter" style="padding-left:3px"></span></a>
-        <?php } ?>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
         <div id="top-campaign-container" <?php if(count($_SESSION['campaign_access']['array'])<3){ echo 'class="hidden"'; } ?> style="padding-top:8px; width:160px; display:none; float:left">
@@ -121,50 +112,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <?php } ?>
 </div>
 
-<?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0) { ?>
-    <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
-        <div style="padding:30px 20px 3px">
-            <form id="global-filter-form">
-            <div class="form-group">
-                <label>Data Pot <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
-                                      data-placement="right" data-title="A group of specific records within a campaign" data-html="true"></span></label>
-                <select name="data_pot" class="selectpicker" data-width="100%">
-                    <option value="">-- Any data pot --</option>
-                    <?php foreach ($campaign_pots as $campaign => $pot_data) { ?>
-                        <optgroup label="<?php echo $campaign ?>">
-                            <?php foreach ($pot_data as $pot) { ?>
-                                <option <?php if (isset($_SESSION['current_pot']) && $_SESSION['current_pot'] == $pot['id']) {
-                                    echo "Selected";
-                                } ?> value="<?php echo $pot['id'] ?>"><?php echo $pot['name'] ?></option>
-                            <?php } ?>
-                        </optgroup>
-                    <?php } ?>
-                </select>
-                </div>
-                <div class="form-group">
-                <label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
-                                         data-placement="right" data-title="The source of the data"
-                                         data-html="true"></span></label>
-                <select name="data_source" class="selectpicker" data-width="100%">
-                    <option value="">-- Any data source --</option>
-                    <?php foreach ($campaign_sources as $campaign => $data_source) { ?>
-                        <optgroup label="<?php echo $campaign ?>">
-                            <?php foreach ($data_source as $source) { ?>
-                                <option <?php if (isset($_SESSION['current_source']) && $_SESSION['current_source'] == $source['id']) {
-                                    echo "Selected";
-                                } ?> value="<?php echo $source['id'] ?>"><?php echo $source['name'] ?></option>
-                            <?php } ?>
-                        </optgroup>
-                    <?php } ?>
-                </select>
-                </div>
-                <div class="form-group">
-                <button id="global-filter-submit" class="btn btn-primary pull-right">Submit</button>
-                </div>
-            </form>
-        </div>
-    </nav>
-<?php } ?>
+<?php if (isset($global_filter)) { 
+ $this->view('forms/global_filter.php', $global_filter); 
+  } ?>
 <nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
     <?php if (isset($_SESSION['permissions'])) { ?>
         <ul>
@@ -418,9 +368,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         });
 		 menu_api = $("nav#menu").data( "mmenu" );
         <?php if(isset($global_filter)){ ?>
-        $('nav#menu-right').mmenu({
+        $('nav#global-filter').mmenu({
             navbar: {
-                title: "Search &amp; Filter <span class='text-primary'><?php echo @$_SESSION['current_campaign_name'] ?></span>"
+                title: "Filter Records <span class='text-primary'><?php echo @$_SESSION['current_campaign_name'] ?></span>"
             },
             extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
             offCanvas: {
@@ -434,14 +384,14 @@ fixed: "isFixed"
 }
 });
         <?php } ?>
-        $('nav#menu-right').on('click', '#global-filter-submit', function (e) {
+        $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
             e.preventDefault();
             $.ajax({
                 url: helper.baseUrl + 'user/set_data',
                 data: $('#global-filter-form').serialize(),
                 type: "POST"
             }).done(function () {
-                var right_mmenu = $("nav#menu-right").data("mmenu");
+                var right_mmenu = $("nav#global-filter").data("mmenu");
                 right_mmenu.close();
                 if (typeof view_records !== "undefined") {
                     map_table_reload()

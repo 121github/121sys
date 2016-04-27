@@ -15,6 +15,7 @@ class Records extends CI_Controller
         $this->project_version = $this->config->item('project_version');
 
         $this->load->model('User_model');
+		$this->load->model('Filter_model');
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
         $this->load->model('Form_model');
@@ -65,13 +66,15 @@ class Records extends CI_Controller
 		}
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
 		
-		$this->firephp->log($visible_columns);
-		
+		$title = "Record List";
+		$global_filter = $this->Filter_model->build_global_filter();
         $data = array(
+		'global_filter' => $global_filter,
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
-            'title' => 'List Records',
+            'title' => $title,
             'columns' => $visible_columns,
+			'submenu' => array("file"=>'record_list.php',"title"=>$title),
             'css' => array(
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
 				'map.css',
@@ -351,7 +354,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 }
             endforeach;
         }
-
+		if($automatic){
+		$global_filter = $this->Filter_model->build_global_filter();
+		}
         //Get the campaign_triggers if exists
         $campaign_triggers = array();
         if ($campaign['campaign_id']) {
@@ -359,8 +364,6 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->User_model->get_campaign_pots(),
-'campaign_sources' => $this->User_model->get_campaign_sources(),
             'page' => '',
             'campaign' => $campaign,
             'title' => 'Record Details',
@@ -369,7 +372,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 			'outcome_reasons' => $outcome_reasons,
             "features" => $features,
             "panels" => $panels,
-			'global_filter' => $automatic, //only use the side filter if they are using start calling for now
+			'global_filter' => $global_filter,
             "allow_skip" => $allow_skip,
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,

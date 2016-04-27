@@ -41,7 +41,7 @@ class Booking_model extends CI_Model
 		$join_locations = "";
         $distance_select = "";
         $distance_order = "";
-
+		$distance = 0;
         if (!empty($postcode)) {
             $coords = postcode_to_coords($postcode);
             if (isset($coords['lat']) && isset($coords['lng'])) {
@@ -69,7 +69,7 @@ class Booking_model extends CI_Model
             }
 		}
 
-		$query = "select appointment_id id,title, start, end, status, text, group_concat(distinct user_id separator ',') attendees, icon, appointment_type,$distance_select from appointments $join_locations left join appointment_attendees using(appointment_id) join records using(urn) left join appointment_types using(appointment_type_id) where 1 ";
+		$query = "select appointment_id id,title, start, end, status, text, group_concat(distinct user_id separator ',') attendees, icon, appointment_type $distance_select from appointments $join_locations left join appointment_attendees using(appointment_id) join records using(urn) left join appointment_types using(appointment_type_id) where 1 ";
 		$query .= $where;
 		$query .= " group by appointment_id";
 

@@ -1,4 +1,7 @@
 var fullcalendar;
+if(typeof quick_planner == "undefined"){
+var quick_planner = {};
+}
 var slot_duration = '00:30:00'
 var calendar = {
     init: function (view) {
@@ -133,9 +136,10 @@ var calendar = {
 						var appointment_type = $('#calendar').find('#type-select').val();
                         var status = (typeof $('#status-select').val() != "undefined" ? $('#status-select').val() : 1);
 							var postcode = false;
+							
 		if(typeof quick_planner.company_postcode !=="undefined"){
 		postcode = quick_planner.contact_postcode;	
-		} else {
+		} else if(typeof quick_planner.contact_postcode !=="undefined"){
 		postcode = quick_planner.contact_postcode	
 		}
                         return {
@@ -284,7 +288,7 @@ var calendar = {
 		var postcode = false;
 		if(typeof quick_planner.company_postcode !=="undefined"){
 		postcode = quick_planner.contact_postcode;	
-		} else {
+		} else if(typeof quick_planner.contact_postcode !=="undefined"){
 		postcode = quick_planner.contact_postcode	
 		}
         $.ajax({

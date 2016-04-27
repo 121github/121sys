@@ -3800,6 +3800,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   line-height: 20px;
 }
 @media (max-width: 767px) {
+  /* don't know why this is here....
+  
   .navbar-nav .open .dropdown-menu {
     position: static;
     float: none;
@@ -3820,7 +3822,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-nav .open .dropdown-menu > li > a:focus {
     background-image: none;
   }
-
+*/
 }
 @media (min-width: 768px) {
   .navbar-nav {

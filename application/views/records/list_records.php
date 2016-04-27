@@ -1,25 +1,8 @@
-<div class="row">
-<div class="col-xs-12">
-<div class="panel panel-primary">
-<div class="panel-heading">Records List
-<div class="pull-right">
+
+
             <form class="filter-form">
-                <div class="btn-group">
-                    <a type="button" class="btn btn-default btn-xs" data-modal="choose-columns"
-                            data-table-id="1"><span
-                            class="fa fa-table"></span> Views
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a class="btn btn-default btn-xs" href="<?php echo base_url() ?>records/mapview">Show Map
-                    </a>
-                </div>
-                
                 <input type="hidden" name="group"> 
             </form>
-            </div>
-</div>
-<div class="panel-body" style="padding:0; margin:0; position:relative">
   <div class="loading-overlay"></div>
         <div class="row" style="padding:0; margin:0;">
         <div class="col-xs-12">
@@ -32,9 +15,8 @@
     </div>
 
 </div>
-</div>
-</div>
-</div>
+
+
 <style>
 body { }
 .loading-overlay {  position:absolute; width:100%; height:100%; background:#000; opacity: 0.4; filter: alpha(opacity=40); z-index:10; top:0; left:0 }

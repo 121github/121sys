@@ -395,16 +395,36 @@ class User extends CI_Controller
     }
   public function set_data($pot_id = false)
     {
-	if(intval($this->input->post('data_pot'))>0){
-	$_SESSION['current_pot'] = 	$this->input->post('data_pot');
+	if($this->input->post('data_pot')){
+	$_SESSION['global_filter']['pot'] = $this->input->post('data_pot');
 	} else {
-	unset($_SESSION['current_pot']);
+	unset($_SESSION['global_filter']['pot']);
 	}
-	if(intval($this->input->post('data_source'))>0){
-	$_SESSION['current_source'] = 	$this->input->post('data_source');
+	if($this->input->post('data_source')){
+	$_SESSION['global_filter']['source'] = $this->input->post('data_pot');
 	} else {
-	unset($_SESSION['current_source']);
+	unset($_SESSION['global_filter']['source']);
 	}
+	if($this->input->post('outcome')){
+	$_SESSION['global_filter']['outcome'] = $this->input->post('outcome');
+	} else {
+	unset($_SESSION['global_filter']['outcome']);
+	}
+	if($this->input->post('owners')){
+	$_SESSION['global_filter']['owners'] = $this->input->post('owners');
+	} else {
+	unset($_SESSION['global_filter']['owners']);
+	}
+	if($this->input->post('distance')){
+	$_SESSION['global_filter']['distance'] = $this->input->post('distance');
+	} else {
+	unset($_SESSION['global_filter']['distance']);
+	}
+	if($this->input->post('postcode')){
+	$_SESSION['global_filter']['postcode'] = $this->input->post('postcode');
+	} else {
+	unset($_SESSION['global_filter']['postcode']);
+	}	
 	}
 	
     /* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */

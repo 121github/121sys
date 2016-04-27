@@ -73,9 +73,12 @@ class Recordings_model extends CI_Model
 		
 		$start = $options['start'];
         $length = $options['length'];
+		if($options['draw']=="1"){
+		$length = 10;	
+		}
         $qry .= $order;
 		if($length>0){
-        $qry .= "  limit $start,10";
+        $qry .= "  limit $start,$length";
 		}
 		$this->firephp->log($select.$qry);
         $recordings = $this->db->query($select.$qry)->result_array();
