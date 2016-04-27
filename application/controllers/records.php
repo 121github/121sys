@@ -372,7 +372,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 			'outcome_reasons' => $outcome_reasons,
             "features" => $features,
             "panels" => $panels,
-			'global_filter' => $global_filter,
+			//'global_filter' => $global_filter,
             "allow_skip" => $allow_skip,
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,

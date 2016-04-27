@@ -2368,7 +2368,7 @@ if(val.read_confirmed==1){
         //this function reloads the groups into the table body
         load_appointments: function () {
 				var $panel = $(record.appointment_panel.panel);
-				var $record_panel = $(record.record_panel);
+				var $record_panel = $('#record-panel');
             $.ajax({
                 url: helper.baseUrl + 'records/load_appointments',
                 type: "POST",

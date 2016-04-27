@@ -193,6 +193,20 @@ var campaign_functions = {
                 }
             });
 
+			//create job number
+			  if (appointment.appointment_type_id == "3") {
+			 $.ajax({
+                    url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+						action:'create_job_number',
+                        data_id: response.data[appointment.job_id],
+                    }
+                })
+		 }
+			
+
             //Add the attendee to the ownership record list
             $.ajax({
                 url: helper.baseUrl + 'ajax/add_ownership',
@@ -234,7 +248,7 @@ var campaign_functions = {
         }
 		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced"||$form.find("[name='6']").val() === "Paid & Issued"||$form.find("[name='6']").val() === "Invoiced & Report Ready")) {
 			 $.ajax({
-                    url: helper.baseUrl + 'upload/function_triggers/lhs.php',
+                    url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
                     type: "POST",
                     dataType: "JSON",
                     data: {
@@ -412,7 +426,7 @@ var campaign_functions = {
 
         //Update appointment title
         $.ajax({
-            url: helper.baseUrl+'upload/function_triggers/lhs.php',
+            url: helper.baseUrl+'custom_scripts/lhs/lhs.php',
             type: "POST",
             dataType: "JSON",
             data: {

@@ -93,6 +93,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
 		 <li><a href="#" id='open-quicksearch'>Search <i class="fa fa-search"></i></a></li>
          <?php } ?>
+        <?php if(in_array("add records",$_SESSION['permissions'])){ ?>
+		 <li><a href="<?php echo base_url() ?>data/add_record">Create <i class="fa fa-plus"></i></a></li>
+         <?php } ?>
         <?php $this->view('navigation/topbar/dashboards.php', $page); ?>
         <?php $this->view('navigation/topbar/view.php', $page); ?> 
            <?php $this->view('navigation/topbar/calendar.php', $page); ?>  
@@ -261,8 +264,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- Campaign triggers-->
 <?php if (!empty($campaign_triggers)) { ?>
-    <?php foreach($campaign_triggers as $trigger) { ?>
-        <script src="<?php echo base_url()."upload/function_triggers/".$trigger['path']."?v".$this->config->item('project_version'); ?>"></script>
+    <?php foreach($campaign_triggers as $script) { ?>
+        <script src="<?php echo base_url()."custom_scripts/".$script['path']."?v".$this->config->item('project_version'); ?>"></script>
     <?php } ?>
 <?php } else { ?>
 <script type="text/javascript">campaign_functions = {};</script>

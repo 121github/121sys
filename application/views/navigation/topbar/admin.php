@@ -27,6 +27,9 @@
                     <?php if(in_array("data menu",$_SESSION['permissions'])){ ?>
 			       <li><a href="<?php echo base_url() ?>admin/index/data">Data</a></li>
                     <?php } ?>
+                      <?php if(in_array("admin files",$_SESSION['permissions'])){ ?>
+			       <li><a href="<?php echo base_url() ?>admin/files">File Access</a></li>
+                    <?php } ?>
                      <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
                    <li><a href="<?php echo base_url() ?>admin/index/hours">Hours</a></li> 
                    <?php } ?>
