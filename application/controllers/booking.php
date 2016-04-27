@@ -291,10 +291,10 @@ class Booking extends CI_Controller
                         'description' => ($description?$description:$data['text']),
                         'status' => ($event_status?$event_status:"confirmed"),
                         'start' => array(
-                            'dateTime' => $start_date->format('Y-m-d\TH:i:s\Z'),
+                            'dateTime' => $start_date->format('Y-m-d\TH:i:sO'),
                         ),
                         'end' => array(
-                            'dateTime' => $end_date->format('Y-m-d\TH:i:s\Z'),
+                            'dateTime' => $end_date->format('Y-m-d\TH:i:sO'),
                         ),
 //                        'recurrence' => array(
 //                            'RRULE:FREQ=DAILY;COUNT=2'
