@@ -141,11 +141,12 @@ var modals = {
         });
         $(document).on('click', '[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
+			e.stopPropagation();
             var clicked_id = $(this).attr('data-id');
             setTimeout(function () {
                 modals.view_appointment(clicked_id);
             }, 500);
-
+			return false;
         });
 		$(document).on('click', '[data-modal="choose-columns"]', function (e) {
             e.preventDefault();
@@ -803,7 +804,11 @@ var modals = {
                     modals.edit_appointment_html(response.data);
                     modal_body.css('overflow', 'visible');
                 } else {
+					if(custom_appointment_modal){
+					campaign_functions.custom_appointment_modal(id)
+					} else {
                     modals.view_appointment_html(response.data);
+					}
                 }
             } else {
                 flashalert.danger(response.msg);
@@ -824,7 +829,9 @@ var modals = {
 			 } else if(val.modal_keys=="2"){
 			 colbody += "<tr><td colspan='3'><strong>"+key+"</strong></td></tr><tr><td colspan='3'>"+val.value+"</td></tr>";	 
 			 } else {
-			 colbody += "<tr><td colspan='3'>"+val.value+"</td></tr>";	 
+				if(val.value.length>1){
+			 colbody += "<tr><td colspan='3'>"+val.value+"</td></tr>";	
+				}
 			 }
 		 });
 		 colbody += "</table>";
@@ -1634,7 +1641,11 @@ var modals = {
                 urn: urn
             }
         }).done(function (response) {
+			if(custom_appointment_modal){
+			campaign_functions.custom_record_modal(urn)
+					} else {
             modals.view_record_html(response.data,tab);
+					}
         });
     },
     default_buttons: function () {

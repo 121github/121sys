@@ -602,7 +602,8 @@ class Data extends CI_Controller
 
             $response = true;
         } else if (!empty($form['contact_name'])) {
-            $contact['fullname'] = $form['contact_name'];#
+            $contact['fullname'] = $form['contact_name'];
+			$contact['primary'] = 1;
             if (!empty($form['contact_telephone'])) {
                 $contact_telephone = array("telephone_number" => $form['contact_telephone'], "description" => "Telephone");
             }

@@ -25,7 +25,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/css/jquery.mmenu.all.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/font-awesome.css">
     <!-- Set the baseUrl in the JavaScript helper -->
-    <?php //load specific javascript files set in the controller
+    <?php //load specific css files set in the controller
     if (isset($css)):
         foreach ($css as $file): ?>
             <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/<?php echo $file ?>">
@@ -46,9 +46,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/icon.png">
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
-    <script type="text/javascript"
-            src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
              </head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
@@ -252,6 +249,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <div id="page-danger" class="alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
 </div>
+<script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
+<script type="text/javascript"
+            src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
@@ -272,6 +272,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <?php } ?>
 <!-- End of campaign triggers-->
 <script type="text/javascript">
+	var custom_appointment_modal = false;
+	var custom_record_modal = false;
 	helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['user_id'])){ ?>
     helper.user_id = '<?php echo $_SESSION['user_id'] ?>';
