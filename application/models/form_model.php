@@ -168,7 +168,7 @@ class Form_model extends CI_Model
     public function get_calendar_users($campaign_ids = array(),$postcode=false,$type=false)
     {
         $where = "";
-		$join = "";
+		$union = "";
 		$select = "";
 		$order = " order by name ";
         if (count($campaign_ids) > 0) {
@@ -177,12 +177,17 @@ class Form_model extends CI_Model
 		$where = " and campaign_id = " . $_SESSION['current_campaign'];	
 		}
 		if($type){
-			$join .= " join user_appointment_types using(user_id) ";
-			$where .= " and user_appointment_types.appointment_type_id = '$type'";
+			$union .= " union select user_id id,name name,home_postcode postcode from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) join user_appointment_types using(user_id) where appointment_type_id = '$type' and campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 and attendee = 1 $where group by user_id ";
 		}
-        $qry = "select user_id id,name name,home_postcode postcode from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 and attendee = 1 $where group by user_id ";
+        $qry = "select user_id id,name name,home_postcode postcode from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where user_id not in(select user_id from user_appointment_types) and campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and attendee = 1 $where group by user_id $union";
         return $this->db->query($qry)->result_array();
+		
+		
+			$new = "select from (select from users_in_campaign where user not in user_app_types union select from users_in_campaigns where user in user_app_types and type = $type)";
     }
+	
+
+	
 	
 	 public function get_calendar_types($campaign_ids = array())
     {

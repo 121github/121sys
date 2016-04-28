@@ -61,34 +61,34 @@ public function search_urn_by_c1($ref){
         }
         if ($ref) {
             $joins .= " left join client_refs using(urn) left join record_details using(urn) ";
-            $where .= " and (client_ref = '$ref' or c1 = '$ref') ";
+            $where .= " and (client_ref = '".addslashes($ref)."' or c1 = '".addslashes($ref)."') ";
         }
         if ($type == "b2b") {
             $joins .= " left join company_addresses using(company_id) left join company_telephone using(company_id)";
             if ($add1) {
-                $where .= " and company_addresses.add1 like '$add1%' ";
+                $where .= " and company_addresses.add1 like '".addslashes($add1)."%' ";
             }
             if ($postcode) {
-                $where .= " and (replace(company_addresses.postcode,' ','') like '$postcode%' ) ";
+                $where .= " and (replace(company_addresses.postcode,' ','') like '".addslashes($postcode)."%' ) ";
             }
             if ($telephone) {
-                $where .= " and (company_telephone.telephone_number like '%$telephone%') ";
+                $where .= " and (company_telephone.telephone_number like '%".addslashes($telephone)."%') ";
             }
             if ($companies) {
                 $names = implode("'|'", $companies);
-                $where .= " and replace(companies.name,' ','') regexp '$names' and companies.name <> ''";
+                $where .= " and replace(companies.name,' ','') regexp '".addslashes($names)."' and companies.name <> ''";
                 //$where .= " and replace(companies.name,' ','') in ('$names') and companies.name <> ''";
             }
         } else {
             $joins .= " left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) ";
             if ($postcode) {
-                $where .= " and (replace(contact_addresses.postcode,' ','') like '$postcode%') ";
+                $where .= " and (replace(contact_addresses.postcode,' ','') like '".addslashes($postcode)."%') ";
             }
             if ($add1) {
-                $where .= " and (contact_addresses.add1 like '$add1%') ";
+                $where .= " and (contact_addresses.add1 like '".addslashes($add1)."%') ";
             }
             if ($telephone) {
-                $where .= " and (contact_telephone.telephone_number like '%$telephone%') ";
+                $where .= " and (contact_telephone.telephone_number like '%".addslashes($telephone)."%') ";
             }
         }
         $qry = "select campaign_name,urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name) user, if(outcome is null,'-',outcome) outcome,status_name,date_format(records.date_added,'%d/%m/%y') date_added,if(postcode is null or postcode='','-',postcode) postcode,if(add1 is null or add1='','-',add1) add1,if(companies.name is not null,companies.name,fullname) name,source_name from records join campaigns using(campaign_id) $joins left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) join status_list on record_status = record_status_id left join history using(urn) left join users husers on husers.user_id = history.user_id where 1 $where group by records.urn ";
@@ -98,7 +98,7 @@ public function search_urn_by_c1($ref){
 
 
 public function get_companies_from_initial($name,$campaigns=false){
-		if($campaigns){
+	if($campaigns){
 	$campaigns = implode(",",$campaigns);
 	}
 	//get all names starting with that letter to narrow it down
@@ -543,12 +543,12 @@ return $query->result_array();
                     $join['surveys'] = " left join surveys sur on sur.urn = r.urn ";
                 }
                 if ($field == "all_names") {
-                    $where .= " and (com.name like '%$data%' or con.fullname like '%$data%') ";
+                    $where .= " and (com.name like '%".addslashes($data)."%' or con.fullname like '%$data%') ";
                     $join['contacts'] = " left join contacts con on con.urn = r.urn ";
 					$join['companies'] = " left join companies com on com.urn = r.urn ";
                 }
 				if ($field == "all_phone") {
-                    $where .= " and (cont.telephone_number like '%$data%' or comt.telephone_number like '%$data%') ";
+                    $where .= " and (cont.telephone_number like '".addslashes($data)."' or comt.telephone_number like '".addslashes($data)."') ";
                     $join['contacts'] = " left join contacts con on con.urn = r.urn ";
 					$join['companies'] = " left join companies com on com.urn = r.urn ";
 					$join['company_telephone'] = " left join company_telephone comt on comt.company_id = com.company_id ";
@@ -616,11 +616,11 @@ return $query->result_array();
                 
                 //if the filter field has a type of 'id' then it requires an exact match
                 if ($filter_options[$field]['type'] == "id" && !empty($data)) {
-                    $where .= " and {$filter_options[$field]['alias']} = '$data' ";
+                    $where .= " and {$filter_options[$field]['alias']} = '".addslashes($data)."' ";
                 }
                 //if the filter ty[e is a 'like' we get rid of any spaces before searching - this helps with postcodes and phone numbers
                 if ($filter_options[$field]['type'] == "like" && !empty($data)) {
-                    $where .= " and replace({$filter_options[$field]['alias']},' ','') like replace('%$data%',' ','') ";
+                    $where .= " and replace({$filter_options[$field]['alias']},' ','') like replace('".addslashes($data)."',' ','') ";
                 }
                 //if the filter type is a 'custom' we get the operator from the value
                 if ($filter_options[$field]['type'] == "custom" && !empty($data)) {
@@ -638,7 +638,7 @@ return $query->result_array();
                         if ($data == "zero") {
                             $val = "0";
                         }
-                        $where .= " and {$filter_options[$field]['alias']} $operator '$val' ";
+                        $where .= " and {$filter_options[$field]['alias']} $operator '".addslashes($val)."' ";
                     } else {
                         $where .= " and {$filter_options[$field]['alias']} = '$data' ";
                     }
@@ -647,7 +647,7 @@ return $query->result_array();
                 if ($filter_options[$field]['type'] == "multiple" && count($data)) {
                     $where .= " and (";
                     foreach ($data as $val) {
-                        $multiple .= " {$filter_options[$field]['alias']} = '$val' or";
+                        $multiple .= " {$filter_options[$field]['alias']} = '".addslashes($val)."' or";
                     }
 					if($field=="user_id"&&array_key_exists("view_unassigned",$filter)){
 					$multiple .= " ow.user_id is null";
@@ -669,11 +669,11 @@ return $query->result_array();
                         $data = array_map("to_mysql_datetime", $data);
                     }
                     if (isset($data[0]) && isset($data[1])) {
-                        $where .= " and {$filter_options[$field]['alias']} between '{$data[0]}' and '{$data[1]}' and {$filter_options[$field]['alias']} is not null ";
+                        $where .= " and {$filter_options[$field]['alias']} between '".addslashes($data[0])."' and '".addslashes($data[1])."' and {$filter_options[$field]['alias']} is not null ";
                     } else if (isset($data[0]) && !isset($data[1])) {
-                        $where .= " and {$filter_options[$field]['alias']} > '{$data[0]}' and {$filter_options[$field]['alias']} is not null ";
+                        $where .= " and {$filter_options[$field]['alias']} > '".addslashes($data[0])."' and {$filter_options[$field]['alias']} is not null ";
                     } else if (!isset($data[0]) && isset($data[1])) {
-                        $where .= " and {$filter_options[$field]['alias']} < '{$data[1]}'and {$filter_options[$field]['alias']} is not null  ";
+                        $where .= " and {$filter_options[$field]['alias']} < '".addslashes($data[1])."'and {$filter_options[$field]['alias']} is not null  ";
                     }
                 }
                 
@@ -723,7 +723,7 @@ return $query->result_array();
                         
                         $where .= " ))";
                     } else {
-						$where .= " and (coma.postcode like '".$filter['postcode']."%' or cona.postcode like '".$filter['postcode']."%') ";
+						$where .= " and (coma.postcode like '".addslashes($filter['postcode'])."%' or cona.postcode like '".$filter['postcode']."%') ";
 					}
                     
                 }
@@ -1157,7 +1157,7 @@ return $query->result_array();
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause
             if ($v['search']['value'] <> "") {
-                $qry .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
+                $qry .= " and " . $table_columns[$k] . " like '%" . addslashes($v['search']['value']) . "%' ";
             }
         }
         $where_array = array();
@@ -1172,7 +1172,7 @@ return $query->result_array();
 			//split the value to see which operator it will use
             $split    = explode(":", $val);
             if (isset($split[1])) {
-                $val      = $split[0];
+                $val      = addslashes($split[0]);
                 $operator = $split[1];
                 if ($operator == "less") {
                     $where_array[$key] = " and " . $key . " < '" . $val . "'";
@@ -1230,7 +1230,7 @@ return $query->result_array();
         $qry .= " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
 		$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
-        $qry .= " limit " . $options['length'] . " offset " . $options['start'];
+        $qry .= " limit " . addslashes($options['length']) . " offset " . addslashes($options['start']);
 		//$this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
         return array(

@@ -107,11 +107,15 @@ class Records extends CI_Controller
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		}
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
+		$global_filter = $this->Filter_model->build_global_filter();
+		$title = "Record View";
         $data = array(
+		'global_filter' => $global_filter,
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
-            'title' => 'List Records',
+            'title' => $title,
             'columns' => $visible_columns,
+			'submenu' => array("file"=>'record_list.php',"title"=>$title),
             'css' => array(
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
 				'map.css',

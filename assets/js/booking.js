@@ -122,7 +122,7 @@ var calendar = {
                 rulesButton: { 
                     text: 'Rules',
                     click: function () {
-                        calendar.rule_modal();
+                        calendar.rule_modal(false,false);
                         calendar.show_rules_in_day();
                     }
                 }
@@ -178,11 +178,13 @@ var calendar = {
                     $('#calendar').fullCalendar('gotoDate', date);
                 }
 				 if (key == "create") {
-					var date = moment(calendar.click_date).format('YYYY-MM-DD HH:mm')
+					var date = moment(calendar.click_date).format('YYYY-MM-DD HH:mm');
+					var attendee = $('#calendar').find('#attendee-select').val();
+					var type = $('#calendar').find('#type-select').val();
                    if(typeof record == "undefined"){
 				    modals.search_records("create-appointment", date);
 				   } else {
-                    modals.create_appointment(record.urn,date);
+                    modals.create_appointment(record.urn,date,attendee,type);
 				   }
                 }
                 if (key == "rule") {
@@ -496,7 +498,7 @@ var calendar = {
                 $('#scroller-div').css('overflow', 'auto').css('max-height', '350px');
             } else {
                 $modal.find('.rules-per-day').html("No calendar rules have been created yet.");
-                $modal.find('.nav-tabs a[href="#addrule"]').tab('show');
+                //$modal.find('.nav-tabs a[href="#addrule"]').tab('show');
             }
         });
     },
@@ -514,11 +516,12 @@ var calendar = {
             slot_select.html('')
             if (response.length > 0) {
                 $.each(response, function (i, row) {
-                    slot_select.append('<option data-subtext="' + row.slot_description + '" value="' + row.appointment_slot_id + '">' + row.slot_name + '</option>');
+					//data-subtext="' + row.slot_description + '" 
+                    slot_select.append('<option value="' + row.appointment_slot_id + '">' + row.slot_name + '</option>');
                 });
                 slot_select.prop('disabled', false).selectpicker('refresh');
             } else {
-                slot_select.append('<option value="">All day</option>');
+                slot_select.append('<option value="4">All day</option>');
                 slot_select.prop('disabled', false).selectpicker('refresh').selectpicker('selectAll');
             }
 

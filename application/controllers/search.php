@@ -27,14 +27,10 @@ class Search extends CI_Controller
 	
 		
 	public function quicksearch(){
-		if($this->uri->segment(3)=="ghs"){
-			$campaigns = array(22,28,29,32,52,61,62);
-		} else {
 			$campaigns = array();
 			if($this->input->post('campaign_id')){
 			$campaigns[] = $this->input->post('campaign_id');
 			}
-		}
 		$ref=false;
 		$result = array();
 		$type=false;

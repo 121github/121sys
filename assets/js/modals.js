@@ -179,6 +179,9 @@ var modals = {
 			if(typeof $(this).attr('data-start') !== "undefined"){
 			start = $(this).attr('data-start');	
 			}
+			if($('#calendar').find('#attendee-select').length>0){
+				attendee = $('#calendar').find('#attendee-select').val();
+			}
             modals.create_appointment($(this).attr('data-urn'),start);
         });
         $modal.on('click', '#cancel-add-address', function (e) {
@@ -805,7 +808,7 @@ var modals = {
                     modal_body.css('overflow', 'visible');
                 } else {
 					if(custom_appointment_modal){
-					campaign_functions.custom_appointment_modal(id)
+					campaign_functions.custom_appointment_modal(id,response.data)
 					} else {
                     modals.view_appointment_html(response.data);
 					}
@@ -932,23 +935,21 @@ var modals = {
                 $mbody.find('#accessaddresspicker').prepend('<option value="' + data.access_address + '|' + data.access_postcode + '">' + data.access_address + '</option>');
             }
 			var attendee=false;
+			var type=false;
+			var branch = false;
             //cycle through the rest of the fields and set them in the form
             $.each(data, function (k, v) {
                 $mbody.find('[name="' + k + '"]').val(v);
                 if (k == "type") {
-                    $mbody.find('#typepicker option[value="' + v + '"]').prop('selected', true).attr('selected','selected');
-                    $mbody.find('[name="appointment_type_id"]').val(v);
+                     type = v;
                 }
                 if (k == "attendees") {
                     $.each(v, function (i, user_id) {
-                        $mbody.find('#attendee-select option[value="' + user_id + '"]');
 						attendee = user_id;
                     });
                 }
                 if (k == "branch_id") {
-                    if (v) {
-                        $mbody.find('#branch-select option[value="' + v + '"]').prop('selected', true).attr('selected','selected');
-                    }
+                   branch = v;
                 }
                 $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true).attr('selected','selected');
                 $mbody.find('#accessaddresspicker option[value="' + data.access_address + '|' + data.access_postcode + '"]').prop('selected', true).attr('selected','selected');
@@ -963,6 +964,12 @@ var modals = {
 			if(attendee){
 			modals.set_appointment_attendee(attendee);
 			}
+			if(type){
+			modals.set_appointment_type(type);
+			}
+			if(branch){
+			modals.set_appointment_type(branch);
+			}
             modals.set_appointment_access_address(data.access_address);
 			
                 if (typeof campaign_functions.appointment_edit_setup !== "undefined") {
@@ -970,7 +977,7 @@ var modals = {
                 }
         });
     },
-	appointment_setup: function (start,attendee,urn) {
+	appointment_setup: function (start,attendee,type) {
 		if(typeof start == "undefined"&&$('#slots-panel').find('input:checked').length>0){
 			start = $('#slots-panel').find('input:checked').attr('data-date') +' '+ $('#slots-panel').find('input:checked').attr('data-time');	;	
 		}
@@ -980,9 +987,18 @@ var modals = {
 		if(attendee){
         modals.set_appointment_attendee(attendee);
 		}
+		if(type){
+        modals.set_appointment_type(type);
+		}
 	},
+	set_appointment_type: function (type) {
+        $modal.find('#typepicker').selectpicker('val', [type]);
+    },
 	set_appointment_attendee: function (attendee) {
         $modal.find('#attendee-select').selectpicker('val', [attendee]);
+    },
+	set_appointment_branch: function (branch) {
+        $modal.find('#branch-select').selectpicker('val', [branch]);
     },
     set_appointment_start: function (start) {
         var m = moment(start, "YYYY-MM-DD HH:mm");
@@ -1080,7 +1096,6 @@ var modals = {
                $modal.find('#contact-select').parent().append('<p class="text-error"><small>Please add a contact before setting an appointment<small></p>');
             },
         }).done(function (result) {
-			console.log(result);
 			if(result.length>0){
             $modal.find('#contact-select').show();
             $.each(result, function (k, v) {
@@ -1095,7 +1110,7 @@ var modals = {
             });
 
             $modal.find('#contact-select').selectpicker();
-
+			$('#typepicker').trigger('change');		
 			} else {
 			$modal.find('.close-modal').trigger('click');
 			flashalert.danger("You must add a contact before setting an appointment");	
@@ -1103,7 +1118,7 @@ var modals = {
         });
 
     },
-    create_appointment: function (urn,start,attendee) {
+    create_appointment: function (urn,start,attendee,type) {
 		console.log("Create appointment");
         $.ajax({
             url: helper.baseUrl + 'modals/edit_appointment',
@@ -1125,9 +1140,9 @@ var modals = {
 			modal_dialog.css('width', "50%");
 			$modal.find('#appointment-confirmed').bootstrapToggle();
 			modals.set_appointment_confirmation(start);
-            modals.appointment_contacts(urn,false);
-			modals.appointment_setup(start,attendee,false);
-				
+			modals.appointment_setup(start,attendee,type);
+			modals.appointment_contacts(urn,false);
+			
 				if(typeof campaign_functions.appointment_setup !== "undefined"){
 				    campaign_functions.appointment_setup(start,false,urn);
 				}

@@ -115,13 +115,13 @@ class Booking_model extends CI_Model
 				if($date){
 				$qry .= " and `date` = '" . $date . "'"; 
 				} else {
-				$qry .= " and date(`date`) >= curdate() "; 	
+				$qry .= " and date(`date`) >= subdate(curdate(),interval 6 day) "; 	
 				}
 				if(!empty($user_id)){
 				$qry .= " and user_id = '" . $user_id . "'";
 				}
 				$qry .= " order by `date`";
-				//$this->firephp->log($qry);
+				$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

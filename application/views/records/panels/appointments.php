@@ -63,7 +63,7 @@ api.bind('opened', function () {
 	$('#calendar-right').fadeIn(400,function(){
 	calendar.remove_button_triggers()	
 	calendar.init();
-	$modal.css('z-index','9999999');
+	$modal.css('z-index','2000');
 	});
 });
 api.bind('closing', function(){ 

@@ -88,7 +88,10 @@ class Calendar extends CI_Controller
         $slot_group = $this->Admin_model->get_user_slot_group($this->input->post('id'));
         if (count($slot_group)) {
             $slots = $this->Admin_model->get_slots_in_group($slot_group[0]['slot_group_id']);
-        }
+        } else {
+			$slots = $this->Admin_model->get_slots_in_group(4); //all day by default
+		}
+		
         echo json_encode($slots);
     }
 
