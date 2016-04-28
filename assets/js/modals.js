@@ -1137,7 +1137,7 @@ var modals = {
 			 mfooter += '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
 			modal_body.css('overflow', 'visible');
-			modal_dialog.css('width', "50%");
+			modal_dialog.css('width', "600px");
 			$modal.find('#appointment-confirmed').bootstrapToggle();
 			modals.set_appointment_confirmation(start);
 			modals.appointment_setup(start,attendee,type);

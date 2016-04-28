@@ -57,7 +57,7 @@ switch ($action) {
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();	
-		$job_number = "LH".date('y')."-".intval(str_replace("LH".date('y')."-","",$row['value']))+1;		
+		$job_number = "LH".date('y')."-".(intval(str_replace("LH".date('y')."-","",$row['value']))+1);		
 		} else {
 		$job_number = "LH".date('y')."-1";	
 		}
