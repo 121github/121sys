@@ -188,6 +188,10 @@ class Booking extends CI_Controller
                 "created" => $google_token[0]['created'],
             )));
 
+            if ($google_client->isAccessTokenExpired()) {
+                $google_client = $this->refreshToken($google_token[0]);
+            }
+
             $calendars_selected = $this->input->post('calendars_selected');
             $calendars_selected = (strlen($calendars_selected) > 0?explode(',',$calendars_selected):array());
 
