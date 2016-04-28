@@ -449,6 +449,23 @@ endif; ?>
                                     '<span class="fa fa-area-chart fa-3x"></span>' +
                                  '</span>';
                 }
+
+                var last_messages= '' ;
+
+                $.each(JSON.parse(localStorage.getItem("messages")), function (i, val) {
+                    var date = new Date(val[3]);
+                    var date_show = date.toLocaleString().replace(",","");
+                    var title = val[1];
+                    var msg = val[2];
+                    var msg_short = (msg.length>40?msg.substring(0,40)+"...":msg);
+                    var tooltip = '<h3>'+title+'</h3><div>'+date_show+'</div><div>'+msg+'</div>'
+                    last_messages += '<tr class="'+(val[0]?"success":"danger")+' pointer last-messages" data-toggle="tooltip" data-placement="top" title="'+tooltip+'">' +
+                                        '<td style="font-weight: bold">'+title+'</td>' +
+                                        '<td style="word-break:break-all">'+msg_short+'</td>' +
+                                        '<td style="text-align: right">'+date_show+'</td>' +
+                                     '</tr>';
+                });
+
 				<?php if(isset($_SESSION['current_campaign'])){ ?>
 				var layout_panel =   '<input type="hidden" name="current_camp" value="<?php echo $_SESSION['current_campaign'] ?>"><span type="button" class="btn btn-default layout-settings-btn" data-layout="2col.php">' +
                                             '<p>Grid View</p>' +
@@ -464,8 +481,8 @@ endif; ?>
 										<?php } else { ?>
 					var layout_panel = "<p>You must select a campaign to set the layout</p>";
 										<?php } ?>
-                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><?php if(!in_array("change layout",$_SESSION['permissions'])){ ?><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a><?php } ?></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
-                var tabpanels = '<div class="tab-content">' +
+                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><?php if(!in_array("change layout",$_SESSION['permissions'])){ ?><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a><?php } ?></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li><li><a role="tab" data-toggle="tab" href="#last-messages-tab">Last actions</a></li></ul>';
+                var tabpanels = '<div class="tab-content" style="overflow-y: scroll; max-height: 400px">' +
                                     '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
                                         '<p>Fancy something different? Pick a new colour!</p>' +
                                         '<select id="color-changer" class="color-changer selectpicker">' +
@@ -490,6 +507,18 @@ endif; ?>
                                         '</span>' +
                                         report_btn +
                                     '</div>' +
+                                    '<div role="tabpanel" class="tab-pane" id="last-messages-tab">' +
+                                        '<table class="table table-hover small">' +
+                                            '<thead>' +
+                                                '<th>Title</th>' +
+                                                '<th>Message</th>' +
+                                                '<th>Date</th>' +
+                                            '</thead>' +
+                                            '<tbody>' +
+                                                last_messages +
+                                            '</tbody>' +
+                                        '</table>' +
+                                    '</div>' +
                                 '</div>';
                 var mbody = navtabs+tabpanels;
                 var mfooter = '<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
@@ -503,6 +532,10 @@ endif; ?>
                     if (device_type !== "default") {
                         window.location.reload();
                     }
+                });
+
+                $('.last-messages').tooltip({
+                    html: true
                 });
             });
 
