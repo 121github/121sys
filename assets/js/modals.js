@@ -662,7 +662,7 @@ var modals = {
                         $.each(view_appointment_response.data.appointment,function(title,column){
                             description += '<h3><b>'+title+'</b></h3>\n';
                             $.each(column.fields,function(name,data){
-                                description += name+' - '+data.value+'\n';
+                                description += name+' - '+data.value.replaceAll("<br>","\n")+'\n';
                             });
                             description += '\n\n';
                         });
@@ -3127,6 +3127,7 @@ var modals = {
             });
         },
         sync_google_cal: function(google_calendar_id, user_id) {
+            $modal.find('.sync-google-loading').show();
             $.ajax({
                 url: helper.baseUrl + 'booking/sync_google_cal',
                 type: "POST",
@@ -3135,6 +3136,10 @@ var modals = {
                     'google_calendar_id': google_calendar_id,
                     'user_id': user_id
                 }
+            }).done(function (response) {
+                $modal.find('.sync-google-loading').hide();
+
+                flashalert.success(response.added.length+" events added and "+response.updated.length+" updated");
             });
         },
         load_add_calendar_tab: function (user_id) {
