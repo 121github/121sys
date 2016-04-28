@@ -186,9 +186,19 @@ Date.prototype.addHours = function (h) {
 
 var menu_api = false;
 var helper = {};
+var messages = [];
 
 /* AJAX GLOBAL EVENT - This happens after ajax request. We check if the response is timeout then it redirects the user to the login page */
 $(document).ajaxComplete(function (event, xhr, settings) {
+    if (typeof (xhr.responseJSON) != "undefined" && typeof (xhr.responseJSON.msg) != "undefined") {
+        var date = new Date();
+        var title = (typeof xhr.responseJSON.msg_title != "undefined"?xhr.responseJSON.msg_title:"-");
+        var info = (typeof xhr.responseJSON.msg != "undefined"?xhr.responseJSON.msg[0]:"-");
+        var msg = [xhr.responseJSON.success, title, info, date];
+        messages.unshift(msg);
+        localStorage.setItem("messages", JSON.stringify(messages));
+    }
+
     if (xhr.responseText === 'Logout') {
         window.location = helper.baseUrl + 'user/login'; //if the user is not logged in, simply refresh the page which will then redirect them to the login page
     }

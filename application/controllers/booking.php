@@ -359,6 +359,7 @@ class Booking extends CI_Controller
             //return success to page
             echo json_encode(array(
                 "success" => !empty($msg),
+                "msg_title" => "Google Calendar",
                 "msg" => (!empty($msg)?$msg:"No events added/updated on google calendar"),
             ));
         } else {
