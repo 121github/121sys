@@ -204,7 +204,10 @@ var campaign_functions = {
                         data_id: appointment.job_id,
                     }
                 }).done(function(){
-					custom_panels.load_all_panels();
+                    if (typeof custom_panels != "undefined")
+                    {
+                        custom_panels.load_all_panels();
+                    }
 				});
 		 }
 			
