@@ -246,7 +246,7 @@ var calendar = {
                     $.each(view_appointment_response.data.appointment,function(title,column){
                         description += '<h3><b>'+title+'</b></h3>\n';
                         $.each(column.fields,function(name,data){
-                            description += name+' - '+data.value+'\n';
+                            description += name+' - '+data.value.replaceAll("<br>","\n")+'\n';
                         });
                         description += '\n\n';
                     });
