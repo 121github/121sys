@@ -233,14 +233,35 @@ var calendar = {
         }).done(function () {
             flashalert.success("Appointment was updated");
             //Set appointmnt in google calendar if the attendee has a google account
+            var description = '';
             $.ajax({
-                url: helper.baseUrl + 'booking/add_google_event',
+                url: helper.baseUrl + 'modals/view_appointment',
                 data: {
-                    appointment_id: id,
-                    event_status: "confirmed"
+                    id: id
                 },
                 type: "POST",
                 dataType: "JSON"
+            }).done(function(view_appointment_response){
+                if (view_appointment_response.success) {
+                    $.each(view_appointment_response.data.appointment,function(title,column){
+                        description += '<h3><b>'+title+'</b></h3>\n';
+                        $.each(column.fields,function(name,data){
+                            description += name+' - '+data.value+'\n';
+                        });
+                        description += '\n\n';
+                    });
+                }
+
+                $.ajax({
+                    url: helper.baseUrl + 'booking/add_google_event',
+                    data: {
+                        appointment_id: id,
+                        event_status: "confirmed",
+                        description: description
+                    },
+                    type: "POST",
+                    dataType: "JSON"
+                });
             });
         })
     },
