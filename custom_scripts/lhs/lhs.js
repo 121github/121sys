@@ -43,7 +43,7 @@ var campaign_functions = {
                 $.each(response.data, function (k, row) {
                     data_options += "<option value='" + row.data_id + "'>Job #" + row.data_id + ": Created on " + row.created_on + "</option>";
                 });
-                $data_items = $("<div class='form-group'><p>Which job is this appointment related to?</p><select style='display:none' data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
+                $data_items = $("<div class='form-group' style='display:none' ><p>Which job is this appointment related to?</p><select data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
 
                 $data_items.insertBefore($('#select-appointment-address'));
                 //$('#data-items').selectpicker();
