@@ -31,22 +31,23 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/<?php echo $file ?>">
         <?php endforeach;
     endif; ?>
-    <?php if(isset($submenu)){ ?>
-    <style>
-	.container-fluid {
-    padding: 110px 15px 60px;
-	}
-	.navbar-nav {
-	margin: 0 !important;	
-	}
-	</style>
+    <?php if (isset($submenu)) { ?>
+        <style>
+            .container-fluid {
+                padding: 110px 15px 60px;
+            }
+
+            .navbar-nav {
+                margin: 0 !important;
+            }
+        </style>
     <?php } ?>
-    
+
     <link rel="shortcut icon"
           href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/icon.png">
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
-             </head>
+</head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
         id="opentimer" class="glyphicon glyphicon-earphone pointer"></span> <span
@@ -60,16 +61,19 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <!--ajax generated footer stats go here -->
     </div>
 <?php } ?>
-<?php if(isset($submenu)){ ?>
-       <?php $this->view('submenus/'.$submenu['file'],$submenu); ?>
+<?php if (isset($submenu)) { ?>
+    <?php $this->view('submenus/' . $submenu['file'], $submenu); ?>
 <?php } ?>
 <div class="navbar navbar-default navbar-fixed-top" style="padding-left:15px">
     <?php if (isset($_SESSION['permissions'])) { ?>
-        <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+        <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span
+                class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
-        <div id="top-campaign-container" <?php if(count($_SESSION['campaign_access']['array'])<3){ echo 'class="hidden"'; } ?> style="padding-top:8px; width:160px; display:none; float:left">
+    <div id="top-campaign-container" <?php if (count($_SESSION['campaign_access']['array']) < 3) {
+        echo 'class="hidden"';
+    } ?> style="padding-top:8px; width:160px; display:none; float:left">
         <select id="top-campaign-select" class="selectpicker" data-width="160px">
             <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
                 <option
@@ -87,20 +91,20 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </select>
     </div>
     <ul class="nav navbar-nav desktop-only" id="desktop-nav">
-    <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
-		 <li><a href="#" id='open-quicksearch'>Search <i class="fa fa-search"></i></a></li>
-         <?php } ?>
-        <?php if(in_array("add records",$_SESSION['permissions'])){ ?>
-		 <li><a href="<?php echo base_url() ?>data/add_record">Create <i class="fa fa-plus"></i></a></li>
-         <?php } ?>
+        <?php if (in_array("search records", $_SESSION['permissions'])) { ?>
+            <li><a href="#" id='open-quicksearch'>Search <i class="fa fa-search"></i></a></li>
+        <?php } ?>
+        <?php if (in_array("add records", $_SESSION['permissions'])) { ?>
+            <li><a href="<?php echo base_url() ?>data/add_record">Create <i class="fa fa-plus"></i></a></li>
+        <?php } ?>
         <?php $this->view('navigation/topbar/dashboards.php', $page); ?>
-        <?php $this->view('navigation/topbar/view.php', $page); ?> 
-           <?php $this->view('navigation/topbar/calendar.php', $page); ?>  
-             <?php $this->view('navigation/topbar/reports.php', $page); ?>  
-               <?php $this->view('navigation/topbar/admin.php', $page); ?>  
-               <?php $this->view('navigation/topbar/account.php', $page); ?>           
-      </ul>
-     
+        <?php $this->view('navigation/topbar/view.php', $page); ?>
+        <?php $this->view('navigation/topbar/calendar.php', $page); ?>
+        <?php $this->view('navigation/topbar/reports.php', $page); ?>
+        <?php $this->view('navigation/topbar/admin.php', $page); ?>
+        <?php $this->view('navigation/topbar/account.php', $page); ?>
+    </ul>
+
     <?php if ($_SESSION['environment'] == 'demo') { ?>
         <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!!</span>
     <?php } ?>
@@ -112,9 +116,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <?php } ?>
 </div>
 
-<?php if (isset($global_filter)) { 
- $this->view('forms/global_filter.php', $global_filter); 
-  } ?>
+<?php if (isset($global_filter)) {
+    $this->view('forms/global_filter.php', $global_filter);
+} ?>
 <nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
     <?php if (isset($_SESSION['permissions'])) { ?>
         <ul>
@@ -155,9 +159,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <?php if (!isset($page)) {
                     $page = "";
                 }
-				/* make the menu start on the first panel - ignore selected page BF march 2016*/
-				$page = "";
-				/* end */
+                /* make the menu start on the first panel - ignore selected page BF march 2016*/
+                $page = "";
+                /* end */
                 $this->view('navigation/sidebar/dashboards.php', $page);
                 $this->view('navigation/sidebar/records.php', $page);
                 $this->view('navigation/sidebar/files.php', $page);
@@ -191,67 +195,70 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </ul>
     <?php } ?>
 </nav>
-<div class="container-fluid" id="container-fluid"> 
-        <?php if($this->session->flashdata('success')){ ?>
-        <div class="alert alert-success alert-dismissable" style="margin-top:10px">  
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>  
-  <span class="glyphicon glyphicon-ok"></span> <?php echo $this->session->flashdata('success'); ?>  
-	</div>  
+<div class="container-fluid" id="container-fluid">
+    <?php if ($this->session->flashdata('success')) { ?>
+        <div class="alert alert-success alert-dismissable" style="margin-top:10px">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <span class="glyphicon glyphicon-ok"></span> <?php echo $this->session->flashdata('success'); ?>
+        </div>
     <?php } ?>
-        <?php if($this->session->flashdata('danger')){ ?>
-        <div class="alert alert-danger alert-dismissable" style="margin-top:10px">  
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>  
-   <span class="glyphicon glyphicon-alert"></span> <?php echo $this->session->flashdata('danger'); ?>  
-	</div>  
+    <?php if ($this->session->flashdata('danger')) { ?>
+        <div class="alert alert-danger alert-dismissable" style="margin-top:10px">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <span class="glyphicon glyphicon-alert"></span> <?php echo $this->session->flashdata('danger'); ?>
+        </div>
     <?php } ?>
-        <?php if($this->session->flashdata('info')){ ?>
-        <div class="alert alert-info alert-dismissable" style="margin-top:10px">  
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>  
-  <span class="glyphicon glyphicon-info-sign"></span> <?php echo $this->session->flashdata('info'); ?>  
-	</div>  
+    <?php if ($this->session->flashdata('info')) { ?>
+        <div class="alert alert-info alert-dismissable" style="margin-top:10px">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <span class="glyphicon glyphicon-info-sign"></span> <?php echo $this->session->flashdata('info'); ?>
+        </div>
     <?php } ?>
-        <?php if($this->session->flashdata('warning')){ ?>
-        <div class="alert alert-warning alert-dismissable" style="margin-top:10px">  
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>  
-  <span class="glyphicon glyphicon-exclamation-sign"></span> <?php echo $this->session->flashdata('warning'); ?>  
-	</div>  
+    <?php if ($this->session->flashdata('warning')) { ?>
+        <div class="alert alert-warning alert-dismissable" style="margin-top:10px">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <span
+                class="glyphicon glyphicon-exclamation-sign"></span> <?php echo $this->session->flashdata('warning'); ?>
+        </div>
     <?php } ?>
 
-<?php echo $body; ?></div>
+    <?php echo $body; ?></div>
 <!-- /content -->
 
 <!-- Modal -->
 <div class="isFixed">
-<div class="modal fade" id="modal" style="overflow:hidden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Please confirm</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow: auto;"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default close-modal pull-left" data-dismiss="modal">Close</button>
-                <button type="button" style="display: none;" class="btn btn-danger discard-modal">No</button>
-                <button type="button" style="display: none;" class="btn btn-primary save-modal">Save</button>
-                <button type="button" class="btn btn-primary confirm-modal">Confirm</button>
+    <div class="modal fade" id="modal" style="overflow:hidden" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Please confirm</h4>
+                </div>
+                <div class="modal-body" style="max-height: 500px; overflow: auto;"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default close-modal pull-left" data-dismiss="modal">Close
+                    </button>
+                    <button type="button" style="display: none;" class="btn btn-danger discard-modal">No</button>
+                    <button type="button" style="display: none;" class="btn btn-primary save-modal">Save</button>
+                    <button type="button" class="btn btn-primary confirm-modal">Confirm</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div id="page-success" class="alert alert-success hidden alert-dismissable"><span class="alert-text"></span><span
-        class="close close-alert">&times;</span></div>
-<div id="page-info" class="alert alert-info hidden alert-dismissable"><span class="alert-text"></span><span
-        class="close close-alert">&times;</span></div>
-<div id="page-warning" class="alert alert-warning hidden alert-dismissable"><span class="alert-text"></span><span
-        class="close close-alert">&times;</span></div>
-<div id="page-danger" class="alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
-        class="close close-alert">&times;</span></div>
+    <div id="page-success" class="alert alert-success hidden alert-dismissable"><span class="alert-text"></span><span
+            class="close close-alert">&times;</span></div>
+    <div id="page-info" class="alert alert-info hidden alert-dismissable"><span class="alert-text"></span><span
+            class="close close-alert">&times;</span></div>
+    <div id="page-warning" class="alert alert-warning hidden alert-dismissable"><span class="alert-text"></span><span
+            class="close close-alert">&times;</span></div>
+    <div id="page-danger" class="alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
+            class="close close-alert">&times;</span></div>
 </div>
 <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
 <script type="text/javascript"
-            src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+        src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
@@ -264,17 +271,18 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- Campaign triggers-->
 <?php if (!empty($campaign_triggers)) { ?>
-    <?php foreach($campaign_triggers as $script) { ?>
-        <script src="<?php echo base_url()."custom_scripts/".$script['path']."?v".$this->config->item('project_version'); ?>"></script>
-    <?php } ?>
+    <?php foreach ($campaign_triggers as $script) { ?>
+    <script
+        src="<?php echo base_url() . "custom_scripts/" . $script['path'] . "?v" . $this->config->item('project_version'); ?>"></script>
+<?php } ?>
 <?php } else { ?>
-<script type="text/javascript">campaign_functions = {};</script>
+    <script type="text/javascript">campaign_functions = {};</script>
 <?php } ?>
 <!-- End of campaign triggers-->
 <script type="text/javascript">
-	var custom_appointment_modal = false;
-	var custom_record_modal = false;
-	helper.baseUrl = '<?php echo base_url(); ?>' + '';
+    var custom_appointment_modal = false;
+    var custom_record_modal = false;
+    helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['user_id'])){ ?>
     helper.user_id = '<?php echo $_SESSION['user_id'] ?>';
     <?php } ?>
@@ -295,7 +303,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             clearInterval(refreshIntervalId);
         }
         $.getJSON(helper.baseUrl + 'user/check_session', function (response) {
-            <?php if($show_footer&&isset($_SESSION['current_campaign'])){ ?>
+            <?php if($show_footer && isset($_SESSION['current_campaign'])){ ?>
             $('.footer-stats').empty();
             $.each(response, function (name, count) {
                 $('.footer-stats').append('<div>' + name + ': ' + count + '</div>');
@@ -329,7 +337,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             if (response.location == "dashboard") {
                 window.location = helper.baseUrl + 'dashboard';
             } else {
-                <?php if($this->uri->segment(2)=="detail"||$this->uri->segment(1)=="error"){ ?>
+                <?php if($this->uri->segment(2) == "detail" || $this->uri->segment(1) == "error"){ ?>
                 window.location = helper.baseUrl + 'records/detail';
                 <?php } else { ?>
                 location.reload();
@@ -357,7 +365,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     "content": [
                         "<a href='" + helper.baseUrl + "<?php echo @$_SESSION['home'] ?>'><span class='fa fa-home'></span> Home</a>",
                         "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>"
-                        <?php if(@in_array('search records',$_SESSION['permissions'])){ ?>,"<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>"<?php } ?>
+                        <?php if(@in_array('search records', $_SESSION['permissions'])){ ?>, "<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>"<?php } ?>
                     ]
                 },
                 {
@@ -371,7 +379,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             ]
             , "extensions": ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"]
         });
-		 menu_api = $("nav#menu").data( "mmenu" );
+        menu_api = $("nav#menu").data("mmenu");
         <?php if(isset($global_filter)){ ?>
         $('nav#global-filter').mmenu({
             navbar: {
@@ -382,12 +390,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 position: "right",
             }
         }, {
-classNames: {
-fixedElements: {
-fixed: "isFixed"
-}
-}
-});
+            classNames: {
+                fixedElements: {
+                    fixed: "isFixed"
+                }
+            }
+        });
         <?php } ?>
         $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
             e.preventDefault();
@@ -408,8 +416,9 @@ fixed: "isFixed"
 
     });
 </script>
-<script src="<?php echo base_url() . "assets/js/record_update.js?v" . $this->config->item('project_version'); ?>"></script>
-<?php 
+<script
+    src="<?php echo base_url() . "assets/js/record_update.js?v" . $this->config->item('project_version'); ?>"></script>
+<?php
 //load specific javascript files set in the controller
 if (isset($javascript)):
     foreach ($javascript as $file):?>
@@ -423,7 +432,7 @@ endif; ?>
     } ?>
     <script
         type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback)?$callback:"" ?>"></script>
+        src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback) ? $callback : "" ?>"></script>
 <?php } ?>
 <?php if (isset($_SESSION['user_id'])) { ?>
     <div id="color-box" class="Fixed">
@@ -431,103 +440,101 @@ endif; ?>
     </div>
     <script>
         $(document).ready(function () {
-			$('#open-quicksearch').on('click',function(e){
-				e.preventDefault();
-				$('#nav-menu-btn').trigger('click');
-				$('#quicksearch-btn').trigger('click');
-			});
-			
+            $('#open-quicksearch').on('click', function (e) {
+                e.preventDefault();
+                $('#nav-menu-btn').trigger('click');
+                $('#quicksearch-btn').trigger('click');
+            });
 
-			
-			
+
             $('#color-box').on('click', '.color-btn', function () {
                 var mheader = "Appearance";
-                var report_btn= '' ;
+                var report_btn = '';
                 if (helper.permissions['export data'] > 0) {
                     report_btn = '<span type="button" class="btn btn-default report-settings-btn">' +
-                                    '<p>Report Settings</p>' +
-                                    '<span class="fa fa-area-chart fa-3x"></span>' +
-                                 '</span>';
+                        '<p>Report Settings</p>' +
+                        '<span class="fa fa-area-chart fa-3x"></span>' +
+                        '</span>';
                 }
 
-                var last_messages= '' ;
-                var display_messages = (helper.role == "1" ?"":"display:none");
+                var last_messages = '';
+                var display_messages = (helper.role == "1" ? "" : "display:none");
 
                 if (localStorage.getItem("messages")) {
                     $.each(JSON.parse(localStorage.getItem("messages")), function (i, val) {
                         var date = new Date(val[3]);
-                        var date_show = date.toLocaleString().replace(",","");
+                        var date_show = date.toLocaleString().replace(",", "");
                         var title = val[1];
                         var msg = val[2];
-                        var msg_short = (msg && msg.length>40?msg.substring(0,40)+"...":msg);
-                        var tooltip = '<h3>'+title+'</h3><div>'+date_show+'</div><div>'+msg+'</div>'
-                        last_messages += '<tr class="'+(val[0]?"success":"danger")+' pointer last-messages" data-toggle="tooltip" data-placement="top" title="'+tooltip+'">' +
-                            '<td style="font-weight: bold">'+title+'</td>' +
-                            '<td style="word-break:break-all">'+msg_short+'</td>' +
-                            '<td style="text-align: right">'+date_show+'</td>' +
+                        var msg_short = (msg && msg.length > 40 ? msg.substring(0, 40) + "..." : msg);
+                        var tooltip = '<h3>' + title + '</h3><div>' + date_show + '</div><div>' + msg + '</div>'
+                        last_messages += '<tr class="' + (val[0] ? "success" : "danger") + ' pointer last-messages" data-toggle="tooltip" data-placement="top" title="' + tooltip + '">' +
+                            '<td style="font-weight: bold">' + title + '</td>' +
+                            '<td style="word-break:break-all">' + msg_short + '</td>' +
+                            '<td style="text-align: right">' + date_show + '</td>' +
                             '</tr>';
                     });
                 }
 
-				<?php if(isset($_SESSION['current_campaign'])){ ?>
-				var layout_panel =   '<input type="hidden" name="current_camp" value="<?php echo $_SESSION['current_campaign'] ?>"><span type="button" class="btn btn-default layout-settings-btn" data-layout="2col.php">' +
-                                            '<p>Grid View</p>' +
-                                            '<span class="fa fa-th-large fa-3x"></span>' +
-                                        '</span>' +
-										 '<span type="button" class="btn btn-default layout-settings-btn" data-layout="accordian.php">' +
-                                            '<p>List View</p>' +
-                                            '<span class="fa fa-bars fa-3x"></span>' +
-                                        '</span>' +
-											 '<span type="button" class="btn btn-default layout-settings-btn" data-layout="default">' +                                            '<p>Default View</p>' +
-                                            '<span class="fa fa-th fa-3x"></span>' +
-                                        '</span>';
-										<?php } else { ?>
-					var layout_panel = "<p>You must select a campaign to set the layout</p>";
-										<?php } ?>
-                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><?php if(!in_array("change layout",$_SESSION['permissions'])){ ?><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a><?php } ?></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li><li style="'+display_messages+'"><a role="tab" data-toggle="tab" href="#last-messages-tab">Last actions</a></li></ul>';
-                var tabpanels = '<div class="tab-content" style="overflow-y: scroll; max-height: 400px">' +
-                                    '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
-                                        '<p>Fancy something different? Pick a new colour!</p>' +
-                                        '<select id="color-changer" class="color-changer selectpicker">' +
-                                            '<option value="<?php echo $_SESSION["theme_color"] ?>">--Change color--</option>' +
-                                            '<option value="voice">Bright Blue</option>' +
-                                            '<option value="hsl">Deep Blue</option>' +
-                                            '<option value="coop">Dark Blue</option>' +
-                                            '<option value="smartprospector">Green</option>' +
-                                            '<option value="default">Orange</option>' +
-                                            '<option value="pelican">Red</option>' +
-                                            '<option value="eldon">Purple</option>' +
-                                        '</select>' +
-                                    '</div>' +
-									         '<div role="tabpanel" class="tab-pane" id="layout-tab">' +
-                                      layout_panel +
-                                        
-                                    '</div>' +
-                                    '<div role="tabpanel" class="tab-pane" id="dashboards-tab">' +
-                                        '<span type="button" class="btn btn-default dashboard-settings-btn">' +
-                                            '<p>Dashboard Settings</p>' +
-                                            '<span class="fa fa-dashboard fa-3x"></span>' +
-                                        '</span>' +
-                                        report_btn +
-                                    '</div>' +
-                                    '<div role="tabpanel" class="tab-pane" id="last-messages-tab">' +
-                                        '<table class="table table-hover small">' +
-                                            '<thead>' +
-                                                '<th>Title</th>' +
-                                                '<th>Message</th>' +
-                                                '<th>Date</th>' +
-                                            '</thead>' +
-                                            '<tbody>' +
-                                                last_messages +
-                                            '</tbody>' +
-                                        '</table>' +
-                                    '</div>' +
-                                '</div>';
-                var mbody = navtabs+tabpanels;
+                <?php if(isset($_SESSION['current_campaign'])){ ?>
+                var layout_panel = '<input type="hidden" name="current_camp" value="<?php echo $_SESSION['current_campaign'] ?>"><span type="button" class="btn btn-default layout-settings-btn" data-layout="2col.php">' +
+                    '<p>Grid View</p>' +
+                    '<span class="fa fa-th-large fa-3x"></span>' +
+                    '</span>' +
+                    '<span type="button" class="btn btn-default layout-settings-btn" data-layout="accordian.php">' +
+                    '<p>List View</p>' +
+                    '<span class="fa fa-bars fa-3x"></span>' +
+                    '</span>' +
+                    '<span type="button" class="btn btn-default layout-settings-btn" data-layout="default">' + '<p>Default View</p>' +
+                    '<span class="fa fa-th fa-3x"></span>' +
+                    '</span>';
+                <?php } else { ?>
+                var layout_panel = "<p>You must select a campaign to set the layout</p>";
+                <?php } ?>
+                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active" data-name="theme"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><?php if(!in_array("change layout", $_SESSION['permissions'])){ ?><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a><?php } ?></li><li><a role="tab" data-toggle="tab" data-name="dashboard" href="#dashboards-tab"> Dashboard</a></li><li style="' + display_messages + '"><a role="tab" data-toggle="tab" data-name="last_actions" href="#last-messages-tab">Last actions</a></li></ul>';
+                var tabpanels = '<div class="tab-content" style="max-height: 400px">' +
+                    '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
+                    '<p>Fancy something different? Pick a new colour!</p>' +
+                    '<select id="color-changer" class="color-changer selectpicker">' +
+                    '<option value="<?php echo $_SESSION["theme_color"] ?>">--Change color--</option>' +
+                    '<option value="voice">Bright Blue</option>' +
+                    '<option value="hsl">Deep Blue</option>' +
+                    '<option value="coop">Dark Blue</option>' +
+                    '<option value="smartprospector">Green</option>' +
+                    '<option value="default">Orange</option>' +
+                    '<option value="pelican">Red</option>' +
+                    '<option value="eldon">Purple</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '<div role="tabpanel" class="tab-pane" id="layout-tab">' +
+                    layout_panel +
+
+                    '</div>' +
+                    '<div role="tabpanel" class="tab-pane" id="dashboards-tab">' +
+                    '<span type="button" class="btn btn-default dashboard-settings-btn">' +
+                    '<p>Dashboard Settings</p>' +
+                    '<span class="fa fa-dashboard fa-3x"></span>' +
+                    '</span>' +
+                    report_btn +
+                    '</div>' +
+                    '<div role="tabpanel" class="tab-pane" id="last-messages-tab">' +
+                    '<table class="table table-hover small last-messages-table">' +
+                    '<thead>' +
+                    '<th>Title</th>' +
+                    '<th>Message</th>' +
+                    '<th>Date</th>' +
+                    '</thead>' +
+                    '<tbody>' +
+                    last_messages +
+                    '</tbody>' +
+                    '</table>' +
+                    '</div>' +
+                    '</div>';
+                var mbody = navtabs + tabpanels;
                 var mfooter = '<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
 
                 modals.load_modal(mheader, mbody, mfooter);
-                modal_body.css('overflow', 'visible')
+                modal_body.css('overflow', 'visible');
                 $modal.find('.color-changer').change(function () {
                     var value = $(this).val();
                     $('#theme-css').attr('href', helper.baseUrl + 'assets/themes/colors/' + value + '/bootstrap-theme.css');
@@ -542,27 +549,36 @@ endif; ?>
                 });
             });
 
-            $modal.on("click",".dashboard-settings-btn",function()
-            {
+            $modal.on("click", ".dashboard-settings-btn", function () {
                 window.location = helper.baseUrl + 'dashboard/settings';
             });
 
-            $modal.on("click",".report-settings-btn",function()
-            {
+            $modal.on("click", ".report-settings-btn", function () {
                 window.location = helper.baseUrl + 'exports';
             });
-			
-			  $modal.on("click",".layout-settings-btn",function()
-            {	var campaign = $modal.find('input[name="current_camp"]').val();
-				var layout = $(this).attr('data-layout');
-                $.ajax({ url: helper.baseUrl+'user/layout',
-				type:"POST",
-				dataType:"JSON",
-				data:{layout:layout,campaign:campaign }
-            }).done(function(response){
-				location.reload();
-			});
-  });
+
+            $modal.on("click", ".layout-settings-btn", function () {
+                var campaign = $modal.find('input[name="current_camp"]').val();
+                var layout = $(this).attr('data-layout');
+                $.ajax({
+                    url: helper.baseUrl + 'user/layout',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {layout: layout, campaign: campaign}
+                }).done(function (response) {
+                    location.reload();
+                });
+            });
+
+            $modal.on("click","#tabs",function(e) {
+                var href = $(e.target).attr('href');
+                if (href == "#theme-tab") {
+                    modal_body.find('.tab-content').css('overflow-y', 'visible');
+                }
+                else if (href == "#last-messages-tab") {
+                    modal_body.find('.tab-content').css('overflow-y', 'scroll');
+                }
+            });
         });
     </script>
 <?php } ?>

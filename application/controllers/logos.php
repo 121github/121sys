@@ -77,7 +77,13 @@ class Logos extends CI_Controller
 	$data = $this->input->post();
 	$this->db->where(array("campaign_id"=>$data['campaign_id']));
 	if($this->db->update("campaigns",array("logo"=>$data['logo']))){
-	echo json_encode(array("success"=>true));		
+		echo json_encode(array(
+			"success"=>true,
+			"msg_title" => "Campaign Logo",
+			"msg" => "Camapign logo saved"
+		));
+        //Write on log
+        log_message('info', '[Campaign Logo] Camapign logo saved by user '.$_SESSION['user_id'].' ['.date('d/m/Y H:i:s').']');
 	}
 		
 	}

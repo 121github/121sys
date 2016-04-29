@@ -13,7 +13,7 @@ var modals = {
 		$(document).on('click','[data-toggle="tab"]',function(e){
 			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form,#referral-address-form').hide();
 			var tab = $(this).attr('href');
-			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"||"#create-view"){
+			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"|| tab=="#create-view" || tab=="#theme-tab"){
 			modal_body.css('overflow','visible');
 			} else {
 			modal_body.css('overflow','auto');
