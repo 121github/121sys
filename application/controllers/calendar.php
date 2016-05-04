@@ -31,6 +31,7 @@ class Calendar extends CI_Controller
 
     public function get_calendar_users()
     {
+			session_write_close();
         if ($this->input->post('campaigns')) {
             $campaigns = $this->input->post('campaigns');
         } else {
@@ -72,6 +73,7 @@ class Calendar extends CI_Controller
 
     public function get_calendar_types()
     {
+			session_write_close();
         if ($this->input->post('campaigns')) {
             $campaigns = $this->input->post('campaigns');
         } else {
@@ -83,6 +85,7 @@ class Calendar extends CI_Controller
 
     public function get_slots_for_attendee()
     {
+			session_write_close();
         $this->load->model('Admin_model');
         $slots = array();
         $slot_group = $this->Admin_model->get_user_slot_group($this->input->post('id'));
@@ -519,6 +522,7 @@ class Calendar extends CI_Controller
     public function get_appointment_rules()
     {
         if ($this->input->is_ajax_request()) {
+				session_write_close();
 						if($this->uri->segment(3)=="by_user"){
 				$distinct_user = true;
 			} else {

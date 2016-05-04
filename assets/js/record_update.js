@@ -196,6 +196,7 @@ var record_update = {
 				flashalert.danger("There was an error updating the record");
 			}).done(function (response) {
                 if (response.success) {
+					$('.refresh-overview-data').trigger('click');
                     $('#last-updated').text('Last Updated: Just Now');
 					if(typeof record !== "undefined"){
                     record.history_panel.load_panel();

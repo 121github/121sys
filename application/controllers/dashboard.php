@@ -1212,6 +1212,7 @@ public function index(){
      * Get the custom dashboards
      */
     public function get_dashboards() {
+		session_write_close();
         $dashboards = $this->Dashboard_model->get_dashboards();
 
         echo json_encode(array(

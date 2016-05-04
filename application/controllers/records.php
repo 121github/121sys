@@ -173,7 +173,7 @@ class Records extends CI_Controller
             $options = $this->input->post();
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
-			$this->firephp->log($visible_columns);
+			//$this->firephp->log($visible_columns);
 			$options['visible_columns'] = $visible_columns;
 			//check the options
 			foreach($options['columns'] as $k=>$column){
@@ -366,8 +366,13 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         if ($campaign['campaign_id']) {
             $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($campaign['campaign_id']);
         }
+		$title = "View Details";
+      		$global_filter = $this->Filter_model->build_global_filter();
         $data = array(
+		'global_filter' => $global_filter,
+		'submenu' => array("file"=>'record_details.php',"title"=>$title,"data"=>$details),
             'campaign_access' => $this->_campaigns,
+			'title'=>$title,
             'page' => '',
             'campaign' => $campaign,
             'title' => 'Record Details',

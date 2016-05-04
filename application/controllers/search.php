@@ -394,7 +394,8 @@ class Search extends CI_Controller
             $count = $this->Filter_model->apply_filter($filter);
             echo json_encode(array(
                 "success" => true,
-                "data" => $count
+                "data" => $count,
+				"filter"=>empty($_SESSION['filter']['values'])?false:true
             ));
         }
     }

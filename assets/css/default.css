@@ -23,7 +23,7 @@ ul.navbar-nav.pull-right { padding-right:15px !important;  }
 #color-box {
 	position:fixed;
 	right:0px;
-	bottom:40px;
+	bottom:50px;
 	padding:5px;
 	border:1px solid #333;
 	background:#fff;
@@ -432,8 +432,7 @@ div.tooltip-inner {
 
 /* navbar */
 .submenu-default {
-    background-color: #666;
-    border-color: #E7E7E7;
+
 }
 /* title */
 .submenu-default .navbar-brand {

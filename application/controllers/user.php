@@ -86,6 +86,7 @@ class User extends CI_Controller
             'javascript' => array(
                 'login.js?v' . $this->project_version
             ),
+			'css' => array("login.css"),
             'redirect' => $redirect
         );
         $this->template->load('default', 'user/login', $data);
@@ -545,7 +546,7 @@ class User extends CI_Controller
                 echo json_encode(array(
                     "success" => false,
                     "reason" => "user",
-                    "msg" => "The username does not exist!"
+                    "msg" => "Username does not exist"
                 ));
             } else {
                 $user = $user[0];
@@ -553,7 +554,7 @@ class User extends CI_Controller
                     echo json_encode(array(
                         "success" => false,
                         "reason" => "email_address",
-                        "msg" => "You don't have an email address saved! Please, contact with the Administrator"
+                        "msg" => "There is no email address linked to your account. Please contact support"
                     ));
                 } else {
                     //Set the TOKEN for this user in order to generate the link to reset the password
@@ -564,13 +565,13 @@ class User extends CI_Controller
                     $send_email = $this->send_reset_password_email($user);
 
                     if ($send_email) {
-                        $this->session->set_flashdata('success', 'An email was sent successfully to ' . $user['user_email'] . '. You will receive it in your mailbox soon with the instructions to reset the password');
+                        $this->session->set_flashdata('success', 'An email containing password reset instructions was sent to ' . htmlentities($user['user_email']));
                         $this->session->set_flashdata('username', $username);
                     }
 
                     echo json_encode(array(
                         "success" => ($send_email),
-                        "msg" => ($send_email ? "The email was sent successfully. You will receive it in your mailbox soon" : "ERROR: The email was not sent successfully! Please contact with the Administrator")
+                        "msg" => ($send_email ? "Password reset email was sent" : "Password reset email could not be sent")
                     ));
                 }
             }
@@ -596,9 +597,9 @@ class User extends CI_Controller
         $reset_pass_url = base_url() . "user/restore_password/" . $user['reset_pass_token'];
         $email_address_from = "no-reply@121system.com";
         $email_address_to = $user['user_email'];
-        $subject = "121System - Restore your Password";
+        $subject = "Password reset";
         $body = "Hi " . $user['name'] . ",
-            Please, click on the next link if you want to restore your password: " . $reset_pass_url . "";
+            Please click on the link below to reset your password: " . $reset_pass_url . "";
 
         $this->load->library('email');
 
@@ -627,7 +628,7 @@ class User extends CI_Controller
 
         //If the user replaced the password with this token before, redirect to login page
         if (empty($user)) {
-            $this->session->set_flashdata('error', 'The password was replaced before from this link. If you need to restore the password again, please, click on forgot password and we will send you an email again');
+            $this->session->set_flashdata('error', 'This password reset request has already been used. Please submit another password reset request');
             redirect('user/login');
         } else {
             $user = $user[0];

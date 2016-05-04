@@ -57,7 +57,7 @@
                 </select>
                 </div>
                  <?php } ?>
-                                  <?php  if(isset($outcomes) && count($outcomes) > 0){ ?>
+                                  <?php  if(in_array("filter outcomes",$_SESSION['permisisons']) && isset($outcomes) && count($outcomes) > 0){ ?>
                 <div class="form-group">
                 <label>Outcome <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                          data-placement="right" data-title="The last outcome on the record"
@@ -102,6 +102,8 @@
                  <?php } ?>
                  
                 <div class="form-group">
+              
+                  <button class="btn btn-danger pull-left clear-filter"  <?php if (!array_key_exists("pot_id",$_SESSION['filter']['values'])&&!array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])&&!array_key_exists("postcode",$_SESSION['filter']['values'])){ echo "disabled"; } ?> >Clear</button>
                 <button class="btn btn-primary pull-right apply-filter">Submit</button>
                 </div>
             </form>

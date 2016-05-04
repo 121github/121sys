@@ -384,8 +384,7 @@ var filter = {
             dataType: "JSON",
             data: $('#filter-form').serialize()
         }).done(function(response) {
-            window.location.href = helper.baseUrl + 'records/view';
-            localStorage.removeItem('DataTables_' + settings.sInstance + '_' + '/records/view');
+            window.location.reload();
         });
     },
     actions: function() {

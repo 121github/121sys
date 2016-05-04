@@ -591,6 +591,10 @@ var modals = {
                 if (typeof record !== "undefined") {
                     record.appointment_panel.load_appointments();
                 }
+				//enable the set appointment outcome
+				$('#record-panel').find('select#outcomes option:contains("Appointment Set")').prop('disabled',false);
+				$('#record-panel').find('select#outcomes').selectpicker('refresh');
+				
 				if(response.add_to_planner){
 					$.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
 					data:{appointment_id:response.appointment_id},
@@ -638,7 +642,7 @@ var modals = {
                 //Notice for set the outcome before leave the page (only if we create the appointment from the record panel)
                 if(typeof record !== "undefined"){
                     $(window).on('beforeunload', function () {
-                        return 'You need to set the outcome after setting an appointment. Are you sure you want to leave?';
+                        return 'Please set the appointment outcome. Are you sure you want to leave?';
                     });
                 }
 
@@ -1913,8 +1917,11 @@ var modals = {
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
-            $('.modal-header').append("Applying filters... <img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
-            location.reload(true);
+			if(typeof view !== "undefined"){
+            view.reload_table();
+			} else {
+			location.href=helper.baseUrl+'records/detail';	
+			}
         });
     },
 

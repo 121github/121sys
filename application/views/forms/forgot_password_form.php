@@ -1,4 +1,4 @@
-<div class="panel-heading">
+<!--<div class="panel-heading">
     <div style="font-size: 18px;">Forgot Password <span class="glyphicon glyphicon-remove pull-right close-forgot-password"></span></div>
 </div>
 <div class="panel-body">
@@ -20,3 +20,4 @@
         </div>
     </div>
 </div>
+-->

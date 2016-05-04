@@ -1,6 +1,6 @@
 
                 
-                <div class="navbar submenu-default navbar-fixed-top" style="margin-top:50px">
+                <div class="navbar navbar-inverse navbar-fixed-top" style="margin-top:50px">
     <ul class="nav navbar-nav desktop-only">
     <p class="navbar-text" style="color:#fff; font-weight:700"><?php echo $title ?></p>
     </ul>

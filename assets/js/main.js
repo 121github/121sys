@@ -4,6 +4,24 @@ platform = navigator.platform,
             mapLink = 'comgooglemaps://';
         }
 
+function validate_postcode(postcode,callback){
+	var valid;
+$.ajax({
+            url: helper.baseUrl + 'ajax/validate_postcode',
+            data: {
+                postcode: postcode
+            },
+            dataType: 'JSON',
+            type: 'POST'
+        }).done(function(response){
+			if(response.success){
+			callback(response.postcode);	
+			} else {
+			callback(false);
+			}
+		});
+}
+
 var device_type;
 $(window).ready(function() {
     setDevice($(window).width());
@@ -364,20 +382,58 @@ $(document).ready(function () {
 
 $(document).on("click","form .apply-filter",function(e){
 	e.preventDefault();
-        $.ajax({
+	var postcode =  $('#global-filter-form').find('input[name="postcode"]').val(); 
+	var distance = $('#global-filter-form').find('[name="distance"]').val(); 
+	if(distance!==""&&postcode==""){
+	flashalert.danger("Distance filter requires a postcode");
+	return false;	
+	}
+	if(postcode!==""){
+	var valid_postcode = validate_postcode(postcode,postcode_filter_callback);
+	return false;
+	}
+	apply_filter();
+});
+
+$('#global-filter-form').on('click', '.clear-filter', function(e) {
+		e.preventDefault();
+            modals.clear_filters();
+        });
+
+function postcode_filter_callback(valid){
+ if(valid){
+	 $('#submenu-filters input[name="postcode"]').val(valid);
+	 $('#global-filter-form').find('input[name="postcode"]').val(valid); 	
+     apply_filter();
+ } else {
+	 $('#submenu-filters input[name="postcode"]').val('');	
+	 $('#global-filter-form').find('input[name="postcode"]').val(''); 
+	 flashalert.danger("Postcode is not valid"); 
+}
+}
+
+function apply_filter(){
+ $.ajax({
             url: helper.baseUrl + 'search/apply_filter',
             type: "POST",
             dataType: "JSON",
-            data: $(this).closest('form').serialize()
+            data:  $('#global-filter-form').serialize()
         }).done(function(response) {
-			if(typeof record !== "undefined"){
-			window.location.href = helper.baseUrl + 'records/detail';	
+			if(response.filter){
+				$('#submenu-filter-btn').removeClass('btn-default').addClass('btn-success');
+				$('nav#global-filter .clear-filter').prop('disabled',false);
 			} else {
-            window.location.href = helper.baseUrl + 'records/view';
+				$('#submenu-filter-btn').removeClass('btn-success').addClass('btn-default');
+					$('nav#global-filter .clear-filter').prop('disabled',true);
 			}
-            //localStorage.removeItem('DataTables_' + settings.sInstance + '_' + '/records/view');
-        });
-});
+			if(typeof view !== "undefined"){
+			view.reload_table();
+			} else {
+			location.href = helper.baseUrl+'records/detail/0';	
+			}
+        });	
+}
+
 
 });
 
@@ -423,7 +479,7 @@ var filters = {
 
         $('nav#filter-view').mmenu({
             navbar: {
-                title: "Current Fitlers <span class='text-primary current-campaign'></span>"
+                title: "Current Filters <span class='text-primary current-campaign'></span>"
             },
             extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
             offCanvas: {

@@ -20,26 +20,17 @@ var login = {
         });
     },
     forgot_password: function() {
-        var pagewidth = $(window).width() / 2;
-        var moveto = pagewidth - 250;
-        $('<div class="modal-backdrop actions in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.forgot-password-container').find('.forgot-password-panel').show();
-        $('.forgot-password-content').show();
-        $('.forgot-password-container').fadeIn()
-        $('.forgot-password-container').animate({
-            width: '500px',
-            left: moveto,
-            top: '10%'
-        }, 1000);
+	var username = $('.form-signin').find('input[name="username"]').val();
+       var mbody =   '<form class="form-horizontal forgot-password-form">'+
+                  '<div class="form-group">'+
+                      '<p>Enter your username to recieve password reset instructions by email</p>'+
+                      '<span style="color: red; font-size: 11px; display: none;" class="forgot-password-error"></span>'+
+                      '<input type="text" name="username" value="'+username+'" class="form-control" placeholder="Username" required>'+
+                  '</div></form>'
+					  mheader = "Forgot Password";
+					  mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button><button class="marl btn btn-success send-forgot-password pull-right">Send</button>';
+					  modals.load_modal(mheader,mbody,mfooter);
 
-        $('.forgot-password-form').find('input[name="username"]').val($('.form-signin').find('input[name="username"]').val());
-    },
-    close_forgot_password: function() {
-        $('.modal-backdrop.actions').fadeOut();
-        $('.forgot-password-container').fadeOut(500, function() {
-            $('.forgot-password-content').show();
-            $('.alert').addClass('hidden');
-        });
     },
     send_forgot_password: function() {
         var username = $('.forgot-password-form').find('input[name="username"]').val();
@@ -57,7 +48,6 @@ var login = {
             else {
                 $('.forgot-password-error').html(response.msg);
                 $('.forgot-password-error').show();
-                flashalert.danger(response.msg);
             }
         });
     }

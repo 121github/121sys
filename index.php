@@ -47,6 +47,7 @@ if (in_array($domain, $no_https)) {
         exit();
     }
 }
+
 switch ($domain) {
     case 'www.':
         define('ENVIRONMENT', 'production');
@@ -108,19 +109,27 @@ switch ($domain) {
     case 'lhs.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_lhs';
-        //$theme = "hsl";
+        $theme = "lhs";
         //$timeout = 6000; //100 minutes
         break;
 
     case 'demo.':
         define('ENVIRONMENT', 'demo');
         $session_name = '121sys_demo';
+		$theme = "smartprospector";
         break;
 
     case 'pro.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_prosales';
+		$theme = "smartprospector";
         break;
+		
+	case 'localhost:8082':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_hsl';
+		$theme="leadsontap";
+    break;
 
     default:
         switch ($domain_ukfast) {

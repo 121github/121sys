@@ -153,7 +153,11 @@ var calendar = {
             ]
         })
 		calendar.type_filter();
-        calendar.attendee_filter();
+		if (helper.permissions['own appointments']>0) {
+        //no attendee filter
+		} else {
+		calendar.attendee_filter();
+		}
         //calendar.status_filter();
 		
 		
@@ -271,7 +275,7 @@ var calendar = {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Attendees" id="attendee-select"><option value=""></option></select></div>');
         var elem = $('#calendar').find('#attendee-select');
         elem.selectpicker();
-        calendar.load_attendees(elem);
+        calendar.load_attendees(elem,helper.user_id);
     },
 	 type_filter: function () {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Types" id="type-select"><option value=""></option></select></div>');
@@ -324,7 +328,7 @@ var calendar = {
 				appointment_type: $('#calendar').find('#type-select').val()
             }
         }).done(function (response) {
-            var $options = "<option value=''>All Attendees</options>";
+            var $options = "<option value=''>All Attendees</options>";	
             $.each(response.data, function (k, v) {
                 $options += "<option data-subtext='"+v.distance+"' " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
             });

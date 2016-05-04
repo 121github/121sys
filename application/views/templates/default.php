@@ -39,6 +39,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 	.navbar-nav {
 	margin: 0 !important;	
 	}
+	.navbar-nav .navbar-text { margin-left:15px !important }
 	</style>
     <?php } ?>
     
@@ -63,9 +64,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <?php if(isset($submenu)){ ?>
        <?php $this->view('submenus/'.$submenu['file'],$submenu); ?>
 <?php } ?>
+ <?php if (isset($_SESSION['permissions'])) { ?>
 <div class="navbar navbar-default navbar-fixed-top" style="padding-left:15px">
-    <?php if (isset($_SESSION['permissions'])) { ?>
-        <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+          <a href="#menu" id="nav-menu-btn" class="btn btn-default navbar-toggle mobile-only"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
@@ -109,9 +110,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             id="big-logo" style="margin-top:-5px; width:100%"
             src="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/logo.png"></a>
 </div>
-<?php } ?>
-</div>
 
+</div>
+<?php } ?>
 <?php if (isset($global_filter)) { 
  $this->view('forms/global_filter.php', $global_filter); 
   } ?>
@@ -388,8 +389,8 @@ fixed: "isFixed"
 }
 }
 });
-        <?php } ?>
-        $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
+ filter_api = $("nav#global-filter").data( "mmenu" );
+$('nav#global-filter').on('click', '#global-filter-submit', function (e) {
             e.preventDefault();
             $.ajax({
                 url: helper.baseUrl + 'user/set_data',
@@ -405,6 +406,8 @@ fixed: "isFixed"
                 }
             });
         });
+<?php } ?>
+      
 
     });
 </script>

@@ -314,6 +314,11 @@ return $query->result_array();
             "type" => "multiple",
             "alias" => "r.source_id"
         );
+ 		 $filter_options["pot_id"]        = array(
+            "table" => "records",
+            "type" => "multiple",
+            "alias" => "r.pot_id"
+        );
         $filter_options["dials"]            = array(
             "table" => "records",
             "type" => "custom",
@@ -685,9 +690,11 @@ return $query->result_array();
 				}
 				
                 if ($field == 'postcode' && count($filter[$field])) {
+					
 				if(validate_postcode($filter['postcode'])){
+
 				$clean_filter['postcode'] = postcodeFormat($filter['postcode']);
-				
+		
 				if(!isset($filter['lat'])){
 				$coords = postcode_to_coords($clean_filter['postcode']);
 				$filter['lat'] = $coords['lat'];
@@ -734,7 +741,7 @@ return $query->result_array();
             }
 
         }
-
+		
 		/* users can only see records that have not been parked */
 		if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])){
         $parked = " and (r.parked_code is null)";
@@ -756,7 +763,7 @@ return $query->result_array();
 		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";	
 		}
 		
-		
+	
         //if the second parameter in the function is set to true then we will store the filter into the session so it's use throughout the system
         if ($use) {
             $_SESSION['filter']['join']  = $join;

@@ -80,9 +80,25 @@ class Booking extends CI_Controller
 	}
 	
 	public function events(){
+		session_write_close();
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
+		if(!isset($_POST['attendee'])){
+		$users = $this->Form_model->get_calendar_users();
+		foreach($users as $row){
+		if($_SESSION['user_id']==$row['id']){
+			$attendee = $_SESSION['user_id'];
+		}
+		}
+		} else {
 		$attendee = $this->input->post('attendee');
+		}
+		
+		if(in_array("own appointments",$_SESSION['permissions'])){
+		$attendee = $_SESSION['user_id'];
+		}
+		
+		$this->firephp->log($attendee);
 		$postcode = $this->input->post('postcode');
 		$appointment_type = $this->input->post('appointment_type');
         $status = $this->input->post('status');

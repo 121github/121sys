@@ -33,9 +33,6 @@
 #calendar-right {
     width:900px !important; min-width:900px !important
 }
-html.mm-right.mm-opening .mm-slideout {
-    transform: translate(-900px, 0px);
-}
 </style>
  <script>
  $(document).ready(function(){
@@ -71,6 +68,19 @@ api.bind('closing', function(){
     calendar.destroy();
 	});
 });
+/*
+api.bind('opening', function(){
+$('html.mm-right.mm-opening .mm-slideout').each(function(){
+$(this).attr('style','transform: translate(-900px, 0px)');
+});
+});
+
+api.bind('closed', function(){ 
+$('html.mm-right.mm-opening .mm-slideout').each(function(){
+	$(this).removeAttr('style');
+});
+});
+*/
   });
  </script>
  

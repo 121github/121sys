@@ -1,0 +1,40 @@
+/* CSS Document */
+
+.forgot-password-form { padding:10px 30px; }
+.login-form {
+	margin: 100px auto;
+	max-width: 400px;
+}
+.container-fluid { padding:0 !important }
+.login-form form[role=login] {
+	color: #5d5d5d;
+	background: #f2f2f2;
+	padding: 26px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border:1px solid #ddd;
+}
+.login-form form[role=login] img {
+		display: block;
+		margin: 0 auto;
+		margin-bottom: 35px;
+		max-height:150px;
+	}
+.login-form form[role=login] input,
+.login-form form[role=login] button {
+		font-size: 18px;
+		margin: 16px 0;
+	}
+.login-form form[role=login] > div {
+		text-align: center;
+	}
+	
+.login-form .form-links {
+	text-align: center;
+	margin-top: 1em;
+	margin-bottom: 50px;
+}
+.login-form .form-links a {
+		
+	}

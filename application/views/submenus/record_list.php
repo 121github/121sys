@@ -1,6 +1,6 @@
 
                 
-                <div class="navbar submenu-default navbar-fixed-top" style="margin-top:50px">
+                <div class="navbar navbar-inverse navbar-fixed-top" style="margin-top:50px">
     <ul class="nav navbar-nav desktop-only">
     <p class="navbar-text" style="color:#fff; font-weight:700"><?php echo $title ?></p>
     </ul>
@@ -22,23 +22,25 @@
             } ?>   
                 
                 <div class="btn-group">
-                    <a class="btn btn-default btn" href="<?php echo base_url() ?>records/mapview"><span
+                    <a class="btn <?php echo $map_class ?> btn" href="<?php echo base_url() ?>records/mapview"><span
                             class="fa fa-globe"></span> Map
                     </a>
                 </div>
-            <?php if (isset($global_filter)) {    
-             if (isset($_SESSION['filter'])) {
+                
+                 <?php if (isset($global_filter)) { ?>
+            <?php if (array_key_exists("pot_id",$_SESSION['filter']['values'])||array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])||array_key_exists("postcode",$_SESSION['filter']['values'])) {    
+           
                 $filter_class = "btn-success";
             } else {
                 $filter_class = "btn-default";
             } ?>
                   <div class="btn-group">
-                    <a href="#global-filter" class="btn <?php echo $filter_class ?>"><span
+                    <a href="#global-filter" id="submenu-filter-btn" class="btn <?php echo $filter_class ?>"><span
                             class="fa fa-filter"></span> Filter
                     </a>
-              <?php } ?>
+              
                 </div>
-                
+             <?php } ?>   
                     <div class="btn-group desktop-only">
          <input value="<?php echo @$_SESSION['filter']['values']['postcode'] ?>"  name="postcode" class="form-control" style="width:130px" placeholder="Enter Postcode"/>
          </div>
@@ -71,7 +73,7 @@
 	  $('#submenu-filter-submit').on('click',function(e){
 		 e.preventDefault();
 		 var postcode = $('#submenu-filters input[name="postcode"]').val();
-		 var distance = $('#submenu-filters select[name="distance"]').val(); 
+		 var distance = $('#submenu-filters select[name="distance"]').val();
 		 $('#global-filter-form').find('input[name="postcode"]').val(postcode);
 		 $('#global-filter-form').find('select[name="distance"]').val(distance).selectpicker('refresh');
 		 //submit the filter

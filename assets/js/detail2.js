@@ -2798,15 +2798,15 @@ var modal = {
             console.log('Finished playing');
         });
 
-          $modal.on('click','#speedplay',function () {
+        $modal.click('#speedplay',function () {
             wavesurfer.setPlaybackRate(Number($('#audiorate').text()) + 0.2);
             $('#audiorate').text(Number($('#audiorate').text()) + 0.2);
         });
-         $modal.on('click','#slowplay',function () {
+        $modal.click('#slowplay',function () {
             wavesurfer.setPlaybackRate(Number($('#audiorate').text()) - 0.2);
             $('#audiorate').text(Number($('#audiorate').text()) - 0.2);
         });
-        $modal.on('click','#playpause',function () {
+        $modal.click('#playpause',function () {
             if ($('#playpause i').hasClass('glyphicon-pause')) {
                 $('#playpause').html('<i class="glyphicon glyphicon-play"></i> Play');
                 wavesurfer.pause();

@@ -61,7 +61,7 @@ class Error extends CI_Controller
 			'campaign_access' => $this->_campaigns,
 
             'title' => 'Data error',
-			'msg'=>'There are no records left for calling. Please try another campaign or contact your administrator');
+			'msg'=>'There are no records left for calling. Please try another campaign or change your filter options');
 			 $this->template->load('default', 'errors/display.php', $data);
 		
 	}
