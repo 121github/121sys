@@ -204,14 +204,22 @@ Date.prototype.addHours = function (h) {
 
 var menu_api = false;
 var helper = {};
-var messages = [];
+var messages = (localStorage.getItem("messages")?JSON.parse(localStorage.getItem("messages")):[]);
 
 /* AJAX GLOBAL EVENT - This happens after ajax request. We check if the response is timeout then it redirects the user to the login page */
+$(document).ajaxError(function (event, xhr, settings) {
+    if (xhr.status != 200) {
+        var date = new Date();
+        var msg = [false, 'Access Error', settings.url+' ['+xhr.status+" - "+xhr.statusText+']', date];
+        messages.unshift(msg);
+        localStorage.setItem("messages", JSON.stringify(messages));
+    }
+});
 $(document).ajaxComplete(function (event, xhr, settings) {
     if (typeof (xhr.responseJSON) != "undefined" && typeof (xhr.responseJSON.msg) != "undefined") {
         var date = new Date();
         var title = (typeof xhr.responseJSON.msg_title != "undefined"?xhr.responseJSON.msg_title:"-");
-        var info = (typeof xhr.responseJSON.msg != "undefined"?xhr.responseJSON.msg[0]:"-");
+        var info = (typeof xhr.responseJSON.msg != "undefined"?xhr.responseJSON.msg:"-");
         var msg = [xhr.responseJSON.success, title, info, date];
         messages.unshift(msg);
         localStorage.setItem("messages", JSON.stringify(messages));

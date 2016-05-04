@@ -122,7 +122,7 @@ save:function(){
 	data:$('#logo-form').serialize()
 	}).done(function(response){
 		if(response.success){
-		flashalert.success('Camapign logo saved');	
+		flashalert.success();
 		}
 	});
 	
