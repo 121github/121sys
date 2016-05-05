@@ -1,13 +1,14 @@
  <nav id="global-filter" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">
             <form id="global-filter-form">
-            
+            <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
             <div class="form-group">
                 <label>Postcode <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                       data-placement="right" data-title="Enter a postcode to find records in the same area" data-html="true"></span></label>
                                       <input  value="<?php echo @$_SESSION['filter']['values']['postcode'] ?>" class="form-control" placeholder="Enter postcode" name="postcode" />
             </div>
-            
+            <?php } ?>
+   <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
                    <div class="form-group">
                 <label>Distance <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                       data-placement="right" data-title="Enter a distance to search from the postcode entered" data-html="true"></span></label>
@@ -24,7 +25,8 @@
              <option <?php if($_SESSION['filter']['values']['distance']=="100"){ echo "selected"; } ?> value="100">100 Miles</option>
             </select>
             </div>
-            
+           <?php } ?>
+              <?php if(in_array("filter pot",$_SESSION['permissions'])){ ?> 
             <?php  if(isset($pots) && count($pots) > 0){ ?>
             <div class="form-group">
                 <label>Data Pot <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
@@ -40,6 +42,8 @@
                 </select>
                 </div>
                 <?php } ?>
+                <?php } ?>
+                   <?php if(in_array("filter source",$_SESSION['permissions'])){ ?>
                  <?php  if(isset($sources) && count($sources) > 0){ ?>
                 <div class="form-group">
                 <label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
@@ -57,7 +61,9 @@
                 </select>
                 </div>
                  <?php } ?>
-                                  <?php  if(in_array("filter outcomes",$_SESSION['permisisons']) && isset($outcomes) && count($outcomes) > 0){ ?>
+                 <?php } ?>
+                                  <?php  if(in_array("filter outcomes",$_SESSION['permisisons'])) ?>
+                                  <?php if(isset($outcomes) && count($outcomes) > 0){ ?>
                 <div class="form-group">
                 <label>Outcome <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                          data-placement="right" data-title="The last outcome on the record"
@@ -72,7 +78,8 @@
                 </div>
                  <?php } ?>
                  
-                         <?php  if(in_array("search any owner",$_SESSION['permissions'])&&isset($owners) && count($owners) > 0){ ?>
+                    <?php if(in_array("filter users",$_SESSION['permissions'])){ ?>
+                         <?php  if(isset($owners) && count($owners) > 0){ ?>
                 <div class="form-group">
                 <label>User <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                          data-placement="right" data-title="The user the record is assigned to"
@@ -85,8 +92,9 @@
                 </select>
                 </div>
                  <?php } ?>
-                 
-                                          <?php  if(in_array("search branches",$_SESSION['permissions'])&&isset($branches) && count($branches) > 0){ ?>
+                  <?php } ?>
+                  <?php if(in_array("filter branch",$_SESSION['permissions'])){ ?>
+                 <?php if(isset($branches) && count($branches) > 0){ ?>
                 <div class="form-group">
                 <label>Branch <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                          data-placement="right" data-title="The branch the record is assigned to"
@@ -100,10 +108,26 @@
                 </select>
                 </div>
                  <?php } ?>
-                 
+                 <?php } ?> 
+                  <?php if(in_array("filter region",$_SESSION['permissions'])){ ?>
+                 <?php if(isset($regions) && count($regions) > 0){ ?>
+                <div class="form-group">
+                <label>Branch <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
+                                         data-placement="right" data-title="The branch the record is assigned to"
+                                         data-html="true"></span></label>
+                <select name="branch_id[]" title="All Branches" multiple class="selectpicker" data-width="100%">
+    
+                    <?php foreach ($regions as $row) { ?>
+                     
+                                <option <?php if(isset($_SESSION['filter']['values']['region_id']) && @in_array($row['id'],$_SESSION['filter']['values']['region_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                    <?php } ?>
+                </select>
+                </div>
+                 <?php } ?>
+                 <?php } ?> 
                 <div class="form-group">
               
-                  <button class="btn btn-danger pull-left clear-filter"  <?php if (!array_key_exists("pot_id",$_SESSION['filter']['values'])&&!array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])&&!array_key_exists("postcode",$_SESSION['filter']['values'])){ echo "disabled"; } ?> >Clear</button>
+                  <button class="btn btn-danger pull-left clear-filter"  <?php if (!array_key_exists("pot_id",$_SESSION['filter']['values'])&&!array_key_exists("branch_id",$_SESSION['filter']['values'])&&!array_key_exists("region_id",$_SESSION['filter']['values'])&&!array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])&&!array_key_exists("postcode",$_SESSION['filter']['values'])){ echo "disabled"; } ?> >Clear</button>
                 <button class="btn btn-primary pull-right apply-filter">Submit</button>
                 </div>
             </form>

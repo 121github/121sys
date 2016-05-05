@@ -1437,7 +1437,7 @@ return $query->result_array();
 			$qry = "select pot_id id,pot_name name,campaign_name from campaigns join records using(campaign_id) join data_pots using(pot_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by pot_id,campaigns.campaign_id order by campaign_name,pot_name";
 			$filter['pots'] = $this->db->query($qry)->result_array();	
 			//get owners
-			$qry = "select users.user_id id,name, group_name from users join ownership using(user_id) join records using(urn) join campaigns using(campaign_id) join user_groups using(group_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by users.user_id,group_id order by group_name,name";
+			$qry = "select users.user_id id,name, group_name from users join ownership using(user_id) join records using(urn) join campaigns using(campaign_id) join user_groups on user_groups.group_id = users.group_id $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by users.user_id,users.group_id order by group_name,name";
 			$filter['owners'] = $this->db->query($qry)->result_array();		
 			//get branches
 			$qry = "select branch_id id,branch_name name,campaign_name from branch join branch_campaigns using(branch_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by branch_id,campaigns.campaign_id order by campaign_name,branch_name";

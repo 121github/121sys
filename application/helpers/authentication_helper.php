@@ -61,6 +61,7 @@ if (!function_exists('user_auth_check')) {
             return $campaigns;
         } else {
             unset($_SESSION['current_campaign']);
+			return false;
         }
 
     }

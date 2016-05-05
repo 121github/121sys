@@ -109,7 +109,7 @@ class User extends CI_Controller
     public function apply_default_filter()
     {
         $filter = array();
-        /*set the default filter options up accounding to the "Default view" permissions */
+        /*set the default filter options up using the "Default view" permissions */
         if (@in_array("view live", $_SESSION['permissions'])) {
             $filter['record_status'][] = 1;
         }
@@ -123,7 +123,6 @@ class User extends CI_Controller
             $filter['record_status'][] = 4;
         }
 
-        /*if the default is to view all parked record we just add all the parked codes to the filter (as long as there are less than 10 this will do the trick) */
         if (@in_array("view parked", $_SESSION['permissions'])) {
             $filter['view_parked'] = true;
         }
@@ -145,9 +144,9 @@ class User extends CI_Controller
                 $filter['team_id'][] = $_SESSION['team'];
             }
 
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign_id'][] = $_SESSION['current_campaign'];
-            }
+        if (isset($_SESSION['current_campaign'])) {
+           $filter['campaign_id'][] = $_SESSION['current_campaign'];
+        }
             //we can add any additional filter requirements here if we ever need to
             $where = "";
             $_SESSION['filter']['where'] = $where;
@@ -487,8 +486,8 @@ class User extends CI_Controller
             unset($_SESSION['current_client']);
             unset($_SESSION['current_campaign_name']);
             unset($_SESSION['current_campaign']);
-			unset($_SESSION['current_source']);
-			unset($_SESSION['current_pot']);
+			//unset($_SESSION['current_source']);
+			//unset($_SESSION['current_pot']);
             unset($_SESSION['campaign_features']);
             unset($_SESSION['filter']['values']['campaign_id']);
             /* no longer logging in realtime
