@@ -122,7 +122,7 @@ switch ($domain) {
     case 'pro.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_prosales';
-		$theme = "smartprospector";
+		$theme = "leadsontap";
         break;
 		
 	case 'localhost:8082':
