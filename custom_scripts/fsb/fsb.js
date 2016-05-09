@@ -3,14 +3,14 @@ var newOptions = [];
 $(document).on('change','#calendar #attendee-select',function(){
 	console.log($(this).val());
 	if($(this).val()==259){
-		 newOptions.hiddenDays = [ 1 ,3, 5, 6, 7, 0 ];
+	newOptions.hiddenDays = [ 0,7 ];
 
  newOptions.minTime = "10:00:00";
  newOptions.maxTime = "19:00:00";
  console.log(minTime);
 	}
 	if($(this).val()==258){		
- newOptions.hiddenDays = [ 1, 0, 6, 5, 7 ];
+ newOptions.hiddenDays = [  0,7 ];
  newOptions.minTime = "08:00:00";
  newOptions.maxTime = "19:00:00";
 	}

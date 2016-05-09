@@ -387,7 +387,7 @@ $(document).ready(function () {
 	});
 });
 
-$(document).on("click","form .apply-filter",function(e){
+$('#global-filter-form').on("click",".apply-filter",function(e){
 	e.preventDefault();
 	var postcode =  $('#global-filter-form').find('input[name="postcode"]').val(); 
 	var distance = $('#global-filter-form').find('[name="distance"]').val(); 
@@ -399,8 +399,14 @@ $(document).on("click","form .apply-filter",function(e){
 	var valid_postcode = validate_postcode(postcode,postcode_filter_callback);
 	return false;
 	}
-	apply_filter();
+	apply_global_filter();
 });
+
+	$('#quicksearchform').on("click","#showquicksearchresults",function(e){
+	apply_quick_search();
+	});
+
+
 
 $('#global-filter-form').on('click', '.clear-filter', function(e) {
 		e.preventDefault();
@@ -419,7 +425,7 @@ function postcode_filter_callback(valid){
 }
 }
 
-function apply_filter(){
+function apply_global_filter(){
  $.ajax({
             url: helper.baseUrl + 'search/apply_filter',
             type: "POST",
@@ -437,6 +443,22 @@ function apply_filter(){
 			view.reload_table();
 			} else {
 			location.href = helper.baseUrl+'records/detail/0';	
+			}
+        });	
+}
+
+
+function apply_quick_search(){
+ $.ajax({
+            url: helper.baseUrl + 'search/apply_filter',
+            type: "POST",
+            dataType: "JSON",
+            data:  $('#quicksearchform').serialize()
+        }).done(function(response) {
+			if(typeof view !== "undefined"){
+			view.reload_table();
+			} else {
+			window.location.href = helper.baseUrl+'records/view';
 			}
         });	
 }

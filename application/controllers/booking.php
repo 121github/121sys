@@ -582,6 +582,7 @@ class Booking extends CI_Controller
                     //Update the appointments to 121system
                     $data['appointment_id'] = $appointment['appointment_id'];
                     $data['urn'] = $appointment['urn'];
+					unset($data['text']);
                     $appointment_id = $this->Records_model->save_appointment($data);
                     array_push($appointments['updated'], $appointment_id);
                 }
