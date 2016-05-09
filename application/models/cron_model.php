@@ -455,6 +455,30 @@ class Cron_model extends CI_Model
         
         return $this->db->affected_rows();
     }
-    
+    public function set_postcode_from_address(){
+		
+			$adds = $this->db->query("select address_id,add1 from company_addresses join companies using(company_id) join records using(urn) where (postcode is null or postcode='')")->result_array();
+		foreach($adds as $add){
+			$postcode = postcode_from_string($add['add1']);
+			if(!empty($postcode)){
+			$this->db->query("update company_addresses set postcode = '$postcode' where address_id = '{$add['address_id']}' and postcode is null");	
+			}
+		}
+					$adds = $this->db->query("select address_id,add1 from contact_addresses join contacts using(contact_id) join records using(urn) where (postcode is null or postcode='')")->result_array();
+		foreach($adds as $add){
+			$postcode = postcode_from_string($add['add1']);
+			if(!empty($postcode)){
+			$this->db->query("update contact_addresses set postcode = '$postcode' where address_id = '{$add['address_id']}' and postcode is null");	
+			}
+		}
+			$adds = $this->db->query("select appointment_id,address from appointments join records using(urn) where (postcode is null or postcode='')")->result_array();
+		foreach($adds as $add){
+			$postcode = postcode_from_string($add['add1']);
+			if(!empty($postcode)){
+			$this->db->query("update appointments set postcode = '$postcode' where appointment_id = '{$add['appointment_id']}' and postcode is null");	
+			}
+			
+		}	
+	}
     
 }

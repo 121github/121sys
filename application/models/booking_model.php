@@ -45,10 +45,10 @@ class Booking_model extends CI_Model
         if (!empty($postcode)) {
             $coords = postcode_to_coords($postcode);
             if (isset($coords['lat']) && isset($coords['lng'])) {
-                $distance_select = ",min((((ACOS(SIN((" .
+                $distance_select = ",(((ACOS(SIN((" .
                     $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
                     $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
-                    $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515)) AS distance";
+                    $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515) AS distance";
 
                 $join_locations = " left join locations on locations.location_id = appointments.location_id ";
                 if ($distance > 0) {

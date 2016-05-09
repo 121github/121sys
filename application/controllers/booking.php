@@ -105,6 +105,7 @@ class Booking extends CI_Controller
 		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type,$postcode);
 		foreach($events as $k => $event){
 			$events[$k]['color'] = genColorCodeFromText($event['attendees']);
+			$events[$k]['distance'] = number_format($event['distance']). " miles away";
 		}
 		echo json_encode($events);
 	}
@@ -557,6 +558,10 @@ class Booking extends CI_Controller
                 "updated" => array()
             );
             foreach ($events as $event) {
+				$postcode = postcode_from_string($event->summary);
+				if(empty($postcode)){
+				$postcode = postcode_from_string($event->description);
+				}
                 $data = array(
                     'google_id' => $event->id,
                     'title' => $event->summary,
@@ -567,7 +572,9 @@ class Booking extends CI_Controller
                     'attendees' => array($user_id),
                     'contact_id' => 'other'
                 );
-
+					if(empty($postcode)){
+						$data['postcode'] = $postcode;
+					}
                 //Check if the appointment already exist on the system
                 $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
 

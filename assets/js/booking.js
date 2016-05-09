@@ -70,7 +70,12 @@ var calendar = {
                     event.editable = false;
                     cancelled = "fa fa-ban"
                 }
-                $(element).attr("data-id", event._id).attr('data-modal', 'view-appointment').find('.fc-content').prepend('<span class="' + event.icon + '"></span><span class="' + cancelled + ' red pull-right"></span>');
+				var event_extra = '<span class="' + event.icon + '"></span><span class="' + cancelled + ' red pull-right"></span> ';
+				if(event.distance!=="undefined"){
+					event_extra += event.distance;
+				}
+				
+                $(element).attr("data-id", event._id).attr('data-modal', 'view-appointment').find('.fc-content').prepend(event_extra);
             },
             viewRender: function (event, element, view) {
                 calendar.load_rules();
@@ -138,7 +143,7 @@ var calendar = {
 							var postcode = false;
 							
 		if(typeof quick_planner.company_postcode !=="undefined"){
-		postcode = quick_planner.contact_postcode;	
+		postcode = quick_planner.company_postcode;	
 		} else if(typeof quick_planner.contact_postcode !=="undefined"){
 		postcode = quick_planner.contact_postcode	
 		}
@@ -330,7 +335,8 @@ var calendar = {
         }).done(function (response) {
             var $options = "<option value=''>All Attendees</options>";	
             $.each(response.data, function (k, v) {
-                $options += "<option data-subtext='"+v.distance+"' " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
+				var distance = typeof v.distance!=="undefined"?v.distance:"";
+                $options += "<option data-subtext='"+distance+"' " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
             });
             elem.html($options).selectpicker('refresh');
         });
