@@ -39,9 +39,11 @@ class Email_model extends CI_Model
 		$find_appointment = "";
 		if($appointment_id){
 		$find_appointment = " and a.appointment_id = '$appointment_id' ";	
-		}
+		$query = "select urn from appointments a where urn = '$urn' and contact_id is not null $find_appointment ";
+		} else {
         //check if an appointment has been made and use the appointment contact in the placeholder
-        $query = "select urn from appointments a where urn = '$urn' and contact_id is not null $find_appointment ";
+        $query = "select urn from appointments a where urn = '$urn' and contact_id is not null order by appointment_id desc limit 1 ";
+		}
 		
         if ($this->db->query($query)->num_rows() > 0) {
             $contact_details = " left join (select urn,max(appointment_id) max_id from appointments where urn='$urn' $find_appointment) a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id ";
