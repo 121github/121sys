@@ -17,7 +17,9 @@ class Booking_model extends CI_Model
      * @return mixed
      */
     public function get_events($start=false,$end=false,$attendee=false,$status=false,$appointment_type=false,$postcode = false) {
-		//$where = " and campaign_id in(".$_SESSION['campaign_access']['list'].")";
+		if(in_array("own appointments",$_SESSION['permissions'])){ 
+		$attendee = $_SESSION['user_id'];
+		}
 		$where = "";
 		if($start){
 			$where .= " and date(`start`) >= '$start' ";
@@ -111,6 +113,9 @@ class Booking_model extends CI_Model
      */
     public function get_appointment_rules_by_date_and_user($date=false, $user_id=false)
     {
+		if(in_array("own appointments",$_SESSION['permissions'])){ 
+		$user_id = $_SESSION['user_id'];
+		}
         $qry = "select slot_override_id,date_format(`date`,'%d/%m/%Y') uk_date, `date`, slot_name, notes, name, max_slots from appointment_slot_override left join appointment_slots using(appointment_slot_id) left join users using(user_id) where 1 ";
 				if($date){
 				$qry .= " and `date` = '" . $date . "'"; 

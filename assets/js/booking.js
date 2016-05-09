@@ -49,8 +49,8 @@ var calendar = {
             this.left_buttons += ' googleButton';
         }
 
-        this.fullCalendar = $('#calendar').fullCalendar({
-            timeFormat: 'H:mm',
+		 this.calendarOptions = {
+			timeFormat: 'H:mm',
 			columnFormat: 'ddd D/M',
             minTime: minTime,
             maxTime: maxTime,
@@ -167,19 +167,25 @@ var calendar = {
                     }
                 }
             ]
-        })
+		 }
+		//create the calendar
+        this.fullCalendar = $('#calendar').fullCalendar(calendar.calendarOptions);
+		//add the filters to the top
+		calendar.build_options();
+		//initialize the popup menu on left click of a calendar cell
+        calendar.init_context_menu();
+        
+    },
+	build_options:function(){
 		calendar.type_filter();
 		if (helper.permissions['own appointments']>0) {
         //no attendee filter
 		} else {
 		calendar.attendee_filter();
 		}
+		calendar.month_filter();
         //calendar.status_filter();
-		
-		
-        calendar.init_context_menu();
-        calendar.month_filter();
-    },
+	},
     destroy: function () {
         $('#calendar').fullCalendar('destroy');
     },
@@ -288,13 +294,13 @@ var calendar = {
         })
     },
     attendee_filter: function () {
-        $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Attendees" id="attendee-select"><option value=""></option></select></div>');
+        $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Attendees" id="attendee-select"><option value="">Loading...</option></select></div>');
         var elem = $('#calendar').find('#attendee-select');
         elem.selectpicker();
         calendar.load_attendees(elem,helper.user_id);
     },
 	 type_filter: function () {
-        $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Types" id="type-select"><option value=""></option></select></div>');
+        $('#calendar .fc-toolbar .fc-left').append('<div style="display:none"><select title="All Types" id="type-select"><option value=""></option></select></div>');
         var elem = $('#calendar').find('#type-select');
         elem.selectpicker();
         calendar.load_appointment_types(elem);
@@ -361,11 +367,16 @@ var calendar = {
                 campaigns: $('#campaign-cal-select').val()
             }
         }).done(function (response) {
+			var type_count = 0;
             var $options = "<option value=''>All Types</options>";
             $.each(response.data, function (k, v) {
+				type_count++;
                 $options += "<option " + (v.id == selected ? "selected" : "") + " value='" + v.id + "'>" + v.name + "</options>";
             });
             elem.html($options).selectpicker('refresh');
+			if(type_count>1){
+			elem.closest('div').show();
+			}
         });
     },
     load_rules: function () {

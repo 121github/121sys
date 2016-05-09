@@ -1,13 +1,25 @@
-if(helper.user_id==259){
-var hiddenDays = [ 1, 5, 6, 0 ];
-var minTime = "08:00:00";
-var maxTime = "19:00:00";
-}
-if(helper.user_id==258){
-var hiddenDays = [ 1, 3, 5 ];
-var minTime = "08:00:00";
-var maxTime = "19:00:00";
-}
+var newOptions = [];
+
+$(document).on('change','#calendar #attendee-select',function(){
+	console.log($(this).val());
+	if($(this).val()==259){
+		 newOptions.hiddenDays = [ 1 ,3, 5, 6, 7, 0 ];
+
+ newOptions.minTime = "10:00:00";
+ newOptions.maxTime = "19:00:00";
+ console.log(minTime);
+	}
+	if($(this).val()==258){		
+ newOptions.hiddenDays = [ 1, 0, 6, 5, 7 ];
+ newOptions.minTime = "08:00:00";
+ newOptions.maxTime = "19:00:00";
+	}
+	$('#calendar').fullCalendar('destroy');
+	$('#calendar').fullCalendar($.extend(calendar.calendarOptions,newOptions));
+	calendar.build_options()
+});
+
+
 var simulation = "";
 
 var campaign_functions = {
