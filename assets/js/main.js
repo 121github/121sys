@@ -203,7 +203,6 @@ Date.prototype.addHours = function (h) {
 }
 
 var menu_api = false;
-var helper = {};
 var messages = (localStorage.getItem("messages")?JSON.parse(localStorage.getItem("messages")):[]);
 
 /* AJAX GLOBAL EVENT - This happens after ajax request. We check if the response is timeout then it redirects the user to the login page */

@@ -2,7 +2,17 @@ var fullcalendar;
 if(typeof quick_planner == "undefined"){
 var quick_planner = {};
 }
+if(typeof minTime == "undefined"){
+            var minTime= '07:00';
+            var maxTime= '20:00';
+}
+if(typeof hiddenDays == "undefined"){
+var hiddenDays = [];
+}
+if(typeof slot_duration == "undefined"){
 var slot_duration = '00:30:00'
+}
+
 var calendar = {
     init: function (view) {
 		this.click_date = "";
@@ -42,8 +52,9 @@ var calendar = {
         this.fullCalendar = $('#calendar').fullCalendar({
             timeFormat: 'H:mm',
 			columnFormat: 'ddd D/M',
-            minTime: '07:00',
-            maxTime: '20:00',
+            minTime: minTime,
+            maxTime: maxTime,
+			hiddenDays: hiddenDays,
             slotDuration: slot_duration,
             //height: 700,
             header: {

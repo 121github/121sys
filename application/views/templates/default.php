@@ -47,6 +47,19 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/icon.png">
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript">
+	helper = [];
+	helper.baseUrl = '<?php echo base_url(); ?>' + '';
+    <?php if(isset($_SESSION['permissions'])){ ?>
+	helper.user_id = '<?php echo $_SESSION['user_id'] ?>';
+    helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
+    helper.role = '<?php echo $_SESSION['role'] ?>';
+    helper.current_postcode = false;
+    <?php } ?>
+    <?php if(@!empty($_SESSION['current_postcode'])){ ?>
+    helper.current_postcode = "<?php echo $_SESSION['current_postcode'] ?>";
+    <?php } ?>
+	</script>
              </head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
@@ -275,18 +288,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript">
 	var custom_appointment_modal = false;
 	var custom_record_modal = false;
-	helper.baseUrl = '<?php echo base_url(); ?>' + '';
-    <?php if(isset($_SESSION['user_id'])){ ?>
-    helper.user_id = '<?php echo $_SESSION['user_id'] ?>';
-    <?php } ?>
-    <?php if(isset($_SESSION['permissions'])){ ?>
-    helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
-    helper.role = '<?php echo $_SESSION['role'] ?>';
-    helper.current_postcode = false;
-    <?php } ?>
-    <?php if(@!empty($_SESSION['current_postcode'])){ ?>
-    helper.current_postcode = "<?php echo $_SESSION['current_postcode'] ?>";
-    <?php } ?>
     modals.init();
     <?php if(isset($_SESSION['user_id'])){ ?>
     check_session();
