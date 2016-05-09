@@ -550,8 +550,7 @@ class Records_model extends CI_Model
             $qry .= $join_query;
         }
 		
-		$this->firephp->log($options);
-        $qry .= $this->get_where($options, $filter_columns);
+        $qry .= get_where($options, $filter_columns);
 	
 		//get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows.$qry)->row()->numrows;
