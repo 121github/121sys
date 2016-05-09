@@ -136,12 +136,58 @@ class User_model extends CI_Model
 		if($user_color->num_rows()){
 		$_SESSION['theme_color'] = $user_color->row()->theme_color;	
 		}
-        
+        $this->set_data_restrictions();
         $this->set_permissions();
         
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
-            //admin has all access
-            $qry = "select campaign_id from `campaigns` where campaign_status = 1";
+	}
+	public function set_data_restrictions(){
+			$access = $this->db->query("select * from role_data_access where role_id = '" . $_SESSION['role'] . "'")->row_array();
+			$restriction = "";
+			$_SESSION['data_access'] = $access;
+			$this->set_campaign_access($access['all_campaigns']);
+			if($access['user_records']){
+			$unassigned = $access['unassigned_user']?" or ow.user_id is null":"";
+			$restriction .= " and (ow.user_id = '".$_SESSION['user_id']."' $unassigned) ";	
+			}
+			if($access['team_records']){
+			$unassigned = $access['unassigned_team']?" or r.team_id is null":"";
+			$restriction .= " and (r.team_id = '".$_SESSION['team']."' $unassigned) ";	
+			}
+			if($access['group_records']){
+			$unassigned = $access['unassigned_group']?" or r.group_id is null":"";
+			$restriction .= " and (r.group_id = '".$_SESSION['group']."' $unassigned) ";	
+			}
+			if($access['branch_records']){
+			$unassigned = $access['unassigned_branch']?" or r.branch_id is null":"";
+			$restriction .= " and (r.branch_id in(select branch_id from branch_user where user_id = '".$_SESSION['user_id']."') $unassigned) ";	
+			}
+			if($access['region_records']){
+			$unassigned = $access['unassigned_region']?" or r.region_id is null":"";
+			$restriction .= " and (r.region_id in(select branch_id from branch_region_users where user_id = '".$_SESSION['user_id']."') $unassigned) ";	
+			}
+			//always include live records
+			$restriction = " and ( record_status = 1 ";
+			if($access['pending']){
+			$restriction .= "or r.record_status = 2 ";	
+			}
+			if($access['dead']){
+			$restriction .= "or r.record_status = 3 ";	
+			}
+			if($access['complete']){
+			$restriction .= "or r.record_status = 4 ";	
+			}
+			$restriction .= " ) ";
+			//if they can't see parked data then the parked code must be null
+			if(!$access['parked']){
+			$status .= " or parked is null ";	
+			}
+			
+			$_SESSION['data_access_query'] = $restriction;
+	}
+	
+	public function set_campaign_access($all=false){
+		if($all){
+	 $qry = "select campaign_id from `campaigns` where campaign_status = 1";
         } else {
             //other users can can only see what they have access to
             $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
@@ -170,9 +216,10 @@ class User_model extends CI_Model
         $this->db->where('user_id', $_SESSION['user_id']);
         $this->db->update('users', array(
           'reload_session' => '0'
-        ));
-    }
-    
+        ));	
+		
+	}
+	
     public function set_permissions()
     {
         $role_permissions        = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '" . $_SESSION['role'] . "' and permission_name is not null")->result_array();

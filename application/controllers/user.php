@@ -108,52 +108,8 @@ class User extends CI_Controller
 
     public function apply_default_filter()
     {
+		//not using this at the moment
         $filter = array();
-        /*set the default filter options up using the "Default view" permissions */
-        if (@in_array("view live", $_SESSION['permissions'])) {
-            $filter['record_status'][] = 1;
-        }
-        if (@in_array("view pending", $_SESSION['permissions'])) {
-            $filter['record_status'][] = 2;
-        }
-        if (@in_array("view dead", $_SESSION['permissions'])) {
-            $filter['record_status'][] = 3;
-        }
-        if (@in_array("view completed", $_SESSION['permissions'])) {
-            $filter['record_status'][] = 4;
-        }
-
-        if (@in_array("view parked", $_SESSION['permissions'])) {
-            $filter['view_parked'] = true;
-        }
-
-        if (in_array("view unassigned", $_SESSION['permissions'])) {
-            $filter['view_unassigned'] = true; //this allows to search for null value in ownership table
-        }
-        if (in_array("view own records", $_SESSION['permissions'])) {
-            $filter['user_id'][] = $_SESSION['user_id'];
-        }
-
-        if (!isset($_SESSION['filter']['values']['group_id'])) {
-            if (in_array("view own group", $_SESSION['permissions']) && !empty($_SESSION['group'])) {
-                $filter['group_id'][] = $_SESSION['group'];
-            }
-        }
-        if (!isset($_SESSION['filter']['values']['team_id'])) {
-            if (in_array("view own team", $_SESSION['permissions']) && !empty($_SESSION['team'])) {
-                $filter['team_id'][] = $_SESSION['team'];
-            }
-
-        if (isset($_SESSION['current_campaign'])) {
-           $filter['campaign_id'][] = $_SESSION['current_campaign'];
-        }
-            //we can add any additional filter requirements here if we ever need to
-            $where = "";
-            $_SESSION['filter']['where'] = $where;
-        }
-
-        $this->Filter_model->apply_filter($filter);
-
     }
 
 

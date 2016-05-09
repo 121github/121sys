@@ -137,7 +137,7 @@ return $query->result_array();
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
 		$_SESSION['action_query'] = base64_encode($qry);
 		$result = array(
             "data" => $this->db->query($qry)->result_array()
@@ -774,9 +774,8 @@ return $query->result_array();
         if (!empty($where)) {
             $qry .= " where 1 " . $where;
         }
-
-        if (isset($filter['campaign_id'])) {
-            if (!strpos($filter['campaign_id'][0],"_") && count($filter['campaign_id']) == "1") {
+        if (isset($filter['campaign_id'])&&!empty($filter['campaign_id'])) {
+            if (!empty($filter['campaign_id'][0])&&!strpos($filter['campaign_id'][0],"_") && count($filter['campaign_id']) == "1") {
                 $_SESSION['current_campaign'] = $filter['campaign_id'][0];
             } else if (count($filter['campaign_id']) > "1") {
                 unset($_SESSION['current_campaign']);
@@ -1235,7 +1234,7 @@ return $query->result_array();
         
         $qry .= $group_by;
         $qry .= " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . addslashes($options['length']) . " offset " . addslashes($options['start']);
 		//$this->firephp->log($qry);
@@ -1490,7 +1489,7 @@ return $query->result_array();
 					}
 				}		
 			}
-			$this->firephp->log($newfilter);
+			//$this->firephp->log($newfilter);
 			return $newfilter;
 	}
 	

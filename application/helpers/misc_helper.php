@@ -91,6 +91,14 @@ function join_array(){
 function table_joins(){
 		$join = array();
 		$join['records'] = "";
+		$join['history'] = "left join history h on h.urn = r.urn ";
+		$join['history_users'] = " left join users hu on h.user_id = hu.user_id ";
+		$join['history_outcomes'] = " left join outcomes ho on h.outcome_id = ho.outcome_id ";
+		$join['history_reasons'] = " left join outcome_reasons hor on hor.oucome_reason_id = h.outcome_reason_id ";
+		$join['history_contacts'] = " left join contacts hc on hc.contact_id = h.contact_id ";
+		$join['history_group_id'] = " left join groups hg on hg.group_id = h.group_id ";
+		$join['history_team_id'] = " left join teams ht on hc.team_id = hc.group_id ";
+		
 		$join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
 		$join['progress_description'] = " left join progress_description on r.progress_id = progress_description.progress_id ";
 		$join['data_pots'] = " left join data_pots dp on r.pot_id = dp.pot_id ";
@@ -107,7 +115,7 @@ function table_joins(){
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
         $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
         $join['ownership_users'] = " left join users owu on ow.user_id = owu.user_id ";
-		$join['history_users'] = " left join users hu on h.user_id = hu.user_id ";
+
 		$join['status_list'] = " left join status_list sl on sl.record_status_id = r.record_status ";		
 		$join['park_codes'] = " left join park_codes pc on pc.parked_code = r.parked_code ";
 		$join['surveys'] = " left join surveys surv on surv.urn = r.urn ";

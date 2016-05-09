@@ -31,6 +31,7 @@ WHERE `user_id` =  '".$_SESSION['user_id']."'
 AND `table_id` =  '".$table_id."'
 AND `selected` =  1
 ORDER BY `sort`";
+//$this->firephp->log($query);
 		$columns = $this->db->query($query)->result_array();
 		if(count($columns)==0){
 		return false;
@@ -73,7 +74,7 @@ ORDER BY `sort`";
 		 $this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 1,selected=1");
 		
 		 $view_id = $this->db->insert_id();
-				 $this->db->query("INSERT INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
+				 $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
 ($view_id, 1, 1),
 ($view_id, 2, 1),
 ($view_id, 7, 1),
@@ -83,7 +84,7 @@ ORDER BY `sort`";
 
 $this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 3,selected=1");
  $view_id = $this->db->insert_id();
- $this->db->query("INSERT INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
+ $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
 ($view_id, 4, 1),
 ($view_id, 44, 1),
 ($view_id, 45, 1),

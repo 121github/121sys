@@ -10,6 +10,7 @@ class Records_model extends CI_Model
     {
         parent::__construct();
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
+		$this->load->helper('query');
     }
 	
 	public function save_notes($urn,$notes){
@@ -274,6 +275,11 @@ class Records_model extends CI_Model
 		//if a virgin order for the campaign is set then it's declare it here to insert into the virgin query below
 		$custom_order = isset($_SESSION['custom_order'])?" order by " . $_SESSION['custom_order']:"";
 		$custom_join = isset($_SESSION['custom_joins'])?$_SESSION['custom_joins']:"";
+		if(isset($_SESSION['filter']['join'])){
+		 foreach ($_SESSION['filter']['join'] as $join_query) {
+            $custom_join .= $join_query;
+        }
+		}
 		//other variables
         $urn = 0;
 		$this->firephp->log($_SESSION['filter']['where']);
@@ -283,32 +289,32 @@ class Records_model extends CI_Model
 			$where .= " and campaign_id = '".$_SESSION['current_campaign']."' ";
             $priority = array();
             //1st priority where last outcome needs a callback within 10 mins belonging to the user
-            $priority[] = "select urn,user_id from records r left join ownership ow using(urn) where 1  and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(select outcome_id from outcomes where requires_callback = 1) $where order by case when outcome_id = 2 then 1 else 2 end, date_updated";
+            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1  and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(select outcome_id from outcomes where requires_callback = 1) $where order by case when outcome_id = 2 then 1 else 2 end, r.date_updated";
             //next priority is any all other DMS and emails belonging to the user
-            $priority[] = "select urn,user_id from records r left join ownership ow using(urn) where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(select outcome_id from outcomes where requires_callback = 1) and (user_id = '$user_id') $where order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials";
+            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(select outcome_id from outcomes where requires_callback = 1) and (user_id = '$user_id') $where order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials";
             //next priority is lapsed callbacks	beloning to the user
-            $priority[] = "select urn,user_id from records r left join ownership ow using(urn) where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and (user_id = '$user_id') $where order by case when outcome_id = 2 then 1 else 2 end,nextcall,date_updated,dials";
+            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and (user_id = '$user_id') $where order by case when outcome_id = 2 then 1 else 2 end,nextcall,r.date_updated,dials";
             //next priority is lapsed callbacks	unassigned
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records r left join ownership ow using(urn) where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and user_id is null $where order by case when outcome_id = 2 then 1 else 2 end,date_updated,dials";
+                $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and user_id is null $where order by case when outcome_id = 2 then 1 else 2 end,r.date_updated,dials";
             }
             //next priority is virgin and assigend to the user
-			$priority[] = "select urn,user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (user_id = '$user_id') $where " . $custom_order ;
+			$priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (user_id = '$user_id') $where " . $custom_order ;
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
                 //next priority is virgin and unassigned
-			$priority[] = "select urn,user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and user_id is null $where ". $custom_order ;
+			$priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and user_id is null $where ". $custom_order ;
             }
             //next priority is any other record with a nextcall date in order of lowest dials (current user)
-            $priority[] = "select urn,user_id from records r left join ownership ow using(urn) where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (user_id = '$user_id') $where order by date_updated,dials";
+            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (user_id = '$user_id') $where order by date_updated,dials";
             //next any other record with a nextcall date in order of lowest dials (any user)
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records r left join ownership ow using(urn) where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and user_id is null $where order by date_updated,dials";
+                $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and user_id is null $where order by date_updated,dials";
             }
             foreach ($priority as $k => $qry) {
                 $query = $this->db->query($qry." limit 1");
                 if ($query->num_rows() > 0) {
 					$this->firephp->log($qry);
-					$_SESSION['last_query'] = $qry;
+					$_SESSION['last_query'] = "test";
                     $urn = $query->row(0)->urn;
                     $owner = $query->row(0)->user_id;
                     break;
@@ -638,7 +644,7 @@ return $comments;
             $qry .= $join_query;
         }
 
-        $qry .= $this->get_where($options, $filter_columns);
+        $qry .= get_where($options, $filter_columns);
         $qry .= " group by r.urn";
         //$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
@@ -649,7 +655,7 @@ return $comments;
         if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['filter']['order'];
         } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn";
+            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",r.urn";
             unset($_SESSION['filter']['order']);
             unset($_SESSION['filter']['values']['order']);
         }
@@ -664,61 +670,7 @@ return $comments;
 		
     }
 
-    public function get_where($options, $table_columns)
-    {
-        //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
-        $where = " where 1 ";
 
-        if (isset($_SESSION['current_campaign'])) {
-            //this is already added to the session filter when the campaign is selected
-			$where .= " and r.campaign_id = '".$_SESSION['current_campaign'] ."'";
-        }		
-        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        //Check the bounds of the map
-        if ($options['bounds'] && $options['map'] == 'true') {
-            $where .= " and (
-                    (company_locations.lat < " . $options['bounds']['neLat'] . " and company_locations.lat > " . $options['bounds']['swLat'] . " and company_locations.lng < " . $options['bounds']['neLng'] . " and company_locations.lng > " . $options['bounds']['swLng'] . ")
-                      or
-                    (contact_locations.lat < " . $options['bounds']['neLat'] . " and contact_locations.lat > " . $options['bounds']['swLat'] . " and contact_locations.lng < " . $options['bounds']['neLng'] . " and contact_locations.lng > " . $options['bounds']['swLng'] . ")
-                  )";
-        }
-
-        //check the tabel header filter
-        foreach ($options['columns'] as $k => $v) {
-            //if the value is not empty we add it to the where clause
-            if ($v['search']['value'] <> "") {
-                if ($table_columns[$k] == "map_icon" && $v['search']['value'] == "Icon") {
-                    //ignore this
-                } else {
-                    $where .= " and " . $table_columns[$k] . " like '%" . addslashes($v['search']['value']) . "%' ";
-                }
-            }
-        }
-
-        //if any filter has been set then we should apply it here
-        if (isset($_SESSION['filter']['where']) && !empty($_SESSION['filter']['where'])) {
-            $where .= $_SESSION['filter']['where'];
-        }
-
-        /* users can only see records that have not been parked */
-        if (@!in_array("search parked", $_SESSION['permissions'])) {
-            $where .= " and r.parked_code is null ";
-        }
-
-        //users can see unaassigned records
-        if (in_array("search unassigned", $_SESSION['permissions']) || in_array("view unassigned", $_SESSION['permissions'])) {
-            $unassigned = " or ow.user_id is null ";
-        } else {
-            $unassigned = "";
-        }
-
-        //users can only see their own records
-        if (!in_array("search any owner", $_SESSION['permissions'])) {
-            $where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";
-        }
-        return $where;
-
-    }
 
     public function count_records($options)
     {
@@ -927,7 +879,7 @@ return $comments;
                 }
             }
             if (in_array('view own records',$_SESSION['permissions'])) {
-                //redirect to error page is user is not the owner
+                //redirect to error page if user is not the owner
                 if (!$is_owner) {
 					if(isset($_SESSION['navigation'])){
 						//skip to the next record

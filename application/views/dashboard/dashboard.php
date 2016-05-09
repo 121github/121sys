@@ -109,9 +109,16 @@
             </div>
  <div class="panel-body">
 
-                <p>Hello <?php echo $_SESSION['name'] ?>, what do you want to do?</p>
+                <p>Hello <?php echo $_SESSION['name'] ?>, 
+                  <?php if(!isset($_SESSION['current_campaign'])&&in_array("use callpot",$_SESSION['permissions'])){ ?><span class="red">Please choose a campaign to begin!</span>
+                <?php } else { ?>
+                what do you want to do? 
+                <?php } ?>
+                </p>
                        <?php if(in_array("use callpot",$_SESSION['permissions'])){ ?>
-                       <a type="button" class="btn btn-default" href="records/detail" style="margin:0 3px 10px"><p>Start Calling</p><span class="fa fa-phone fa-3x"></span></a>
+                       <a type="button" <?php if(!isset($_SESSION['current_campaign'])){ echo "disabled"; } ?> class="btn btn-default" href="records/detail" style="margin:0 3px 10px"><p>Start Calling</p><span class="fa fa-phone fa-3x"></span></a><script>$('[data-toggle="tooltip"]').tooltip();
+					   
+					   </script>
                 <?php } ?>
                     <?php if(in_array("add records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){ ?>
             <a type="button" class="btn btn-default" href="data/add_record<?php echo isset($_SESSION['current_campaign'])?"/".$_SESSION['current_campaign']:"" ?>" style="margin:0 3px 10px"><p>Create Record</p><span class="fa fa-plus fa-3x"></span></a>

@@ -5,7 +5,7 @@
             <div class="form-group">
                 <label>Postcode <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                       data-placement="right" data-title="Enter a postcode to find records in the same area" data-html="true"></span></label>
-                                      <input  value="<?php echo @$_SESSION['filter']['values']['postcode'] ?>" class="form-control" placeholder="Enter postcode" name="postcode" />
+                                      <input  value="<?php echo @$_SESSION['filter']['values']['postcode'] ?>" class="form-control" placeholder="Enter full postcode" name="postcode" />
             </div>
             <?php } ?>
    <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
@@ -62,7 +62,7 @@
                 </div>
                  <?php } ?>
                  <?php } ?>
-                                  <?php  if(in_array("filter outcomes",$_SESSION['permisisons'])) ?>
+                                  <?php  if(in_array("filter outcomes",$_SESSION['permissions'])) ?>
                                   <?php if(isset($outcomes) && count($outcomes) > 0){ ?>
                 <div class="form-group">
                 <label>Outcome <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"

@@ -19,7 +19,7 @@ class Migration_update_126 extends CI_Migration
 `description`
 )
 VALUES (
-NULL , 'filter outcomes', 'Search', 'The user has an outcome filter'
+NULL , 'filter outcomes', 'Global Filter', 'The user has an outcome filter'
 )");
 
 	}

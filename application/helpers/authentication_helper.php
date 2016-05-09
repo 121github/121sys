@@ -39,6 +39,7 @@ if (!function_exists('user_auth_check')) {
 
     function campaign_access_dropdown()
     {
+		
         $CI =& get_instance();
         $user = $_SESSION['user_id'];
         if (in_array("all campaigns", $_SESSION['permissions'])) {
