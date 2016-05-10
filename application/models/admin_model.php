@@ -587,6 +587,7 @@ class Admin_model extends CI_Model
     public function add_new_role($form)
     {
         unset($form['permission']);
+		unset($form['data']);
         $this->db->insert("user_roles", $form);
         return $this->db->insert_id();
     }
@@ -608,6 +609,31 @@ class Admin_model extends CI_Model
 			"landing_page" => $form['landing_page'],
 			"timeout" => $form['timeout']
         ));
+		 $this->db->where("role_id", $form['role_id']);
+        $this->db->delete("role_data_access");
+		if (isset($form['data'])) {
+			$data = $form['data'];
+                $this->db->insert('role_data_access', array(
+                    "role_id" => $form['role_id'],
+                    "all_campaigns" => $data['all_campaigns'],
+					 "mix_campaigns" => $data['mix_campaigns']=="on"?1:0,
+					  "user_records" => $data['user_records'],
+					   "unassigned_user" => $data['unassigned_user']=="on"?1:0,
+					    "team_records" => $data['team_records'],
+						 "unassigned_team" => $data['unassigned_team']=="on"?1:0,
+						  "group_records" => $data['group_records'],
+						   "unassigned_group" => $data['unassigned_group']=="on"?1:0,
+						    "branch_records" => $data['branch_records'],
+							 "unassigned_branch" => $data['unassigned_branch']=="on"?1:0,
+							  "region_records" => $data['region_records'],
+							   "unassigned_region" => $data['unassigned_region']=="on"?1:0,
+							    "pending" => $data['pending']=="on"?1:0,
+								 "dead" => $data['dead']=="on"?1:0,
+								  "complete" => $data['complete']=="on"?1:0,
+								   "parked" => $data['parked']=="on"?1:0 
+                ));
+        }
+		
         $this->db->where("role_id", $form['role_id']);
         $this->db->delete("role_permissions");
         if (isset($form['permission'])) {

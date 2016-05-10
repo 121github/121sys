@@ -71,6 +71,28 @@ var admin = {
                 });
 
             });
+			$.ajax({
+                url: helper.baseUrl + 'admin/get_role_data_access',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    id: row.find('.role_id').text()
+                }
+            }).done(function(response) {
+                $.each(response, function(k, p) {
+					if(p=="1"){
+						 $('[type="checkbox"][name="data['+k+']"]').prop('checked', true);
+                   $('[type="radio"][name="data['+k+']"][value="1"]').prop('checked', true);
+				   $('[type="radio"][name="data['+k+']"][value="0"]').prop('checked', false);
+					} else {
+						 $('[type="checkbox"][name="data['+k+']"]').prop('checked', false);
+					 $('[type="radio"][name="data['+k+']"][value="0"]').prop('checked', true);	
+					  $('[type="radio"][name="data['+k+']"][value="1"]').prop('checked', false);
+					}
+                });
+
+            });
+			
             $('.ajax-table').fadeOut(1000, function() {
                 $('form').fadeIn();
             });

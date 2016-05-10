@@ -17,6 +17,7 @@ class Booking_model extends CI_Model
      * @return mixed
      */
     public function get_events($start=false,$end=false,$attendee=false,$status=false,$appointment_type=false,$postcode = false) {		
+
 		if(in_array("own appointments",$_SESSION['permissions'])){ 
 		$attendee = $_SESSION['user_id'];
 		}
@@ -74,6 +75,7 @@ class Booking_model extends CI_Model
 		$query = "select appointment_id id,title, start, end, status, text, group_concat(distinct aa.user_id separator ',') attendees, group_concat(distinct u.name separator ',') attendee_names, icon, appointment_type $distance_select from appointments $join_locations left join appointment_attendees aa using(appointment_id) join records using(urn) left join appointment_types using(appointment_type_id) left join users u on u.user_id = aa.user_id where 1 ";
 		$query .= $where;
 		$query .= " group by appointment_id";
+		$this->firephp->log($query);
       	return $this->db->query($query)->result_array();
 	}
 	

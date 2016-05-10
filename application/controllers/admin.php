@@ -1060,7 +1060,12 @@ class Admin extends CI_Controller
             "data" => $response
         ));
     }
-    
+    public function get_role_data_access(){
+		$this->db->where("role_id",$this->input->post("id"));
+		$result = $this->db->get("role_data_access")->row_array();
+		echo json_encode($result);
+	}
+	
     public function delete_role()
     {
         $response = $this->Admin_model->delete_role(intval($this->input->post('id')));

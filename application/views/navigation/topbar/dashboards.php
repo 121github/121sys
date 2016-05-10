@@ -40,29 +40,3 @@
     </li>
 <?php } ?>
 
-<script>
-    $(document).ready(function () {
-        $.ajax({
-            url: helper.baseUrl + 'dashboard/get_dashboards',
-            type: "POST",
-            dataType: "JSON"
-        }).done(function (response) {
-            var dashboards = "";
-			var reports = "";
-            if (response.success) {
-                $.each(response.dashboards, function (i, val) {
-					if (val.dash_type === "Dashboard") {
-                        var page = "<?php echo @$page ?>";
-                        dashboards += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
-                    }
-					 if (val.dash_type === "Report") {
-                        var page = "<?php echo @$page ?>";
-                        reports += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
-                    }
-                });
- 				$('#dashboard-dropdown').append(dashboards);
-                $('#report-dropdown').append(reports);
-            }
-        });
-    });
-</script>

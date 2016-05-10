@@ -78,7 +78,7 @@
                 </div>
                  <?php } ?>
                  
-                    <?php if(in_array("filter users",$_SESSION['permissions'])){ ?>
+                    <?php if(in_array("filter user",$_SESSION['permissions'])){ ?>
                          <?php  if(isset($owners) && count($owners) > 0){ ?>
                 <div class="form-group">
                 <label>User <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"

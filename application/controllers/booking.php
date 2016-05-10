@@ -589,9 +589,12 @@ class Booking extends CI_Controller
                     array_push($appointments['updated'], $appointment_id);
                 }
                 else {
+					//get the campaign for the new record
+				$this->db->where("user_id",$user_id);
+				$campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
                     //Create record
                     $urn = $this->Records_model->save_record(array(
-                        "campaign_id" => 7
+                        "campaign_id" => $campaign_id
                     ));
                     //Add a contact with no name
                     $contact_id = $this->Contacts_model->save_contact(array(

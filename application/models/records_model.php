@@ -572,7 +572,7 @@ class Records_model extends CI_Model
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-		$this->firephp->log($select.$qry);
+		//$this->firephp->log($select.$qry);
         $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
         
@@ -877,7 +877,7 @@ return $comments;
                     $is_owner = true;
                 }
             }
-            if (in_array('view own records',$_SESSION['permissions'])) {
+            if ($_SESSION['role_data_access']['user_records']) {
                 //redirect to error page if user is not the owner
                 if (!$is_owner) {
 					if(isset($_SESSION['navigation'])){

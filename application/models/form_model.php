@@ -198,7 +198,7 @@ class Form_model extends CI_Model
 		$where = " and campaign_id = " . $_SESSION['current_campaign'];	
 		}
         $qry = "select appointment_type_id id,appointment_type name from appointment_types join campaign_appointment_types using(appointment_type_id) join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 $where group by appointment_type_id order by name";  
-		$this->firephp->log($qry);      
+		//$this->firephp->log($qry);      
 		$query = $this->db->query($qry);
 		if($query->num_rows()){
         return  $query->result_array();

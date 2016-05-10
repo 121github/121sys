@@ -21,58 +21,58 @@
        <ul class="list-group">
                 <li class="list-group-item" style="height:auto">
       	Does the user have access to data in <b>ALL</b> camapigns? <i class="pointer glyphicon glyphicon-question-sign" data-toggle="tooltip" title="This should be reserved for system administrators"></i><br />
-        <label for="data_campaigns">Yes <input type="radio" value="1" name="data_campaigns" /></label>
-        <label for="data_campaigns">No <input type="radio" value="0" name="data_campaigns" /></label>
-          <label for="data_mix_campaigns">Mix campaigns <input type="checkbox" name="data_mix_campaigns" /></label>
+        <label for="data[all_campaigns]">Yes <input type="radio" value="1" name="data[all_campaigns]" /></label>
+        <label for="data[all_campaigns]">No <input type="radio" value="0" name="data[all_campaigns]" /></label>
+          <label for="data[mix_campaigns]">Mix campaigns <input type="checkbox" name="data[mix_campaigns]" /></label>
         </li>
         
           <li class="list-group-item" style="height:auto">
         Does the data need to be assigned to the user? <i class="pointer glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Select no if they need to be able to see data belonging to other users. Eg. Managers"></i><br />
-        <label for="data_user">Yes <input type="radio" value="1" name="data_user" /></label>
-         <label for="data_user">No <input type="radio" value="0" name="data_user" /></label>
-          <label for="data_null_user">Allow unassigned <input type="checkbox" name="data_null_user" /></label>
+        <label for="data[user_records]">Yes <input type="radio" value="1" name="data[user_records]" /></label>
+         <label for="data[user_records]">No <input type="radio" value="0" name="data[user_records]" /></label>
+          <label for="data[unassigned_user]">Allow unassigned <input type="checkbox" name="data[unassigned_user]" /></label>
          
         </li>
 
         
          <li class="list-group-item" style="height:auto">
        Does the data need to be assigned to the users team?<br />
-        <label for="data_team">Yes <input type="radio" value="1" name="data_team" /></label>
-        <label for="data_team">No <input type="radio" value="0" name="data_team" /></label>
-         <label for="data_null_team">Allow unassigned <input type="checkbox" name="data_null_team" /></label>
+        <label for="data[team_records]">Yes <input type="radio" value="1" name="data[team_records]" /></label>
+        <label for="data[team_records]">No <input type="radio" value="0" name="data[team_records]" /></label>
+         <label for="data[unassigned_team]">Allow unassigned <input type="checkbox" name="data[unassigned_team]" /></label>
         
         </li>
 
         <li class="list-group-item" style="height:auto">
        Does the data need to be assigned to the users group?<br />
-        <label for="data_group">Yes <input type="radio" value="1" name="data_group" /></label>
-        <label for="data_group">No <input type="radio" value="0" name="data_group" /></label>
-         <label for="data_null_group">Allow unassigned <input type="checkbox" name="data_null_group" /></label>
+        <label for="data[group_records]">Yes <input type="radio" value="1" name="data[group_records]" /></label>
+        <label for="data[group_records]">No <input type="radio" value="0" name="data[group_records]" /></label>
+         <label for="data[unassigned_group]">Allow unassigned <input type="checkbox" name="data[unassigned_group]" /></label>
         
         </li>
         
         <li class="list-group-item" style="height:auto">
   		Does the data need to be assigned to the users branch?<br />
-        <label for="data_branch">Yes <input type="radio" value="1" name="data_branch" /></label>
-        <label for="data_branch">No <input type="radio" value="0" name="data_branch" /></label>
-         <label for="data_null_branch">Allow unassigned <input type="checkbox" name="data_null_branch" /></label>
+        <label for="data[branch_records]">Yes <input type="radio" value="1" name="data[branch_records]" /></label>
+        <label for="data[branch_records]">No <input type="radio" value="0" name="data[branch_records]" /></label>
+         <label for="data[unassigned_branch]">Allow unassigned <input type="checkbox" name="data[unassigned_branch]" /></label>
          
         </li>
         
         <li class="list-group-item" style="height:auto">
   		Does the data need to be assigned to the users region?<br />
-        <label for="data_group">Yes <input type="radio" value="1" name="data_group" /></label>
-        <label for="data_group">No <input type="radio" value="0" name="data_group" /></label>
-         <label for="data_null_region">Allow unassigned <input type="checkbox" name="data_null_region" />					</label>
+        <label for="data[region_records]">Yes <input type="radio" value="1" name="data[region_records]" /></label>
+        <label for="data[region_records]">No <input type="radio" value="0" name="data[region_records]" /></label>
+         <label for="data[unassigned_region]">Allow unassigned <input type="checkbox" name="data[unassigned_region]" />					</label>
         
         </li>
         
           <li class="list-group-item" style="height:auto">
   		Which records does the user have access to? <i class="pointer glyphicon glyphicon-question-sign" data-toggle="tooltip" title="If none are ticked they only have access to live data"></i><br />
-         <label for="data_pending">Pending <input type="checkbox" id="data_pending" name="data_pending" />					</label>
-          <label for="data_dead">Dead <input type="checkbox" id="data_dead" name="data_dead" />					</label>
-           <label for="data_parked">Parked <input type="checkbox" id="data_parked" name="data_parked" />					</label>
-            <label for="data_complete">Complete <input type="checkbox" id="data_complete" name="data_complete" />					</label>
+         <label for="data[pending]">Pending <input type="checkbox" id="data[pending]" name="data[pending]" />					</label>
+          <label for="data[dead]">Dead <input type="checkbox" id="data[dead]" name="data[dead]" />					</label>
+           <label for="data[parked]">Parked <input type="checkbox" id="data[parked]" name="data[parked]" />					</label>
+            <label for="data[complete]">Complete <input type="checkbox" id="data[complete]" name="data[complete]" />					</label>
            
         </li>
        </ul>

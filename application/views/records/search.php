@@ -122,7 +122,7 @@
                 </select>
               </div>
               <?php } ?>
-               <?php if(in_array("search groups",$_SESSION['permissions'])){ ?>
+               <?php if(in_array("group filter",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>Group Ownership</label>
                 <select id="group_id" name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple title="Any">
@@ -132,12 +132,12 @@
                 </select>
               </div>
                 <?php } ?>
-                 <?php if(in_array("search any owner",$_SESSION['permissions'])){ ?>
+                 <?php if(in_array("user filter",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>User Ownership</label>
                 <select id="user_id" name="user_id[]" class="selectpicker" data-width="100%" data-size="5" <?php if(count($users)>1){ echo "multiple"; } ?>  title="Any">
                   <?php foreach($users as $row): ?>
-                  <option <?php if(isset($_SESSION['filter']['values']['user_id']) && @in_array($row['id'],$_SESSION['filter']['values']['user_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['user_id']&&in_array("own records",$_SESSION['permissions'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option <?php if(isset($_SESSION['filter']['values']['user_id']) && @in_array($row['id'],$_SESSION['filter']['values']['user_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['user_id']&&$_SESSION['role_data_access']['user records']&&!$_SESSION['role_data_access']['unassigned user']){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>

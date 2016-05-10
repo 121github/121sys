@@ -37,28 +37,3 @@
         </ul>
     </li>
 <?php } ?>
-
-<script>
-/*
-    $(document).ready(function () {
-		console.log(helper);
-        $.ajax({
-            url: helper.baseUrl + 'dashboard/get_dashboards',
-            type: "POST",
-            dataType: "JSON"
-        }).done(function (response) {
-            var dashboards = "";
-            if (response.success) {
-                $.each(response.dashboards, function (i, val) {
-					if (val.dash_type === "Dashboard") {
-                        var page = "<?php echo @$page ?>";
-                        dashboards += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
-                    }
-                });
-
-                $('#menu').find('.dashboards-main-menu').append(dashboards);
-            }
-        });
-    });
-	*/
-</script>
