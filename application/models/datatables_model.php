@@ -19,6 +19,7 @@ class Datatables_model extends CI_Model
 	
 	public function get_user_views($table_id){
 	$this->db->where(array("user_id"=>$_SESSION['user_id'],"table_id"=>$table_id));
+	$this->db->group_by("view_name");
 	$views = $this->db->get("datatables_views")->result_array();
 	return $views;
 	}
@@ -30,6 +31,7 @@ JOIN `datafields` ON `datatables_view_fields`.`datafield_id`=`datafields`.`dataf
 WHERE `user_id` =  '".$_SESSION['user_id']."'
 AND `table_id` =  '".$table_id."'
 AND `selected` =  1
+
 ORDER BY `sort`";
 //$this->firephp->log($query);
 		$columns = $this->db->query($query)->result_array();

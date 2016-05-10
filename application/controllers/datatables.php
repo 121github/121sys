@@ -76,7 +76,6 @@ class Datatables extends CI_Controller
 		foreach($selected_columns as $selected_column){
 		$selected[] = $selected_column['datafield_id'];
 		}
-		
 		echo json_encode($selected);
 	}
 }
