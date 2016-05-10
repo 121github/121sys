@@ -344,7 +344,7 @@ $this->db->query($renewals);
             $insert_query        = "insert into contacts (contact_id,`primary` " .  $qry_fields['table_fields'] . ") select '',1 " . $qry_fields['import_fields'] . " from importcsv";
             $update_import_table = "ALTER TABLE `importcsv` ADD `contact_id` INT NULL ,ADD INDEX ( `contact_id` )";
             $insert_contact_ids  = "update importcsv i left join contacts c using(urn) set i.contact_id = c.contact_id";
-			$fix_contact_names = "update contacts set fullname = trim(concat(if(title is null,'',title),' ',if(firstname is null,'',firstname),' ',if(lastname is null,'',lastname)))  where fullname is null";
+			$fix_contact_names = "update contacts set fullname = trim(concat(if(title is null,'',title),' ',if(firstname is null,'',firstname),' ',if(lastname is null,'',lastname)))  where (fullname is null or fullname = '')";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			$this->db->query($update_import_table);

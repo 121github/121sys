@@ -5,19 +5,10 @@
         <input type="hidden" name="appointment_confirmed" value="0">
     <?php } ?>
     <div class="row">
-        <div class="col-xs-12 col-sm-6">
+      
+        <div class="col-xs-12 col-sm-5">
             <div class="form-group input-group-sm">
-                <p>Enter a title for the appointment <span class='tt glyphicon glyphicon-question-sign'
-                                                                  data-toggle="tooltip"
-                                                                  data-title="Try to include the company or contact name"></span>
-                </p>
-                <input type="text" class="form-control" name="title" style="width:95%"
-                       placeholder="Eg: Meeting with Joe Bloggs" required/>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <div class="form-group input-group-sm">
-                <p>Choose the appointment type</p>
+                <p>Appointment type</p>
                 <select name="appointment_type_id" id="typepicker" class="selectpicker typepicker" title="Choose a type"
                         data-width="95%" required>
                     <?php foreach ($types as $type): ?>
@@ -27,28 +18,41 @@
                 </select>
             </div>
         </div>
+        
+        
+          <div class="col-xs-12 col-sm-7">
+            <div class="form-group input-group-sm">
+                <p>Appointment title <span class='tt glyphicon glyphicon-question-sign'
+                                                                  data-toggle="tooltip"
+                                                                  data-title="Try to include the company or contact name"></span>
+                </p>
+                <input type="text" class="form-control" name="title" style="width:95%"
+                       placeholder="Eg: Meeting with Joe Bloggs" required/>
+            </div>
+        </div>
     </div>
  
 
     <div class="row">
-        <div class="col-xs-12 col-sm-6">
-            <div class="form-group input-group-sm">
-                <p>Set the start time</p>
-                <input type="text" style="width:95%" class="form-control datetime startpicker" name="start"
-                       placeholder="Enter the start time" required/>
-            </div>
-            <div class="form-group input-group-sm">
-                <p>Set the end time</p>
-                <input type="text" style="width:95%" class="form-control datetime endpicker" name="end"
-                       placeholder="Enter the end time" required/>
+    <div class="col-xs-12 col-sm-5">
+        
+            <div class="form-group">
+            <p>Appointment Times</p>
+                <p><span style="display:inline-block; width:70px">Start time</span>  <input type="text" style="width:130px; display:inline-block" class="form-control datetime startpicker input-sm" name="start"
+                       placeholder="Enter the start time" required/></p>
+          
+    
+                <p><span style="display:inline-block; width:70px">End time</span>  <input type="text" style="width:130px; display:inline-block" class="form-control datetime endpicker input-sm" name="end"
+                       placeholder="Enter the end time" required/></p>
+               <!--<p class="small">Note:blah blah</p>-->
             </div>
         </div>
-         <div class="col-xs-12 col-sm-6">
-               <div class="form-group input-group-sm">
+         <div class="col-xs-12 col-sm-7">
+               <div class="form-group">
         <p>Add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                    data-title="These notes are sent to the attendee"></span></p>
-        <input type="text" class="form-control" name="text"
-               placeholder="Please note additional info or special requirements here" required/>
+        <textarea rows="3" type="text" class="form-control input-sm" name="text"
+               placeholder="Please note additional info or special requirements here" required ></textarea>
     </div>
     </div>
         

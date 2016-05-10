@@ -103,7 +103,6 @@ class Booking extends CI_Controller
         $status = $this->input->post('status');
 		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type,$postcode);
 		foreach($events as $k => $event){
-			$this->firephp->log($event['attendees'].":".genColorCodeFromText($event['attendee_names']));
 			$events[$k]['color'] = genColorCodeFromText($event['attendee_names']);
 			if($postcode){
 			$events[$k]['distance'] = number_format($event['distance']). " miles away";

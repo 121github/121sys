@@ -908,11 +908,16 @@ var modals = {
 			}
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> '+cancel_btn;
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> ';
+			
+		if (data.cancellation_reason) {
+            mfooter += ' <p class="text-danger">This appointment was cancelled.<br><small>' + data.cancellation_reason + '</small></p>';
+        } else {
 			if(helper.permissions['confirm appointment'] > 0){ 
 			mfooter += '<input id="appointment-confirmed" data-onstyle="success" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> '
 			}
-			mfooter += '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
+			mfooter += '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'+cancel_btn
+		}
 			
             $mbody = $(mbody);
 

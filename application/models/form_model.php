@@ -56,6 +56,7 @@ class Form_model extends CI_Model
 		//this is used to get the available contacts in the appoitnment form
 		$this->db->select("contact_id id,fullname name");
 		$this->db->where("urn",$urn);
+		$this->db->where('(fullname is NOT NULL or fullname <> "")', NULL, FALSE);
 		return $this->db->get('contacts')->result_array();
 	}
 	

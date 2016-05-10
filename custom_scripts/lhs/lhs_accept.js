@@ -72,7 +72,7 @@ var campaign_functions = {
             modals.set_appointment_start(start);
         }
 
-        $modal.find('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
+        $modal.find('#typepicker').closest('.form-group').find('p').text('Appointment status');
 
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
