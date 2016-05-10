@@ -29,10 +29,10 @@ class Booking_model extends CI_Model
 			$where .= " and date(`start`) <= '$end' ";
 		}
 		if($attendee){
-			$where .= " and appointment_attendees.user_id = '$attendee'";
+			$where .= " and aa.user_id = '$attendee'";
 		}
 		if($appointment_type){
-			$where .= " and appointments.appointment_type_id = '$appointment_type'";
+			$where .= " and a.appointment_type_id = '$appointment_type'";
 		}
 		if($status != ""){
 			$where .= " and status = '$status'";
@@ -53,7 +53,7 @@ class Booking_model extends CI_Model
                     $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
                     $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515) AS distance";
 
-                $join_locations = " left join locations on locations.location_id = appointments.location_id ";
+                $join_locations = " left join locations on locations.location_id = a.location_id ";
                 if ($distance > 0) {
                     $where .= " and ( ";
                     //Distance from the company or the contacts addresses
@@ -72,10 +72,9 @@ class Booking_model extends CI_Model
             }
 		}
 
-		$query = "select appointment_id id,title, start, end, status, text, group_concat(distinct aa.user_id separator ',') attendees, group_concat(distinct u.name separator ',') attendee_names, icon, appointment_type $distance_select from appointments $join_locations left join appointment_attendees aa using(appointment_id) join records using(urn) left join appointment_types using(appointment_type_id) left join users u on u.user_id = aa.user_id where 1 ";
+		$query = "select appointment_id id,title, start, end, status, text, group_concat(distinct aa.user_id separator ',') attendees, group_concat(distinct u.name separator ',') attendee_names, icon, appointment_type $distance_select from appointments a $join_locations left join appointment_attendees aa using(appointment_id) join records using(urn) left join appointment_types at using(appointment_type_id) left join users u on u.user_id = aa.user_id where 1 ";
 		$query .= $where;
 		$query .= " group by appointment_id";
-		$this->firephp->log($query);
       	return $this->db->query($query)->result_array();
 	}
 	

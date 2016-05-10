@@ -28,12 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group input-group-sm">
-        <p>Add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
-                                                   data-title="These notes are sent to the attendee"></span></p>
-        <input type="text" class="form-control" name="text"
-               placeholder="Please note additional info or special requirements here" required/>
-    </div>
+ 
 
     <div class="row">
         <div class="col-xs-12 col-sm-6">
@@ -42,16 +37,24 @@
                 <input type="text" style="width:95%" class="form-control datetime startpicker" name="start"
                        placeholder="Enter the start time" required/>
             </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
                 <p>Set the end time</p>
-                <input type="text" style="width:100%" class="form-control datetime endpicker" name="end"
+                <input type="text" style="width:95%" class="form-control datetime endpicker" name="end"
                        placeholder="Enter the end time" required/>
             </div>
         </div>
+         <div class="col-xs-12 col-sm-6">
+               <div class="form-group input-group-sm">
+        <p>Add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+                                                   data-title="These notes are sent to the attendee"></span></p>
+        <input type="text" class="form-control" name="text"
+               placeholder="Please note additional info or special requirements here" required/>
     </div>
+    </div>
+        
+        </div>
+
+       
     <div class="row">
         <div class="col-xs-12 col-xs-6 attendees-selection">
             <div class="form-group input-group-sm">
