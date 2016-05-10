@@ -357,16 +357,16 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 }
             endforeach;
         }
-		if($automatic){
-		$global_filter = $this->Filter_model->build_global_filter();
-		}
+		$global_filter=false;
         //Get the campaign_triggers if exists
         $campaign_triggers = array();
         if ($campaign['campaign_id']) {
             $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($campaign['campaign_id']);
         }
 		$title = "View Details";
+		if(in_array("enable global filter",$_SESSION['permissions'])){
       		$global_filter = $this->Filter_model->build_global_filter();
+		}
         $data = array(
 		'global_filter' => $global_filter,
 		'submenu' => array("file"=>'record_details.php',"title"=>$title,"data"=>$details),

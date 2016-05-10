@@ -14,6 +14,7 @@
     <div class="col-md-6 col-sm-12">
 
 <?php   $this->view('records/panels/record_update.php', $details); ?>
+<?php   $this->view('records/panels/emails.php', $details); ?>
     </div>
 </div>
 <!-- end row panel -->

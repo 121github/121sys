@@ -601,7 +601,11 @@ var record = {
                     var primary_postcode = "";
                     $.each(val.visible, function (dt, dd) {
                         if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
-                            contact_detail_list_items += "<dt class='"+dt+"-panel-label'>" + dt + "</dt><dd>" + dd + "</dd>";
+							var email_id = "";
+							if(dt=="Email address"){
+							email_id = "id='contact-email-address'"	
+							}
+                            contact_detail_list_items += "<dt class='"+dt+"-panel-label'>" + dt + "</dt><dd "+email_id+">" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             var i = 1;
                             $.each(dd, function (addr_id, addr) {
@@ -667,14 +671,8 @@ var record = {
 					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'">'+
                                                             '<a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a>'
                                                             +'<span style="padding-left: 20px">'+contact_detail_links_items+'</span>'+
-                                                            '<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact">'+
-                                                                '<span class="glyphicon glyphicon-trash"></span> ' +
-                                                                    'Delete' +
-                                                            '</span>'+
-                                                            '<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact">'+
-                                                                    '<span class="glyphicon glyphicon-pencil"></span>' +
-                                                                    ' Edit' +
-                                                            '</span>' +
+															(helper.permissions['delete contacts'] > 0?'<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span>Delete</span>':'')+
+                                                           	(helper.permissions['edit contacts'] > 0?'<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span>Edit</span>':'')+
                                                             '<div class="clearfix"></div>' +
                                                             '<div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'">' +
                                                                 '<dl class="dl-horizontal contact-detail-list">'+contact_detail_list_items+contact_detail_telephone_items+transfer_telephone_items+'</dl>' +
@@ -974,7 +972,10 @@ var record = {
                             });
                             transfer_telephone_items += '<div class="clearfix"></div>';
                         }
-                        $panel.find('.companies-list').append('<li class="list-group-item" item-id="' + key + '"><a href="#com-collapse-' + key + '" data-parent="#accordian" data-toggle="collapse" class="' + collapse + '">' + val.visible.Company + '</a><span style="padding-left: 20px">' + company_detail_links_items + '</span><span class="btn btn-default btn-xs pull-right marl" data-id="' + key + '" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="' + key + '" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="com-collapse-' + key + '" class="panel-collapse collapse ' + show + '"><dl class="dl-horizontal company-detail-list">' + company_detail_list_items + company_detail_telephone_items + transfer_telephone_items + '</dl><input type="hidden" name="company_postcode" value="' + primary_postcode + '" /></div></li>');
+                        $panel.find('.companies-list').append('<li class="list-group-item" item-id="' + key + '"><a href="#com-collapse-' + key + '" data-parent="#accordian" data-toggle="collapse" class="' + collapse + '">' + val.visible.Company + '</a><span style="padding-left: 20px">' + company_detail_links_items + '</span>'+
+						(helper.permissions['edit companies']>0?'<span class="btn btn-default btn-xs pull-right marl" data-id="' + key + '" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span>':'')+
+						(helper.permissions['search company house']>0?'<span class="btn btn-default btn-xs pull-right marl" data-id="' + key + '" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span>':'')+
+						'<div class="clearfix"></div><div id="com-collapse-' + key + '" class="panel-collapse collapse ' + show + '"><dl class="dl-horizontal company-detail-list">' + company_detail_list_items + company_detail_telephone_items + transfer_telephone_items + '</dl><input type="hidden" name="company_postcode" value="' + primary_postcode + '" /></div></li>');
                         $('#company-panel .tt').tooltip();
                     });
                     if (typeof quick_planner.company_postcode !== "undefined") {

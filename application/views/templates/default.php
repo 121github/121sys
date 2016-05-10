@@ -435,6 +435,7 @@ endif; ?>
     </div>
     <script>
         $(document).ready(function () {
+			<?php if(in_array("dashboard viewers",$_SESSION['permissions'])){ ?>
 		  $.ajax({
             url: helper.baseUrl + 'dashboard/get_dashboards',
             type: "POST",
@@ -457,7 +458,7 @@ endif; ?>
                 $('#report-dropdown').append(reports);
             }
         });
-
+		<?php } ?>
 			
 			$('#open-quicksearch').on('click',function(e){
 				e.preventDefault();

@@ -47,7 +47,7 @@
 <?php } ?>
              
              
-                   <?php if (isset($global_filter)) { ?>
+                   <?php if ($global_filter) { ?>
             <?php if (array_key_exists("pot_id",$_SESSION['filter']['values'])||array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])||array_key_exists("postcode",$_SESSION['filter']['values'])) {    
            
                 $filter_class = "btn-success";
