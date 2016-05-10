@@ -6,8 +6,6 @@ width:30%; height: 100px; margin-right: 5px
 ul.navbar-nav.pull-right > li { float:right; margin-left:5px }
 ul.navbar-nav.pull-right { padding-right:15px !important;  }
 
-
-
 .panel a.disabled {
 	color:#666;
 	cursor:not-allowed

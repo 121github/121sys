@@ -41,7 +41,8 @@ class Calendar extends CI_Controller
 		$type = $this->input->post('appointment_type');
         $users = $this->Form_model->get_calendar_users($campaigns,$postcode,$type);
 	/*this section appends the distance and puts them in order */
-		if($postcode){
+	$pc = validate_postcode($postcode);
+		if($pc){
 			$data = array();
 			$x=0;
 			$coords = postcode_to_coords($postcode);

@@ -81,8 +81,8 @@ class Booking extends CI_Controller
 	
 	public function events(){
 		session_write_close();
-		$start = $this->input->get('start');
-		$end = $this->input->get('end');
+		$start = $this->input->post('start');
+		$end = $this->input->post('end');
 		if(!isset($_POST['attendee'])){
 		$users = $this->Form_model->get_calendar_users();
 		foreach($users as $row){
@@ -97,15 +97,17 @@ class Booking extends CI_Controller
 		if(in_array("own appointments",$_SESSION['permissions'])){
 		$attendee = $_SESSION['user_id'];
 		}
-		
-		$this->firephp->log($attendee);
-		$postcode = $this->input->post('postcode');
+		$pc = validate_postcode($this->input->post('postcode'));
+		$postcode = $pc?$postcode:false;
 		$appointment_type = $this->input->post('appointment_type');
         $status = $this->input->post('status');
 		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type,$postcode);
 		foreach($events as $k => $event){
-			$events[$k]['color'] = genColorCodeFromText($event['attendees']);
+			$this->firephp->log($event['attendees'].":".genColorCodeFromText($event['attendee_names']));
+			$events[$k]['color'] = genColorCodeFromText($event['attendee_names']);
+			if($postcode){
 			$events[$k]['distance'] = number_format($event['distance']). " miles away";
+			}
 		}
 		echo json_encode($events);
 	}

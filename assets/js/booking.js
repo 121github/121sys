@@ -82,8 +82,10 @@ var calendar = {
                     cancelled = "fa fa-ban"
                 }
 				var event_extra = '<span class="' + event.icon + '"></span><span class="' + cancelled + ' red pull-right"></span> ';
-				if(event.distance!=="undefined"){
+				if(typeof event.distance!=="undefined"){
 					event_extra += event.distance;
+				} else {
+				$(element).find('.fc-time').css('display','inline');	
 				}
 				
                 $(element).attr("data-id", event._id).attr('data-modal', 'view-appointment').find('.fc-content').prepend(event_extra);
