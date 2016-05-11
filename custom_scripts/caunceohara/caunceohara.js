@@ -10,6 +10,14 @@ var campaign_functions = {
     },
     record_setup_update: function() {
 		//this is ran when the update panel finished loading
+		if($('#custom-panel table .c4:contains("Online Quote")').length>0){
+			console.log("online");
+		$('#record-panel ul.dropdown-menu').find('span:contains("Transfer Online")').addClass('green');
+		} 
+		if($('#custom-panel table .c4:contains("Telephone Quote")').length>0){
+			console.log("tel");
+		$('#record-panel ul.dropdown-menu').find('span:contains("Transfer Telephone")').addClass('green');	
+		}
     },
     appointment_setup: function (start) {
 		//this is ran when the "add appointment" model pops up
@@ -21,7 +29,14 @@ var campaign_functions = {
     save_appointment: function(appointment) {
     },
     load_custom_fields: function() {
-		//this is ran when the custom fields panel is loaded
+	if($('#custom-panel table .c4:contains("Online Quote")').length>0){
+			console.log("online");
+		$('#record-panel ul.dropdown-menu').find('span:contains("Transfer Online")').addClass('green');
+		} 
+		if($('#custom-panel table .c4:contains("Telephone Quote")').length>0){
+			console.log("tel");
+		$('#record-panel ul.dropdown-menu').find('span:contains("Transfer Telephone")').addClass('green');	
+		}
     },
     edit_custom_fields: function() {
 		//this is ran when the custom fields panel is edited

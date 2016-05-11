@@ -59,6 +59,16 @@ var admin = {
 					} else {
 					$('.fields_container').find('#'+row.field+'_ref').prop('checked',false);	
 					}
+					if(row.is_pot=="1"){
+					$('.fields_container').find('#'+row.field+'_pot').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_pot').prop('checked',false);	
+					}
+						if(row.is_source=="1"){
+					$('.fields_container').find('#'+row.field+'_source').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_source').prop('checked',false);	
+					}
 						if(row.is_decimal=="1"){
 					$('.fields_container').find('#'+row.field+'_dec').prop('checked',true);
 					} else {
