@@ -1,3 +1,4 @@
+  <?php if (@in_array("files menu", $_SESSION['permissions'])||@in_array("list records", $_SESSION['permissions'])||in_array("view appointments", $_SESSION['permissions'])) { ?>
   <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -17,3 +18,4 @@
             <?php } ?>
           </ul>
         </li>
+        <?php } ?>

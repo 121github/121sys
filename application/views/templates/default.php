@@ -102,10 +102,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     </div>
     <ul class="nav navbar-nav desktop-only" id="desktop-nav">
     <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
-		 <li><a href="#" id='open-quicksearch'>Search <i class="fa fa-search"></i></a></li>
+		 <li><a href="#" id='open-quicksearch'><i class="fa fa-search"></i> Search</a></li>
+         <?php } ?>
+           <?php if(in_array("use callpot",$_SESSION['permissions'])){ ?>
+		 <li><a href="<?php echo base_url() ?>records/detail/0"><i class="fa fa-phone"></i> Start</a></li>
          <?php } ?>
         <?php if(in_array("add records",$_SESSION['permissions'])){ ?>
-		 <li><a href="<?php echo base_url() ?>data/add_record">Create <i class="fa fa-plus"></i></a></li>
+		 <li><a href="<?php echo base_url() ?>data/add_record"><i class="fa fa-plus"></i> Create</a></li>
          <?php } ?>
         <?php $this->view('navigation/topbar/dashboards.php', $page); ?>
         <?php $this->view('navigation/topbar/view.php', $page); ?> 
