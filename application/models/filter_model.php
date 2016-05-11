@@ -743,7 +743,7 @@ return $query->result_array();
         }
 		
 		/* users can only see records that have not been parked */
-		if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])){
+		if($_SESSION['role_data_access']['parked']=="1"){
         $parked = " and (r.parked_code is null)";
         }
 		if(array_key_exists("parked_code",$filter)){
@@ -752,14 +752,14 @@ return $query->result_array();
 		$where .= $parked;
 
 		//users can see unaassigned records
-		if(@in_array("search unassigned",$_SESSION['permissions'])&&@array_key_exists("view_unassigned",$filter)){
+		if($_SESSION['role_data_access']['unassigned_user']=="1"){
 		$unassigned = " or ow.user_id is null";	
 		} else {
 		$unassigned = "";	
 		}
 		
 		//users can only see their own records
-		if(!in_array("search any owner",$_SESSION['permissions'])){
+		if($_SESSION['role_data_access']['user_records']=="1"){
 		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";	
 		}
 		
