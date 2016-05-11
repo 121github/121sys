@@ -1358,6 +1358,7 @@ class Ajax extends CI_Controller
     public function get_additional_info()
     {
         if ($this->input->is_ajax_request()) {
+			session_write_close();
             $urn = intval($this->input->post('urn'));
             $campaign = $this->Records_model->get_campaign($urn);
             $additional_info = $this->Records_model->get_additional_info($urn, $campaign['campaign_id']);

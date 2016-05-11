@@ -1262,21 +1262,26 @@ return $comments;
                     }
 				} else if($row['is_pot'] == "1"){
 					//update source from record
-					$update = "update record_details join records using(urn) left join data_pots using(pot_id) set `".$row['field']."` = pot_name";
+					if($urn){
+					$update = "update record_details join records using(urn) left join data_pots using(pot_id) set `".$row['field']."` = pot_name where urn = '$urn'";
 					$this->db->query($update);
+					}
 					$pots = $this->get_pots(false, $campaign);
                     foreach ($pots as $pot) {
                         $options[] = array("id" => $pot['pot_id'], "option" => $pot['pot_name']);
                     }
+					
 				} else if($row['is_source'] == "1"){
 					//update source from record
-					$update = "update record_details join records using(urn) left join data_sources using(source_id) set `".$row['field']."` = source_name";
+					if($urn){
+					$update = "update record_details join records using(urn) left join data_sources using(source_id) set `".$row['field']."` = source_name where urn = '$urn'";
 					$this->db->query($update);
+					}
 					$sources = $this->get_sources(false, $campaign);
                     foreach ($sources as $source) {
                         $options[] = array("id" => $source['source_id'], "option" => $source['source_name']);
                     }
-                } else {
+                } else { 
                     $this->db->select("id,option");
                     $this->db->where(array(
                         "field" => $row['field'],
@@ -1286,10 +1291,10 @@ return $comments;
                     $option_result = $this->db->get("record_details_options")->result_array();
                     foreach ($option_result as $opt) {
                         $options[] = array("id" => $opt['option'], "option" => $opt['option']);
-                    }
+                    } 
                 }
-				$this->firephp->log($options);
                 $stuff2[$row['field_name']] = $options;
+				
             }
 
             $sqlfield = $row['field'];
@@ -1801,7 +1806,11 @@ return $comments;
   }
   
   public function get_pots($urn,$campaign){
-	  return $this->db->query("select pot_id,pot_name from data_pots group by pot_id")->result_array();
+	  $where = "";
+	  if($campaign){
+		$where = "  and campaign_id = '$campaign' ";
+	  }
+	  return $this->db->query("select pot_id,pot_name from data_pots join records using(pot_id) where 1 $where group by pot_id")->result_array();
   }
     public function get_sources($urn,$campaign){
 	  return $this->db->query("select data_sources.source_id,source_name from data_sources join records using(source_id) where campaign_id = '$campaign' group by source_id")->result_array();
