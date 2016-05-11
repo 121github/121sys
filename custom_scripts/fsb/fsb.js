@@ -37,7 +37,7 @@ var campaign_functions = {
 		//this is ran when the "confirm appointment" toggle is changed
     },
     save_appointment: function(appointment) {
-		contact_confirmation_email(appointment.appointment_id);
+		//contact_confirmation_email(appointment.appointment_id);
 		client_confirmation_email(appointment.appointment_id);
     },
     load_custom_fields: function() {
