@@ -104,7 +104,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
 		 <li><a href="#" id='open-quicksearch'><i class="fa fa-search"></i> Search</a></li>
          <?php } ?>
-           <?php if(in_array("use callpot",$_SESSION['permissions'])){ ?>
+           <?php if(in_array("use callpot",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){ ?>
 		 <li><a href="<?php echo base_url() ?>records/detail/0"><i class="fa fa-phone"></i> Start</a></li>
          <?php } ?>
         <?php if(in_array("add records",$_SESSION['permissions'])){ ?>
