@@ -14,6 +14,12 @@ class Cron extends CI_Controller
         $this->load->model('Export_model');
         $this->load->model('Data_model');
     }
+		public function set_postcode_from_appointment(){
+	
+$this->Cron_model->set_postcode_from_appointment();
+		$this->update_all_locations();
+	}
+	
 	public function set_postcode_from_address(){
 		//this can be ran after an import where the address is all in one field, it moves the postcode to the postcode field so it can be used in distance/map functions
 $this->Cron_model->set_postcode_from_address();

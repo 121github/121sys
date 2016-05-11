@@ -22,6 +22,12 @@ $.ajax({
 		});
 }
 
+function validate_email(email) 
+{
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+
 var device_type;
 $(window).ready(function() {
     setDevice($(window).width());

@@ -227,7 +227,7 @@ var record_update = {
                                 dataType: "JSON",
                                 data: {urn: urn}
                             }).done(function (function_trigger_response) {
-                                if(function_trigger_response.length>0){
+                                if(typeof function_trigger_response.js_functions!=="undefined"){
 									$.each(function_trigger_response.js_functions,function(i,f){
 									eval(f+'()');
 									});

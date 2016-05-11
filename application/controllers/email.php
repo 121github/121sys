@@ -146,7 +146,6 @@ class Email extends CI_Controller
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Create-survey',
             'title' => 'Send new email',
             'urn' => $urn,
@@ -482,8 +481,11 @@ class Email extends CI_Controller
 
                 $last_comment = $this->Records_model->get_last_comment($urn);
                 $placeholder_data = $this->Email_model->get_placeholder_data($urn,$appointment_id);
+				if($recipients_to=="attendee"){
+				 $recipients_to = $placeholder_data[0]['attendee_email'];
+				}
                 $placeholder_data[0]['comments'] = $last_comment;
-                $placeholder_data['recipient_name'] = $recipients_to_name;
+                $placeholder_data[0]['recipient_name'] = $recipients_to_name;
                 if (count($placeholder_data)) {
                     foreach ($placeholder_data[0] as $key => $val) {
                         if ($key == "fullname") {
@@ -500,6 +502,11 @@ class Email extends CI_Controller
 						}
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
 						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
+						$form['body'] = str_replace("[!$key]", $val, $form['body']);
+						$form['subject'] = str_replace("[!$key]", $val, $form['subject']);
+						//replace the optional placeholders with blanks
+						$form['body'] = str_replace("[!$key]", "-", $form['body']);
+						$form['subject'] = str_replace("[!$key]", "", $form['subject']);
                     }
                 }
                 $history_visible = $form['history_visible'];
@@ -927,7 +934,8 @@ class Email extends CI_Controller
 
                 //Get contact info
                 $contact = $this->Contacts_model->get_contact($appointment->contact_id);
-
+				//get company info
+				$company = $this->Company_model->get_company($appointment->company_id);
                 //Date
                 $start_date = new \DateTime($appointment->start);
                 $end_date = new \DateTime($appointment->end);
@@ -944,9 +952,14 @@ class Email extends CI_Controller
                     " at the address: ".$appointment->address."</div><br />";
 
                 //Contact telephones
-                $contact_telephones = "";
+                $telephone_numbers = "";
                 foreach($contact['telephone'] as $telephone) {
-                    $contact_telephones .= "<tr><td>Contact Telephone (".$telephone['tel_name']."):</td><td>".$telephone['tel_num']."</td></tr>";
+                    $telephone_numbers .= "<tr><td>Contact Telephone (".$telephone['tel_name']."):</td><td>".$telephone['tel_num']."</td></tr>";
+                }
+				
+				 //Company telephones
+                foreach($company['telephone'] as $telephone) {
+                    $telephone_numbers .= "<tr><td>Contact Telephone (".$telephone['tel_name']."):</td><td>".$telephone['tel_num']."</td></tr>";
                 }
 
                 $appointment_table = "<table>
@@ -958,7 +971,7 @@ class Email extends CI_Controller
                         <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
                         <tr><td>Contact Name:</td><td>".$contact['general']['fullname']."</td></tr>
                         <tr><td>Contact Email:</td><td>".$contact['general']['email']."</td></tr>
-                        ".$contact_telephones."
+                        ".$telephone_numbers."
                         <tr><td>Address:</td><td>".$appointment->address."</td></tr>
                         <tr><td>Notes:</td><td>".$appointment->text."</td></tr>
                         ".($appointment->branch_id?"<tr><td>Branch:</td><td>".($appointment->branch_name?$appointment->branch_name:'')."</td></tr>":"")."

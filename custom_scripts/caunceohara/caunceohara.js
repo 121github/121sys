@@ -1,24 +1,6 @@
-var newOptions = [];
+// JavaScript Document
 
-$(document).on('change','#calendar #attendee-select',function(){
-	console.log($(this).val());
-	if($(this).val()==259){
-	newOptions.hiddenDays = [ 0,7 ];
-
- newOptions.minTime = "10:00:00";
- newOptions.maxTime = "19:00:00";
- console.log(minTime);
-	}
-	if($(this).val()==258){		
- newOptions.hiddenDays = [  0,7 ];
- newOptions.minTime = "08:00:00";
- newOptions.maxTime = "19:00:00";
-	}
-	$('#calendar').fullCalendar('destroy');
-	$('#calendar').fullCalendar($.extend(calendar.calendarOptions,newOptions));
-	calendar.build_options()
-});
-
+// JavaScript Document
 
 var simulation = "";
 
@@ -37,8 +19,6 @@ var campaign_functions = {
 		//this is ran when the "confirm appointment" toggle is changed
     },
     save_appointment: function(appointment) {
-		contact_confirmation_email(appointment.appointment_id);
-		client_confirmation_email(appointment.appointment_id);
     },
     load_custom_fields: function() {
 		//this is ran when the custom fields panel is loaded
@@ -61,25 +41,14 @@ var campaign_functions = {
 
 }
 
-
-function contact_confirmation_email(appointment){
-	var recipient = $('#contact-email-address').text();
-custom_email.send_template_email(record.urn, 92, false, recipient, "", "bradf@121customerinsight.co.uk", "Contact appointment Confirmation email",appointment);
-}
-
-function client_confirmation_email(appointment){
-	var recipient = 'attendee';
-custom_email.send_template_email(record.urn, 89, false, recipient, "", "bradf@121customerinsight.co.uk", "FSB appointment notification email",appointment);
-}
-
 function client_info_email(){
 	var recipient = $('#contact-email-address').text();
-custom_email.send_template_email(record.urn, 91, false, recipient, "", "", "FSB info email",false);
+custom_email.send_template_email(record.urn, 90, false, recipient, "", "", "Quote link email",false);
 }
 
 var custom_email = {
     send_template_email: function (urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, email_name, appointment_id) {
-        if (validate_email(recipients_to)) {
+         if (validate_email(recipients_to)) {
             $.ajax({
                 url: helper.baseUrl + 'email/send_template_email',
                 type: "POST",
@@ -95,9 +64,9 @@ var custom_email = {
                     appointment_id: appointment_id
                 }
             }).done(function (response) {
+				record.email_panel.load_panel();
                 if (response.success === true) {
                     flashalert.success(response.msg);
-					record.email_panel.load_panel()
                 }
                 else if (response.success == false) {
                     flashalert.danger(response.msg);
@@ -107,7 +76,7 @@ var custom_email = {
             });
         }
         else {
-            flashalert.danger("Not a valid email:"+recipients_to);
+            flashalert.danger("ERROR: No email address on: " + msg);
         }
     }
 }

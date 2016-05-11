@@ -465,6 +465,7 @@ $datafield_ids = array();
         $this->db->where('appointment_id', $appointment_id);
         $this->db->join('branch', 'branch.branch_id=appointments.branch_id', 'LEFT');
         $this->db->join('appointment_types', 'appointment_types.appointment_type_id=appointments.appointment_type_id', 'LEFT');
+		$this->db->join('companies', 'appointments.urn = companies.urn', 'LEFT');
         $query = $this->db->get();
         if ($query->num_rows() == 1) {
             return $query->row();

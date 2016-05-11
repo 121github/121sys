@@ -18,7 +18,7 @@
       <div class="panel-body">
         <?php $this->view('forms/edit_ownership_form.php',$users); ?>
         <div class="panel-content"> 
-          <!-- This panel now loads via ajax --> 
+           <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
         </div>
       </div>
     </div>

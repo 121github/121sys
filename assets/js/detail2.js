@@ -1773,7 +1773,10 @@ if(val.read_confirmed==1){
                 data: {
                     urn: record.urn,
                     limit: record.limit
-                }
+                },
+				beforeSend:function(){
+						  $panel.find('.panel-body').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />").fadeIn();
+				}
             }).done(function (response) {
                 $panel.find('.panel-body').empty();
                 var $body = "";

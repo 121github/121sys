@@ -46,9 +46,9 @@ class Email_model extends CI_Model
 		}
 		
         if ($this->db->query($query)->num_rows() > 0) {
-            $contact_details = " left join (select urn,max(appointment_id) max_id from appointments where urn='$urn' $find_appointment) a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id ";
+            $contact_details = " left join (select urn,max(appointment_id) max_id from appointments a where urn='$urn' $find_appointment) a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id ";
             $attendee = " if(attendees.name is null,'Unknown',attendees.name) attendee ";
-            $appointment_fields = " appointment_id, appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)<'12:30:00','am','pm') time_slot, ";
+            $appointment_fields = " appointment_id, appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)<'12:30:00','am','pm') time_slot,attendees.user_email attendee_email, ";
         } else {
             $contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) ";
             $attendee = " 'Sir/Madam' attendee ";
@@ -745,8 +745,9 @@ $qry .= " group by urn";
 
         return (isset($result[0])?$result[0]:NULL);
     }
+				
 		
-		function get_custom_info($urn){
+			function get_custom_panels($urn){
 			$query = "select * from record_details where urn = '$urn'";
 			$results =  $this->db->query($query)->result_array();
 			$fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();
