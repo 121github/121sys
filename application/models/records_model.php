@@ -1765,9 +1765,12 @@ return $comments;
 		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,read_only,hidden,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id' order by sort";
 	return $this->db->query($panel_fields_query)->result_array();
   }
-     public function get_custom_panel_data($urn,$id){
-		$panel_data_query = "select id,data_id,field_id,`value`,custom_panel_fields.name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panels left join custom_panel_fields using(custom_panel_id) left join custom_panel_values using(field_id) left join custom_panel_data using(data_id) where urn = '$urn' and custom_panel_id = '$id' order by created_on desc";
-		$this->firephp->log($panel_data_query);
+     public function get_custom_panel_data($urn,$id=false){
+		$panel_data_query = "select id,data_id,field_id,`value`,custom_panel_fields.name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panels left join custom_panel_fields using(custom_panel_id) left join custom_panel_values using(field_id) left join custom_panel_data using(data_id) where urn = '$urn' ";
+		if($id){
+		$panel_data_query .= " and custom_panel_id = '$id' ";
+		}
+			$panel_data_query .= " order by created_on desc";
 	return $this->db->query($panel_data_query)->result_array();
   }
   public function create_custom_data_with_linked_appointments($appointment_id){
@@ -1816,6 +1819,29 @@ return $comments;
 	   $this->db->where(array("urn"=>$urn));
 	   return $this->db->update("records",array("source_id"=>$id));
   }
+  
+  		function get_all_record_details($urn){
+			$query = "select * from record_details where urn = '$urn'";
+			$results =  $this->db->query($query)->result_array();
+			$fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();
+			foreach($fields_result as $row){
+			$fields[$row['field']] = $row['field_name'];
+			}
+			
+			$data = array();
+			foreach($results as $num => $row){
+			foreach($row as $k=>$v){
+			if(array_key_exists($k,$fields)){
+			$data[$num][$fields[$k]] = $v;
+			}
+			}
+			}
+			return $data;
+		}
+		
+		
+		
+  
 }
 
 ?>

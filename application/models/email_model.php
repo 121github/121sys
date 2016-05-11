@@ -745,5 +745,24 @@ $qry .= " group by urn";
 
         return (isset($result[0])?$result[0]:NULL);
     }
-
+		
+		function get_custom_info($urn){
+			$query = "select * from record_details where urn = '$urn'";
+			$results =  $this->db->query($query)->result_array();
+			$fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();
+			foreach($fields_result as $row){
+			$fields[$row['field']] = $row['field_name'];
+			}
+			
+			$data = array();
+			foreach($results as $num => $row){
+			foreach($row as $k=>$v){
+			if(array_key_exists($k,$fields)){
+			$data[$num][$fields[$k]] = $v;
+			}
+			}
+			}
+			return $data;
+		}
+		
 }

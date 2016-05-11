@@ -19,7 +19,14 @@ class Email extends CI_Controller
         $this->load->model('File_model');
     }
 
-
+	public function test_custom_info(){
+		$urn = $this->uri->segment(3);	
+		$result = $this->Records_model->get_custom_panel_data($urn);
+		echo "<pre>";
+		print_r($result);
+		echo "<pre>";
+	}
+	
     public function bulk_email()
     {
         if ($this->input->is_ajax_request() && $this->input->post('list')) {
@@ -958,7 +965,36 @@ class Email extends CI_Controller
                     </tbody>
                 </table>";
                 $description .= "<div>".$appointment_table."</div><br />";
-
+				
+				//get any custom info
+				$custom_info  = $result = $this->Records_model->get_all_record_details($appointment->urn);
+				if(!empty($custom_info)){
+				 $custom_info_ics = "<table><thead style='margin-bottom: 2px;'><th colspan='2'><h3>Record Info</h3></th><tbody>";
+				foreach($custom_info as $row){
+					
+					foreach($row as $k => $v){
+						if(!empty($v)&&$v!=="-"){
+					 $custom_info_ics .= "<tr><td>".$k."</td><td>".$v."</td></tr>";	
+						}
+					}
+					 $custom_info_ics .= "</body></table>";
+				}
+				
+				$description .= "<div>".$custom_info_ics."</div><br />";
+				}
+				//get any custom panels
+				$custom_panels  = $this->Records_model->get_custom_panel_data($appointment->urn);
+				if(!empty($custom_panels)){
+				$custom_panel_ics = "<table><thead style='margin-bottom: 2px;'><th colspan='2'><h3>Record Info 2</h3></th><tbody>";
+				foreach($custom_panels as $row){
+						if(!empty($v)&&$v!=="-"){
+					 $custom_panel_ics .= "<tr><td>".$row['name']."</td><td>".$row['value']."</td></tr>";	
+						}
+					 $custom_panel_ics .= "</body></table>";
+				}
+				
+				$description .= "<div>".$custom_panel_ics."</div><br />";
+				}
                 //Get the webform answers for this urn
                 $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
                 //Get the last one
@@ -1012,7 +1048,7 @@ class Email extends CI_Controller
                 }
                 else {
                     $webform_table = "<table>
-                    <tbody>There is not webform for this record</tbody>
+                    <tbody></tbody>
                 </table>";
                 }
                 $description .= "<div>".$webform_table."</div><br />";
