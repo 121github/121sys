@@ -8,11 +8,11 @@ var dashboard = {
                 ranges: {
                     'Any Time': ["01/01/2014", moment()],
                     'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract( 1,'days'), moment().subtract(1,'days')],
-                    'Last 7 Days': [moment().subtract( 6,'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29,'days'), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1,'month').startOf('month'), moment().subtract(1,'month').endOf('month')]
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",
@@ -22,16 +22,16 @@ var dashboard = {
             },
             function (start, end, element) {
                 var $btn = this.element;
-				if(element=="Any Time"){
-				$btn.find('.date-text').html("Any time");
-                $btn.closest('form').find('input[name="date_from"]').val('');
-                $btn.closest('form').find('input[name="date_to"]').val('');	
-				} else {
-                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
-                $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
-                $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-				}
-        });
+                if (element == "Any Time") {
+                    $btn.find('.date-text').html("Any time");
+                    $btn.closest('form').find('input[name="date_from"]').val('');
+                    $btn.closest('form').find('input[name="date_to"]').val('');
+                } else {
+                    $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                    $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                    $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                }
+            });
 
         $(document).on("click", '#filter-submit', function (e) {
             e.preventDefault();
@@ -103,7 +103,7 @@ var dashboard = {
             e.preventDefault();
             dashboard.load_dash($(this).attr('dashboard-id'));
             $('.show-charts').removeClass('btn-success').addClass('btn-default');
-            $('.show-charts').attr('data-item',0);
+            $('.show-charts').attr('data-item', 0);
         });
 
         $(document).on("click", ".new-report", function (e) {
@@ -139,7 +139,7 @@ var dashboard = {
         dashboard.filter_panel();
     },
 
-    settings: function() {
+    settings: function () {
         $(document).on("click", ".new-dashboard-btn", function (e) {
             e.preventDefault();
             dashboard.new_dashboard();
@@ -157,11 +157,11 @@ var dashboard = {
 
         $(document).on("click", ".view-dashboard-btn", function (e) {
             e.preventDefault();
-            window.location.replace(helper.baseUrl + 'dashboard/view/'+$(this).attr('item-id'));
+            window.location.replace(helper.baseUrl + 'dashboard/view/' + $(this).attr('item-id'));
         });
     },
 
-    refresh_panels: function() {
+    refresh_panels: function () {
         dashboard.filter_panel();
         dashboard.history_panel();
         dashboard.comments_panel();
@@ -171,7 +171,7 @@ var dashboard = {
         dashboard.outcomes_panel();
     },
 
-    filter_panel: function() {
+    filter_panel: function () {
         //////////////////////////////////////////////////////////
         //Filters/////////////////////////////////////////////////
         //////////////////////////////////////////////////////////
@@ -287,7 +287,7 @@ var dashboard = {
                             'width': 200,
                             'height': 350,
                             curveType: 'function',
-                            'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                            'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45}
                         };
 
                         var data = new google.visualization.DataTable();
@@ -308,7 +308,7 @@ var dashboard = {
 
 
                     //All email stats
-                    if (response.data.sentall>0){
+                    if (response.data.sentall > 0) {
                         var rows = [];
                         var title = 'All Email stats';
 
@@ -319,7 +319,7 @@ var dashboard = {
                             'width': 200,
                             'height': 350,
                             curveType: 'function',
-                            'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                            'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45}
                         };
 
                         var data = new google.visualization.DataTable();
@@ -339,90 +339,90 @@ var dashboard = {
         });
     },
     sms_panel: function () {
-    $.ajax({
-        url: helper.baseUrl + 'dashboard/get_sms_stats',
-        type: "POST",
-        dataType: "JSON",
-        data: $('.filter-form').serialize(),
-        beforeSend: function () {
-            $('#sms-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
-        }
-    }).done(function (response) {
-        $('#sms-stats').html("<ul>" +
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_sms_stats',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#sms-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
+        }).done(function (response) {
+            $('#sms-stats').html("<ul>" +
                 "<div><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today <br><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "<br><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "<br><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "<br><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "<br><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "<br><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "<br><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "<br><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "<br><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "<br><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</div>");
 
-        //GRAPHS
-        google.load('visualization', '1', {
-            packages: ['corechart'], 'callback': function () {
+            //GRAPHS
+            google.load('visualization', '1', {
+                packages: ['corechart'], 'callback': function () {
 
-                //Today Sms stats
-                if (response.data.today_sms > 0) {
-                    var rows = [];
-                    var title = 'Today Sms stats';
+                    //Today Sms stats
+                    if (response.data.today_sms > 0) {
+                        var rows = [];
+                        var title = 'Today Sms stats';
 
-                    // Set chart options
-                    var options = {
-                        'legend': {position: 'none'},
-                        'title': title,
-                        'width': 200,
-                        'height': 350,
-                        curveType: 'function',
-                        'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
-                    };
+                        // Set chart options
+                        var options = {
+                            'legend': {position: 'none'},
+                            'title': title,
+                            'width': 200,
+                            'height': 350,
+                            curveType: 'function',
+                            'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45}
+                        };
 
-                    var data = new google.visualization.DataTable();
-                    data.addColumn('string', 'Topping');
-                    data.addColumn('number', 'Sms');
-                    rows.push(["error", parseInt(response.data.today_error_sms)]);
-                    rows.push(["unknown", parseInt(response.data.today_unknown_sms)]);
-                    rows.push(["pending", parseInt(response.data.today_pending_sms)]);
-                    rows.push(["undelivered", parseInt(response.data.today_undelivered_sms)]);
-                    rows.push(["delivered", parseInt(response.data.today_delivered_sms)]);
-                    rows.push(["sent", parseInt(response.data.today_sms)]);
-                    data.addRows(rows);
-                    var chart = new google.visualization.ColumnChart(document.getElementById('sms-today-chart'));
-                    chart.draw(data, options);
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Sms');
+                        rows.push(["error", parseInt(response.data.today_error_sms)]);
+                        rows.push(["unknown", parseInt(response.data.today_unknown_sms)]);
+                        rows.push(["pending", parseInt(response.data.today_pending_sms)]);
+                        rows.push(["undelivered", parseInt(response.data.today_undelivered_sms)]);
+                        rows.push(["delivered", parseInt(response.data.today_delivered_sms)]);
+                        rows.push(["sent", parseInt(response.data.today_sms)]);
+                        data.addRows(rows);
+                        var chart = new google.visualization.ColumnChart(document.getElementById('sms-today-chart'));
+                        chart.draw(data, options);
+                    }
+                    else {
+                        $('#sms-today-chart').html("<span style='color:black;'>No sms sent today</span>");
+                    }
+
+
+                    //All sms stats
+                    if (response.data.all_sms > 0) {
+                        var rows = [];
+                        var title = 'All Sms stats';
+
+                        // Set chart options
+                        var options = {
+                            'legend': {position: 'none'},
+                            'title': title,
+                            'width': 200,
+                            'height': 350,
+                            curveType: 'function',
+                            'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45}
+                        };
+
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Sms');
+                        rows.push(["error", parseInt(response.data.all_error_sms)]);
+                        rows.push(["unknown", parseInt(response.data.all_unknown_sms)]);
+                        rows.push(["pending", parseInt(response.data.all_pending_sms)]);
+                        rows.push(["undelivered", parseInt(response.data.all_undelivered_sms)]);
+                        rows.push(["delivered", parseInt(response.data.all_delivered_sms)]);
+                        rows.push(["sent", parseInt(response.data.all_sms)]);
+                        data.addRows(rows);
+                        var chart = new google.visualization.ColumnChart(document.getElementById('sms-all-chart'));
+                        chart.draw(data, options);
+                    }
+                    else {
+                        $('#sms-all-chart').html("<span style='color:black;'>No sms sent</span>");
+                    }
                 }
-                else {
-                    $('#sms-today-chart').html("<span style='color:black;'>No sms sent today</span>");
-                }
-
-
-                //All sms stats
-                if (response.data.all_sms>0) {
-                    var rows = [];
-                    var title = 'All Sms stats';
-
-                    // Set chart options
-                    var options = {
-                        'legend': {position: 'none'},
-                        'title': title,
-                        'width': 200,
-                        'height': 350,
-                        curveType: 'function',
-                        'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
-                    };
-
-                    var data = new google.visualization.DataTable();
-                    data.addColumn('string', 'Topping');
-                    data.addColumn('number', 'Sms');
-                    rows.push(["error", parseInt(response.data.all_error_sms)]);
-                    rows.push(["unknown", parseInt(response.data.all_unknown_sms)]);
-                    rows.push(["pending", parseInt(response.data.all_pending_sms)]);
-                    rows.push(["undelivered", parseInt(response.data.all_undelivered_sms)]);
-                    rows.push(["delivered", parseInt(response.data.all_delivered_sms)]);
-                    rows.push(["sent", parseInt(response.data.all_sms)]);
-                    data.addRows(rows);
-                    var chart = new google.visualization.ColumnChart(document.getElementById('sms-all-chart'));
-                    chart.draw(data, options);
-                }
-                else {
-                    $('#sms-all-chart').html("<span style='color:black;'>No sms sent</span>");
-                }
-            }
+            });
         });
-    });
-},
+    },
     /* the function for the outcomes panel on the main dashboard */
     outcomes_panel: function (campaign_id) {
         $.ajax({
@@ -450,7 +450,7 @@ var dashboard = {
 
                 //GRAPHS
                 google.load('visualization', '1', {
-                packages: ['corechart'], 'callback': function () {
+                    packages: ['corechart'], 'callback': function () {
 
                         //Today email stats
                         var title = 'Today Outcomes';
@@ -491,15 +491,15 @@ var dashboard = {
         }).done(function (response) {
             $('#system-stats').empty();
             $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.'
-			  if (helper.permissions['view live'] > 0) {
-			 $contents += '<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress'
-			  }
-			 if (helper.permissions['view parked'] > 0) {
-			$contents += '<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked'
-			 }
-			 if (helper.permissions['view dead'] > 0) {
-			'<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
-			 }
+            if (helper.permissions['view live'] > 0) {
+                $contents += '<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress'
+            }
+            if (helper.permissions['view parked'] > 0) {
+                $contents += '<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked'
+            }
+            if (helper.permissions['view dead'] > 0) {
+                '<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
+            }
             if (helper.permissions['set progress'] > 0) {
                 $contents += '<div><h4>Follow up Stats</h4></div><div><p><a href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div>';
             }
@@ -523,7 +523,7 @@ var dashboard = {
                         'width': 200,
                         'height': 350,
                         curveType: 'function',
-                        'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                        'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45}
                     };
 
                     var data = new google.visualization.DataTable();
@@ -549,7 +549,7 @@ var dashboard = {
                             'width': 200,
                             'height': 350,
                             curveType: 'function',
-                            'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                            'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45}
                         };
 
                         var data = new google.visualization.DataTable();
@@ -581,12 +581,12 @@ var dashboard = {
                 $('#comment-panel').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
             }
         }).done(function (response) {
-           $('#comment-panel').empty();
-		   var comments = "";
+            $('#comment-panel').empty();
+            var comments = "";
             $.each(response.data, function (i, val) {
-               comments += '<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font"><a href="' + helper.baseUrl + 'records/detail/' + val.urn + '">' + val.name + '</a></strong><small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>' + val.date + '</small></div><p>' + val.comment + '</p></div></li>';
+                comments += '<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font"><a href="' + helper.baseUrl + 'records/detail/' + val.urn + '">' + val.name + '</a></strong><small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>' + val.date + '</small></div><p>' + val.comment + '</p></div></li>';
             });
-			$('#comment-panel').html("<ul class='chat'>"+comments+'</ul>');
+            $('#comment-panel').html("<ul class='chat'>" + comments + '</ul>');
         });
     },
     /* the function for the urgent panel on the client dashboard */
@@ -940,36 +940,36 @@ var dashboard = {
                 var others = "";
                 $.each(response.dashboards, function (i, val) {
                     var element = '<li class="left clearfix">' +
-                                    '<div class="chat-body clearfix">' +
-                                        '<div class="header">' +
-                                            '<strong class="primary-font">' +
-                                                '<a href="#" class="view-dashboard-btn" item-id="'+val.dashboard_id+'" >' +
-                                                    val.name +
-                                                '</a>' +
-                                            '</strong>' +
-                                            '<small class="pull-right text-muted">' +
-                                                '<span class="btn btn-default btn-xs pull-right marl edit-dashboard-btn" ' +
-                                                'item-id="'+val.dashboard_id+'"' +
-                                                'item-name="'+val.name+'"' +
-                                                'item-description="'+val.description+'"' +
-                                                'item-viewers="'+val.viewers+'"' +
-                                                'item-campaigns="'+val.campaigns+'"' +
-                                                'item-type="'+val.dash_type+'"' +
-                                                '>' +
-                                                '<span class="glyphicon glyphicon-pencil"></span>' +
-                                                ' Edit' +
-                                                '</span>' +
-                                                '<span class="btn btn-default btn-xs pull-right marl view-dashboard-btn" ' +
-                                                'item-id="'+val.dashboard_id+'"' +
-                                                '>' +
-                                                '<span class="glyphicon glyphicon-eye-open"></span>' +
-                                                ' View' +
-                                                '</span>' +
-                                            '</small>' +
-                                        '</div>' +
-                                        '<p>' + val.description + '</p>' +
-                                    '</div>' +
-                                   '</li>';
+                        '<div class="chat-body clearfix">' +
+                        '<div class="header">' +
+                        '<strong class="primary-font">' +
+                        '<a href="#" class="view-dashboard-btn" item-id="' + val.dashboard_id + '" >' +
+                        val.name +
+                        '</a>' +
+                        '</strong>' +
+                        '<small class="pull-right text-muted">' +
+                        '<span class="btn btn-default btn-xs pull-right marl edit-dashboard-btn" ' +
+                        'item-id="' + val.dashboard_id + '"' +
+                        'item-name="' + val.name + '"' +
+                        'item-description="' + val.description + '"' +
+                        'item-viewers="' + val.viewers + '"' +
+                        'item-campaigns="' + val.campaigns + '"' +
+                        'item-type="' + val.dash_type + '"' +
+                        '>' +
+                        '<span class="glyphicon glyphicon-pencil"></span>' +
+                        ' Edit' +
+                        '</span>' +
+                        '<span class="btn btn-default btn-xs pull-right marl view-dashboard-btn" ' +
+                        'item-id="' + val.dashboard_id + '"' +
+                        '>' +
+                        '<span class="glyphicon glyphicon-eye-open"></span>' +
+                        ' View' +
+                        '</span>' +
+                        '</small>' +
+                        '</div>' +
+                        '<p>' + val.description + '</p>' +
+                        '</div>' +
+                        '</li>';
 
                     switch (val.dash_type) {
                         case "Dashboard":
@@ -983,14 +983,14 @@ var dashboard = {
                             break;
                     }
                 });
-                dash_ar = (dashboards.length>0?"<h1>Dashboards</h1> <ul class='chat'>"+dashboards+"</ul>":"") +
-                          (reports.length>0?"<h1>Reports</h1> <ul class='chat'>"+reports+"</ul>":"") +
-                          (others.length>0?"<h1>Others</h1> <ul class='chat'>"+others+"</ul>":"");
+                dash_ar = (dashboards.length > 0 ? "<h1>Dashboards</h1> <ul class='chat'>" + dashboards + "</ul>" : "") +
+                    (reports.length > 0 ? "<h1>Reports</h1> <ul class='chat'>" + reports + "</ul>" : "") +
+                    (others.length > 0 ? "<h1>Others</h1> <ul class='chat'>" + others + "</ul>" : "");
             }
             else {
                 dash_ar = "No dashboards created yet";
             }
-            $('#custom-dash').html("<ul class='chat'>"+dash_ar+'</ul>');
+            $('#custom-dash').html("<ul class='chat'>" + dash_ar + '</ul>');
         });
     },
 
@@ -1049,19 +1049,19 @@ var dashboard = {
                 }
 
                 var mheader = "Dashboard";
-                var mbody = "<ul class='nav nav-tabs' id='panel-tabs-"+dashboard_id+"' style='background:#eee; width:100%;'>" +
-                    "<li class='data-tab active'><a href='#dashboard-general-"+dashboard_id+"' class='tab' data-toggle='tab'>General</a></li>" +
-                    "<li class='data-tab'><a href='#dashboard-filters-"+dashboard_id+"' class='tab' data-toggle='tab'>Filters</a></li>" +
+                var mbody = "<ul class='nav nav-tabs' id='panel-tabs-" + dashboard_id + "' style='background:#eee; width:100%;'>" +
+                    "<li class='data-tab active'><a href='#dashboard-general-" + dashboard_id + "' class='tab' data-toggle='tab'>General</a></li>" +
+                    "<li class='data-tab'><a href='#dashboard-filters-" + dashboard_id + "' class='tab' data-toggle='tab'>Filters</a></li>" +
                     "</ul>" +
                     "<div class='tab-content'>" +
-                    "<div class='tab-pane active' id='dashboard-general-"+dashboard_id+"'>" +
+                    "<div class='tab-pane active' id='dashboard-general-" + dashboard_id + "'>" +
                     "<form id='new-dashboard-form' >" +
-                    "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                    "<input type='hidden' name='dashboard_id' value='" + dashboard_id + "'/>" +
                     "<div class='form-group input-group-sm'>" +
                     "<div class='row'>" +
                     "<div class='col-xs-6'>" +
                     "<p>Dashboard Name </p>" +
-                    "<input type='text' name='name' value='"+dashboard_name+"' class=''form-control' style='min-width: 100%' required/>" +
+                    "<input type='text' name='name' value='" + dashboard_name + "' class=''form-control' style='min-width: 100%' required/>" +
                     "</div>" +
                     "<div class='col-xs-6'>" +
                     select +
@@ -1070,7 +1070,7 @@ var dashboard = {
                     "</div>" +
                     "<div class='form-group input-group-sm'>" +
                     "<p>Description </p>" +
-                    "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>"+dashboard_description+"</textarea>" +
+                    "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>" + dashboard_description + "</textarea>" +
                     "</div>" +
                     "<p>Should this page be included in the dashboard menu or the report menu?</p><div class='form-group input-group-sm'>" +
                     "<input type='checkbox' id='dash-type' data-toggle='toggle' data-width='200' data-onstyle='success' data-offstyle='info' data-on='Dashboard' data-off='Report'>" +
@@ -1078,7 +1078,7 @@ var dashboard = {
                     "</div>" +
                     "</form>" +
                     "</div>" +
-                    "<div class='tab-pane' id='dashboard-filters-"+dashboard_id+"'>" +
+                    "<div class='tab-pane' id='dashboard-filters-" + dashboard_id + "'>" +
                     filter_form +
                     "</div>" +
                     "</div>";
@@ -1087,19 +1087,19 @@ var dashboard = {
                     '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
                 modals.load_modal(mheader, mbody, mfooter);
-				$modal.find('.tt').tooltip();
+                $modal.find('.tt').tooltip();
                 dashboard.set_dashboard_type(dashboard_type);
             });
         });
     },
 
-    set_dashboard_type: function(dash_type){
+    set_dashboard_type: function (dash_type) {
         modal_body.find('#dash-type').bootstrapToggle();
 
-        if(dash_type === "Dashboard"){
+        if (dash_type === "Dashboard") {
             $('#dash-type').bootstrapToggle('on');
             modal_body.find('input[name="dash_type"]').val("Dashboard");
-        } else if(dash_type === "Report"){
+        } else if (dash_type === "Report") {
             $('#dash-type').bootstrapToggle('off');
             modal_body.find('input[name="dash_type"]').val("Report");
         }
@@ -1107,8 +1107,8 @@ var dashboard = {
             $('#dash-type').bootstrapToggle('on');
             modal_body.find('input[name="dash_type"]').val("Dashboard");
         }
-        $('#dash-type').on('change',function(e){
-            if($(this).prop("checked")){
+        $('#dash-type').on('change', function (e) {
+            if ($(this).prop("checked")) {
                 modal_body.find('input[name="dash_type"]').val("Dashboard");
             } else {
                 modal_body.find('input[name="dash_type"]').val("Report");
@@ -1116,14 +1116,14 @@ var dashboard = {
         });
     },
 
-    save_dashboard: function() {
+    save_dashboard: function () {
         $.ajax({
             url: helper.baseUrl + 'dashboard/save_dashboard',
             data: $('#new-dashboard-form').serialize(),
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
-            if(response.success){
+        }).done(function (response) {
+            if (response.success) {
                 flashalert.success(response.msg);
                 $('.dashboard-filter-form').find('input[name="dashboard_id"]').val(response.dashboard_id);
                 $.ajax({
@@ -1131,8 +1131,8 @@ var dashboard = {
                     data: $('.dashboard-filter-form').serialize(),
                     type: "POST",
                     dataType: "JSON"
-                }).done(function(response) {
-                    if(response.success){
+                }).done(function (response) {
+                    if (response.success) {
                         flashalert.success(response.msg);
                     }
                     else {
@@ -1149,7 +1149,7 @@ var dashboard = {
         });
     },
 
-    select_report: function(dashboard_id) {
+    select_report: function (dashboard_id) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_export_forms',
             type: "POST",
@@ -1160,51 +1160,51 @@ var dashboard = {
 
             options += "<option value=''> Select one report </option>";
             $.each(response.data, function (i, val) {
-                options += "<option data-subtext='"+val.description+"' value='"+val.export_forms_id+"'>"+val.name+"</option>";
+                options += "<option data-subtext='" + val.description + "' value='" + val.export_forms_id + "'>" + val.name + "</option>";
             });
 
             var select_report =
                 "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                    options +
+                options +
                 "</select>";
 
             var mheader = "Add report panel";
 
             var mbody = "<form id='add-report-form' >" +
-                "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
-                "<input type='hidden' name='position' value='"+response.position+"'/>" +
+                "<input type='hidden' name='dashboard_id' value='" + dashboard_id + "'/>" +
+                "<input type='hidden' name='position' value='" + response.position + "'/>" +
                 "<div class='form-group input-group-sm'>" +
-                    '<div class="row">' +
-                        '<div class="col-lg-12">' +
-                            '<p>Select the report panel</p>' +
-                            select_report +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="row">' +
-                        '<div class="col-lg-6">' +
-                            '<div class=""form-group input-group-sm">' +
-                                '<p>Select the panel size</p>' +
-                                '<select name="column_size" class="selectpicker" id="report_select" data-size="5">' +
-                                    '<option value="12">100%</option>' +
-                                    '<option value="9">75%</option>' +
-                                    '<option value="6" Selected>50%</option>' +
-                                    '<option value="4">33%</option>' +
-                                    '<option value="3">25%</option>' +
-                                '</select>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="col-lg-6">' +
-                            '<div class="btn-group show-default-graphs" data-toggle="buttons">' +
-                                '<p>What do you want to show by default?</p>' +
-                                '<label class="btn btn-default active">' +
-                                    '<input type="radio" value="data" checked="checked" aria-label="..." name="show_default"> Data' +
-                                '</label>' +
-                                '<label class="btn btn-default">' +
-                                    '<input type="radio" value="graphs" aria-label="..." name="show_default"> Graphs' +
-                                '</label>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
+                '<div class="row">' +
+                '<div class="col-lg-12">' +
+                '<p>Select the report panel</p>' +
+                select_report +
+                '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col-lg-6">' +
+                '<div class=""form-group input-group-sm">' +
+                '<p>Select the panel size</p>' +
+                '<select name="column_size" class="selectpicker" id="report_select" data-size="5">' +
+                '<option value="12">100%</option>' +
+                '<option value="9">75%</option>' +
+                '<option value="6" Selected>50%</option>' +
+                '<option value="4">33%</option>' +
+                '<option value="3">25%</option>' +
+                '</select>' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-lg-6">' +
+                '<div class="btn-group show-default-graphs" data-toggle="buttons">' +
+                '<p>What do you want to show by default?</p>' +
+                '<label class="btn btn-default active">' +
+                '<input type="radio" value="data" checked="checked" aria-label="..." name="show_default"> Data' +
+                '</label>' +
+                '<label class="btn btn-default">' +
+                '<input type="radio" value="graphs" aria-label="..." name="show_default"> Graphs' +
+                '</label>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
                 "</div>" +
                 "</form>";
 
@@ -1212,20 +1212,20 @@ var dashboard = {
                 '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
             modals.load_modal(mheader, mbody, mfooter);
-            modal_body.css('overflow','visible');
+            modal_body.css('overflow', 'visible');
 
 
         });
     },
 
-    add_report: function() {
+    add_report: function () {
         $.ajax({
             url: helper.baseUrl + 'dashboard/add_report',
             data: $('#add-report-form').serialize(),
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
-            if(response.success){
+        }).done(function (response) {
+            if (response.success) {
                 flashalert.success(response.msg);
                 $('.close-modal').trigger('click');
                 dashboard.load_dash(response.dashboard_id);
@@ -1236,14 +1236,14 @@ var dashboard = {
         });
     },
 
-    remove_report: function(dashboard_id, report_id) {
+    remove_report: function (dashboard_id, report_id) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/remove_report',
             data: {'dashboard_id': dashboard_id, 'report_id': report_id},
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
-            if(response.success){
+        }).done(function (response) {
+            if (response.success) {
                 flashalert.success(response.msg);
                 dashboard.load_dash(response.dashboard_id);
             }
@@ -1253,14 +1253,19 @@ var dashboard = {
         });
     },
 
-    move_report: function(dashboard_id, report_id, current_position, next_position) {
+    move_report: function (dashboard_id, report_id, current_position, next_position) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/move_report',
-            data: {'dashboard_id': dashboard_id, 'report_id': report_id, 'current_position': current_position, 'next_position': next_position},
+            data: {
+                'dashboard_id': dashboard_id,
+                'report_id': report_id,
+                'current_position': current_position,
+                'next_position': next_position
+            },
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
-            if(response.success){
+        }).done(function (response) {
+            if (response.success) {
                 flashalert.success(response.msg);
                 dashboard.load_dash(response.dashboard_id);
             }
@@ -1270,14 +1275,14 @@ var dashboard = {
         });
     },
 
-    resize_report: function(dashboard_id, report_id, column_size) {
+    resize_report: function (dashboard_id, report_id, column_size) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/resize_report',
             data: {'dashboard_id': dashboard_id, 'report_id': report_id, 'column_size': column_size},
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
-            if(response.success){
+        }).done(function (response) {
+            if (response.success) {
                 flashalert.success(response.msg);
                 dashboard.load_dash(response.dashboard_id);
             }
@@ -1287,93 +1292,93 @@ var dashboard = {
         });
     },
 
-    load_dash: function(dashboard_id) {
+    load_dash: function (dashboard_id) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_dashboard_reports_by_id',
             data: {'dashboard_id': dashboard_id},
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
+        }).done(function (response) {
             $('.dashboard-area').empty();
-            if(response.success){
+            if (response.success) {
                 var panels = "";
                 var data_divs = [];
                 var charts_divs = [];
                 //Build the panels
                 $.each(response.reports, function (i, report) {
-                    var columns = "col-lg-"+(report.column_size);
-                    panels += '<div class="'+columns+'">' +
-                                '<div class="panel panel-primary">' +
-                                    '<div class="panel-heading clearfix">' + report.name + ' <span class="glyphicon glyphicon-info-sign pointer" data-toggle="tooltip" title="'+report.description+'"></span>'+
-                                        '<div class="pull-right">' +
-                                            '<a href="#filter-right" class="btn btn-default btn-xs">' +
-                                                '<span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter' +
-                                            '</a>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="padding: 0px;">' +
-                                        '<ul class="nav nav-tabs" id="panel-tabs-'+report.report_id+'" style=" background:#eee; width:100%;">' +
-                                            '<li class="data-tab '+(report.show_default === 'data'?'active':'')+'"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
-                                            '<li class="plots-tab '+(report.show_default === 'graphs'?'active':'')+'"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +
-                                            '<li class="dropdown pull-right">' +
-                                                '<a id="options-'+report.report_id+'" class="dropdown-toggle" aria-controls="options-contents-'+report.report_id+'" data-toggle="dropdown" href="#" aria-expanded="true">' +
-                                                    'Options' +
-                                                   '<span class="caret"></span>' +
-                                                '</a>' +
-                                                '<ul id="options-contents-'+report.report_id+'" class="dropdown-menu slidedown pull-right" aria-labelledby="options-'+report.report_id+'">' +
-                                                    '<li><a href="#" id="1" class="remove-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" data-ref="remove"><i class="fa fa-trash pointer"></i> Remove</a></li>' +
-                                                    '<li><a href="#" id="1" class="export-dashreport-btn" data-report-id="'+report.report_id+'" data-ref="export"><i class="glyphicon glyphicon-floppy-save pointer"></i> Export </a></li>' +
-                                                    '<li class="divider"></li>' +
-                                                    '<li class="'+(parseInt(report.position)<=0?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(0)+'"><i class="glyphicon glyphicon-export pointer"></i> Move First </a></li>' +
-                                                    '<li class="'+(parseInt(report.position)<=0?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(report.position)-1)+'"><i class="glyphicon glyphicon-arrow-left pointer"></i> Move Previous </a></li>' +
-                                                    '<li class="'+(parseInt(report.position)>=response.reports.length-1?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(report.position)+1)+'"><i class="glyphicon glyphicon-arrow-right pointer"></i> Move Next </a></li>' +
-                                                    '<li class="'+(parseInt(report.position)>=response.reports.length-1?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(response.reports.length)-1)+'"><i class="glyphicon glyphicon-import pointer"></i> Move Last </a></li>' +
-                                                    '<li class="divider"></li>' +
-                                                    '<li class="'+(parseInt(report.column_size)==3?"disabled":"")+'"><a href="#" column-size="3" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 25% </a></li>' +
-                                                    '<li class="'+(parseInt(report.column_size)==4?"disabled":"")+'"><a href="#" column-size="4" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 33% </a></li>' +
-                                                    '<li class="'+(parseInt(report.column_size)==6?"disabled":"")+'"><a href="#" column-size="6" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 50% </a></li>' +
-                                                    '<li class="'+(parseInt(report.column_size)==9?"disabled":"")+'"><a href="#" column-size="9" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 75% </a></li>' +
-                                                    '<li class="'+(parseInt(report.column_size)==12?"disabled":"")+'"><a href="#" column-size="12" class="resize-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'"><i class="fa fa-expand pointer"></i> 100% </a></li>' +
-                                                '</ul>' +
-                                            '</li>' +
-                                        '</ul>' +
-                                        '<div class="tab-content" style="padding: 0px;">' +
-                                            '<div class="tab-pane '+(report.show_default === 'data'?'active':'')+'" id="data-system-'+report.report_id+'"  style="padding: 0px;">' +
-                                                '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
-                                            '</div>' +
-                                            '<div class="tab-pane '+(report.show_default === 'graphs'?'active':'')+'" id="chart-div-system-'+report.report_id+'" style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">' +
-                                                '<div style="padding: 20px;">No graphs added</div>' +
-                                            '</div>' +
-                                        '</div>' +
-                                    '</div>' +
-                                  '</div>' +
-                              '</div>';
+                    var columns = "col-lg-" + (report.column_size);
+                    panels += '<div class="' + columns + '">' +
+                        '<div class="panel panel-primary">' +
+                        '<div class="panel-heading clearfix">' + report.name + ' <span class="glyphicon glyphicon-info-sign pointer" data-toggle="tooltip" title="' + report.description + '"></span>' +
+                        '<div class="pull-right">' +
+                        '<a href="#filter-right" class="btn btn-default btn-xs">' +
+                        '<span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter' +
+                        '</a>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="panel-body" id="' + report.report_id + '-panel" style="padding: 0px;">' +
+                        '<ul class="nav nav-tabs" id="panel-tabs-' + report.report_id + '" style=" background:#eee; width:100%;">' +
+                        '<li class="data-tab ' + (report.show_default === 'data' ? 'active' : '') + '"><a href="#data-system-' + report.report_id + '" class="tab" data-toggle="tab">Data</a></li>' +
+                        '<li class="plots-tab ' + (report.show_default === 'graphs' ? 'active' : '') + '"><a href="#chart-div-system-' + report.report_id + '" class="tab" data-toggle="tab">Graphs</a></li>' +
+                        '<li class="dropdown pull-right">' +
+                        '<a id="options-' + report.report_id + '" class="dropdown-toggle" aria-controls="options-contents-' + report.report_id + '" data-toggle="dropdown" href="#" aria-expanded="true">' +
+                        'Options' +
+                        '<span class="caret"></span>' +
+                        '</a>' +
+                        '<ul id="options-contents-' + report.report_id + '" class="dropdown-menu slidedown pull-right" aria-labelledby="options-' + report.report_id + '">' +
+                        '<li><a href="#" id="1" class="remove-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '" data-ref="remove"><i class="fa fa-trash pointer"></i> Remove</a></li>' +
+                        '<li><a href="#" id="1" class="export-dashreport-btn" data-report-id="' + report.report_id + '" data-ref="export"><i class="glyphicon glyphicon-floppy-save pointer"></i> Export </a></li>' +
+                        '<li class="divider"></li>' +
+                        '<li class="' + (parseInt(report.position) <= 0 ? "disabled" : "") + '"><a href="#" id="1" class="move-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '" current-position="' + report.position + '" next-position="' + (0) + '"><i class="glyphicon glyphicon-export pointer"></i> Move First </a></li>' +
+                        '<li class="' + (parseInt(report.position) <= 0 ? "disabled" : "") + '"><a href="#" id="1" class="move-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '" current-position="' + report.position + '" next-position="' + (parseInt(report.position) - 1) + '"><i class="glyphicon glyphicon-arrow-left pointer"></i> Move Previous </a></li>' +
+                        '<li class="' + (parseInt(report.position) >= response.reports.length - 1 ? "disabled" : "") + '"><a href="#" id="1" class="move-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '" current-position="' + report.position + '" next-position="' + (parseInt(report.position) + 1) + '"><i class="glyphicon glyphicon-arrow-right pointer"></i> Move Next </a></li>' +
+                        '<li class="' + (parseInt(report.position) >= response.reports.length - 1 ? "disabled" : "") + '"><a href="#" id="1" class="move-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '" current-position="' + report.position + '" next-position="' + (parseInt(response.reports.length) - 1) + '"><i class="glyphicon glyphicon-import pointer"></i> Move Last </a></li>' +
+                        '<li class="divider"></li>' +
+                        '<li class="' + (parseInt(report.column_size) == 3 ? "disabled" : "") + '"><a href="#" column-size="3" class="resize-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '"><i class="fa fa-expand pointer"></i> 25% </a></li>' +
+                        '<li class="' + (parseInt(report.column_size) == 4 ? "disabled" : "") + '"><a href="#" column-size="4" class="resize-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '"><i class="fa fa-expand pointer"></i> 33% </a></li>' +
+                        '<li class="' + (parseInt(report.column_size) == 6 ? "disabled" : "") + '"><a href="#" column-size="6" class="resize-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '"><i class="fa fa-expand pointer"></i> 50% </a></li>' +
+                        '<li class="' + (parseInt(report.column_size) == 9 ? "disabled" : "") + '"><a href="#" column-size="9" class="resize-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '"><i class="fa fa-expand pointer"></i> 75% </a></li>' +
+                        '<li class="' + (parseInt(report.column_size) == 12 ? "disabled" : "") + '"><a href="#" column-size="12" class="resize-dashreport-btn" data-report-id="' + report.report_id + '" data-dashboard-id="' + dashboard_id + '"><i class="fa fa-expand pointer"></i> 100% </a></li>' +
+                        '</ul>' +
+                        '</li>' +
+                        '</ul>' +
+                        '<div class="tab-content" style="padding: 0px;">' +
+                        '<div class="tab-pane ' + (report.show_default === 'data' ? 'active' : '') + '" id="data-system-' + report.report_id + '"  style="padding: 0px;">' +
+                        '<img src="' + helper.baseUrl + "assets/img/ajax-loader-bar.gif" + '"/>' +
+                        '</div>' +
+                        '<div class="tab-pane ' + (report.show_default === 'graphs' ? 'active' : '') + '" id="chart-div-system-' + report.report_id + '" style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">' +
+                        '<div style="padding: 20px;">No graphs added</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
 
-                    data_divs.push('data-system-'+report.report_id);
-                    charts_divs.push('chart-div-system-'+report.report_id);
+                    data_divs.push('data-system-' + report.report_id);
+                    charts_divs.push('chart-div-system-' + report.report_id);
 
                 });
                 $('.dashboard-area').append(panels);
-				$('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="tooltip"]').tooltip();
                 //Set the charts on the show-charts class in order to be shown when we click on this button
-                $('.show-charts').attr('data',data_divs.join());
-                $('.show-charts').attr('charts',charts_divs.join());
-										
+                $('.show-charts').attr('data', data_divs.join());
+                $('.show-charts').attr('charts', charts_divs.join());
+
                 //Get the data content of the panels
                 $.each(response.reports, function (i, report) {
-					 var show_first = true;
+                    var show_first = true;
                     $('.filter-form').find('input[name="export_forms_id"]').val(report.report_id);
                     $.ajax({
                         url: helper.baseUrl + 'exports/load_export_report_data',
                         data: $('.filter-form').serialize(),
                         type: "POST",
                         dataType: "JSON"
-                    }).done(function(resp) {
+                    }).done(function (resp) {
                         if (resp.success && resp.header) {
-                            var body = "<div class='table-"+report.report_id+" scroll table-responsive'><table id='table-"+report.report_id+"' class='table table-bordered table-hover table-striped small' ></table></div>";
-							// removed style='min-height: 400px;'
-                            $('#data-system-'+report.report_id).empty();
-                            $('#data-system-'+report.report_id).append(body);
+                            var body = "<div class='table-" + report.report_id + " scroll table-responsive'><table id='table-" + report.report_id + "' class='table table-bordered table-hover table-striped small' ></table></div>";
+                            // removed style='min-height: 400px;'
+                            $('#data-system-' + report.report_id).empty();
+                            $('#data-system-' + report.report_id).append(body);
 
                             //var width = ($('.table-'+report.report_id).find('table').width()/resp.header.length);
 
@@ -1395,54 +1400,58 @@ var dashboard = {
                             });
                             body += "</tbody>";
 
-                            $('.table-'+report.report_id).find('table').append(body);
-/*
-                            $('.table-'+report.report_id).find('table').on('scroll', function () {
-                                var table = $(this).find('table');
-                                $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
-                            });
-*/
+                            $('.table-' + report.report_id).find('table').append(body);
+                            /*
+                             $('.table-'+report.report_id).find('table').on('scroll', function () {
+                             var table = $(this).find('table');
+                             $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
+                             });
+                             */
                             var dom_size = (report.column_size < 6 ? 12 : 6);
-                            $('#table-'+report.report_id).DataTable({
-                                "dom": 'rt<"bottom-'+report.report_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
+                            $('#table-' + report.report_id).DataTable({
+                                buttons: [
+                                    'copy', 'csv', 'excel', 'print'
+                                ],
+                                "dom": '<"bottom small" <"col-lg-' + dom_size + '"<"pull-left"f>><"col-lg-' + dom_size + '"<"pull-right"B>>>rt<"bottom-' + report.report_id + ' small"<"col-lg-' + dom_size + '"l><"col-lg-' + dom_size + '"<"pull-right"i>><"col-lg-' + dom_size*2 + '"p>><"clear">',
                                 "pagingType": "full",
-								
-								 "createdRow": function(row, data, dataIndex) {
-			
-									 if(resp.header[0]=="URN"){
-										show_first = false;
-                $(row).attr('data-urn', data[0]);
-                $(row).attr('data-modal', 'view-record');
-                $(row).addClass('pointer');
-									 } else if(resp.header[0]=="Appointment ID"){
-										 	show_first = false;
-				$(row).attr('data-id', data[0]);
-                $(row).attr('data-modal', 'view-appointment');
-                $(row).addClass('pointer');	 
-									 }
-								 },
-								 "columnDefs": [
-    { "visible": show_first, "targets": 0 }
-  ]
+
+
+                                "createdRow": function (row, data, dataIndex) {
+
+                                    if (resp.header[0] == "URN") {
+                                        show_first = false;
+                                        $(row).attr('data-urn', data[0]);
+                                        $(row).attr('data-modal', 'view-record');
+                                        $(row).addClass('pointer');
+                                    } else if (resp.header[0] == "Appointment ID") {
+                                        show_first = false;
+                                        $(row).attr('data-id', data[0]);
+                                        $(row).attr('data-modal', 'view-appointment');
+                                        $(row).addClass('pointer');
+                                    }
+                                },
+                                "columnDefs": [
+                                    {"visible": show_first, "targets": 0}
+                                ]
                             });
                             //$(".bottom-"+report.report_id).css("min-height", "160px");
                             if (dom_size == 12) {
-                                $(".bottom-"+report.report_id).css("text-align", "right");
+                                $(".bottom-" + report.report_id).css("text-align", "right");
                             }
                         }
                         else {
-                            $('#data-system-'+report.report_id).html("<div style='padding:20px;'>No results found!</div>");
+                            $('#data-system-' + report.report_id).html("<div style='padding:20px;'>No results found!</div>");
                         }
 
                         if (resp.success && resp.graphs) {
-                            $('#chart-div-system-'+report.report_id).empty();
+                            $('#chart-div-system-' + report.report_id).empty();
                             var body = '<div class="row">';
                             if (resp.graphs.length) {
                                 $.each(resp.graphs, function (i, graph) {
-                                    body += '<div class="col-lg-'+(12/Math.round(report.column_size/3))+'"><div id="export-chart-'+graph.graph_id+'" style="text-shadow: none">' +
-                                        '<p>'+graph.name+'</p>' +
+                                    body += '<div class="col-lg-' + (12 / Math.round(report.column_size / 3)) + '"><div id="export-chart-' + graph.graph_id + '" style="text-shadow: none">' +
+                                        '<p>' + graph.name + '</p>' +
                                         '<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ' +
-                                    '</div></div>';
+                                        '</div></div>';
                                 });
 
                                 //LOAD google graphs
@@ -1459,8 +1468,8 @@ var dashboard = {
                                                 'width': 250,
                                                 'height': 400,
                                                 curveType: 'function',
-                                                'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 },
-                                                isStacked: (graph.z_value)?true:false
+                                                'hAxis': {direction: -1, slantedText: true, slantedTextAngle: 45},
+                                                isStacked: (graph.z_value) ? true : false
                                             };
 
                                             if (graph.z_value) {
@@ -1494,21 +1503,21 @@ var dashboard = {
                                             }
 
                                             //Draw the graph
-                                            switch (graph.type){
+                                            switch (graph.type) {
                                                 case "bars":
-                                                    var chart = new google.visualization.ColumnChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    var chart = new google.visualization.ColumnChart(document.getElementById('export-chart-' + graph.graph_id));
                                                     chart.draw(data, options);
                                                     break;
                                                 case "pie":
-                                                    var chart = new google.visualization.PieChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    var chart = new google.visualization.PieChart(document.getElementById('export-chart-' + graph.graph_id));
                                                     chart.draw(data, options);
                                                     break;
                                                 case "line":
-                                                    var chart = new google.visualization.LineChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    var chart = new google.visualization.LineChart(document.getElementById('export-chart-' + graph.graph_id));
                                                     chart.draw(data, options);
                                                     break;
                                                 case "area":
-                                                    var chart = new google.visualization.AreaChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    var chart = new google.visualization.AreaChart(document.getElementById('export-chart-' + graph.graph_id));
                                                     chart.draw(data, options);
                                                     break;
                                                 default:
@@ -1522,7 +1531,7 @@ var dashboard = {
                                 body += "<div class='col-lg-12' style='margin: 20px;'>No Graphs Created!</div>"
                             }
                             body += "</div></div>";
-                            $('#chart-div-system-'+report.report_id).html(body);
+                            $('#chart-div-system-' + report.report_id).html(body);
                         }
                     });
                 });
