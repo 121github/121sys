@@ -1135,7 +1135,7 @@ class Ajax extends CI_Controller
             if ($this->db->delete('referral_address')):
                 echo json_encode(array(
                     "success" => true,
-                    "id" => intval($this->input->post('referral')),
+                    "id" => intval($this->input->post('referral')), 
                     "type" => "address"
                 ));
             endif;

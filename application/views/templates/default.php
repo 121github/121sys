@@ -112,7 +112,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
          <?php } ?>
         <?php $this->view('navigation/topbar/dashboards.php', $page); ?>
         <?php $this->view('navigation/topbar/view.php', $page); ?> 
-           <?php $this->view('navigation/topbar/calendar.php', $page); ?>  
              <?php $this->view('navigation/topbar/reports.php', $page); ?>  
                <?php $this->view('navigation/topbar/admin.php', $page); ?>  
                <?php $this->view('navigation/topbar/account.php', $page); ?>           
@@ -277,7 +276,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
 <script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
-
+<?php if(isset($_SESSION['user_id'])){ ?>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- Campaign triggers-->
 <?php if (!empty($campaign_triggers)) { ?>
@@ -380,7 +379,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php if(isset($global_filter)){ ?>
         $('nav#global-filter').mmenu({
             navbar: {
-                title: "Filter Records <span class='text-primary'><?php echo @$_SESSION['current_campaign_name'] ?></span>"
+                title: "Filter Records <span class='text-primary'><?php echo (isset($_SESSION['current_campaign_name'])?$_SESSION['current_campaign_name']:"") ?></span>"
             },
             extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
             offCanvas: {
@@ -416,6 +415,7 @@ $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
     });
 </script>
 <script src="<?php echo base_url() . "assets/js/record_update.js?v" . $this->config->item('project_version'); ?>"></script>
+<?php } ?>
 <?php 
 //load specific javascript files set in the controller
 if (isset($javascript)):
@@ -432,6 +432,8 @@ endif; ?>
         type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback)?$callback:"" ?>"></script>
 <?php } ?>
+
+
 <?php if (isset($_SESSION['user_id'])) { ?>
     <div id="color-box" class="Fixed">
         <a href="#"><span class="glyphicon glyphicon-cog color-btn"></span></a>
@@ -598,7 +600,5 @@ endif; ?>
         });
     </script>
 <?php } ?>
-
-
 </body>
 </html>

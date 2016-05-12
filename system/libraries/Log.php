@@ -37,6 +37,9 @@ class CI_Log {
 	 */
 	public function __construct()
 	{
+		
+		//$this->firephp->log("poop");
+
 		$config =& get_config();
 
 		$this->_log_path = ($config['log_path'] != '') ? $config['log_path'] : APPPATH.'logs/';

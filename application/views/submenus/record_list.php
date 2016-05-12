@@ -42,20 +42,20 @@
                 </div>
              <?php } ?>   
                     <div class="btn-group desktop-only">
-         <input value="<?php echo @$_SESSION['filter']['values']['postcode'] ?>"  name="postcode" class="form-control" style="width:130px" placeholder="Enter Postcode"/>
+         <input value="<?php echo isset($_SESSION['filter']['values']['postcode'])?$_SESSION['filter']['values']['postcode']:"" ?>"  name="postcode" class="form-control" style="width:130px" placeholder="Enter Postcode"/>
          </div>
                <div class="btn-group desktop-only">
             <select name="distance" data-width="130" class="selectpicker">
              <option value="">Any Distance</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="1"){ echo "selected"; } ?>  value="1">1 Mile</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="3"){ echo "selected"; } ?>  value="3">3 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="5"){ echo "selected"; } ?> value="5">5 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="10"){ echo "selected"; } ?> value="10">10 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="20"){ echo "selected"; } ?> value="20">20 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="30"){ echo "selected"; } ?> value="30">30 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="50"){ echo "selected"; } ?> value="50">50 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="75"){ echo "selected"; } ?> value="75">75 Miles</option>
-             <option <?php if($_SESSION['filter']['values']['distance']=="100"){ echo "selected"; } ?> value="100">100 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="1"){ echo "selected"; } ?>  value="1">1 Mile</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="3"){ echo "selected"; } ?>  value="3">3 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="5"){ echo "selected"; } ?> value="5">5 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="10"){ echo "selected"; } ?> value="10">10 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="20"){ echo "selected"; } ?> value="20">20 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="30"){ echo "selected"; } ?> value="30">30 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="50"){ echo "selected"; } ?> value="50">50 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="75"){ echo "selected"; } ?> value="75">75 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="100"){ echo "selected"; } ?> value="100">100 Miles</option>
             </select>
             </div>
      <div class="btn-group desktop-only">

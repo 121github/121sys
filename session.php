@@ -86,8 +86,8 @@ switch ($domain) {
         break;
 		
 	case 'localhost:8082':
-        define('ENVIRONMENT', 'production');
-        $session_name = '121sys_hsl';
+        define('ENVIRONMENT', 'development');
+        $session_name = '121sys_local';
 		$theme="leadsontap";
     break;
 

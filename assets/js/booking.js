@@ -1,4 +1,6 @@
 var fullcalendar;
+var temp_attendee = false;
+var temp_type = false;
 if(typeof quick_planner == "undefined"){
 var quick_planner = {};
 }
@@ -150,8 +152,8 @@ var calendar = {
                     url: helper.baseUrl + 'booking/events',
                     type: 'POST',
                     data: function () { // a function that returns an object
-                        var attendee = $('#calendar').find('#attendee-select').val();
-						var appointment_type = $('#calendar').find('#type-select').val();
+                        var attendee = temp_attendee?temp_attendee:$('#calendar').find('#attendee-select').val();
+						var appointment_type = temp_type?temp_type:$('#calendar').find('#type-select').val();
                         var status = (typeof $('#status-select').val() != "undefined" ? $('#status-select').val() : 1);
 							var postcode = false;
 							
@@ -178,12 +180,12 @@ var calendar = {
         calendar.init_context_menu();
         
     },
-	build_options:function(){
-		calendar.type_filter();
+	build_options:function(attendee,type){
+		calendar.type_filter(type);
 		if (helper.permissions['own appointments']>0) {
         //no attendee filter
 		} else {
-		calendar.attendee_filter();
+		calendar.attendee_filter(attendee);
 		}
 		calendar.month_filter();
         //calendar.status_filter();
@@ -295,17 +297,20 @@ var calendar = {
             });
         })
     },
-    attendee_filter: function () {
+    attendee_filter: function (selected) {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Attendees" id="attendee-select"><option value="">Loading...</option></select></div>');
         var elem = $('#calendar').find('#attendee-select');
         elem.selectpicker();
-        calendar.load_attendees(elem,helper.user_id);
+		if(typeof selected == "undefined"){
+		selected = helper.user_id;
+		}
+        calendar.load_attendees(elem,selected);
     },
-	 type_filter: function () {
+	 type_filter: function (selected) {
         $('#calendar .fc-toolbar .fc-left').append('<div style="display:none"><select title="All Types" id="type-select"><option value=""></option></select></div>');
         var elem = $('#calendar').find('#type-select');
         elem.selectpicker();
-        calendar.load_appointment_types(elem);
+        calendar.load_appointment_types(elem,selected);
     },
     status_filter: function () {
         $('#calendar .fc-toolbar .fc-left').append('<div><select title="All Events" id="status-select">' +

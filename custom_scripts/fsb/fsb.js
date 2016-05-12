@@ -1,22 +1,21 @@
 var newOptions = [];
-
 $(document).on('change','#calendar #attendee-select',function(){
-	console.log($(this).val());
+temp_attendee = $(this).val();
 	if($(this).val()==259){
 	newOptions.hiddenDays = [ 0,7 ];
 
  newOptions.minTime = "10:00:00";
  newOptions.maxTime = "19:00:00";
- console.log(minTime);
 	}
 	if($(this).val()==258){		
  newOptions.hiddenDays = [  0,7 ];
  newOptions.minTime = "08:00:00";
  newOptions.maxTime = "19:00:00";
 	}
+	
 	$('#calendar').fullCalendar('destroy');
 	$('#calendar').fullCalendar($.extend(calendar.calendarOptions,newOptions));
-	calendar.build_options()
+	calendar.build_options($(this).val())
 });
 
 

@@ -91,14 +91,14 @@ var activity = {
                 var $colours = "";
                 $('.activity-panel').append('<p>Total Dials:<a href="'+response.total_url+'">' + response.total + '</a></p>');
                 $header += '<table class="table actvity-table"><thead><tr><th>Outcome</th><th>Count</th>';
-                var $colname = '<th>Call center %</th>';
+                var $colname = '<th>Call centre %</th>';
                 $.each(response.data, function (i, val) {
                     $outcomes += '<tr>' +
                             '<td>' + val.outcome + '</td>' +
                             '<td><em><a href="' + val.url + '">' + val.count + '</a></td>' +
                             '<td> ' + val.pc + '%</em></td>';
                     if (val.overall) {
-                        $header_extra = '<th>Call center %</th>';
+                        $header_extra = '<th>Call centre %</th>';
                         $outcomes += '<td> ' + val.overall + '%</td>';
                         $colname = '<th>' + val.colname + '</th>';
                     }

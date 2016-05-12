@@ -83,29 +83,33 @@ class Booking extends CI_Controller
 		session_write_close();
 		$start = $this->input->post('start');
 		$end = $this->input->post('end');
-		if(!isset($_POST['attendee'])){
+			$attendee = false;
+		if(isset($_POST['attendee'])){
+			$attendee = $this->input->post('attendee');
+		} else {
 		$users = $this->Form_model->get_calendar_users();
 		foreach($users as $row){
 		if($_SESSION['user_id']==$row['id']){
 			$attendee = $_SESSION['user_id'];
 		}
 		}
-		} else {
-		$attendee = $this->input->post('attendee');
 		}
 		
 		if(in_array("own appointments",$_SESSION['permissions'])){
 		$attendee = $_SESSION['user_id'];
 		}
-		$pc = validate_postcode($this->input->post('postcode'));
-		$postcode = $pc?$postcode:false;
+		$postcode = validate_postcode($this->input->post('postcode'));
 		$appointment_type = $this->input->post('appointment_type');
         $status = $this->input->post('status');
 		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type,$postcode);
 		foreach($events as $k => $event){
 			$events[$k]['color'] = genColorCodeFromText($event['attendee_names']);
 			if($postcode){
-			$events[$k]['distance'] = number_format($event['distance']). " miles away";
+				if(!empty($event['distance'])){
+			$events[$k]['distance'] = number_format($event['distance']). " miles";
+				} else {
+			unset($events[$k]['distance']);		
+				}
 			}
 		}
 		echo json_encode($events);

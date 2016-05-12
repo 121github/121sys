@@ -78,6 +78,7 @@ switch ($domain) {
 
     case 'accept.lhs.':
         define('ENVIRONMENT', 'acceptance');
+		$theme = "lhs";
         $session_name = '121sys_accept_lhs';
         break;
 
@@ -126,8 +127,8 @@ switch ($domain) {
         break;
 		
 	case 'localhost:8082':
-        define('ENVIRONMENT', 'production');
-        $session_name = '121sys_hsl';
+        define('ENVIRONMENT', 'development');
+        $session_name = '121sys_local';
 		$theme="leadsontap";
     break;
 
@@ -169,10 +170,10 @@ $_SESSION['timeout'] = $timeout;
 if (defined('ENVIRONMENT')) {
     switch (ENVIRONMENT) {
         case 'development':
-            error_reporting(E_ALL);
+            error_reporting(0);
             break;
         case 'testing':
-            error_reporting(E_ALL);
+            error_reporting(0);
             break;
         case 'demo':
             error_reporting(0);
@@ -187,6 +188,9 @@ if (defined('ENVIRONMENT')) {
         default:
             exit('The application environment is not set correctly.');
     }
+	
+
+	
 }
 
 /*
@@ -338,3 +342,5 @@ require_once BASEPATH . 'core/CodeIgniter.php';
 
 /* End of file index.php */
 /* Location: ./index.php */
+
+

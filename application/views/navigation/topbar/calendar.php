@@ -1,4 +1,9 @@
-<?php if (@in_array('full calendar', $_SESSION['permissions']) && @in_array('view appointments', $_SESSION['permissions'])) { ?>
+<?php 
+/*
+CALENDAR THIS HAS BEEN MOVED TO THE VIEW SUBMENU
+*/
+
+if (@in_array('full calendar', $_SESSION['permissions']) && @in_array('view appointments', $_SESSION['permissions'])) { ?>
                        
    <li class="dropdown <?php if ($this->uri->segment(1) == "calendar") { echo "active"; } ?>">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Calendar <span class="caret"></span></a>

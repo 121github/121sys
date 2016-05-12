@@ -443,6 +443,7 @@ return $query->result_array();
         $join                               = array();
         $where                              = " and r.campaign_id in ({$_SESSION['campaign_access']['list']}) ";
         $order                              = "";
+		$join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
         if (!empty($filter)) {
             //if the filter field is a specific id
             foreach ($filter as $field => $data) {
@@ -743,7 +744,7 @@ return $query->result_array();
         }
 		
 		/* users can only see records that have not been parked */
-		if($_SESSION['role_data_access']['parked']=="1"){
+		if($_SESSION['data_access']['parked']=="1"){
         $parked = " and (r.parked_code is null)";
         }
 		if(array_key_exists("parked_code",$filter)){
@@ -752,18 +753,17 @@ return $query->result_array();
 		$where .= $parked;
 
 		//users can see unaassigned records
-		if($_SESSION['role_data_access']['unassigned_user']=="1"){
+		if($_SESSION['data_access']['unassigned_user']=="1"){
 		$unassigned = " or ow.user_id is null";	
 		} else {
 		$unassigned = "";	
 		}
 		
 		//users can only see their own records
-		if($_SESSION['role_data_access']['user_records']=="1"){
+		if($_SESSION['data_access']['user_records']=="1"){
 		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";	
 		}
 		
-	
         //if the second parameter in the function is set to true then we will store the filter into the session so it's use throughout the system
         if ($use) {
             $_SESSION['filter']['join']  = $join;
@@ -781,7 +781,6 @@ return $query->result_array();
                 unset($_SESSION['current_campaign']);
             }
         }
-		//$this->firephp->log($qry);
         return $qry;
         
     }
@@ -1421,6 +1420,9 @@ return $query->result_array();
     }
 	
 	public function build_global_filter(){
+		if(!isset($_SESSION['current_campaign'])&&!$_SESSION['data_access']['mix_campaigns']){
+		return false;	
+		}
 		$filter = array();
 		$campaign = (isset($_SESSION['current_campaign'])?" and campaigns.campaign_id = '".$_SESSION['current_campaign']."'":"");
 		$campaign_user_table = "";
@@ -1466,7 +1468,17 @@ return $query->result_array();
 			$qry = "select outcome_id id,outcome name from outcomes join outcomes_to_campaigns using(outcome_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by outcome_id order by outcome";
 			$filter['outcomes'] = $this->db->query($qry)->result_array();
 			
-			//live/dead/complete/parked
+			//status
+			$filter['status'][] = array("id"=>1,"name"=>"Live");
+			if($_SESSION['data_access']['pending']){
+			$filter['status'][] = array("id"=>2,"name"=>"Pending");
+			}
+			if($_SESSION['data_access']['dead']){
+			$filter['status'][] = array("id"=>3,"name"=>"Dead");
+			}
+			if($_SESSION['data_access']['complete']){
+			$filter['status'][] = array("id"=>3,"name"=>"Complete");
+			}
 			
 			//dials
 			$filter['dials'][] = array("id"=>1,"name"=>"1 Dial");
@@ -1482,7 +1494,7 @@ return $query->result_array();
 			$newfilter = array();
 			foreach($filter as $field=>$result){
 				foreach($filter[$field] as $row){
-					if(isset($row['campaign_name'])){
+				if(isset($row['campaign_name'])){
 				$newfilter[$field][$row['campaign_name']][] = $row;
 					} else {
 				$newfilter[$field][] = $row;	

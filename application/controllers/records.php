@@ -13,7 +13,6 @@ class Records extends CI_Controller
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
         $this->project_version = $this->config->item('project_version');
-
         $this->load->model('User_model');
 		$this->load->model('Filter_model');
         $this->load->model('Records_model');
@@ -23,6 +22,7 @@ class Records extends CI_Controller
         $this->load->model('Appointments_model');
         $this->load->model('Datatables_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
+		$this->_global_filter = isset($_SESSION['filter']['values']);
     }
 
 	public function save_related_records(){
