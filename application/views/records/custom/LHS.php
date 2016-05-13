@@ -98,7 +98,7 @@
             } ?>
             <?php $this->view('records/panels/attachments.php', $details); ?>
 
-            <?php $this->view('records/panels/attachments.php', $details); ?>
+            <?php $this->view('records/panels/referral.php', $details); ?>
         </div>
 
         <div class="col-md-6 col-sm-12">
