@@ -127,17 +127,21 @@ class Email extends CI_Controller
                     $val = str_replace("Miss ", "", $val);
                     $val = str_replace("Ms ", "", $val);
                 }
-                if (strpos($template['template_body'], "[$key]") !== false) {
+                if (strpos($template['template_body'], "[$key]") !== false||strpos($template['template_body'], "[!$key]") !== false) {
                     if (empty($val)) {
                         setcookie("placeholder_error", $key, time() + (60), "/");
                         if ($key == "start") {
                             $template['template_body'] = str_replace("[$key]", "<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>", $template['template_body']);
+							 $template['template_body'] = str_replace("[!$key]", "<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>", $template['template_body']);
                         } else {
                             $template['template_body'] = str_replace("[$key]", "<span style=\"color:red\">** [$key] WAS EMPTY **</span>", $template['template_body']);
+							 $template['template_body'] = str_replace("[!$key]", "<span style=\"color:red\">** [$key] WAS EMPTY **</span>", $template['template_body']);
                         }
                     } else {
                         $template['template_body'] = str_replace("[$key]", $val, $template['template_body']);
+						 $template['template_body'] = str_replace("[!$key]", $val, $template['template_body']);
 						$template['template_subject'] = str_replace("[$key]", $val, $template['template_subject']);
+						$template['template_subject'] = str_replace("[!$key]", $val, $template['template_subject']);
                     }
                 }
             }
@@ -258,7 +262,15 @@ class Email extends CI_Controller
                     $val = str_replace("Mrs ", "", $val);
                     $val = str_replace("Mrs ", "", $val);
                 }
-                $body = str_replace("[$key]", $val, $form['body']);
+
+				        $body = str_replace("[$key]", $val, $form['body']);
+						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
+						 $body = str_replace("[!$key]", $val, $form['body']);
+						$form['subject'] = str_replace("[!$key]", $val, $form['subject']);
+						//replace the optional placeholders with blanks
+						 $body = str_replace("[!$key]", "-", $form['body']);
+						$form['subject'] = str_replace("[!$key]", "", $form['subject']);
+				
             }
         }
 
@@ -419,8 +431,13 @@ class Email extends CI_Controller
                                 $val = str_replace("Mrs ", "", $val);
                                 $val = str_replace("Mrs ", "", $val);
                             }
-                            $form['body'] = str_replace("[$key]", $val, $form['body']);
-							$form['subject'] = str_replace("[$key]", $val, $form['subject']);
+                       $form['body'] = str_replace("[$key]", $val, $form['body']);
+						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
+						$form['body'] = str_replace("[!$key]", $val, $form['body']);
+						$form['subject'] = str_replace("[!$key]", $val, $form['subject']);
+						//replace the optional placeholders with blanks
+						$form['body'] = str_replace("[!$key]", "-", $form['body']);
+						$form['subject'] = str_replace("[!$key]", "", $form['subject']);
                         }
                     }
                     $history_visible = $form['history_visible'];
