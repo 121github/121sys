@@ -314,11 +314,11 @@ var custom_panels = {
             });
 			//initialize any tooltips
             $modal.find('[data-toggle="tooltip"]').tooltip();
-			
-			if(!data_id&&typeof campaign_functions.new_custom_item_setup !== "undefined"){
+
+            if(!data_id&&typeof campaign_functions.new_custom_item_setup !== "undefined"){
 				campaign_functions.new_custom_item_setup();
 			} else if(data_id&&typeof campaign_functions.edit_custom_item_setup !== "undefined"){
-				campaign_functions.edit_custom_item_setup();
+				campaign_functions.edit_custom_item_setup(response.data[data_id]);
 			}		
         });
     },

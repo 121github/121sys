@@ -344,7 +344,37 @@ var campaign_functions = {
         }
     },
     new_custom_item_setup: function () {
+        //Set the job winner options
+        campaign_functions.job_winner_setup();
+    },
+    edit_custom_item_setup: function (data) {
+        //Set the job winner options
+        campaign_functions.job_winner_setup(data);
+    },
+    job_winner_setup: function(data) {
+        $.ajax({
+            url: helper.baseUrl+'user/get_users',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            if (response.success) {
+                if (response.data.length > 0) {
+                    var options = "<option value=''> --Please select-- </option>";
+                    var job_winner_val = (data?data[1][14].value:'');
+                    $.each(response.data, function (k, val) {
+                        options += "<option value='" + val.name + "'>" + val.name + "</option>";
+                    });
+                    $modal.find('form').find("select[name='14']")
+                        .html(options)
+                        .selectpicker('val', job_winner_val)
+                        .selectpicker('refresh');
+                }
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
 
+        });
     },
     set_access_address: function () {
         if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {

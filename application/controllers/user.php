@@ -186,6 +186,16 @@ class User extends CI_Controller
         $this->template->load('default', 'user/account', $data);
     }
 
+    public function get_users() {
+        $users = $this->Form_model->get_users();
+
+        echo json_encode(array(
+            "success" => (!empty($users)),
+            "data" => $users,
+            "msg" => (empty($users)?"Not job winners loaded":""),
+        ));
+    }
+
     public function get_user_by_id()
     {
         if ($this->input->post()) {
