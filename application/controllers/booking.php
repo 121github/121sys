@@ -98,7 +98,11 @@ class Booking extends CI_Controller
 		if(in_array("own appointments",$_SESSION['permissions'])){
 		$attendee = $_SESSION['user_id'];
 		}
-		$postcode = validate_postcode($this->input->post('postcode'));
+		$postcode_valid = validate_postcode($this->input->post('postcode'));
+		$postcode=false;
+		if($postcode_valid){
+		$postcode = postcodeFormat($this->input->post('postcode'));
+		}
 		$appointment_type = $this->input->post('appointment_type');
         $status = $this->input->post('status');
 		$events = $this->Booking_model->get_events($start,$end,$attendee,$status,$appointment_type,$postcode);
@@ -106,7 +110,7 @@ class Booking extends CI_Controller
 			$events[$k]['color'] = genColorCodeFromText($event['attendee_names']);
 			if($postcode){
 				if(!empty($event['distance'])){
-			$events[$k]['distance'] = number_format($event['distance']). " miles";
+			$events[$k]['distance'] = number_format($event['distance'],1). " miles";
 				} else {
 			unset($events[$k]['distance']);		
 				}
