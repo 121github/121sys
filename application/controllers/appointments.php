@@ -117,6 +117,12 @@ class Appointments extends CI_Controller
         $this->load->model('Datatables_model');
         $visible_columns = $this->Datatables_model->get_visible_columns(3);
 
+        //Get the campaign_triggers if exists
+        $campaign_triggers = array();
+        if ($_SESSION['current_campaign']) {
+            $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($_SESSION['current_campaign']);
+        }
+
         if (!$visible_columns) {
             $this->load->model('Admin_model');
             $this->Datatables_model->set_default_columns($_SESSION['user_id']);
@@ -147,7 +153,8 @@ class Appointments extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js'
-            )
+            ),
+            "campaign_triggers" => $campaign_triggers
         );
         $this->template->load('default', 'dashboard/appointments.php', $data);
     }

@@ -26,8 +26,10 @@
                                                                   data-toggle="tooltip"
                                                                   data-title="Try to include the company or contact name"></span>
                 </p>
-                <input type="text" class="form-control" name="title" style="width:95%"
-                       placeholder="Eg: Meeting with Joe Bloggs" required/>
+                <input type="text" class="form-control tt" name="title" style="width:95%"
+                       placeholder="Eg: Meeting with Joe Bloggs" required
+                       data-toggle="tooltip"
+                       data-title="Appointment title"/>
             </div>
         </div>
     </div>
