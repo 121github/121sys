@@ -1412,7 +1412,7 @@ var dashboard = {
                                 buttons: [
                                     'copy', 'csv', 'excel', 'print'
                                 ],
-                                "dom": '<"bottom small" <"col-lg-' + dom_size + '"<"pull-left"f>><"col-lg-' + dom_size + '"<"pull-right"B>>>rt<"bottom-' + report.report_id + ' small"<"col-lg-' + dom_size + '"l><"col-lg-' + dom_size + '"<"pull-right"i>><"col-lg-' + dom_size*2 + '"p>><"clear">',
+                                "dom": '<"top top-row small" <"col-lg-' + dom_size + '"<"pull-left"f>><"col-lg-' + dom_size + '"<"pull-right"B>>>rt<"bottom-' + report.report_id + ' bottom-row small"<"col-lg-' + dom_size + '"l><"col-lg-' + dom_size + '"<"pull-right"i>><"col-lg-' + dom_size*2 + '"p>><"clear">',
                                 "pagingType": "full",
 
 
