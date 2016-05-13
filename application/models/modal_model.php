@@ -178,7 +178,7 @@ class Modal_model extends CI_Model
                     foreach ($join_array[$table] as $t) {
                         $join[$t] = @$table_joins[$t];
                     }
-                } else {
+                } else if(isset($table_joins[$table])){
                     $join[$table] = @$table_joins[$table];
                 }
             }
@@ -188,7 +188,7 @@ class Modal_model extends CI_Model
             $qry .= $join_query;
         }
         $qry .= " where a.appointment_id = '$id' group by a.appointment_id";
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         return $this->db->query($qry)->row_array();
     }
 	

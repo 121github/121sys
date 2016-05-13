@@ -1630,7 +1630,6 @@ var record = {
                 if (response.success) {
                     record.email_panel.load_panel();
                     if (modal == 1) {
-                        record.email_panel.close_all_email();
                         record.email_panel.show_all_email();
                     }
                     flashalert.success("Email was deleted from the history");

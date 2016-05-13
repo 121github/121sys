@@ -80,17 +80,26 @@ function join_array(){
 	$array['ownership_users'] = array("ownership","ownership_users");
 	$array['appointment_users'] = array("appointments","appointment_users");
 	$array['appointment_attendees'] = array("appointments","appointment_attendees");
+	$array['appointment_contacts'] = array("appointments","appointment_contacts","appointment_addresses","appointment_telephones");
 	$array['appointment_types'] = array("appointments","appointment_types");
 	$array['record_comments'] = array("record_comments");
 	$array['progress_description'] = array("progress_description");
 	$array['sticky_notes'] = array("sticky_notes");
 	$array['all_notes'] = array("sticky_notes","record_comments");
+	$array['all_addresses'] = array("all_contacts","all_companies","all_addresses");
+	$array['all_telephones'] = array("all_contacts","all_companies","all_telephones");
 	return $array;
 }
 
 function table_joins(){
 		$join = array();
 		$join['records'] = "";
+		$join['all_contacts'] = "left join contacts all_contacts on all_contacts.urn = r.urn ";
+		$join['all_companies'] = "left join companies all_companies on all_companies.urn = r.urn ";
+		$join['all_addresses'] = "left join company_addresses acoma on acoma.company_id = all_companies.company_id left join contact_addresses acona on acona.contact_id = all_contacts.contact_id ";
+		$join['all_telephones'] = "left join company_telephone acomt on acomt.company_id = all_companies.company_id left join contact_telephone acont on acont.contact_id = all_contacts.contact_id ";
+		
+		$join['appointment_contacts'] = "left join contacts appointment_contacts on appointment_contacts.contact_id = appointments.contact_id left join contact_telephone appointment_telephone on appointment_telephone.contact_id = appointments.contact_id ";
 		$join['history'] = "left join history h on h.urn = r.urn ";
 		$join['history_users'] = " left join users hu on h.user_id = hu.user_id ";
 		$join['history_outcomes'] = " left join outcomes ho on h.outcome_id = ho.outcome_id ";

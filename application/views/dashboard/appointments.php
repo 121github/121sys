@@ -66,6 +66,10 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
 		 $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
+					'All': [],
+					'Last Month': [moment().add(-1,'month').startOf('month'), moment().add(-1,'month').endOf('month')],
+					'Last 7 Days': [moment().add(-7,'days'), moment()],
+					'Yesterday': [moment().add(-1,'days'), moment()],
                     'Today': [moment(), moment()],
                     'Tomorrow': [moment().add( 1,'days'), moment().add(1,'days')],
                     'Next 7 Days': [moment(), moment().add(6,'days')],

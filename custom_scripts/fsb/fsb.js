@@ -80,7 +80,7 @@ function client_info_email(){
 
 var custom_email = {
     send_template_email: function (urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, email_name, appointment_id) {
-        if (validate_email(recipients_to)) {
+        if (validate_email(recipients_to)||'attendee') {
             $.ajax({
                 url: helper.baseUrl + 'email/send_template_email',
                 type: "POST",

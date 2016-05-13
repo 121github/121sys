@@ -306,7 +306,7 @@ $datafield_ids = array();
                 foreach ($join_array[$table] as $t) {
                     $join[$t] = @$table_joins[$t];
                 }
-            } else {
+            } else if(isset($table_joins[$table])){
                 $join[$table] = @$table_joins[$table];
             }
         }

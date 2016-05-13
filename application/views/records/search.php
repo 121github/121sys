@@ -16,8 +16,8 @@
       <?php if(in_array("search campaigns",$_SESSION['permissions'])){
 	  if(count($campaigns)>1||count($campaign_types)>1||count($clients)>1||count($sources)>1){ ?>
         <div class="panel panel-primary visible">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseZero">
-           <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-minus"></div>Campaign Filter Options</h4>
+          <div class="panel-heading">
+           <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseZero"><div class="pull-right glyphicon glyphicon-minus"></div>Campaign Filter Options</h4>
           </div>
           <div id="collapseZero" class="panel-collapse collapse in">
             <div class="panel-body" style="display:none">
@@ -72,8 +72,8 @@
         <!--  RECORD FILTER -->
         <!-------------------->
         <div class="panel panel-primary">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Record Filter Options</h4>
+          <div class="panel-heading">
+            <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><div class="pull-right glyphicon glyphicon-plus"></div>Record Filter Options</h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse ">
             <div class="panel-body">
@@ -208,8 +208,8 @@
         <!--  CONTACT FILTER -->
         <!--------------------->
         <div class="panel panel-primary">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Contact Filter Options</h4>
+          <div class="panel-heading">
+            <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><div class="pull-right glyphicon glyphicon-plus"></div>Contact Filter Options</h4>
           </div>
           <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
@@ -270,8 +270,8 @@
         <!--  COMPANY FILTER -->
         <!--------------------->
         <div class="panel panel-primary">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Company Filter Options</h4>
+          <div class="panel-heading" >
+            <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><div class="pull-right glyphicon glyphicon-plus"></div>Company Filter Options</h4>
           </div>
           <div id="collapseThree" class="panel-collapse collapse">
             <div class="panel-body">
@@ -340,8 +340,8 @@
         <!--  POSTCODE DISTANCE FILTER -->
         <!------------------------------->
         <div class="panel panel-primary">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Postcode Distance Filter Options</h4>
+          <div class="panel-heading">
+            <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><div class="pull-right glyphicon glyphicon-plus"></div>Postcode Distance Filter Options</h4>
           </div>
           <div id="collapseFour" class="panel-collapse collapse">
             <div class="panel-body">
@@ -370,8 +370,8 @@
         <!--  ADVANCED FILTER -->
         <!---------------------->
         <div class="panel panel-primary">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Advanced Filter Options</h4>
+          <div class="panel-heading">
+            <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><div class="pull-right glyphicon glyphicon-plus"></div>Advanced Filter Options</h4>
           </div>
           <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
@@ -446,8 +446,8 @@
         <!--  CUSTOM FILTER -->
         <!---------------------->
         <div class="panel panel-primary">
-          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
-            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Custom Field Filter</h4>
+          <div class="panel-heading" >
+            <h4 class="panel-title pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseSix"><div class="pull-right glyphicon glyphicon-plus"></div>Custom Field Filter</h4>
           </div>
           <div id="collapseSix" class="panel-collapse collapse">
             <div class="panel-body">
