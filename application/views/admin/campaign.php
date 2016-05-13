@@ -91,9 +91,6 @@
                             </div>
                         </td>
                         <td><select disabled style="height:200px" multiple class="form-control access-select">
-                                <?php foreach ($options['access'] as $row) { ?>
-                                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                                <?php } ?>
                             </select></td>
                     </tr>
                 </table>
@@ -141,9 +138,8 @@
                             </div>
                         </td>
                         <td><select disabled style="height:200px" multiple class="form-control camp-outcome-select">
-                                <?php foreach ($options['access'] as $row) { ?>
-                                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                                <?php } ?>
+                         
+              
                             </select></td>
                     </tr>
                 </table>

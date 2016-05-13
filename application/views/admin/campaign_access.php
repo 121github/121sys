@@ -40,9 +40,6 @@ Users</td><td></td><td>Campaign Access</td></tr>
 </div>
 </td>
 <td><select disabled style="height:200px" multiple class="form-control access-select">
-<?php foreach($options['access'] as $row){ ?>
-<option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-<?php } ?>
 </select></td>
 </tr>
 </table>

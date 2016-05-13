@@ -879,7 +879,7 @@ return $comments;
                     $is_owner = true;
                 }
             }
-            if ($_SESSION['role_data_access']['user_records']) {
+            if ($_SESSION['data_access']['user_records']) {
                 //redirect to error page if user is not the owner
                 if (!$is_owner) {
 					if(isset($_SESSION['navigation'])){

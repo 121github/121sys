@@ -62,8 +62,9 @@ var campaign_functions = {
 
 
 function contact_confirmation_email(appointment){
-	var recipient = $('#contact-email-address').text();
-custom_email.send_template_email(record.urn, 92, false, recipient, "", "bradf@121customerinsight.co.uk", "Contact appointment Confirmation email",appointment);
+	//this is sent manually by the agents via webmail
+	//var recipient = $('#contact-email-address').text();
+//custom_email.send_template_email(record.urn, 92, false, recipient, "", "bradf@121customerinsight.co.uk", "Contact appointment Confirmation email",appointment);
 }
 
 function client_confirmation_email(appointment){
@@ -72,8 +73,9 @@ custom_email.send_template_email(record.urn, 89, false, recipient, "", "bradf@12
 }
 
 function client_info_email(){
-	var recipient = $('#contact-email-address').text();
-custom_email.send_template_email(record.urn, 91, false, recipient, "", "", "FSB info email",false);
+//this is sent manually by the agents via webmail
+//var recipient = $('#contact-email-address').text();
+//custom_email.send_template_email(record.urn, 91, false, recipient, "", "", "FSB info email",false);
 }
 
 var custom_email = {
