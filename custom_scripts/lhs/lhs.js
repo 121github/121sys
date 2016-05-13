@@ -104,7 +104,7 @@ var campaign_functions = {
                 $modal.find('input[name="appointment_confirmed"]').val("0");
             }
         });
-        $('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
+        $modal.find('#typepicker').closest('.form-group').find('p').text('Appointment status');
         $modal.off('change', '.typepicker');
         $modal.on('change', '.typepicker', function () {
             //get_appointment_title();
@@ -112,6 +112,10 @@ var campaign_functions = {
 
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
+        $modal.find('input[name="title"]')
+            .tooltip('hide')
+            .attr('data-original-title', $modal.find('input[name="title"]').val())
+            .tooltip('fixTitle');
     },
     save_appointment: function (appointment) {
         //Get the additional info

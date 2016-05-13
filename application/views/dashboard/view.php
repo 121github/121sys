@@ -178,3 +178,8 @@
 		}
     });
 </script>
+
+<style>
+    .top-row { padding:10px; margin-bottom: 40px; }
+    .bottom-row { padding:0px 10px 10px;}
+</style>
