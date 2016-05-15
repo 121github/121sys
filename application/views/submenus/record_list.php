@@ -27,20 +27,20 @@
                     </a>
                 </div>
                 
-                 <?php if (isset($global_filter)) { ?>
-            <?php if (array_key_exists("pot_id",$_SESSION['filter']['values'])||array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])||array_key_exists("postcode",$_SESSION['filter']['values'])) {    
+                   <?php if ($global_filter) {   $filter_class = "btn-default"; ?>
+            <?php if (isset($_SESSION['filter']['values'])){ ?>
+			<? if(@array_key_exists("pot_id",$_SESSION['filter']['values'])||@array_key_exists("source_id",$_SESSION['filter']['values'])||@array_key_exists("outcome_id",$_SESSION['filter']['values'])||@array_key_exists("postcode",$_SESSION['filter']['values'])) {    
            
                 $filter_class = "btn-success";
-            } else {
-                $filter_class = "btn-default";
             } ?>
+             <?php } ?>  
                   <div class="btn-group">
                     <a href="#global-filter" id="submenu-filter-btn" class="btn <?php echo $filter_class ?>"><span
                             class="fa fa-filter"></span> Filter
                     </a>
               
                 </div>
-             <?php } ?>   
+             <?php } ?>    
                     <div class="btn-group desktop-only">
          <input value="<?php echo isset($_SESSION['filter']['values']['postcode'])?$_SESSION['filter']['values']['postcode']:"" ?>"  name="postcode" class="form-control" style="width:130px" placeholder="Enter Postcode"/>
          </div>

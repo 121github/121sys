@@ -1,29 +1,10 @@
-<?php if(!isset($details['record']['urn'])): ?>
+<?php if (!isset($details['record']['urn'])):
+//if this is set to true it forces the first contact in the panel to be expanded when loaded on b2b campaigns
+    $details['expand_contacts'] = true;
+    ?>
 
-There was a problem while finding the selected record details. Maybe it does not exist or has been deleted.
+    There was a problem while finding the selected record details. Maybe it does not exist or has been deleted.
 <?php else: ?>
-<div class="page-header">
-
-
-  <h2>View Details <small>URN: <?php echo $details['record']['urn'] ?> <?php echo (!empty($details['record']['campaign'])?" [". $details['record']['campaign']."]":"") ?></small> <?php echo (!empty($details['record']['logo'])?'<img style="max-height:40px" src="'.base_url().'assets/logos/'.$details['record']['logo'].'" />':""); ?> <span class="pull-right">
-
-    <?php //show navigation if the user came from the list records page
-	if(!empty($nav['prev'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
-    <a type="button" class="btn btn-default btn-lg <?php if(!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo $nav['prev'] ?>">Previous</a>
-    <?php endif ?>
-    <?php if(!empty($nav['next'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
-    <a type="button" class="btn btn-default btn-lg <?php if(!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo $nav['next'] ?>">Next</a>
-    <?php endif ?>
-    
-    <?php //this is the agent navigation which brings single records in they can only go +/-1 record at a time and they must update the record before they can move on
-	if($automatic||empty($nav['next'])&&in_array("set call outcomes",$_SESSION['permissions'])): ?>
-    <?php if(isset($_SESSION['prev'])&&!empty($_SESSION['prev'])&&$_SESSION['prev']!=$details['record']['urn']): ?>
-    <a type="button" class="btn btn-default btn-lg" href="<?php echo base_url()."records/detail/".$_SESSION['prev'] ?>">Previous</a>
-    <?php endif ?>  
-    <a type="button" class="btn btn-default btn-lg <?php if(!isset($_SESSION['next'])&&!$allow_skip||empty($_SESSION['next'])&&!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo base_url()."records/detail/".(isset($_SESSION['next'])?$_SESSION['next']:"0") ?>">Next</a>
-    <?php endif ?>
-    </span></h2>
-</div>
 <div class="row">
   <div class="col-md-6 col-sm-12">    
    <?php $this->view('records/panels/record_update.php',$details); ?>
