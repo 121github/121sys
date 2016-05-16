@@ -69,13 +69,13 @@ function contact_confirmation_email(appointment){
 
 function client_confirmation_email(appointment){
 	var recipient = 'attendee';
-custom_email.send_template_email(record.urn, 89, false, recipient, "", "bradf@121customerinsight.co.uk", "FSB appointment notification email",appointment);
+custom_email.send_template_email(appointment.urn, 89, false, recipient, "", "bradf@121customerinsight.co.uk", "FSB appointment notification email",appointment);
 }
 
 function client_info_email(){
 //this is sent manually by the agents via webmail
 //var recipient = $('#contact-email-address').text();
-//custom_email.send_template_email(record.urn, 91, false, recipient, "", "", "FSB info email",false);
+//custom_email.send_template_email(appointment.urn, 91, false, recipient, "", "", "FSB info email",false);
 }
 
 var custom_email = {

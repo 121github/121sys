@@ -280,6 +280,41 @@ class Booking extends CI_Controller
 		  echo json_encode(array("data"=>$appointment_rules));
 	}
 
+public function create_description($appointment,$contact=false,$company=false){
+	$description = $appointment['title']."\n";
+	$description .= $appointment['text']."\n";
+	$description .= "Time: ".$appointment['start']."\n";
+	if(!empty($company['name'])){
+	$description .= "Company: ".$company['name']."\n";
+	}
+	$description .= "Contact Name: ".$appointment['fullname']."\n";
+	if(!empty($appointment['address'])){
+	$description .= "Address: ".$appointment['address']."\n";
+	}
+	if(!empty($appointment['postcode'])){
+	$description .= "Postcode: ".$appointment['postcode']."\n";
+	}
+	if(!empty($appointment['access_address'])){
+	$description .= "Access Address: ".$appointment['access_address']."\n";
+	}
+	if(!empty($appointment['access_postcode'])){
+	$description .= "Access Postcode: ".$appointment['access_postcode']."\n";
+	}
+	
+	$telephone = "";
+	if(is_array($contact['telephone'])){
+	$telephone = implode(", ",$contact['telephone']);
+	}
+	if(is_array($company['telephone'])){
+	$telephone = implode(", ",$company['telephone']);
+	}
+	if(!empty($telephone)){
+	$description .= "Telephone(s): ".$telephone."\n";
+	}
+	$description .= "Email: ".$contact['email']."\n";
+	$description .= "Reference: ".$appointment['urn'];
+	return $description;
+}
 
     public function add_google_event() {
         if ($this->input->is_ajax_request()) {
@@ -291,6 +326,11 @@ class Booking extends CI_Controller
                 //Get the appointment data
                 $data = $this->Appointments_model->get_appointment($appointment_id);
                 $data['attendees'] = explode(";",$data['attendees']);
+				
+				//get the contact data
+				//$contact = $this->Contacts_model->get_contact($data['contact_id']);
+				//$company = $this->Company_model->get_company($data['urn']);
+				//$description = $this->create_description($data,$contact,$company);
             }
 
             $msg = array();

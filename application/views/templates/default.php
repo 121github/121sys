@@ -422,16 +422,19 @@ if (isset($javascript)):
     foreach ($javascript as $file):?>
         <script src="<?php echo base_url(); ?>assets/js/<?php echo $file ?>"></script>
     <?php endforeach;
-endif; ?>
+ ?>
 
 <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript) || @in_array("location.js?v" . $this->config->item('project_version'), $javascript)) { ?>
     <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript)) {
         $callback = "&callback=initializemaps";
-    } ?>
+    } 
+	?>
     <script
         type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback)?$callback:"" ?>"></script>
-<?php } ?>
+<?php } 
+endif;
+?>
 
 
 <?php if (isset($_SESSION['user_id'])) { ?>

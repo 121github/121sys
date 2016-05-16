@@ -22,7 +22,7 @@ class Modal_model extends CI_Model
 		$get_modal_query = "select id from modal_config where modal_id = '$modal_type' and ((user_id is null or user_id = '" . $_SESSION['user_id'] . "') and (campaign_id is null or campaign_id = '$campaign')) order by user_id desc, campaign_id desc limit 1";
 		$modal_config_id = $this->db->query($get_modal_query)->row()->id;
 
-		$query = "select * from modals join modal_config using(modal_id) join modal_columns on modal_config.id = modal_columns.modal_config_id join modal_datafields using(column_id) join datafields using(datafield_id) left join record_details_fields on datafield_title = field where modal_id = $modal_type and modal_config_id = '$modal_config_id' order by column_sort,modal_datafields.sort";
+		$query = "select * from modals join modal_config using(modal_id) join modal_columns on modal_config.id = modal_columns.modal_config_id join modal_datafields using(column_id) join datafields using(datafield_id) left join record_details_fields on datafield_title = field where modal_id = $modal_type and modal_config_id = '$modal_config_id' and (datafields.campaign is null or datafields.campaign = '$campaign') order by column_sort,modal_datafields.sort";
 
 		if ($this->db->query($query)->num_rows()) {
 			$fields = $this->db->query($query)->result_array();

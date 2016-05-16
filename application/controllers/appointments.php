@@ -119,7 +119,7 @@ class Appointments extends CI_Controller
 
         //Get the campaign_triggers if exists
         $campaign_triggers = array();
-        if ($_SESSION['current_campaign']) {
+        if (isset($_SESSION['current_campaign'])) {
             $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($_SESSION['current_campaign']);
         }
 

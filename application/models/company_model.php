@@ -27,10 +27,17 @@ class Company_model extends CI_Model
 		}
 	}
 	
-    public function get_company($id)
+    public function get_company($id=false,$urn=false)
     {
-        $qry     = "select *,IF(c.employees IS NOT NULL,c.employees,'') employees, IF(c.turnover IS NOT NULL,c.turnover,'') turnover, c.description as codescription,ct.description as ctdescription, IF(c.date_of_creation,date_format(c.date_of_creation,'%d/%m/%Y'),'') date_of_creation, ca.description as add_description from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) left join locations using(location_id) where company_id = '$id'";
-
+        $qry     = "select *,IF(c.employees IS NOT NULL,c.employees,'') employees, IF(c.turnover IS NOT NULL,c.turnover,'') turnover, c.description as codescription,ct.description as ctdescription, IF(c.date_of_creation,date_format(c.date_of_creation,'%d/%m/%Y'),'') date_of_creation, ca.description as add_description from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) left join locations using(location_id) where 1 ";
+		if($id){
+			 $qry     .= " and company_id = $id ";
+		}
+		if($urn){
+			 $qry     .= " and urn = $urn ";
+		}
+		//only 1 company per urn at the moment
+ 		$qry     .= " limit 1 ";
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
             $company['general'] = array(

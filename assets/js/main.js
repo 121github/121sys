@@ -3,7 +3,12 @@ platform = navigator.platform,
         if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
             mapLink = 'comgooglemaps://';
         }
+		if(typeof quick_planner == "undefined"){
 var quick_planner = [];
+		}
+if(typeof calendar == "undefined"){
+var calendar = [];
+		}
 function validate_postcode(postcode,callback){
 	var valid;
 $.ajax({
