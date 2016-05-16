@@ -39,7 +39,7 @@
     <div class="col-xs-12 col-sm-5">
         
             <div class="form-group">
-            <p>Appointment Times</p>
+            <p>Appointment date &amp; time</p>
                 <p><span style="display:inline-block; width:70px">Start time</span>  <input type="text" style="width:130px; display:inline-block" class="form-control datetime startpicker input-sm" name="start"
                        placeholder="Enter the start time" required/></p>
           
@@ -51,7 +51,7 @@
         </div>
          <div class="col-xs-12 col-sm-7">
                <div class="form-group">
-        <p>Add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+        <p>Appointment notes <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                    data-title="These notes are sent to the attendee"></span></p>
         <textarea rows="3" type="text" class="form-control input-sm" name="text"
                placeholder="Please note additional info or special requirements here" required ></textarea>

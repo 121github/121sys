@@ -179,7 +179,7 @@ class User_model extends CI_Model
 			$restriction .= " ) ";
 			//if they can't see parked data then the parked code must be null
 			if(!$access['parked']){
-			$status .= " or parked is null ";	
+			$restriction .= " and parked_code is null ";	
 			}
 			
 			$_SESSION['data_access_query'] = $restriction;

@@ -6,10 +6,13 @@ var campaign_functions = {
         if (record.role == "16") {
             $('div.custom-panel,#custom-panel,#email-panel').hide();
         }
+		$('#sticky-panel .panel-heading').text('Job Notes');
+		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');
     },
     record_setup_update: function () {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
         $('.progress-outcome').selectpicker('refresh');
+		
     },
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
@@ -76,7 +79,7 @@ var campaign_functions = {
 
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
-
+ $modal.find('textarea[name="text"]').val($('#sticky-notes').val()).attr('readonly',true);
     },
 
     appointment_edit_setup: function () {
@@ -109,7 +112,7 @@ var campaign_functions = {
         $modal.on('change', '.typepicker', function () {
             //get_appointment_title();
         });
-
+		 $modal.find('textarea[name="text"]').val($('#sticky-notes').val()).attr('readonly',true);
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
         $modal.find('input[name="title"]')
