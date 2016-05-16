@@ -491,16 +491,15 @@ class Email extends CI_Controller
             //create the form structure to pass to the send function
             $form = $this->Email_model->template_to_form($template_id);
             if ($form) {
-                $form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
-                $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
-                $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
-                $form['urn'] = $urn;
-
                 $last_comment = $this->Records_model->get_last_comment($urn);
                 $placeholder_data = $this->Email_model->get_placeholder_data($urn,$appointment_id);
 				if($recipients_to=="attendee"){
 				 $recipients_to = $placeholder_data[0]['attendee_email'];
 				}
+				$form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
+                $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
+                $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
+                $form['urn'] = $urn;
                 $placeholder_data[0]['comments'] = $last_comment;
                 $placeholder_data[0]['recipient_name'] = $recipients_to_name;
                 if (count($placeholder_data)) {
