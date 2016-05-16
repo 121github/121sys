@@ -83,13 +83,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 class="icon-bar"></span></a>
     <?php } ?>
     <?php if (isset($campaign_access)) { ?>
+    <?php if(is_array($campaign_access)){ ?>
         <div id="top-campaign-container" <?php if(count($_SESSION['campaign_access']['array'])<3){ echo 'class="hidden"'; } ?> style="padding-top:8px; width:160px; display:none; float:left">
         <select id="top-campaign-select" class="selectpicker" data-width="160px">
             <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
                 <option
                     value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
             <?php } ?>
-            <?php if(isset($campaign_access)){ ?>
             <?php foreach ($campaign_access as $client => $camp_array) { ?>
                 <optgroup label="<?php echo $client ?>">
                     <?php foreach ($camp_array as $camp) { ?>
@@ -101,7 +101,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <?php } ?>
         </select>
     </div>
-      <?php } ?>
+     <?php } ?>
     <ul class="nav navbar-nav desktop-only" id="desktop-nav">
     <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
 		 <li><a href="#" id='open-quicksearch'><i class="fa fa-search"></i> Search</a></li>
@@ -112,7 +112,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php if(in_array("add records",$_SESSION['permissions'])){ ?>
 		 <li><a href="<?php echo base_url() ?>data/add_record"><i class="fa fa-plus"></i> Create</a></li>
          <?php } ?>
+          <?php if(is_array($campaign_access)){ ?>
         <?php $this->view('navigation/topbar/dashboards.php', $page); ?>
+        <?php } ?>
         <?php $this->view('navigation/topbar/view.php', $page); ?> 
              <?php $this->view('navigation/topbar/reports.php', $page); ?>  
                <?php $this->view('navigation/topbar/admin.php', $page); ?>  
