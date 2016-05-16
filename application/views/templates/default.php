@@ -89,6 +89,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <option
                     value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
             <?php } ?>
+            <?php if(isset($campaign_access)){ ?>
             <?php foreach ($campaign_access as $client => $camp_array) { ?>
                 <optgroup label="<?php echo $client ?>">
                     <?php foreach ($camp_array as $camp) { ?>
@@ -100,6 +101,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <?php } ?>
         </select>
     </div>
+      <?php } ?>
     <ul class="nav navbar-nav desktop-only" id="desktop-nav">
     <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
 		 <li><a href="#" id='open-quicksearch'><i class="fa fa-search"></i> Search</a></li>

@@ -136,8 +136,9 @@ class User_model extends CI_Model
 		if($user_color->num_rows()){
 		$_SESSION['theme_color'] = $user_color->row()->theme_color;	
 		}
+		$this->set_permissions();
         $this->set_data_restrictions();
-        $this->set_permissions();
+       
         
 	}
 	public function set_data_restrictions(){
@@ -187,13 +188,14 @@ class User_model extends CI_Model
 	
 	public function set_campaign_access($all=false){
 		if($all){
-	 $qry = "select campaign_id from `campaigns` where campaign_status = 1";
+	echo $qry = "select campaign_id from `campaigns` where campaign_status = 1";
         } else {
             //other users can can only see what they have access to
-            $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
+            echo $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
         }
-        $user_campaigns = $this->db->query($qry)->result_array();
-        
+	
+        $user_campaigns = $this->db->query($qry)->result_array();		
+		
         if (count($user_campaigns) < 1 && $_SESSION['role'] <> 1 && !in_array("view files",$_SESSION['permissions'])) {
             session_destroy();
             $this->session->set_flashdata('info', 'You do not have access to any campaigns.');
