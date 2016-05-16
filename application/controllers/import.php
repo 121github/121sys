@@ -86,6 +86,10 @@ echo json_encode(array("success"=>true));
     }
 	
 	
+	public function seperate_fullname(){
+	$this->Import_model->seperate_fullname();	
+	}
+	
     public function import_file()
     {
         $options               = array();

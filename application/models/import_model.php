@@ -33,6 +33,37 @@ delete from records where urn in (select urn from importcsv)
 		return true;
 	}
 	
+	public function seperate_fullname(){
+		$names = $this->db->query("select contact_id,fullname from contacts where (fullname is not null and fullname <> '') and (lastname is null or lastname = '') ")->result_array();
+		foreach($names as $row){
+		$name = explode(" ",$row['fullname']);
+		foreach($name as $k=>$part){
+		$name[$k] = ucfirst($part);	
+		}
+		$titles = array("Mr","Mrs","Miss","Ms","Sir","Dr");
+		$title = NULL;
+		$firstname = NULL;	
+		$lastname = NULL;
+		if(in_array($name[0],$titles)){
+			$title = $name[0];
+			unset($name[0]);
+			reset($name);
+		}
+		if(isset($name[0])&&!empty($name[0])){
+		$firstname = 	$name[0];
+		} 
+		if(isset($name[1])&&!empty($name[1])){
+		$lastname = 	$name[1];
+		} 
+		if(!empty($firstname)||!empty($lastname)){
+		echo $query = "update contacts set title = '$title', firstname = '$firstname',lastname='$lastname' where contact_id = '{$row['contact_id']}'";
+		$this->db->query($query);
+		}
+		}
+		
+	}
+	
+	
 		public function get_selected_fields(){
 	$fields = array();
 	$result = $this->db->query("SHOW COLUMNS FROM `importcsv`")->result_array();	

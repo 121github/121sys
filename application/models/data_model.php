@@ -163,6 +163,31 @@ return true;
         ));
         return $this->db->insert_id();
     }
+	
+	public function seperate_fullname(){
+		$names = $this->db->query("select contact_id,fullname from contacts where fullname is not null and lastname is null");
+		foreach($names as $row){
+		$name = explode(" ",$row['fullname']); 
+		$titles = array("Mr","Mrs","Miss","Sir","Dr");
+		if(in_array($name[0],$titles)){
+			unset($name[0]);
+			reset($name);
+		}
+		if(isset($name[0])&&!empty($name[0])){
+		$firstname = 	$name[0];
+		} else {
+		$firstname = NULL;	
+		}
+		if(isset($name[0])&&!empty($name[0])){
+		$lastname = 	$name[1];
+		} else {
+		$lastname = NULL;
+		}
+		$this->db->query("update contacts set firstname = '$firstname',lastname='$lastname' where contact_id = '{$row['contact_id']}'");
+		}
+		
+	}
+	
     public function import_record($row, $options)
     {
         $errors     = array();

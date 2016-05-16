@@ -10,7 +10,7 @@ var campaign_functions = {
     },
     record_setup_update: function() {
 		//this is ran when the update panel finished loading
-		if($('#custom-panel table .c4:contains("Online Quote")').length>0){
+		if($('#custom-panel table .c4:contains("Online Quote")').length>0||$('#record-update-form').find('#outcomes option:selected').val()=="171"){
 			console.log("online");
 		$('#record-panel ul.dropdown-menu').find('span:contains("Transfer Online")').addClass('green');
 		} 
