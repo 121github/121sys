@@ -280,10 +280,12 @@ var campaign_functions = {
 		*/
 		
         //Job Status is Paid
-        if ($form.find("[name='6']").val() === "Paid") {
+        if ($form.find("[name='6']").val() === "Paid"){
+			
+			if($form.find("[name='15']").val()=="Yes") {
             //Send email Referral Scheme Email to Account Role group email
             lhs.send_template_email(urn, 2, "Role Group Account", 'rowena@lhsurveying.co.uk', "", "", "Referral scheme email", appointment_id);
-
+			}
             //Send email Receipt of Payment Email to Client email address on the record
             lhs.send_template_email(urn, 6, "Client", 'rowena@lhsurveying.co.uk', "", "", "Receipt of payement email", appointment_id);
             //Hard Copy Required is Yes
