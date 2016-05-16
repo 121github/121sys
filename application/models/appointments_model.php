@@ -304,9 +304,11 @@ $datafield_ids = array();
 			if($table<>"custom_panels"){
             if (array_key_exists($table, $join_array)) {
                 foreach ($join_array[$table] as $t) {
+					if(isset($table_joins[$t])){
                     $join[$t] = @$table_joins[$t];
+					}
                 }
-            } else if(isset($table_joins[$table])){
+            } else if(isset($table_joins[$table])&&isset($table_joins[$table])){
                 $join[$table] = @$table_joins[$table];
             }
         }

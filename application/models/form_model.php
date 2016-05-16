@@ -294,7 +294,7 @@ class Form_model extends CI_Model
         if (in_array("all campaigns", $_SESSION['permissions'])) {
             $qry = "select source_id id,source_name name from data_sources";
         } else {
-            $qry = "select source_id id,source_name name from records left join data_sources using(source_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by source_name order by source_name";
+            $qry = "select source_id id,source_name name from data_sources join records  using(source_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by source_name order by source_name";
         }
         return $this->db->query($qry)->result_array();
     }
