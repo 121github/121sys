@@ -43,7 +43,7 @@ var campaign_functions = {
                 $.each(response.data, function (k, row) {
                     data_options += "<option value='" + row.data_id + "'>Job #" + row.data_id + ": Created on " + row.created_on + "</option>";
                 });
-                $data_items = $("<div class='form-group' style='display:none' ><p>Which job is this appointment related to?</p><select  data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
+                $data_items = $("<div class='form-group' style='display:none' ><p>Which job is this appointment related to?</p><select data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
 
                 $data_items.insertBefore($('#select-appointment-address'));
                 //$('#data-items').selectpicker();
@@ -72,7 +72,7 @@ var campaign_functions = {
             modals.set_appointment_start(start);
         }
 
-        $modal.find('#typepicker').closest('.form-group').find('p').text('Appointment status');
+             $modal.find('#typepicker').closest('.form-group').find('p').text('Appointment status');
 
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
@@ -205,14 +205,9 @@ var campaign_functions = {
                     dataType: "JSON",
                     data: {
 						action:'create_job_number',
-                        data_id: appointment.job_id,
+                        data_id: response.data[appointment.job_id],
                     }
-                }).done(function(){
-                    if (typeof custom_panels != "undefined")
-                    {
-                        custom_panels.load_all_panels();
-                    }
-				});
+                })
 		 }
 			
 
@@ -264,9 +259,7 @@ var campaign_functions = {
 						action:'create_job_number',
                         data_id: $modal.find('[name="data_id"]').val(),
                     }
-                }).done(function(){
-					custom_panels.load_all_panels();
-				})
+                })
 		 }
 		 //if they want to clear the job number if an status gets put back just uncomment this
 		 /*
@@ -360,7 +353,10 @@ var campaign_functions = {
             if (response.success) {
                 if (response.data.length > 0) {
                     var options = "<option value=''> --Please select-- </option>";
-                    var job_winner_val = (data?data[1][14].value:'');
+					var job_winner_val = "";
+					if(typeof data[1][14] !== "undefined"){
+                    job_winner_val= data[1][14];
+					}
                     $.each(response.data, function (k, val) {
                         options += "<option value='" + val.name + "'>" + val.name + "</option>";
                     });

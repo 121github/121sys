@@ -353,7 +353,10 @@ var campaign_functions = {
             if (response.success) {
                 if (response.data.length > 0) {
                     var options = "<option value=''> --Please select-- </option>";
-                    var job_winner_val = (data?data[1][14].value:'');
+					var job_winner_val = "";
+					if(typeof data[1][14] !== "undefined"){
+                    job_winner_val= data[1][14];
+					}
                     $.each(response.data, function (k, val) {
                         options += "<option value='" + val.name + "'>" + val.name + "</option>";
                     });
