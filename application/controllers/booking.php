@@ -523,6 +523,18 @@ public function create_description($appointment,$contact=false,$company=false){
         ));
     }
 
+    public function set_auto_sync() {
+        $google_calendar_id = $this->input->post('google_calendar_id');
+        $auto_sync = $this->input->post('auto_sync');
+
+        $result = $this->Booking_model->set_auto_sync($google_calendar_id, $auto_sync);
+
+        echo json_encode(array(
+            'success' => (!empty($result)),
+            'msg' => (!empty($result)?"Sync set as ".($auto_sync?"Automatic":"Manual")." successfully!":"ERROR: The calendar sync was not updated!")
+        ));
+    }
+
     public function refreshToken($token) {
         define('APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
         define('CREDENTIALS_PATH', '.credentials/calendar-php-quickstart.json');
@@ -563,9 +575,25 @@ public function create_description($appointment,$contact=false,$company=false){
     }
 
 
-    public function sync_google_cal() {
-        $user_id = $this->input->post("user_id");
-        $google_calendar_id = $this->input->post("google_calendar_id");
+    public function auto_sync_google_cal() {
+        //Get the google calendars to be sync
+        $calendars = $this->Booking_model->getGoogleCalendars();
+
+        foreach ($calendars as $calendar) {
+            if ($calendar['auto_sync']) {
+                print_r("Sync Google Calendar: ".$calendar['google_calendar_id']. " for the user: ".$calendar['user_id']." => ");
+                print_r($this->sync_google_cal($calendar['google_calendar_id'], $calendar['user_id'])."\n");
+            }
+        }
+    }
+
+    public function sync_google_cal($google_calendar_id = null, $user_id = null) {
+        if ($this->input->is_ajax_request()) {
+            $user_id = $this->input->post("user_id");
+            $google_calendar_id = $this->input->post("google_calendar_id");
+        }
+
+        //Get the google calendar
         $google_calendar = $this->Booking_model->getGoogleCalendar($google_calendar_id);
 
         //get the user access_token

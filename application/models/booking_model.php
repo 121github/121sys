@@ -189,6 +189,11 @@ class Booking_model extends CI_Model
         return (!empty($result)?$result[0]:array());
     }
 
+    public function getGoogleCalendars() {
+        $this->db->select("google_calendar.*", false);
+        return $this->db->get("google_calendar")->result_array();
+    }
+
     public function get_google_calendars_by_user_and_campaign($user_id, $campaign_id) {
         $this->db->select("google_calendar.*", false);
         $this->db->where("google_calendar.user_id", $user_id);
@@ -197,5 +202,10 @@ class Booking_model extends CI_Model
 
         return (!empty($result)?$result[0]:array());
     }
-	
+
+
+	public function set_auto_sync($google_calendar_id, $auto_sync) {
+		$this->db->where('google_calendar_id', $google_calendar_id);
+		return  $this->db->update("google_calendar", array("auto_sync" => $auto_sync));
+	}
 }

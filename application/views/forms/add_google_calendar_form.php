@@ -33,29 +33,19 @@
             </form>
         </div>
         <div role="tabpanel" class="tab-pane" id="view-calendars-tab">
-            <table class="table ajax-table calendars-table">
-                <thead>
-                    <tr>
-                        <th>Campaign</th>
-                        <th>Calendar</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($userCalendars as $row): ?>
-                        <tr class="google-calendar-id-<?php echo $row['google_calendar_id'] ?>">
-                            <td><?php echo $row['campaign_name'] ?></td>
-                            <td><?php echo $row['calendar_name'] ?></td>
-                            <td>
-                                <button class="tt pull-left btn btn-default btn-xs remove-google-calendar" data-id="<?php echo $row['google_calendar_id'] ?>" data-calendar-id="<?php echo $row['calendar_id'] ?>" data-toggle="tooltip" data-placement="top" title="Detatch the Google calendar from this user"><i class="fa fa-remove info red"></i> Delete</button>
-                                <button class="tt pull-left marl btn btn-default btn-xs sync-google-calendar" data-user-id="<?php echo $row['user_id'] ?>" data-id="<?php echo $row['google_calendar_id'] ?>" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the Google calendar events to the local system calendar for this user)"><i class="fa fa-refresh info green"></i> Sync</button>
-                                <img class="sync-google-loading" src='<?php echo base_url(); ?>assets/img/ajax-load-black.gif' style="display: none"/>
-                            </td>
+            <form name="change-sync-google-calendar-form" method="post" class="change-sync-google-calendar-form">
+                <table class="table ajax-table calendars-table">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Calendar</th>
+                            <th>Options</th>
+                            <th>Sync</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </form>
         </div>
     </div>
 </div>

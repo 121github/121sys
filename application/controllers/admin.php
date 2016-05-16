@@ -540,10 +540,12 @@ class Admin extends CI_Controller
             'page' => 'users',
             'options' => $options,
             'javascript' => array(
-                'admin/users.js?v' . $this->project_version
+                'admin/users.js?v' . $this->project_version,
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             ),
             'css' => array(
-                'dashboard.css'
+                'dashboard.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css'
             )
         );
         $this->template->load('default', 'admin/users.php', $data);
