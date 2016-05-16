@@ -2554,21 +2554,21 @@ if(val.read_confirmed==1){
                     $.each(response.data, function (key, val) {
                         if (k <= record.limit - 1) {
                             var remove_btn = '<button class="btn btn-default btn-xs marl del-attachment-btn" data-target="#modal" item-id="' + val.attachment_id + '"><span class="glyphicon glyphicon-trash"></span> Delete</button>';
-                            var download_btn = '<a class="btn btn-default btn-xs" target="_blank" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                            var download_btn = '<a class="btn btn-default btn-xs" target="_blank" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span> Download</a>';
                             body += '<tr class="' + val.attachment_id + '">' +
                                 '<td>' + val.name +
+                                '</td><td style="text-align: center">' + val.version +
                                 '</td><td>' + val.date +
                                 '</td><td>' + val.user +
-                                '</td><td>' + download_btn +
-                                '</td><td>' + remove_btn +
+                                '</td><td style="text-align: right">' + download_btn + remove_btn +
                                 '</td></tr>';
                         }
                         k++;
                     });
                     if (k > record.limit - 1) {
-                        body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right" id="show-all-attachments-btn" >Show All</span></a></td></tr>';
+                        body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-attachments-btn" >Show All</span></a></td></tr>';
                     }
-                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-condensed small"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
+                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-condensed small"><thead><tr><th>Name</th><th>Version</th><th>Date</th><th>Added by</th><th colspan="2" style="text-align: right">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
 
                     if (attachment_id) {
                         $panel.find('.attachment-list').find('.' + attachment_id).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
@@ -2594,12 +2594,13 @@ if(val.read_confirmed==1){
                 var mbody = '<p>This record has no attachments</p>';
 				var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'
                 if (response.data.length > 0) {
-					 mbody = '<table class="table"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>';
+					 mbody = '<table class="table small"><thead><tr><th>Name</th><th>Version</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>';
                     $.each(response.data, function (key, val) {
                         var remove_btn = '<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '"></span> Delete</button>';
-                        var download_btn = '<a href="' + val.path + '" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                        var download_btn = '<a href="' + val.path + '" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>';
                         mbody += '<tr class="' + val.attachment_id + '">' +
                             '<td>' + val.name +
+                            '</td><td style="text-align: center">' + val.version +
                             '</td><td>' + val.date +
                             '</td><td>' + val.user +
                             '</td><td>' + download_btn +
@@ -2629,6 +2630,33 @@ if(val.read_confirmed==1){
             });
         },
         save_attachment: function (name, type, path) {
+            //Check if this file already exists for the same record
+            $.ajax({
+                url: helper.baseUrl + 'records/check_attachment_version',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    name: name,
+                    urn: record.urn
+                }
+            }).done(function (response) {
+                if (response.success) {
+                    //If already exists, ask if the user want to override or add a new version
+                    modal.confirm_override(name, type, path, response.last_attachment_version, response.last_attachment_version_id);
+                }
+                else {
+                    //Just add the new file with version as 1
+                    record.attachment_panel.add_attachment(name, type, path, 1);
+                }
+            });
+
+
+        },
+        override_attachment: function(name, type, path, version, old_attachment){
+            record.attachment_panel.delete_attachment(old_attachment);
+            record.attachment_panel.add_attachment(name, type, path, version);
+        },
+        add_attachment: function(name, type, path, version){
             $.ajax({
                 url: helper.baseUrl + 'records/save_attachment',
                 type: "POST",
@@ -2637,6 +2665,7 @@ if(val.read_confirmed==1){
                     name: name,
                     type: type,
                     path: path,
+                    version: version,
                     urn: record.urn
                 }
             }).done(function (response) {
@@ -2669,6 +2698,25 @@ var modal = {
         modals.default_buttons();
         $modal.find('.confirm-modal').on('click', function (e) {
             window.location.href = moveUrl
+            $modal.modal('toggle');
+        });
+
+    },
+    confirm_override: function (name, type, path, version, old_attachment_id) {
+        var mheader = 'Do you want to override?';
+        var mbody = 'A file with the same name already exists for this record, do you want to override it? If you select No, a new version of the file will be added with the same name';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+
+        modal_footer.append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">No</button>');
+        modal_footer.append('<button class="btn btn-primary confirm-modal" type="button">Override</button>');
+
+        $modal.find('.confirm-modal').on('click', function (e) {
+            record.attachment_panel.override_attachment(name, type, path, version, old_attachment_id);
+            $modal.modal('toggle');
+        });
+        $modal.find('.close-modal').on('click', function (e) {
+            record.attachment_panel.add_attachment(name, type, path, parseInt(version)+1);
             $modal.modal('toggle');
         });
 
