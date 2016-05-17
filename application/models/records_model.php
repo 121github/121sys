@@ -10,46 +10,52 @@ class Records_model extends CI_Model
     {
         parent::__construct();
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
-		$this->load->helper('query');
+        $this->load->helper('query');
     }
-	
-	public function save_notes($urn,$notes){
-		
-	 $this->db->where("urn", $urn);
-    return $this->db->replace('sticky_notes', array(
-                "note" => $notes,
-                "urn" => $urn,
-                "updated_by" => @$_SESSION['user_id']
-            ));
-			
-	}
-	
-	public function update_custom_source_field($urn,$source_id){
-		$check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_source = 1";
-		if($this->db->query($check)->num_rows()>0){
-			$field = $this->db->query($check)->row()->field;
-		$query = "update record_details set `$field` = (select source_name from data_sources where source_id = '$source_id')";
-		$this->db->query($query); 
-		}
-	}
-	public function update_custom_pot_field($urn,$pot_id){
-		$check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_pot = 1";
-		if($this->db->query($check)->num_rows()>0){
-			$field = $this->db->query($check)->row()->field;
-		$query = "update record_details set `$field` = (select pot_name from data_pots where pot_id = '$pot_id')";
-		$this->db->query($query); 
-	}
-	}
-	
-	public function save_record_options($data){
-	$this->db->where("urn",$data['urn']);
-	$this->db->update("records",$data);
-	}
-	
-	public function get_task_history($urn){
-		$qry = "select task_name task, task_status, date_format(`timestamp`,'%d/%m/%Y %H:%i') `date`, name from task_history join users using(user_id) join tasks using(task_id) join task_status_options using(task_status_id) order by `timestamp` desc";
-		return $this->db->query($qry)->result_array();
-	}
+
+    public function save_notes($urn, $notes)
+    {
+
+        $this->db->where("urn", $urn);
+        return $this->db->replace('sticky_notes', array(
+            "note" => $notes,
+            "urn" => $urn,
+            "updated_by" => @$_SESSION['user_id']
+        ));
+
+    }
+
+    public function update_custom_source_field($urn, $source_id)
+    {
+        $check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_source = 1";
+        if ($this->db->query($check)->num_rows() > 0) {
+            $field = $this->db->query($check)->row()->field;
+            $query = "update record_details set `$field` = (select source_name from data_sources where source_id = '$source_id')";
+            $this->db->query($query);
+        }
+    }
+
+    public function update_custom_pot_field($urn, $pot_id)
+    {
+        $check = "select field from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and is_pot = 1";
+        if ($this->db->query($check)->num_rows() > 0) {
+            $field = $this->db->query($check)->row()->field;
+            $query = "update record_details set `$field` = (select pot_name from data_pots where pot_id = '$pot_id')";
+            $this->db->query($query);
+        }
+    }
+
+    public function save_record_options($data)
+    {
+        $this->db->where("urn", $data['urn']);
+        $this->db->update("records", $data);
+    }
+
+    public function get_task_history($urn)
+    {
+        $qry = "select task_name task, task_status, date_format(`timestamp`,'%d/%m/%Y %H:%i') `date`, name from task_history join users using(user_id) join tasks using(task_id) join task_status_options using(task_status_id) order by `timestamp` desc";
+        return $this->db->query($qry)->result_array();
+    }
 
     public function check_max_dials($urn)
     {
@@ -95,40 +101,40 @@ class Records_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
-    public function find_related_records($urn=false, $campaign = false, $original = false)
+    public function find_related_records($urn = false, $campaign = false, $original = false)
     {
-		if($urn&&!$original){
-        $qry = "select companies.name,companies.website,concat(coma.add1,coma.postcode) address,concat(cona.add1,cona.postcode) contact_address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses coma using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) left join contact_addresses cona using(contact_id)  where urn = '$urn'";
-        if ($campaign) {
-            $qry .= " and campaign_id = '$campaign'";
+        if ($urn && !$original) {
+            $qry = "select companies.name,companies.website,concat(coma.add1,coma.postcode) address,concat(cona.add1,cona.postcode) contact_address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses coma using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) left join contact_addresses cona using(contact_id)  where urn = '$urn'";
+            if ($campaign) {
+                $qry .= " and campaign_id = '$campaign'";
+            }
+            $qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+            $result = $this->db->query($qry)->result_array();
+            $original = array();
+            foreach ($result as $row) {
+                if ($row['name']) {
+                    $original['name'] = $row['name'];
+                }
+                if ($row['website']) {
+                    $original['website'] = $row['website'];
+                }
+                if ($row['contact']) {
+                    $original['contacts'][$row['contact']] = str_replace(array("Mr", "Mrs", "Miss"), array("", "", ""), $row['contact']);
+                }
+                if ($row['address']) {
+                    $original['addresses'][$row['address']] = $row['address'];
+                }
+                if ($row['company_telephone']) {
+                    $original['company_numbers'][$row['company_telephone']] = $row['company_telephone'];
+                }
+                if ($row['contact_telephone']) {
+                    $original['contact_numbers'][$row['contact_telephone']] = $row['contact_telephone'];
+                }
+                if ($row['contact_address']) {
+                    $original['contact_addresses'][$row['contact_address']] = $row['contact_address'];
+                }
+            }
         }
-        $qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $result = $this->db->query($qry)->result_array();
-        $original = array();
-        foreach ($result as $row) {
-            if ($row['name']) {
-                $original['name'] = $row['name'];
-            }
-            if ($row['website']) {
-                $original['website'] = $row['website'];
-            }
-            if ($row['contact']) {
-                $original['contacts'][$row['contact']] = str_replace(array("Mr", "Mrs", "Miss"), array("", "", ""), $row['contact']);
-            }
-            if ($row['address']) {
-                $original['addresses'][$row['address']] = $row['address'];
-            }
-            if ($row['company_telephone']) {
-                $original['company_numbers'][$row['company_telephone']] = $row['company_telephone'];
-            }
-            if ($row['contact_telephone']) {
-                $original['contact_numbers'][$row['contact_telephone']] = $row['contact_telephone'];
-            }
-            if ($row['contact_address']) {
-                $original['contact_addresses'][$row['contact_address']] = $row['contact_address'];
-            }
-        }
-		}
         //now look for matches using the data from the original
         $matches = array();
         foreach ($original as $k => $v) {
@@ -264,31 +270,32 @@ class Records_model extends CI_Model
 
     }
 
-	public function get_record_row($urn){
-	$this->db->where("urn",$urn);
-	return $this->db->get("records")->row_array();		
-	}
+    public function get_record_row($urn)
+    {
+        $this->db->where("urn", $urn);
+        return $this->db->get("records")->row_array();
+    }
 
     public function get_record()
     {
 
-		//if a virgin order for the campaign is set then it's declare it here to insert into the virgin query below
-		$custom_order = isset($_SESSION['custom_order'])?" order by " . $_SESSION['custom_order']:"";
-		$custom_join = isset($_SESSION['custom_joins'])?$_SESSION['custom_joins']:"";
-		if(isset($_SESSION['filter']['join'])){
-		 foreach ($_SESSION['filter']['join'] as $join => $join_query) {
-			 if($join<>"ownership"){
-            $custom_join .= $join_query;
-			 }
+        //if a virgin order for the campaign is set then it's declare it here to insert into the virgin query below
+        $custom_order = isset($_SESSION['custom_order']) ? " order by " . $_SESSION['custom_order'] : "";
+        $custom_join = isset($_SESSION['custom_joins']) ? $_SESSION['custom_joins'] : "";
+        if (isset($_SESSION['filter']['join'])) {
+            foreach ($_SESSION['filter']['join'] as $join => $join_query) {
+                if ($join <> "ownership") {
+                    $custom_join .= $join_query;
+                }
+            }
         }
-		}
-		//other variables
+        //other variables
         $urn = 0;
-		$this->firephp->log($_SESSION['filter']['where']);
-        $where = isset($_SESSION['filter']['where'])?$_SESSION['filter']['where']:"";
+        $this->firephp->log($_SESSION['filter']['where']);
+        $where = isset($_SESSION['filter']['where']) ? $_SESSION['filter']['where'] : "";
         $user_id = $_SESSION['user_id'];
         if (isset($_SESSION['current_campaign'])) {
-			$where .= " and campaign_id = '".$_SESSION['current_campaign']."' ";
+            $where .= " and campaign_id = '" . $_SESSION['current_campaign'] . "' ";
             $priority = array();
             //1st priority where last outcome needs a callback within 10 mins belonging to the user
             $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1  and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (ow.user_id = '$user_id') and outcome_id in(select outcome_id from outcomes where requires_callback = 1) $where order by case when outcome_id = 2 then 1 else 2 end, r.date_updated";
@@ -301,10 +308,10 @@ class Records_model extends CI_Model
                 $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and ow.user_id is null $where order by case when outcome_id = 2 then 1 else 2 end,r.date_updated,dials";
             }
             //next priority is virgin and assigend to the user
-			$priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (ow.user_id = '$user_id') $where " . $custom_order ;
+            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (ow.user_id = '$user_id') $where " . $custom_order;
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
                 //next priority is virgin and unassigned
-			$priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and ow.user_id is null $where ". $custom_order ;
+                $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and ow.user_id is null $where " . $custom_order;
             }
             //next priority is any other record with a nextcall date in order of lowest dials (current user)
             $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (ow.user_id = '$user_id') $where order by date_updated,dials";
@@ -313,14 +320,15 @@ class Records_model extends CI_Model
                 $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and ow.user_id is null $where order by date_updated,dials";
             }
             foreach ($priority as $k => $qry) {
-                $query = $this->db->query($qry." limit 1");
+                $query = $this->db->query($qry . " limit 1");
                 if ($query->num_rows() > 0) {
-					$this->firephp->log($qry);
-					$_SESSION['last_query'] = "test";
+                    $this->firephp->log($qry);
+                    $_SESSION['last_query'] = "test";
                     $urn = $query->row(0)->urn;
                     $owner = $query->row(0)->user_id;
                     break;
-                }            }
+                }
+            }
             //if no user is allocated we should add the a user to prevent someone else landing on this record
             if (empty($owner) && in_array("keep records", $_SESSION['permissions'])) {
                 $this->db->replace("ownership", array("user_id" => $user_id, "urn" => $urn));
@@ -358,7 +366,7 @@ class Records_model extends CI_Model
                   LEFT JOIN company_addresses coma ON coma.company_id = com.company_id
                   LEFT JOIN company_telephone comt ON comt.company_id = com.company_id
                   LEFT JOIN contact_telephone cont ON cont.contact_id = con.contact_id
-                WHERE r.urn IN (" . implode(",",$urn_list).")
+                WHERE r.urn IN (" . implode(",", $urn_list) . ")
                 GROUP BY r.urn";
 
         return $this->db->query($qry)->result_array();
@@ -390,7 +398,7 @@ class Records_model extends CI_Model
 
         $result = $this->db->query($qry)->result_array();
 
-        return  (!empty($result)?$result[0]:array());
+        return (!empty($result) ? $result[0] : array());
 
 
     }
@@ -462,24 +470,24 @@ class Records_model extends CI_Model
     }
 
     //function to list all the records
-    public function get_records($options,$urn=false)
+    public function get_records($options, $urn = false)
     {
         $tables = $options['visible_columns']['tables'];
-        $columns =  $options['visible_columns']['columns'];
+        $columns = $options['visible_columns']['columns'];
         $table_columns = $options['visible_columns']['select'];
         $filter_columns = $options['visible_columns']['filter'];
         $order_columns = $options['visible_columns']['order'];
-			$datafield_ids = array();
-		foreach($table_columns as $k=>$col){
-				$datafield_ids[$k] = 0;	
-		if(strpos($col,"custom_")!==false){
-			$split = explode("_",$col);
-			$datafield_ids[$k] = intval($split[1]);
-			$filter_columns[$k] = "t_".intval($split[1]).".value";
-			$order_columns[$k] = "t_".intval($split[1]).".value";
-			$table_columns[$k] = "t_".intval($split[1]).".value " .$columns[$k]['data'];
-		}
-		}
+        $datafield_ids = array();
+        foreach ($table_columns as $k => $col) {
+            $datafield_ids[$k] = 0;
+            if (strpos($col, "custom_") !== false) {
+                $split = explode("_", $col);
+                $datafield_ids[$k] = intval($split[1]);
+                $filter_columns[$k] = "t_" . intval($split[1]) . ".value";
+                $order_columns[$k] = "t_" . intval($split[1]) . ".value";
+                $table_columns[$k] = "t_" . intval($split[1]) . ".value " . $columns[$k]['data'];
+            }
+        }
 
 //these tables must be joined to the query regardless of the selected columns to allow the map to function
         $required_tables = array("record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
@@ -511,15 +519,14 @@ class Records_model extends CI_Model
             }
         }
 
-		
 
         //turn the selection array into a list
         $selections = implode(",", $table_columns);
-		$qry = "";
+        $qry = "";
         $select = "select $selections
                 from records r ";
-		$numrows = "select count(distinct r.urn) numrows
-                from records r ";		
+        $numrows = "select count(distinct r.urn) numrows
+                from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
@@ -529,36 +536,37 @@ class Records_model extends CI_Model
         $table_joins = table_joins();
         $join_array = join_array();
 
-		$tablenum=0;
-        foreach ($tables as $k=>$table) {
-			if($table=="custom_panels"){ $tablenum++;
-		
-			$field_id = $datafield_ids[$k];
-				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
-			}
-			
-			if($table<>"custom_panels"){
-            if (array_key_exists($table, $join_array)) {
-                foreach ($join_array[$table] as $t) {
-                    $join[$t] = $table_joins[$t];
+        $tablenum = 0;
+        foreach ($tables as $k => $table) {
+            if ($table == "custom_panels") {
+                $tablenum++;
+
+                $field_id = $datafield_ids[$k];
+                $join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+            }
+
+            if ($table <> "custom_panels") {
+                if (array_key_exists($table, $join_array)) {
+                    foreach ($join_array[$table] as $t) {
+                        $join[$t] = $table_joins[$t];
+                    }
+                } else {
+                    $join[$table] = $table_joins[$table];
                 }
-            } else {
-                $join[$table] = $table_joins[$table];
             }
         }
-		}
 
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
-		
+
         $qry .= get_where($options, $filter_columns);
-	
-		//get the total number of records before any limits or pages are applied
-        $count = $this->db->query($numrows.$qry)->row()->numrows;
-		
-		$qry .= " group by r.urn";
-		
+
+        //get the total number of records before any limits or pages are applied
+        $count = $this->db->query($numrows . $qry)->row()->numrows;
+
+        $qry .= " group by r.urn";
+
         //if any order has been set then we should apply it here
         $start = $options['start'];
         $length = $options['length'];
@@ -571,39 +579,40 @@ class Records_model extends CI_Model
         }
 
         $qry .= $order;
-		if($length>0){
-        $qry .= "  limit $start,$length";
-		}
-		//$this->firephp->log($select.$qry);
-        $records = $this->db->query($select.$qry)->result_array();
+        if ($length > 0) {
+            $qry .= "  limit $start,$length";
+        }
+        //$this->firephp->log($select.$qry);
+        $records = $this->db->query($select . $qry)->result_array();
         $records['count'] = $count;
-        
+
         return $records;
     }
 
-	public function get_all_comments($urns=array()){
-		$comments = array();
-		if(empty($urns)){
-		return $comments;	
-		}
-		$qry = "SELECT lch.urn, lch.comments
+    public function get_all_comments($urns = array())
+    {
+        $comments = array();
+        if (empty($urns)) {
+            return $comments;
+        }
+        $qry = "SELECT lch.urn, lch.comments
 FROM (
 
 SELECT max( history_id ) mhid, urn
 FROM history
 WHERE comments <> ''";
-$qry .= "and urn in(0,".implode($urns,",").")";
-$qry .= "GROUP BY urn
+        $qry .= "and urn in(0," . implode($urns, ",") . ")";
+        $qry .= "GROUP BY urn
 )last_history
 JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn = lch.urn where r.campaign_id in({$_SESSION['campaign_access']['list']})";
-		
-foreach($this->db->query($qry)->result_array() as $row){
-$comments[$row['urn']] = $row['comments'];	
-}
 
-return $comments;
-	}
-	
+        foreach ($this->db->query($qry)->result_array() as $row) {
+            $comments[$row['urn']] = $row['comments'];
+        }
+
+        return $comments;
+    }
+
     public function get_nav($options)
     {
 
@@ -666,11 +675,10 @@ return $comments;
         $_SESSION['navigation'] = array();
         foreach ($records as $row) {
             $_SESSION['navigation'][] = $row['urn'];
-			//$this->firephp->log($row['urn']);
+            //$this->firephp->log($row['urn']);
         }
-		
-    }
 
+    }
 
 
     public function count_records($options)
@@ -710,7 +718,7 @@ return $comments;
         $select = "select r.urn,r.source_id,source_name,r.pot_id,pot_name,c4, cr.client_ref,if(r.map_icon is null,camp.map_icon,r.map_icon) map_icon, r.record_color, c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, custom_panel_format,a.add1,a.add2,a.add3,a.city,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.outcome_reason_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason,camp.telephone_protocol,camp.telephone_prefix ";
         $from = " from records r ";
         $from .= " left join client_refs cr using(urn) left join data_pots using(pot_id) left join record_details rd using(urn) ";
-		$from .= " left join data_sources ds on r.source_id = ds.source_id  ";
+        $from .= " left join data_sources ds on r.source_id = ds.source_id  ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
         $from .= "  left join park_codes pc using(parked_code) ";
         $from .= "left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations con_pc on a.location_id = con_pc.location_id left join campaigns camp using(campaign_id) ";
@@ -723,8 +731,8 @@ return $comments;
             $select .= ",coma.postcode planner_postcode,com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.conumber,com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.city cocity,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.lat colatitude,com_pc.lng colongitude";
             $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join locations com_pc on com_pc.location_id = coma.location_id left join company_telephone comt using(company_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id)";
         } else {
-		  $select .= ",a.postcode planner_postcode";
-		}
+            $select .= ",a.postcode planner_postcode";
+        }
         if (in_array(6, $features)) {
             $select .= " ,sc.script_name,sc.script_id,sc.script,sc.expandable  ";
             $from .= "  left join scripts_to_campaigns using(campaign_id) left join scripts sc using(script_id) ";
@@ -826,8 +834,8 @@ return $comments;
                 //put the record details into the array
                 $data['record'] = array(
                     "urn" => $result['urn'],
-					"telephone_prefix" => $result['telephone_prefix'],
-					"telephone_protocol" => $result['telephone_protocol'],
+                    "telephone_prefix" => $result['telephone_prefix'],
+                    "telephone_protocol" => $result['telephone_protocol'],
                     "client_ref" => $result['client_ref'],
                     "park_reason" => $result['park_reason'],
                     "nextcall" => $result['nextcall'],
@@ -836,10 +844,10 @@ return $comments;
                     "outcome_reason_id" => $result['outcome_reason_id'],
                     "record_status" => $result['record_status'],
                     "progress" => $result['progress'],
-					"source_id" => $result['source_id'],
-					"source_name" => $result['source_name'],
-					"pot_id" => $result['pot_id'],
-					"pot_name" => $result['pot_name'],
+                    "source_id" => $result['source_id'],
+                    "source_name" => $result['source_name'],
+                    "pot_id" => $result['pot_id'],
+                    "pot_name" => $result['pot_name'],
                     "progress_id" => $result['progress_id'],
                     "urgent" => $result['urgent'],
                     "last_update" => $result['date_updated'],
@@ -849,11 +857,11 @@ return $comments;
                     "favorite" => $favorite,
                     "reset_date" => $result['reset_date'],
                     "custom_name" => $result['custom_panel_name'],
-					"custom_format" => $result['custom_panel_format'],
+                    "custom_format" => $result['custom_panel_format'],
                     "map_icon" => $result['map_icon'],
                     "color" => $result['record_color'],
                     "c4" => $result['c4'],
-					"planner_postcode" => $result['planner_postcode']
+                    "planner_postcode" => $result['planner_postcode']
                 );
             endforeach;
         }
@@ -882,13 +890,13 @@ return $comments;
             if ($_SESSION['data_access']['user_records']) {
                 //redirect to error page if user is not the owner
                 if (!$is_owner) {
-					if(isset($_SESSION['navigation'])){
-						//skip to the next record
-					$k = array_search($urn,$_SESSION['navigation']);
-					redirect(base_url() . "records/detail/".$_SESSION['navigation'][$k+1]);
-					} else {
-                    redirect(base_url() . "error/ownership");
-					}
+                    if (isset($_SESSION['navigation'])) {
+                        //skip to the next record
+                        $k = array_search($urn, $_SESSION['navigation']);
+                        redirect(base_url() . "records/detail/" . $_SESSION['navigation'][$k + 1]);
+                    } else {
+                        redirect(base_url() . "error/ownership");
+                    }
                 }
             }
         }
@@ -939,8 +947,8 @@ return $comments;
 
         return (!empty($result) ? $result[0] : array());
     }
-	
-	  public function get_pot($urn)
+
+    public function get_pot($urn)
     {
         $qry = "select dp.* from records dp left join data_pots on data_pots.pot_id = dp.pot_id where urn = '$urn'";
         $result = $this->db->query($qry)->result_array();
@@ -981,29 +989,29 @@ return $comments;
         else:
             $qry = "select user_id,name,user_email,user_telephone,home_postcode from users where user_status = 1 and attendee = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
         endif;
-		$qry .= " order by name";
+        $qry .= " order by name";
         $attendees = $this->db->query($qry)->result_array();
-		//TODO optimise this, its slow
-		if($postcode){
-		foreach($attendees as $k=>$row){
-			$attendees[$k]['distance'] = "";
-		if(!empty($row['home_postcode'])){
-			$attendee_postcode = get_postcode_data($row['home_postcode']);
-			
-			if(isset($attendee_postcode['latitude'])){
-			$contact_postcode = get_postcode_data($postcode);
-			if(isset($contact_postcode['latitude'])){
-			$distance_between = distance($attendee_postcode['latitude'], $attendee_postcode['longitude'], $contact_postcode['latitude'], $contact_postcode['longitude'], "N");
-		$attendees[$k]['distance'] = number_format($distance_between,1);
-			} else {
-			$attendees[$k]['distance'] = "";	
-			}
-		}
-		}
-		}
-		uasort($attendees,'arraySort_distance');
-		}
-		return $attendees;
+        //TODO optimise this, its slow
+        if ($postcode) {
+            foreach ($attendees as $k => $row) {
+                $attendees[$k]['distance'] = "";
+                if (!empty($row['home_postcode'])) {
+                    $attendee_postcode = get_postcode_data($row['home_postcode']);
+
+                    if (isset($attendee_postcode['latitude'])) {
+                        $contact_postcode = get_postcode_data($postcode);
+                        if (isset($contact_postcode['latitude'])) {
+                            $distance_between = distance($attendee_postcode['latitude'], $attendee_postcode['longitude'], $contact_postcode['latitude'], $contact_postcode['longitude'], "N");
+                            $attendees[$k]['distance'] = number_format($distance_between, 1);
+                        } else {
+                            $attendees[$k]['distance'] = "";
+                        }
+                    }
+                }
+            }
+            uasort($attendees, 'arraySort_distance');
+        }
+        return $attendees;
     }
 
     public function get_addresses($urn = "")
@@ -1030,14 +1038,14 @@ return $comments;
         } else {
             $qry = "select appointment_type_id id,appointment_type name,icon from appointment_types join campaign_appointment_types using(appointment_type_id) where campaign_id = '$campaign'";
         }
-		$query = $this->db->query($qry);
-		if($query->num_rows()){
-        return  $query->result_array();
-		} else {
-		//if no app types have been set for the campaign just use the defaults
-		$qry = "select appointment_type_id id,appointment_type name, icon from appointment_types where is_default = 1 ";
-		return  $this->db->query($qry)->result_array();
-		}
+        $query = $this->db->query($qry);
+        if ($query->num_rows()) {
+            return $query->result_array();
+        } else {
+            //if no app types have been set for the campaign just use the defaults
+            $qry = "select appointment_type_id id,appointment_type name, icon from appointment_types where is_default = 1 ";
+            return $this->db->query($qry)->result_array();
+        }
     }
 
     public function save_ownership($urn, $owners = false)
@@ -1082,7 +1090,7 @@ return $comments;
     //updates a record
     public function update_record($post)
     {
-		
+
         //if no nextcall is set then we just use the current timestamp else we convert the uk date to mysql
         if (empty($post['nextcall']) || !isset($post['nextcall'])) {
             $post['nextcall'] = date('Y-m-d H:i:s');
@@ -1114,7 +1122,7 @@ return $comments;
                 $update_array[] = "outcome_reason_id";
             }
             //only change the outcome and increase dial count if they are not just adding notes (outcome_id = 67)
-            if ($post['outcome_id'] <> "67" && $post['outcome_id'] <> "68"&&!empty($post['outcome_id'])) {
+            if ($post['outcome_id'] <> "67" && $post['outcome_id'] <> "68" && !empty($post['outcome_id'])) {
                 $update_array[] = "outcome_id";
                 $qry = "update records set dials = dials+1 where urn = '" . intval($post['urn']) . "'";
                 $this->db->query($qry);
@@ -1126,12 +1134,12 @@ return $comments;
             $this->db->update("records", array(
                 "progress_id" => NULL
             ));
-            
+
         }
-		if (isset($post["progress_id"])&&intval($post["progress_id"]) > 0) {
-                $update_array[] = "progress_id";
-            }
-		
+        if (isset($post["progress_id"]) && intval($post["progress_id"]) > 0) {
+            $update_array[] = "progress_id";
+        }
+
         $this->db->where("urn", $post['urn']);
         $this->db->update("records", elements($update_array, $post));
     }
@@ -1149,25 +1157,25 @@ return $comments;
                 $hist["nextcall"] = date('Y-m-d H:i:s');
             }
         }
-		if (!isset($hist['pot_id']) || empty($hist['pot_id'])) {
+        if (!isset($hist['pot_id']) || empty($hist['pot_id'])) {
             $record = $this->get_record_row($hist['urn']);
             $hist['pot_id'] = $record['pot_id'];
-			$hist['source_id'] = $record['source_id'];
+            $hist['source_id'] = $record['source_id'];
         }
-		if(empty($hist['outcome_id'])){
-		unset($hist['outcome_id']);
-		}
-		
+        if (empty($hist['outcome_id'])) {
+            unset($hist['outcome_id']);
+        }
+
         $hist["contact"] = date('Y-m-d H:i:s');
         $hist["user_id"] = $_SESSION['user_id'];
         $hist["role_id"] = $_SESSION['role'];
         $hist["group_id"] = $_SESSION['group'];
         $hist["team_id"] = (!empty($_SESSION['team']) ? $_SESSION['team'] : NULL);
-		$hist['loaded'] = isset($_SESSION['record_loaded'])?$_SESSION['record_loaded']:date('Y-m-d H:i:s');
+        $hist['loaded'] = isset($_SESSION['record_loaded']) ? $_SESSION['record_loaded'] : date('Y-m-d H:i:s');
         $this->db->insert("history", elements(array(
             "urn",
             "campaign_id",
-			"loaded",
+            "loaded",
             "nextcall",
             "contact",
             "description",
@@ -1184,14 +1192,14 @@ return $comments;
             "last_survey",
             "call_direction",
             "source_id",
-			"pot_id"
+            "pot_id"
         ), $hist, NULL));
-       	$history_id = $this->db->insert_id();
-		//add last comment
-		if(!empty($hist['comments'])){
-		$this->db->replace("record_comments",array("urn"=>$hist['urn'],"last_comment"=>$hist["comments"]));
-		}
-		return $history_id;
+        $history_id = $this->db->insert_id();
+        //add last comment
+        if (!empty($hist['comments'])) {
+            $this->db->replace("record_comments", array("urn" => $hist['urn'], "last_comment" => $hist["comments"]));
+        }
+        return $history_id;
     }
 
 
@@ -1199,7 +1207,7 @@ return $comments;
     public function get_campaign($urn = "")
     {
         if (intval($urn)) {
-			$query = "select records.campaign_id,campaign_name,campaign_type_id,if(user_layouts.layout is not null,user_layouts.layout,record_layout) record_layout,logo,campaign_name,client_name from records left join campaigns using(campaign_id) left join clients using(client_id) left join (select * from user_layouts where user_id = '".$_SESSION['user_id']."') user_layouts on user_layouts.campaign_id = records.campaign_id where urn = '$urn'";
+            $query = "select records.campaign_id,campaign_name,campaign_type_id,if(user_layouts.layout is not null,user_layouts.layout,record_layout) record_layout,logo,campaign_name,client_name from records left join campaigns using(campaign_id) left join clients using(client_id) left join (select * from user_layouts where user_id = '" . $_SESSION['user_id'] . "') user_layouts on user_layouts.campaign_id = records.campaign_id where urn = '$urn'";
             $rows = $this->db->query($query)->result_array();
             return $rows[0];
         }
@@ -1211,9 +1219,9 @@ return $comments;
         $urn = intval($urn);
         $comment = "";
         $qry = "select comments from history where urn = '$urn' and comments <> '' and comments is not null order by history_id desc limit 1";
-		if($this->db->query($qry)->num_rows()){
-        $comment = $this->db->query($qry)->row()->comments;
-		}
+        if ($this->db->query($qry)->num_rows()) {
+            $comment = $this->db->query($qry)->row()->comments;
+        }
         return $comment;
     }
 
@@ -1250,38 +1258,38 @@ return $comments;
             $renewal[$row['field_name']] = $row['format'];
             $editable[$row['field_name']] = $row['editable'];
             $is_select[$row['field_name']] = $row['is_select'];
-			$is_buttons[$row['field_name']] = $row['is_buttons'];
+            $is_buttons[$row['field_name']] = $row['is_buttons'];
             $is_radio[$row['field_name']] = $row['is_radio'];
-			$is_decimal[$row['field_name']] = $row['is_decimal'];
-            if ($row['is_select'] == 1 || $row['is_radio'] == 1|| $row['is_buttons'] == 1) {
+            $is_decimal[$row['field_name']] = $row['is_decimal'];
+            if ($row['is_select'] == 1 || $row['is_radio'] == 1 || $row['is_buttons'] == 1) {
                 if ($row['is_owner'] == "1") {
                     $is_select[$row['field_name']] = 1;
                     $users = $this->get_users(false, $campaign);
                     foreach ($users as $user) {
                         $options[] = array("id" => $user['user_id'], "option" => $user['name']);
                     }
-				} else if($row['is_pot'] == "1"){
-					//update source from record
-					if($urn){
-					$update = "update record_details join records using(urn) left join data_pots using(pot_id) set `".$row['field']."` = pot_name where urn = '$urn'";
-					$this->db->query($update);
-					}
-					$pots = $this->get_pots(false, $campaign);
+                } else if ($row['is_pot'] == "1") {
+                    //update source from record
+                    if ($urn) {
+                        $update = "update record_details join records using(urn) left join data_pots using(pot_id) set `" . $row['field'] . "` = pot_name where urn = '$urn'";
+                        $this->db->query($update);
+                    }
+                    $pots = $this->get_pots(false, $campaign);
                     foreach ($pots as $pot) {
                         $options[] = array("id" => $pot['pot_id'], "option" => $pot['pot_name']);
                     }
-					
-				} else if($row['is_source'] == "1"){
-					//update source from record
-					if($urn){
-					$update = "update record_details join records using(urn) left join data_sources using(source_id) set `".$row['field']."` = source_name where urn = '$urn'";
-					$this->db->query($update);
-					}
-					$sources = $this->get_sources(false, $campaign);
+
+                } else if ($row['is_source'] == "1") {
+                    //update source from record
+                    if ($urn) {
+                        $update = "update record_details join records using(urn) left join data_sources using(source_id) set `" . $row['field'] . "` = source_name where urn = '$urn'";
+                        $this->db->query($update);
+                    }
+                    $sources = $this->get_sources(false, $campaign);
                     foreach ($sources as $source) {
                         $options[] = array("id" => $source['source_id'], "option" => $source['source_name']);
                     }
-                } else { 
+                } else {
                     $this->db->select("id,option");
                     $this->db->where(array(
                         "field" => $row['field'],
@@ -1291,10 +1299,10 @@ return $comments;
                     $option_result = $this->db->get("record_details_options")->result_array();
                     foreach ($option_result as $opt) {
                         $options[] = array("id" => $opt['option'], "option" => $opt['option']);
-                    } 
+                    }
                 }
                 $stuff2[$row['field_name']] = $options;
-				
+
             }
 
             $sqlfield = $row['field'];
@@ -1324,8 +1332,8 @@ return $comments;
                     $info[$id][$k]["editable"] = $editable[$k];
                     $info[$id][$k]["is_radio"] = $is_radio[$k];
                     $info[$id][$k]["is_select"] = $is_select[$k];
-					$info[$id][$k]["is_buttons"] = $is_buttons[$k];
-					 $info[$id][$k]["is_decimal"] = $is_decimal[$k];
+                    $info[$id][$k]["is_buttons"] = $is_buttons[$k];
+                    $info[$id][$k]["is_decimal"] = $is_decimal[$k];
                     if (isset($renewal[$k])) {
                         $info[$id][$k]["formatted"] = (!empty($v) ? date($renewal[$k], strtotime($v)) : "-");
                     }
@@ -1340,13 +1348,13 @@ return $comments;
                         $info[$id][$k]["value"] = (!empty($v) ? date("d/m/Y H:i", strtotime($v)) : "-");
                     } else if (strpos($stuff1[$k], "n") !== false) {
                         $info[$id][$k]["type"] = "number";
-						if(!empty($v)){
-						if($info[$id][$k]["is_decimal"]=="1"){
-						$info[$id][$k]["value"] = number_format($v,2);
-						} else {
-						$info[$id][$k]["value"] = number_format($v);
-						}
-						}
+                        if (!empty($v)) {
+                            if ($info[$id][$k]["is_decimal"] == "1") {
+                                $info[$id][$k]["value"] = number_format($v, 2);
+                            } else {
+                                $info[$id][$k]["value"] = number_format($v);
+                            }
+                        }
                     } else {
                         $info[$id][$k]["type"] = "date";
                         $info[$id][$k]["value"] = (!empty($v) ? date("d/m/Y", strtotime($v)) : "-");
@@ -1376,10 +1384,10 @@ return $comments;
         if (!empty($post['detail_id'])) {
             $this->db->where("detail_id", $post['detail_id']);
             $this->db->update("record_details", $post);
-			return $post['detail_id'];
+            return $post['detail_id'];
         } else {
-           $this->db->insert("record_details", $post);
-		    return $this->db->insert_id();
+            $this->db->insert("record_details", $post);
+            return $this->db->insert_id();
         }
     }
 
@@ -1391,12 +1399,12 @@ return $comments;
 
     public function delete_appointment($data)
     {
-		//remove from custom_panels
-		$update_link = "update custom_panel_data set appointment_id = NULL where appointment_id = '{$data['appointment_id']}'";
-		$this->db->query($update_link);
-		$delete_link = "delete from custom_panel_values where `value` = '{$data['appointment_id']}' and field_id in(select field_id from custom_panel_fields where is_appointment_id = 1)";
-		$this->db->query($delete_link);
-		//now do the appointments table
+        //remove from custom_panels
+        $update_link = "update custom_panel_data set appointment_id = NULL where appointment_id = '{$data['appointment_id']}'";
+        $this->db->query($update_link);
+        $delete_link = "delete from custom_panel_values where `value` = '{$data['appointment_id']}' and field_id in(select field_id from custom_panel_fields where is_appointment_id = 1)";
+        $this->db->query($delete_link);
+        //now do the appointments table
         $this->db->where("appointment_id", $data['appointment_id']);
 
         $this->db->set("status", '0');
@@ -1412,7 +1420,7 @@ return $comments;
     {
         $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,users.name,cancellation_reason", false);
         $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
-		$this->db->join("users", "appointment_attendees.user_id=users.user_id", "LEFT");
+        $this->db->join("users", "appointment_attendees.user_id=users.user_id", "LEFT");
         $this->db->where(array(
             "urn" => $urn
         ));
@@ -1433,16 +1441,17 @@ return $comments;
         $result = $this->db->get("appointments")->result_array();
         return $result;
     }
-	
-	public function get_branch_from_attendee($attendee){
-	$qry = "select branch_id from branch_region_users join branch using(region_id) where user_id = '$attendee'";
-	$branch =  $this->db->query($qry)->row_array();
-	if(isset($branch['branch_id'])){
-	return $branch['branch_id'];	
-	} else {
-	return NULL;	
-	}
-	}
+
+    public function get_branch_from_attendee($attendee)
+    {
+        $qry = "select branch_id from branch_region_users join branch using(region_id) where user_id = '$attendee'";
+        $branch = $this->db->query($qry)->row_array();
+        if (isset($branch['branch_id'])) {
+            return $branch['branch_id'];
+        } else {
+            return NULL;
+        }
+    }
 
     public function save_appointment($post)
     {
@@ -1493,20 +1502,21 @@ return $comments;
             return $insert;
         }
     }
-	
-	public function link_appointment_to_custom_data($data_id,$appointment_id){
-				$this->db->where("data_id",$data_id);
-				$this->db->update("custom_panel_data",array("appointment_id"=>$appointment_id));
-				//get the linked appointment field
-				
-				//now replace it
-				$app_field = "select field_id from custom_panel_fields where is_appointment_id = 1";
-				if($this->db->query($app_field)->num_rows()){
-				$field_id = $this->db->query($app_field)->row()->field_id;
-				$update = "replace into custom_panel_values values('',$data_id,$field_id,$appointment_id)";
-				$this->db->query($update);	
-				}
-	}
+
+    public function link_appointment_to_custom_data($data_id, $appointment_id)
+    {
+        $this->db->where("data_id", $data_id);
+        $this->db->update("custom_panel_data", array("appointment_id" => $appointment_id));
+        //get the linked appointment field
+
+        //now replace it
+        $app_field = "select field_id from custom_panel_fields where is_appointment_id = 1";
+        if ($this->db->query($app_field)->num_rows()) {
+            $field_id = $this->db->query($app_field)->row()->field_id;
+            $update = "replace into custom_panel_values values('',$data_id,$field_id,$appointment_id)";
+            $this->db->query($update);
+        }
+    }
 
     //when a record is update this function is ran to see if an email should be sent to anyone
     public function get_email_triggers($campaign_id, $outcome_id)
@@ -1647,20 +1657,20 @@ return $comments;
     /**
      * Get attachments
      */
-    public function get_attachments($urn, $limit, $offset,$webform=false)
+    public function get_attachments($urn, $limit, $offset, $webform = false)
     {
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
-        $qry = "select a.attachment_id, a.name, a.type, a.path, DATE_FORMAT(a.date,'%d/%m/%Y %H:%i:%s') as date, u.name as user
+        $qry = "select a.attachment_id, a.name, a.version, a.type, a.path, DATE_FORMAT(a.date,'%d/%m/%Y %H:%i:%s') as date, u.name as user
 		    	from attachments a
 		    	inner join users u ON (u.user_id = a.user_id)
 		    	where urn = " . $urn;
-				if($webform){
-				$qry .= " and webform = $webform "; 	
-				}
-		    	$qry .= " order by a.date desc
+        if ($webform) {
+            $qry .= " and webform = $webform ";
+        }
+        $qry .= " order by a.date desc
 		    	" . $limit_;
-		//$this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
@@ -1675,11 +1685,11 @@ return $comments;
         $this->db->where('attachment_id', $id);
 
         $result = $this->db->get()->result_array();
-		if(count($result)){
-        return $result[0];
-		} else {
-		return false;	
-		}
+        if (count($result)) {
+            return $result[0];
+        } else {
+            return false;
+        }
     }
 
     public function delete_attachment($id)
@@ -1758,101 +1768,127 @@ return $comments;
     {
         $this->db->insert_update("client_refs", array("urn" => $urn, "client_ref" => $client_ref));
     }
-  public function get_custom_panels($campaign){
-		$query = "select * from custom_panels join campaign_custom_panels using(custom_panel_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_id = ' $campaign' ";
-		return $this->db->query($query)->result_array();
-  }
-  
-   public function get_custom_panel($panel_id){
-		$query = "select * from custom_panels join campaign_custom_panels using(custom_panel_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and custom_panel_id = '$panel_id' ";
-		return $this->db->query($query)->row_array();
-  }
-  
-    public function get_custom_panel_fields($id){
-		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,read_only,hidden,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id' order by sort";
-	return $this->db->query($panel_fields_query)->result_array();
-  }
-     public function get_custom_panel_data($urn,$id=false){
-		$panel_data_query = "select id,data_id,field_id,`value`,custom_panel_fields.name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panels left join custom_panel_fields using(custom_panel_id) left join custom_panel_values using(field_id) left join custom_panel_data using(data_id) where urn = '$urn' ";
-		if($id){
-		$panel_data_query .= " and custom_panel_id = '$id' ";
-		}
-			$panel_data_query .= " order by created_on desc";
-	return $this->db->query($panel_data_query)->result_array();
-  }
-  public function create_custom_data_with_linked_appointments($appointment_id){
-	  $check = "select data_id from custom_panel_fields join custom_panel_values where is_appointment_id = 1 and `value` = '$appointment_id'";
-	  if($this->db->query($check)->num_rows()){
-		 return $this->db->query($check)->row()->data_id;
-	  }
-	$query = "select custom_panel_id,appointment_type_id,linked_appointment_type_ids from custom_panels join campaign_custom_panels using(custom_panel_id) join records using(campaign_id) join appointments using(urn) where appointment_id = '$appointment_id' and linked_appointment_type_ids is not null";
-	 foreach($this->db->query($query)->result_array() as $row){
-		 $appointment_type_ids = explode(",",$row['linked_appointment_type_ids']);
-		 if(in_array($row['appointment_type_id'], $appointment_type_ids)){
-		$this->db->query("insert into custom_panel_data values('',(select urn from appointments where appointment_id = '$appointment_id'),$appointment_id,now(),".$_SESSION['user_id'].",now(),1)");
-			
-		$data_id = $this->db->insert_id();
-		$this->db->query("insert into custom_panel_values (select '',$data_id,field_id,if(is_appointment_id=1,'$appointment_id','') from custom_panel_fields where custom_panel_id = '{$row['custom_panel_id']}' and is_appointment_id = 1)");
-		return $data_id;
-		 }
-	 }
-  }
-  
-  public function get_pot_from_id($id){
-	  return $this->db->get_where("data_pots",array("pot_id"=>$id))->row()->pot_name;
-  }
-    public function get_source_from_id($id){
-	   return $this->db->get_where("data_sources",array("source_id"=>$id))->row()->source_name;
-  }
-  
-  public function get_pots($urn,$campaign){
-	  $where = "";
-	  if($campaign){
-		$where = "  and campaign_id = '$campaign' ";
-	  }
-	  return $this->db->query("select pot_id,pot_name from data_pots join records using(pot_id) where 1 $where group by pot_id")->result_array();
-  }
-    public function get_sources($urn,$campaign){
-	  return $this->db->query("select data_sources.source_id,source_name from data_sources join records using(source_id) where campaign_id = '$campaign' group by source_id")->result_array();
-  }
-   public function save_pot($urn,$id){
-	   if(empty($id)){
-		$id = NULL;   
-	   }
-	   $this->db->where(array("urn"=>$urn));
-	   return $this->db->update("records",array("pot_id"=>$id));
-  }
-  
-   public function save_source($urn,$id){
-	   if(empty($id)){
-		$id = NULL;   
-	   }
-	   $this->db->where(array("urn"=>$urn));
-	   return $this->db->update("records",array("source_id"=>$id));
-  }
-  
-  		function get_all_record_details($urn){
-			$query = "select * from record_details where urn = '$urn'";
-			$results =  $this->db->query($query)->result_array();
-			$fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();
-			foreach($fields_result as $row){
-			$fields[$row['field']] = $row['field_name'];
-			}
-			
-			$data = array();
-			foreach($results as $num => $row){
-			foreach($row as $k=>$v){
-			if(array_key_exists($k,$fields)){
-			$data[$num][$fields[$k]] = $v;
-			}
-			}
-			}
-			return $data;
-		}
-		
-		
-		
-  
+
+    public function get_custom_panels($campaign)
+    {
+        $query = "select * from custom_panels join campaign_custom_panels using(custom_panel_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_id = ' $campaign' ";
+        return $this->db->query($query)->result_array();
+    }
+
+    public function get_custom_panel($panel_id)
+    {
+        $query = "select * from custom_panels join campaign_custom_panels using(custom_panel_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and custom_panel_id = '$panel_id' ";
+        return $this->db->query($query)->row_array();
+    }
+
+    public function get_custom_panel_fields($id)
+    {
+        $panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,read_only,hidden,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id' order by sort";
+        return $this->db->query($panel_fields_query)->result_array();
+    }
+
+    public function get_custom_panel_data($urn, $id = false)
+    {
+        $panel_data_query = "select id,data_id,field_id,`value`,custom_panel_fields.name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panels left join custom_panel_fields using(custom_panel_id) left join custom_panel_values using(field_id) left join custom_panel_data using(data_id) where urn = '$urn' ";
+        if ($id) {
+            $panel_data_query .= " and custom_panel_id = '$id' ";
+        }
+        $panel_data_query .= " order by created_on desc";
+        return $this->db->query($panel_data_query)->result_array();
+    }
+
+    public function create_custom_data_with_linked_appointments($appointment_id)
+    {
+        $check = "select data_id from custom_panel_fields join custom_panel_values where is_appointment_id = 1 and `value` = '$appointment_id'";
+        if ($this->db->query($check)->num_rows()) {
+            return $this->db->query($check)->row()->data_id;
+        }
+        $query = "select custom_panel_id,appointment_type_id,linked_appointment_type_ids from custom_panels join campaign_custom_panels using(custom_panel_id) join records using(campaign_id) join appointments using(urn) where appointment_id = '$appointment_id' and linked_appointment_type_ids is not null";
+        foreach ($this->db->query($query)->result_array() as $row) {
+            $appointment_type_ids = explode(",", $row['linked_appointment_type_ids']);
+            if (in_array($row['appointment_type_id'], $appointment_type_ids)) {
+                $this->db->query("insert into custom_panel_data values('',(select urn from appointments where appointment_id = '$appointment_id'),$appointment_id,now()," . $_SESSION['user_id'] . ",now(),1)");
+
+                $data_id = $this->db->insert_id();
+                $this->db->query("insert into custom_panel_values (select '',$data_id,field_id,if(is_appointment_id=1,'$appointment_id','') from custom_panel_fields where custom_panel_id = '{$row['custom_panel_id']}' and is_appointment_id = 1)");
+                return $data_id;
+            }
+        }
+    }
+
+    public function get_pot_from_id($id)
+    {
+        return $this->db->get_where("data_pots", array("pot_id" => $id))->row()->pot_name;
+    }
+
+    public function get_source_from_id($id)
+    {
+        return $this->db->get_where("data_sources", array("source_id" => $id))->row()->source_name;
+    }
+
+    public function get_pots($urn, $campaign)
+    {
+        $where = "";
+        if ($campaign) {
+            $where = "  and campaign_id = '$campaign' ";
+        }
+        return $this->db->query("select pot_id,pot_name from data_pots join records using(pot_id) where 1 $where group by pot_id")->result_array();
+    }
+
+    public function get_sources($urn, $campaign)
+    {
+        return $this->db->query("select data_sources.source_id,source_name from data_sources join records using(source_id) where campaign_id = '$campaign' group by source_id")->result_array();
+    }
+
+    public function save_pot($urn, $id)
+    {
+        if (empty($id)) {
+            $id = NULL;
+        }
+        $this->db->where(array("urn" => $urn));
+        return $this->db->update("records", array("pot_id" => $id));
+    }
+
+    public function save_source($urn, $id)
+    {
+        if (empty($id)) {
+            $id = NULL;
+        }
+        $this->db->where(array("urn" => $urn));
+        return $this->db->update("records", array("source_id" => $id));
+    }
+
+    function get_all_record_details($urn)
+    {
+        $query = "select * from record_details where urn = '$urn'";
+        $results = $this->db->query($query)->result_array();
+        $fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();
+        foreach ($fields_result as $row) {
+            $fields[$row['field']] = $row['field_name'];
+        }
+
+        $data = array();
+        foreach ($results as $num => $row) {
+            foreach ($row as $k => $v) {
+                if (array_key_exists($k, $fields)) {
+                    $data[$num][$fields[$k]] = $v;
+                }
+            }
+        }
+        return $data;
+    }
+
+
+    public function get_last_attachment_version($name, $urn) {
+        $query = "select * from attachments
+                  where urn = '$urn' and name = '$name'
+                  ORDER BY version DESC";
+
+        $results = $this->db->query($query)->result_array();
+
+        return (!empty($results)?$results[0]:array());
+    }
+
 }
 
 ?>

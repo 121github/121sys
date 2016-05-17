@@ -3054,10 +3054,12 @@ var modals = {
 
             $(document).on('click','.nav-tabs a[href="#view-calendars-tab"]',function(e){
                 $('.add-google-calendar').hide();
+                modal_body.css('overflow','visible');
             });
 
             $(document).on('click','.nav-tabs a[href="#add-calendar-tab"]',function(e){
                 $('.add-google-calendar').show();
+                modal_body.css('overflow','visible');
             });
 
             $modal.on("click", '.sync-google-calendar', function(e) {
@@ -3085,7 +3087,11 @@ var modals = {
                 modals.load_modal(mheader, mbody, mfooter);
 
                 modal_body.css('overflow','visible');
+
                 $('.info').tooltip();
+
+                //Add to calendars tab
+                modals.users.load_calendar_tab(user_id);
 
             });
         },
@@ -3176,15 +3182,6 @@ var modals = {
                 dataType: "JSON"
             }).done(function (response) {
                 var options = '';
-                //$.each(response.campaigns,function(k,val){
-                //    var selected = ((response.campaigns.length == 1)?"selected":"");
-                //    options += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
-                //});
-                //
-                //$('#campaign-select').html(options).selectpicker('refresh');
-                //
-                //options = '';
-
                 //Set on the dropdown available
                 $('.add-google-calendar-form').find('#calendar-select').prop('disabled',false);
                 $('#calendar-select').selectpicker('refresh');
@@ -3207,17 +3204,45 @@ var modals = {
             }).done(function (response) {
                 var calendar = '';
                 $.each(response.data,function(k,val){
+                    var checked = (val.auto_sync == "1"?"checked":"");
                     calendar += '<tr class="google-calendar-id-'+val.id+'">' +
-                        '<td>'+val.campaign_name+'</td>' +
-                        '<td>'+val.calendar_name+'</td>' +
-                        '<td><i class="fa fa-remove red pointer remove-google-calendar" data-id="'+val.google_calendar_id+'" data-calendar-id="'+val.calendar_id+'"></i></td>' +
-                        '<td><i class="fa fa-refresh info green pointer sync-google-calendar" data-user-id="'+val.user_id+'" data-id="'+val.google_calendar_id+'" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the events from this calendar into this user calendar)"></i></td>' +
+                            '<td>'+val.campaign_name+'</td>' +
+                            '<td>'+val.calendar_name+'</td>' +
+                            '<td>' +
+                                '<button class="tt pull-left btn btn-default btn-xs remove-google-calendar" data-id="'+val.google_calendar_id+'" data-calendar-id="'+val.calendar_id+'" data-toggle="tooltip" data-placement="top" title="Detatch the Google calendar from this user"><i class="fa fa-remove info red"></i> Delete</button>' +
+                                '<button class="tt pull-left marl btn btn-default btn-xs sync-google-calendar" data-user-id="'+val.user_id+'" data-id="'+val.google_calendar_id+'" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the Google calendar events to the local system calendar for this user)"><i class="fa fa-refresh info green"></i> Sync</button>' +
+                                '<img class="sync-google-loading" src="'+helper.baseUrl+'assets/img/ajax-load-black.gif" style="display: none"/>' +
+                            '</td>' +
+                            '<td><input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="auto-sync" name="auto_sync" data-toggle="toggle" data-size="mini" data-width="100" data-onstyle="success" data-offstyle="danger" data-on="Automatic" data-off="Manual" value="'+val.auto_sync+'" '+checked+'></td>' +
                         '</tr>';
                 });
 
                 $('.calendars-table').find('tbody').html(calendar);
+
+                $('#auto-sync').bootstrapToggle({
+                    on: 'Automatic',
+                    off: 'Manual'
+                });
+
+                $('#auto-sync').change(function() {
+                    var google_calendar_id = $(this).attr("data-calendar-id");
+                    var auto_sync = ($(this).prop("checked")?1:0);
+                    modals.users.set_auto_sync(google_calendar_id, auto_sync);
+                });
+
+                $modal.find('.tt').tooltip();
             });
         },
+        set_auto_sync: function(google_calendar_id, auto_sync) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/set_auto_sync',
+                type: "POST",
+                data: {'google_calendar_id': google_calendar_id, 'auto_sync': auto_sync},
+                dataType: "JSON"
+            }).done(function (response) {
+                flashalert.success(response.msg);
+            });
+        }
     },
 
 

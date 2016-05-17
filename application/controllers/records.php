@@ -1340,6 +1340,26 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         }
     }
 
+    public function check_attachment_version() {
+        if ($this->input->is_ajax_request()) {
+            $name = $this->input->post('name');
+            $urn = $this->input->post('urn');
+
+            $last_attachment_version = $this->Records_model->get_last_attachment_version($name, $urn);
+
+            //return success to page
+            echo json_encode(array(
+                "success" => !empty($last_attachment_version),
+                "last_attachment_version" => (isset($last_attachment_version['version'])?$last_attachment_version['version']:''),
+                "last_attachment_version_id" => (isset($last_attachment_version['attachment_id'])?$last_attachment_version['attachment_id']:'')
+            ));
+        } else {
+            echo json_encode(array(
+                "success" => false
+            ));
+        }
+    }
+
 	public function update_custom_data_field(){
 	$data_id = $this->input->post("data_id");
 	$field_id = $this->input->post("field_id");
