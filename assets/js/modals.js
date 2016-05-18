@@ -3160,6 +3160,8 @@ var modals = {
             });
         },
         sync_google_cal: function(google_calendar_id, user_id) {
+            $('.sync-google-loading').show();
+            $('.sync-google-ok').hide();
             $.ajax({
                 url: helper.baseUrl + 'booking/sync_google_cal',
                 type: "POST",
@@ -3167,6 +3169,11 @@ var modals = {
                 data: {
                     'google_calendar_id': google_calendar_id,
                     'user_id': user_id
+                }
+            }).done(function (response) {
+                $('.sync-google-loading').hide();
+                if(Object.keys(response).length) {
+                    $('.sync-google-ok').attr('data-original-title', "<h4>Added: </h4>"+response.added+" <br><br><h4>Updated: </h4>"+response.updated).show();
                 }
             });
         },
@@ -3212,6 +3219,7 @@ var modals = {
                                 '<button class="tt pull-left btn btn-default btn-xs remove-google-calendar" data-id="'+val.google_calendar_id+'" data-calendar-id="'+val.calendar_id+'" data-toggle="tooltip" data-placement="top" title="Detatch the Google calendar from this user"><i class="fa fa-remove info red"></i> Delete</button>' +
                                 '<button class="tt pull-left marl btn btn-default btn-xs sync-google-calendar" data-user-id="'+val.user_id+'" data-id="'+val.google_calendar_id+'" data-toggle="tooltip" data-placement="top" title="Sync with google calendar (add the Google calendar events to the local system calendar for this user)"><i class="fa fa-refresh info green"></i> Sync</button>' +
                                 '<img class="sync-google-loading" src="'+helper.baseUrl+'assets/img/ajax-load-black.gif" style="display: none"/>' +
+                                '<i class="fa fa-check sync-google-ok green tt" style="display: none" data-toggle="tooltip" data-placement="top" title="" data-html="true"></i>' +
                             '</td>' +
                             '<td><input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="auto-sync" name="auto_sync" data-toggle="toggle" data-size="mini" data-width="100" data-onstyle="success" data-offstyle="danger" data-on="Automatic" data-off="Manual" value="'+val.auto_sync+'" '+checked+'></td>' +
                         '</tr>';

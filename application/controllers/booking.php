@@ -607,8 +607,7 @@ public function create_description($appointment,$contact=false,$company=false){
                 "token_type" => $google_token[0]['token_type'],
                 "expires_in" => $google_token[0]['expires_in'],
                 "id_token" => $google_token[0]['id_token'],
-                "created" => $google_token[0]['create
-                d'],
+                "created" => $google_token[0]['created'],
             )));
 
             if ($google_client->isAccessTokenExpired()) {
