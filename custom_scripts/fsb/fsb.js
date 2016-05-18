@@ -69,7 +69,7 @@ function contact_confirmation_email(appointment){
 
 function client_confirmation_email(appointment){
 	var recipient = 'attendee';
-custom_email.send_template_email(appointment.urn, 89, false, recipient, "", "bradf@121customerinsight.co.uk", "FSB appointment notification email",appointment.appointment_id);
+custom_email.send_template_email(appointment.urn, 89, false, recipient, "", "rachaeln@121customerinsight.co.uk", "FSB appointment notification email",appointment.appointment_id);
 }
 
 function client_info_email(){
