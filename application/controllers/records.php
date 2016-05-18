@@ -1011,8 +1011,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $address_field = explode('|', $data['address']);
             $data['address'] = $address_field[0];
             $postcode = $address_field[1];
+			if(isset($address_field[2])){
+			$data['address_table'] = $address_field[2];
+			}
+			if(isset($address_field[3])){
+			$data['address_id'] = $address_field[3];	
+			}
+			
             $data['postcode'] = postcodeCheckFormat($postcode);
-
+			
             if (isset($data['access_address']) && !empty($data['access_address'])) {
                 if ($data['access_address'] == "Other") {
                     echo json_encode(array(
@@ -1024,6 +1031,13 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 $access_address_field = explode('|', $data['access_address']);
                 $data['access_address'] = $access_address_field[0];
                 $access_postcode = $access_address_field[1];
+				if(isset($access_address_field[2])){
+				$data['access_address_table'] = $access_address_field[2];
+				}
+				if(isset($access_address_field[3])){
+				$data['access_address_id'] = $access_address_field[3];	
+				}
+				
                 $data['access_postcode'] = postcodeCheckFormat($access_postcode);
                 unset($data['access_add_check']);
             }
@@ -1060,7 +1074,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             }
 
             //check the postcode
-            if ($data['postcode'] === NULL) {
+            if ($data['postcode'] === NULL||$data['access_postcode'] === NULL) {
                 echo json_encode(array(
                     "success" => false,
                     "msg" => "You must set a valid UK Postcode"
@@ -1093,6 +1107,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             }
 			if(!empty($data['contact_id'])){
 			$data['contact_email'] = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->email;
+			}
+			if(!empty($data['attendees'])){
+			$data['attendee_email'] = $this->db->get_where("users",array("user_id"=>$data['attendees'][0]))->row()->user_email;
 			}
             log_message('info', 'Appointment added to 121sys:' . $id . ":" . $state);
             $response = array(

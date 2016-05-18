@@ -6,10 +6,13 @@ var campaign_functions = {
         if (record.role == "16") {
             $('div.custom-panel,#custom-panel,#email-panel').hide();
         }
+		$('#sticky-panel .panel-heading').text('Job Notes');
+		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');
     },
     record_setup_update: function () {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
         $('.progress-outcome').selectpicker('refresh');
+		
     },
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
@@ -21,6 +24,7 @@ var campaign_functions = {
         $('input[name="position"]').attr('placeholder', 'Company Name')
 
         $('select[name="tps"]').closest('.form-group').hide();
+		$modal.find('#address').empty();
     },
     contact_panel_setup: function () {
         $('.Job-panel-label').html("Company");
@@ -76,7 +80,7 @@ var campaign_functions = {
 
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
-
+ $modal.find('textarea[name="text"]').val($('#sticky-notes').val()).attr('readonly',true);
     },
 
     appointment_edit_setup: function () {
@@ -109,7 +113,7 @@ var campaign_functions = {
         $modal.on('change', '.typepicker', function () {
             //get_appointment_title();
         });
-
+		 $modal.find('textarea[name="text"]').val($('#sticky-notes').val()).attr('readonly',true);
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
         $modal.find('input[name="title"]')
@@ -277,10 +281,12 @@ var campaign_functions = {
 		*/
 		
         //Job Status is Paid
-        if ($form.find("[name='6']").val() === "Paid") {
+        if ($form.find("[name='6']").val() === "Paid"){
+			
+			if($form.find("[name='15']").val()=="Yes") {
             //Send email Referral Scheme Email to Account Role group email
             lhs.send_template_email(urn, 2, "Role Group Account", 'bradf@121customerinsight.co.uk', "", "", "Referral scheme email", appointment_id);
-
+			}
             //Send email Receipt of Payment Email to Client email address on the record
             lhs.send_template_email(urn, 6, "Client", 'bradf@121customerinsight.co.uk', "", "", "Receipt of payement email", appointment_id);
             //Hard Copy Required is Yes
