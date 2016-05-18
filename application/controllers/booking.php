@@ -581,8 +581,8 @@ public function create_description($appointment,$contact=false,$company=false){
 
         foreach ($calendars as $calendar) {
             if ($calendar['auto_sync']) {
-                print_r("Sync Google Calendar: ".$calendar['google_calendar_id']. " for the user: ".$calendar['user_id']." => ");
-                print_r($this->sync_google_cal($calendar['google_calendar_id'], $calendar['user_id'])."\n");
+                echo "Sync Google Calendar: ".$calendar['google_calendar_id']. " for the user: ".$calendar['user_id']." => ";
+                echo $this->sync_google_cal($calendar['google_calendar_id'], $calendar['user_id'])."\n";
             }
         }
     }
