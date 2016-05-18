@@ -24,11 +24,56 @@ class Email_model extends CI_Model
 	
 	public function get_contact_email($urn){
 		$qry = "select email from contacts where urn = '$urn' and email like '%@%'";
-		if($this->db->query($qry)->num_rows()=="1"){
-		return $this->db->query($qry)->row()->email;	
-		}
+//		if($this->db->query($qry)->num_rows()=="1"){
+//		    return $this->db->query($qry)->row()->email;
+//		}
+        $result = $this->db->query($qry)->result_array();
+        $aux = array();
+        foreach ($result as $item) {
+            array_push($aux, $item['email']);
+        }
+        $result = $aux;
+        return $result;
 	}
-	
+
+    public function get_appointment_contact_email($urn, $appointment_id){
+        $qry = "select email from contacts
+                inner join appointments using (contact_id)
+                where appointments.urn = '$urn' and email like '%@%' and appointments.appointment_id = '$appointment_id'";
+        $result = $this->db->query($qry)->result_array();
+        $aux = array();
+        foreach ($result as $item) {
+            array_push($aux, $item['email']);
+        }
+        $result = $aux;
+        return $result;
+    }
+
+    public function get_appointment_attendee_email($urn, $appointment_id){
+        $qry = "select user_email as email from users
+                inner join appointment_attendees using (user_id)
+                inner join appointments using (appointment_id)
+                where urn = '$urn' and users.user_email like '%@%' and appointment_id = '$appointment_id'";
+        $result = $this->db->query($qry)->result_array();
+        $aux = array();
+        foreach ($result as $item) {
+            array_push($aux, $item['email']);
+        }
+        $result = $aux;
+        return $result;
+    }
+
+    public function get_company_email($urn){
+        $qry = "select email from companies where urn = '$urn' and email like '%@%'";
+        $result = $this->db->query($qry)->result_array();
+        $aux = array();
+        foreach ($result as $item) {
+            array_push($aux, $item['email']);
+        }
+        $result = $aux;
+        return $result;
+    }
+
     public function get_placeholder_data($urn = false,$appointment_id = false)
     {
         $user_qry = "";
@@ -36,15 +81,15 @@ class Email_model extends CI_Model
         if (isset($_SESSION['user_id'])) {
             $user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user,(select user_email from users where user_id = '{$_SESSION['user_id']}') user_email, (select user_telephone from users where user_id = '{$_SESSION['user_id']}') user_telephone ";
         }
-		$find_appointment = "";
-		if($appointment_id){
-		$find_appointment = " and a.appointment_id = '$appointment_id' ";	
-		$query = "select urn from appointments a where urn = '$urn' and contact_id is not null $find_appointment ";
-		} else {
-        //check if an appointment has been made and use the appointment contact in the placeholder
-        $query = "select urn from appointments a where urn = '$urn' and contact_id is not null order by appointment_id desc limit 1 ";
-		}
-		
+        $find_appointment = "";
+        if($appointment_id){
+            $find_appointment = " and a.appointment_id = '$appointment_id' ";
+            $query = "select urn from appointments a where urn = '$urn' and contact_id is not null $find_appointment ";
+        } else {
+            //check if an appointment has been made and use the appointment contact in the placeholder
+            $query = "select urn from appointments a where urn = '$urn' and contact_id is not null order by appointment_id desc limit 1 ";
+        }
+
         if ($this->db->query($query)->num_rows() > 0) {
             $contact_details = " left join (select urn,max(appointment_id) max_id from appointments a where urn='$urn' $find_appointment) a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id ";
             $attendee = " if(attendees.name is null,'Unknown',attendees.name) attendee ";
@@ -54,33 +99,33 @@ class Email_model extends CI_Model
             $attendee = " 'Sir/Madam' attendee ";
             $appointment_fields = "";
         }
-/* adding custom_panel_data 24/03/16 BF */
-$c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and appointment_id = '$appointment_id'";	
-if(!$this->db->query($c_q)->num_rows()){
-$c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn'";
-}
-$c_selects = "";
-$c_joins = "";
-$x=0;
-foreach($this->db->query($c_q)->result_array() as $row){ $x++;
-	$c_selects .= " custom_table_$x.`value` as '{$row['name']}',";
-	$c_joins .= " left join (select urn c_urn,appointment_id c_id,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x "; 
-if($appointment_id){
-$c_joins .= " on a.appointment_id = custom_table_$x.c_id ";	
-} else {
-$c_joins .= " on records.urn = custom_table_$x.c_urn ";		
-}
-}
-/* end adding custom_panel_data */		
-		
-		
-$custom_fields = custom_fields();
-$custom_field_list = implode(",",$custom_fields);
-        $qry = "select records.urn,sticky_notes.note sticky_note,campaign_name,date_format(nextcall,'%d/%m/%Y %H:%i'), date_format(curdate(),'%d/%m/%Y') `date`, nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact,if(employees is null,'Unknown',employees) employees, companies.name company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,title contact_title,if(firstname is null or firstname = '',fullname,firstname) firstname,lastname,contacts.gender,contacts.position,date_format(contacts.dob,'%d/%m/%Y') dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,$custom_field_list, $c_selects concat(ca.add1,' ',ca.add2,', ',ca.postcode) contact_address,concat(coa.add1,' ',coa.add2,', ',coa.postcode) company_address, if(campaign_type_id=1,ca.add1,coa.add1) add1, if(campaign_type_id=1,ca.add2,coa.add2) add2, if(campaign_type_id=1,ca.add3,coa.add3) add3,if(campaign_type_id=1,ca.county,coa.county) county,if(campaign_type_id=1,ca.postcode,coa.postcode) postcode $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join company_addresses coa using(company_id) left join record_details using(urn) left join sticky_notes using(urn) ";
+        /* adding custom_panel_data 24/03/16 BF */
+        $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and appointment_id = '$appointment_id'";
+        if(!$this->db->query($c_q)->num_rows()){
+            $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn'";
+        }
+        $c_selects = "";
+        $c_joins = "";
+        $x=0;
+        foreach($this->db->query($c_q)->result_array() as $row){ $x++;
+            $c_selects .= " custom_table_$x.`value` as '{$row['name']}',";
+            $c_joins .= " left join (select urn c_urn,appointment_id c_id,`value` from custom_panel_data left join custom_panel_values using(data_id) left join custom_panel_fields using(field_id) where data_id = '{$row['data_id']}' and field_id = '{$row['field_id']}') custom_table_$x ";
+            if($appointment_id){
+                $c_joins .= " on a.appointment_id = custom_table_$x.c_id ";
+            } else {
+                $c_joins .= " on records.urn = custom_table_$x.c_urn ";
+            }
+        }
+        /* end adding custom_panel_data */
+
+
+        $custom_fields = custom_fields();
+        $custom_field_list = implode(",",$custom_fields);
+        $qry = "select records.urn,sticky_notes.note sticky_note,campaign_name,date_format(nextcall,'%d/%m/%Y %H:%i'), date_format(curdate(),'%d/%m/%Y') `date`, nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact,if(employees is null,'Unknown',employees) employees, companies.name company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,contacts.title contact_title,if(firstname is null or firstname = '',fullname,firstname) firstname,lastname,contacts.gender,contacts.position,date_format(contacts.dob,'%d/%m/%Y') dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,$custom_field_list, $c_selects concat(ca.add1,' ',ca.add2,', ',ca.postcode) contact_address,concat(coa.add1,' ',coa.add2,', ',coa.postcode) company_address, if(campaign_type_id=1,ca.add1,coa.add1) add1, if(campaign_type_id=1,ca.add2,coa.add2) add2, if(campaign_type_id=1,ca.add3,coa.add3) add3,if(campaign_type_id=1,ca.county,coa.county) county,if(campaign_type_id=1,ca.postcode,coa.postcode) postcode $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join company_addresses coa using(company_id) left join record_details using(urn) left join sticky_notes using(urn) ";
         $qry .= $contact_details;
-		$qry .= $c_joins;
-		$qry .= " where records.urn = '$urn' ";
-$qry .= " group by urn";
+        $qry .= $c_joins;
+        $qry .= " where records.urn = '$urn' ";
+        $qry .= " group by urn";
         return $this->db->query($qry)->result_array();
 
     }
@@ -96,11 +141,12 @@ $qry .= " group by urn";
             $form['subject'] = $row['template_subject'];
             $form['body'] = $row['template_body'];
             $form['send_from'] = $row['template_from'];
-            $form['send_to'] = "";
+            $form['send_to'] = $row['template_to'];
             $form['cc'] = $row['template_cc'];
             $form['bcc'] = $row['template_bcc'];
             $form['template_unsubscribe'] = $row['template_unsubscribe'];
             $form['history_visible'] = $row['history_visible'];
+            $form['people_destination'] = $row['people_destination'];
         }
         return $form;
 

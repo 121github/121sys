@@ -11,7 +11,10 @@ class Migration_update_132 extends CI_Migration
 
     public function up()
     {
-		$this->db->query("ALTER TABLE attachments ADD version INT DEFAULT 1 NOT NULL");
+		$check = $this->db->query("SHOW COLUMNS FROM `attachments` LIKE 'version'");
+        if (!$check->num_rows()) {
+            $this->db->query("ALTER TABLE attachments ADD version INT DEFAULT 1 NOT NULL");
+        }
 	}
 	
 }

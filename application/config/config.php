@@ -409,4 +409,4 @@ $config['email'] = array(
 |
 |
 */
-$config['project_version'] = '1.9.29';
+$config['project_version'] = '1.9.30';
