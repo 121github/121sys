@@ -82,3 +82,7 @@ define('APPOINTMENT_TYPE_INSTALLATION', 4);
 
 //define('EXPORT_PATH', '/var/www/html/tmp/');
 define('EXPORT_PATH', '/mnt/managementnew/Figures/Distribution Models/');
+
+
+//Access TOKEN
+define("ACCESS_TOKEN", "Djh34jsJRlWWAsd5432Ss3dsr34");
