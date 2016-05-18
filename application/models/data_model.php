@@ -165,7 +165,7 @@ return true;
     }
 	
 	public function seperate_fullname(){
-		$names = $this->db->query("select contact_id,fullname from contacts where fullname is not null and lastname is null");
+		$names = $this->db->query("select contact_id,fullname from contacts where fullname is not null and lastname is null and urn = 317784");
 		foreach($names as $row){
 		$name = explode(" ",$row['fullname']); 
 		$titles = array("Mr","Mrs","Miss","Sir","Dr");

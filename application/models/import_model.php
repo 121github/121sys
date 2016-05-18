@@ -34,7 +34,12 @@ delete from records where urn in (select urn from importcsv)
 	}
 	
 	public function seperate_fullname(){
-		$names = $this->db->query("select contact_id,fullname from contacts where (fullname is not null and fullname <> '') and (lastname is null or lastname = '') ")->result_array();
+		$query ="select contact_id,fullname from contacts join records using(urn) where (fullname is not null and fullname <> '') and (lastname is null or lastname = '') and (firstname is null or firstname = '')";
+		if(intval($this->uri->segment(3))){
+		$query .= " and campaign_id = ".$this->uri->segment(3);
+		}
+		
+		$names = $this->db->query($query)->result_array();
 		foreach($names as $row){
 		$name = explode(" ",$row['fullname']);
 		foreach($name as $k=>$part){
@@ -44,20 +49,25 @@ delete from records where urn in (select urn from importcsv)
 		$title = NULL;
 		$firstname = NULL;	
 		$lastname = NULL;
+		$data = array();
 		if(in_array($name[0],$titles)){
-			$title = $name[0];
+			$data['title'] = $name[0];
 			unset($name[0]);
 			reset($name);
 		}
 		if(isset($name[0])&&!empty($name[0])){
-		$firstname = 	$name[0];
+		$data['firstname'] = 	$name[0];
 		} 
 		if(isset($name[1])&&!empty($name[1])){
-		$lastname = 	$name[1];
+		$data['lastname'] = 	$name[1];
+		if(isset($name[2])&&!empty($name[2])){
+		$data['lastname'] .=  " ".$name[2];
+		}
 		} 
-		if(!empty($firstname)||!empty($lastname)){
-		echo $query = "update contacts set title = '$title', firstname = '$firstname',lastname='$lastname' where contact_id = '{$row['contact_id']}'";
-		$this->db->query($query);
+		if(!empty($data['firstname'])||!empty($data['lastname'])){
+			$this->db->where("contact_id",$row['contact_id']);
+			$this->db->update("contacts",$data);
+			echo $this->db->last_query(); echo "<br>";
 		}
 		}
 		
