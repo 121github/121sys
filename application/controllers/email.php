@@ -561,7 +561,13 @@ class Email extends CI_Controller
                 foreach ($people_destination as $people) {
                     switch ($people) {
                         case "contacts":
-                            $contact_addresses = $this->Email_model->get_appointment_contact_email($urn, $appointment_id);
+                            if ($appointment_id) {
+                                $contact_addresses = $this->Email_model->get_appointment_contact_email($urn, $appointment_id);
+                            }
+                            else {
+                                $contact_addresses = $this->Email_model->get_contact_email($urn);
+                            }
+
                             if (!empty($contact_addresses)) {
                                 $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$contact_addresses);
                             }
@@ -573,9 +579,11 @@ class Email extends CI_Controller
                             }
                             break;
                         case "attendee":
-                            $attendee_addresses = $this->Email_model->get_appointment_attendee_email($urn, $appointment_id);
-                            if (!empty($attendee_addresses)) {
-                                $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$attendee_addresses);
+                            if ($appointment_id) {
+                                $attendee_addresses = $this->Email_model->get_appointment_attendee_email($urn, $appointment_id);
+                                if (!empty($attendee_addresses)) {
+                                    $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$attendee_addresses);
+                                }
                             }
                             break;
                     }
