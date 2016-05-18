@@ -8,6 +8,9 @@ var campaign_functions = {
     init: function () {
 		//this is ran when the html finished loading
     },
+	record_update_save:function(){
+		//ran just after the record is updated
+	},
     record_setup_update: function() {
 		//this is ran when the update panel finished loading
     },
