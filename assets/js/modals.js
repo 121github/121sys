@@ -3173,7 +3173,7 @@ var modals = {
             }).done(function (response) {
                 $('.sync-google-loading').hide();
                 if(Object.keys(response).length) {
-                    $('.sync-google-ok').attr('data-original-title', "<span style='text-decoration: underline'>Sync From: </span>"+response.date_from+" <br><br><h4>Added: </h4>"+(Object.keys(response.added).length?response.added:'-')+" <br><br><h4>Updated: </h4>"+(Object.keys(response.updated).length?response.updated:'-')).show();
+                    $('.sync-google-ok').attr('data-original-title', "<span style='text-decoration: underline'>Sync From: </span>"+response.date_from+" <br><h4>Added: "+Object.keys(response.added).length+"</h4><h4>Updated: "+Object.keys(response.updated).length+"</h4>").show();
                 }
             });
         },
