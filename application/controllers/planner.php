@@ -67,6 +67,7 @@ class Planner extends CI_Controller
         $qry = "select *,date(`start`) `date` from appointments join appointment_attendees using(appointment_id) where date(`start`)>=curdate() and user_id = '$driver'";
         $appointments = $this->db->query($qry)->result_array();
         foreach ($appointments as $row) {
+			if(isset($slots[$row['date']])){
             foreach ($slots[$row['date']] as $id => $slot) {
 
                 if (strtotime($row['start']) >= strtotime($row['date'] . " " . $slot['start']) && strtotime($row['start']) <= strtotime($row['date'] . " " . $slot['end']) || strtotime($row['end']) >= strtotime($row['date'] . " " . $slot['start']) && strtotime($row['end']) <= strtotime($row['date'] . " " . $slot['end'])) {
@@ -82,6 +83,7 @@ class Planner extends CI_Controller
                     $slots[$row['date']][$id]['total_apps'] = $total_apps[$row['date']];
                 }
             }
+			}
         }
         if ($d) {
             return $slots[$d];

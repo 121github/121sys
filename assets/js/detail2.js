@@ -2703,19 +2703,15 @@ var modal = {
 
     },
     confirm_override: function (name, type, path, version, old_attachment_id) {
-        var mheader = 'Do you want to override?';
-        var mbody = 'A file with the same name already exists for this record, do you want to override it? If you select No, a new version of the file will be added with the same name';
-        var mfooter = '';
+        var mheader = 'Do you want to overwrite?';
+        var mbody = 'A file with the same name already exists for this record, click overwrite to replace it or upload to create another version of the file';
+        mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button><button class="btn btn-warning upload-btn" type="button">Upload</button><button class="btn btn-danger confirm-modal" type="button">Overwrite</button>';
         modals.load_modal(mheader, mbody, mfooter);
-
-        modal_footer.append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">No</button>');
-        modal_footer.append('<button class="btn btn-primary confirm-modal" type="button">Override</button>');
-
         $modal.find('.confirm-modal').on('click', function (e) {
-            record.attachment_panel.override_attachment(name, type, path, version, old_attachment_id);
+           record.attachment_panel.override_attachment(name, type, path, version, old_attachment_id);
             $modal.modal('toggle');
         });
-        $modal.find('.close-modal').on('click', function (e) {
+        $modal.find('.upload-btn').on('click', function (e) {
             record.attachment_panel.add_attachment(name, type, path, parseInt(version)+1);
             $modal.modal('toggle');
         });

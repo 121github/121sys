@@ -37,7 +37,7 @@ var campaign_functions = {
     },
     save_appointment: function(appointment) {
 		//contact_confirmation_email(appointment.appointment_id);
-		client_confirmation_email(appointment.appointment_id);
+		client_confirmation_email(appointment);
     },
     load_custom_fields: function() {
 		//this is ran when the custom fields panel is loaded
@@ -69,7 +69,7 @@ function contact_confirmation_email(appointment){
 
 function client_confirmation_email(appointment){
 	var recipient = 'attendee';
-custom_email.send_template_email(appointment.urn, 89, false, recipient, "", "bradf@121customerinsight.co.uk", "FSB appointment notification email",appointment);
+custom_email.send_template_email(appointment.urn, 89, false, recipient, "", "bradf@121customerinsight.co.uk", "FSB appointment notification email",appointment.appointment_id);
 }
 
 function client_info_email(){

@@ -112,32 +112,23 @@
             <div class="row">
                 <p>Select the address the appointment will take place</p>
                 <select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address" data-width="100%">
-                    <?php foreach ($addresses as $address):
-                        $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
-                        $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
-                        $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", " . $address['add2'] : "");
-                        $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", " . $address['add3'] : "");
-                        $add4 = (isset($address['add4']) && !empty($address['add4']) ? ", " . $address['add4'] : "");
-                        $locality = (isset($address['locality']) && !empty($address['locality']) ? ", " . $address['locality'] : "");
-                        $city = (isset($address['city']) && !empty($address['city']) ? ", " . $address['city'] : "");
-                        $county = (isset($address['county']) && !empty($address['county']) ? ", " . $address['county'] : "");
-                        $country = (isset($address['country']) && !empty($address['country']) ? ", " . $address['country'] : "");
-                        $add = $add1 . $add2 . $add3 . $add4 . $locality . $city . $county . $country;
-                        $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
-                        ?>
-                        <option
-                            <?php if (count($addresses) == "1") {
-                                echo "selected";
-                            }
-                            if (empty($address['postcode'])) {
-                                echo "disabled";
-                            } ?>
-                            value="<?php echo $add . "|" . $address['postcode'] ?>"
-                            data-title = "<?php echo $address['description'] ?>"
-                        >
-                            <?php echo $add ?>
-                        </option>
-                    <?php endforeach; ?>
+                      <?php foreach ($addresses as $address):
+                            $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
+							$add .= addressFormat($address);
+                            if(empty($address['postcode'])){ $add .= "-This address has no postcode!"; }                            ?>
+                            <option
+                                <?php if (count($addresses) == "1") {
+                                    echo "selected";
+                                }
+                                if (empty($address['postcode'])) {
+                                    echo "disabled";
+                                } ?>
+                                value="<?php echo $add . "|" . $address['postcode'] . "|" . $address['type'] . "|" . $address['id']  ?>"
+                                data-title = "<?php echo $address['description'] ?>"
+                            >
+                                <?php echo $add ?>
+                            </option>
+                        <?php endforeach; ?>
                     <option value="Other">Other</option>
                 </select>&nbsp;
             </div>
@@ -201,18 +192,10 @@
                             data-width="100%">
                             <option value="">Not Required</option>
                         <?php foreach ($addresses as $address):
-						if($address['description']=="Access Address"){
+						if(strpos($address['description'],"access")!==false){
                             $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
-                            $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
-                            $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", " . $address['add2'] : "");
-                            $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", " . $address['add3'] : "");
-                            $add4 = (isset($address['add4']) && !empty($address['add4']) ? ", " . $address['add4'] : "");
-                            $locality = (isset($address['locality']) && !empty($address['locality']) ? ", " . $address['locality'] : "");
-                            $city = (isset($address['city']) && !empty($address['city']) ? ", " . $address['city'] : "");
-                            $county = (isset($address['county']) && !empty($address['county']) ? ", " . $address['county'] : "");
-                            $country = (isset($address['country']) && !empty($address['country']) ? ", " . $address['country'] : "");
-                            $add = $add1 . $add2 . $add3 . $add4 . $locality . $city . $county . $country;
-                            $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
+							$add .= addressFormat($address);
+                            if(empty($address['postcode'])){ $add .= "-This address has no postcode!"; };
                             ?>
                             <option
                                 <?php if (count($addresses) == "1") {
@@ -221,7 +204,7 @@
                                 if (empty($address['postcode'])) {
                                     echo "disabled";
                                 } ?>
-                                value="<?php echo $add . "|" . $address['postcode'] ?>"
+                                value="<?php echo $add . "|" . $address['postcode'] . "|" . $address['type'] . "|" . $address['id']  ?>"
                                 data-title = "<?php echo $address['description'] ?>"
                             >
                                 <?php echo $add ?>

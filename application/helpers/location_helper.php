@@ -3,6 +3,20 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+if (!function_exists('address_format')) {
+	function addressFormat($array=array(),$seperator=", "){
+		$allowed = array("add1","add2","add3","add4","city","county","country","postcode");
+		$address = "";
+	foreach($array as $k=>$v){
+	if(!in_array($k,$allowed)||empty($v)){
+		unset($array[$k]);
+	}
+	}
+	$address =implode($seperator,$array);
+	return $address;
+}
+}
+
 if (!function_exists('postcodeFormat')) {
 //format postcode
 function postcodeFormat($postcode)

@@ -8,9 +8,16 @@ var campaign_functions = {
     init: function () {
 		//this is ran when the html finished loading
     },
+	record_update_save:function(){
+		if($('#record-update-form').find('#outcomes option:selected').val()=="171"){
+		client_info_email();
+		}
+	},
     record_setup_update: function() {
+
+		
 		//this is ran when the update panel finished loading
-		if($('#custom-panel table .c4:contains("Online Quote")').length>0||$('#record-update-form').find('#outcomes option:selected').val()=="171"){
+		if($('#custom-panel table .c4:contains("Online Quote")').length>0){
 			console.log("online");
 		$('#record-panel ul.dropdown-menu').find('span:contains("Transfer Online")').addClass('green');
 		} 

@@ -219,6 +219,9 @@ var record_update = {
                             data: {urn: urn}
                         });
                     }
+					if(typeof campaign_functions.record_update_save !== "undefined"){
+						campaign_functions.record_update_save();
+					}
                     if (response.function_triggers) {
                         $.each(response.function_triggers, function (i, path) {
                             $.ajax({

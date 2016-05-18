@@ -1016,9 +1016,9 @@ JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn =
 
     public function get_addresses($urn = "")
     {
-        $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode, contact_addresses.description from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
+        $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode, contact_addresses.description,location_id from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
         $addresses = $this->db->query($qry)->result_array();
-        $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode, company_addresses.description from company_addresses inner join companies using(company_id) where urn = '$urn'";
+        $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode, company_addresses.description,location_id from company_addresses inner join companies using(company_id) where urn = '$urn'";
         $companies = $this->db->query($qry)->result_array();
         foreach ($companies as $row) {
             $addresses[] = $row;
