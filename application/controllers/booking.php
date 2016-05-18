@@ -619,17 +619,19 @@ public function create_description($appointment,$contact=false,$company=false){
             //Get the Calendars
             $service = new Google_Service_Calendar($google_client);
             $calendar = $service->calendars->get($calendars_selected);
+            $timeMin = date("Y-m-d", strtotime("first day of previous month")).'T07:00:00Z';
 
             $optParams = array(
                 'orderBy' => 'startTime',
                 'singleEvents' => TRUE,
                 //Get the events since the previous month
-                'timeMin' => date("Y-m-d", strtotime("first day of previous month")).'T07:00:00Z'
+                'timeMin' => $timeMin
             );
             $events = $service->events->listEvents($calendar->id, $optParams);
 
 
             $appointments = array(
+                "date_from" => $timeMin,
                 "added" => array(),
                 "updated" => array()
             );

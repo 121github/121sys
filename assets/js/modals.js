@@ -3173,7 +3173,7 @@ var modals = {
             }).done(function (response) {
                 $('.sync-google-loading').hide();
                 if(Object.keys(response).length) {
-                    $('.sync-google-ok').attr('data-original-title', "<h4>Added: </h4>"+response.added+" <br><br><h4>Updated: </h4>"+response.updated).show();
+                    $('.sync-google-ok').attr('data-original-title', "<span style='text-decoration: underline'>Sync From: </span>"+response.date_from+" <br><br><h4>Added: </h4>"+(Object.keys(response.added).length?response.added:'-')+" <br><br><h4>Updated: </h4>"+(Object.keys(response.updated).length?response.updated:'-')).show();
                 }
             });
         },
@@ -3224,6 +3224,10 @@ var modals = {
                             '<td><input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="auto-sync" name="auto_sync" data-toggle="toggle" data-size="mini" data-width="100" data-onstyle="success" data-offstyle="danger" data-on="Automatic" data-off="Manual" value="'+val.auto_sync+'" '+checked+'></td>' +
                         '</tr>';
                 });
+
+                if (response.data.length) {
+                    $('#tabs a[href="#view-calendars-tab"]').tab('show');
+                }
 
                 $('.calendars-table').find('tbody').html(calendar);
 
