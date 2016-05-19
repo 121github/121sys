@@ -113,6 +113,9 @@ var template = {
 
             var data = {id: $('#container-fluid form').find('input[name="template_id"]').val()};
 
+            var people_destination = (result.data.people_destination?(result.data.people_destination).split(","):[]);
+            $('#people_destination_select').selectpicker('val', people_destination).selectpicker('render');
+
             $.ajax({
                 url: helper.baseUrl + "templates/get_campaings_by_template_id",
                 type: 'POST',

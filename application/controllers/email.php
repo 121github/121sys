@@ -14,6 +14,7 @@ class Email extends CI_Controller
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
+        $this->load->model('Company_model');
         $this->load->model('Email_model');
         $this->load->model('Appointments_model');
         $this->load->model('File_model');
@@ -112,10 +113,31 @@ class Email extends CI_Controller
 
         $urn = intval($this->uri->segment(4));
         $template_id = intval($this->uri->segment(3));
-		$email_address = $this->Email_model->get_contact_email($urn);
-        $placeholder_data = $this->Email_model->get_placeholder_data($urn);
+
         $template = $this->Email_model->get_template($template_id);
         $last_comment = $this->Records_model->get_last_comment($urn);
+
+        if ((!$template['people_destination']) || ($template['people_destination'])== '') {
+            $contact_addresses = $this->Email_model->get_contact_email($urn);
+            $email_address = implode(",",$contact_addresses);
+        }
+        else {
+            $email_address = "";
+            $people_destination = explode(",",$template['people_destination']);
+            foreach ($people_destination as $people) {
+                switch ($people) {
+                    case "contacts":
+                        $contact_addresses = $this->Email_model->get_contact_email($urn);
+                        $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$contact_addresses);
+                        break;
+                    case "company":
+                        $company_addresses = $this->Email_model->get_company_email($urn);
+                        $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$company_addresses);
+                        break;
+                }
+            }
+        }
+
 
         $placeholder_data = $this->Email_model->get_placeholder_data($urn);
         $placeholder_data[0]['comments'] = $last_comment;
@@ -150,6 +172,7 @@ class Email extends CI_Controller
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
+            'page' => 'new_email',
             'pageId' => 'Create-survey',
             'title' => 'Send new email',
             'urn' => $urn,
@@ -216,26 +239,44 @@ class Email extends CI_Controller
     }
 
     //Get the contacts
-    public function get_contacts()
+    public function get_email_addresses()
     {
         user_auth_check();
         if ($this->input->is_ajax_request()) {
             $urn = intval($this->input->post('urn'));
 
-            $contacts = $this->Contacts_model->get_contacts($urn);
+            $email_addresses = array(
+                "contacts" => array(),
+                "companies" => array()
+            );
+
+
+            $email_addresses['contacts'] = $this->Contacts_model->get_contacts($urn);
 
             $aux = array();
-            foreach ($contacts as $key => $contact) {
+            foreach ($email_addresses['contacts'] as $key => $contact) {
                 if ($contact['visible']['Email address']) {
                     $aux[$key]["name"] = $contact['name']['fullname'];
                     $aux[$key]["email"] = $contact['visible']['Email address'];
                 }
             }
-            $contacts = $aux;
+            $email_addresses['contacts'] = $aux;
+
+
+            $email_addresses['companies'] = $this->Company_model->get_companies($urn);
+
+            $aux = array();
+            foreach ($email_addresses['companies'] as $key => $company) {
+                if ($company['visible']['Email address']) {
+                    $aux[$key]["name"] = $company['name']['Company'];
+                    $aux[$key]["email"] = $company['visible']['Email address'];
+                }
+            }
+            $email_addresses['companies'] = $aux;
 
             echo json_encode(array(
                 "success" => true,
-                "data" => $contacts
+                "data" => $email_addresses
             ));
         }
     }
@@ -416,6 +457,29 @@ class Email extends CI_Controller
                 foreach ($recipients['email'] as $name => $email_address) {
                     //create the form structure to pass to the send function
                     $form = $this->Email_model->template_to_form($template_id);
+
+                    if (($form['people_destination']) && ($form['people_destination']) != '') {
+                        $people_destination = explode(",", $form['people_destination']);
+                        foreach ($people_destination as $people) {
+                            switch ($people) {
+                                case "contacts":
+                                    $contact_addresses = $this->Email_model->get_contact_email($urn);
+                                    if (!empty($contact_addresses)) {
+                                        $email_address .= (strlen($email_address) > 0 ? "," : "") . implode(",", $contact_addresses);
+                                    }
+                                    break;
+                                case "company":
+                                    $company_addresses = $this->Email_model->get_company_email($urn);
+                                    if (!empty($company_addresses)) {
+                                        $email_address .= (strlen($email_address) > 0 ? "," : "") . implode(",", $company_addresses);
+                                    }
+                                    break;
+                            }
+                        }
+
+                        unset($form['people_destination']);
+                    }
+
                     $form['send_to'] = $email_address;
                     $form['bcc'] = $recipients['bcc'];
                     $form['cc'] = $recipients['cc'];
@@ -431,13 +495,13 @@ class Email extends CI_Controller
                                 $val = str_replace("Mrs ", "", $val);
                                 $val = str_replace("Mrs ", "", $val);
                             }
-                       $form['body'] = str_replace("[$key]", $val, $form['body']);
-						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
-						$form['body'] = str_replace("[!$key]", $val, $form['body']);
-						$form['subject'] = str_replace("[!$key]", $val, $form['subject']);
-						//replace the optional placeholders with blanks
-						$form['body'] = str_replace("[!$key]", "-", $form['body']);
-						$form['subject'] = str_replace("[!$key]", "", $form['subject']);
+                            $form['body'] = str_replace("[$key]", $val, $form['body']);
+                            $form['subject'] = str_replace("[$key]", $val, $form['subject']);
+                            $form['body'] = str_replace("[!$key]", $val, $form['body']);
+                            $form['subject'] = str_replace("[!$key]", $val, $form['subject']);
+                            //replace the optional placeholders with blanks
+                            $form['body'] = str_replace("[!$key]", "-", $form['body']);
+                            $form['subject'] = str_replace("[!$key]", "", $form['subject']);
                         }
                     }
                     $history_visible = $form['history_visible'];
@@ -470,35 +534,73 @@ class Email extends CI_Controller
 
     public function send_template_email()
     {
-		if(@$this->input->post('code')!=="remotepass"){
-        user_auth_check();
-		}		
+        if (@$this->input->post('code') !== "remotepass") {
+            user_auth_check();
+        }
         $urn = intval($this->input->post('urn'));
         $template_id = intval($this->input->post('template_id'));
         $recipients_to = $this->input->post('recipients_to');
         $recipients_to_name = $this->input->post('recipients_to_name');
         $recipients_cc = $this->input->post('recipients_cc');
         $recipients_bcc = $this->input->post('recipients_bcc');
-		$appointment_id = $this->input->post('appointment_id');
+        $appointment_id = $this->input->post('appointment_id');
         $email_name = $this->input->post('email_name');
-		//first check it hasnt already been sent
-		if($this->Email_model->check_for_duplicate($template_id,$recipients_to,$urn)){
-			echo json_encode(array("msg"=>"Already sent this email"));
-		exit;
-		}
-		
+        //first check it hasnt already been sent
+        if ($this->Email_model->check_for_duplicate($template_id, $recipients_to, $urn)) {
+            echo json_encode(array("msg" => "Already sent this email"));
+            exit;
+        }
+
         if ($template_id && $recipients_to && $urn) {
             //create the form structure to pass to the send function
             $form = $this->Email_model->template_to_form($template_id);
+
+            if (($form['people_destination']) && ($form['people_destination'])!= '') {
+                $email_address = "";
+                $people_destination = explode(",",$form['people_destination']);
+                foreach ($people_destination as $people) {
+                    switch ($people) {
+                        case "contacts":
+                            if ($appointment_id) {
+                                $contact_addresses = $this->Email_model->get_appointment_contact_email($urn, $appointment_id);
+                            }
+                            else {
+                                $contact_addresses = $this->Email_model->get_contact_email($urn);
+                            }
+
+                            if (!empty($contact_addresses)) {
+                                $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$contact_addresses);
+                            }
+                            break;
+                        case "company":
+                            $company_addresses = $this->Email_model->get_company_email($urn);
+                            if (!empty($company_addresses)) {
+                                $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$company_addresses);
+                            }
+                            break;
+                        case "attendee":
+                            if ($appointment_id) {
+                                $attendee_addresses = $this->Email_model->get_appointment_attendee_email($urn, $appointment_id);
+                                if (!empty($attendee_addresses)) {
+                                    $email_address .= (strlen($email_address) > 0 ? "," : "").implode(",",$attendee_addresses);
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                unset($form['people_destination']);
+            }
+
             if ($form) {
                 $last_comment = $this->Records_model->get_last_comment($urn);
-                $placeholder_data = $this->Email_model->get_placeholder_data($urn,$appointment_id);
-				if($recipients_to=="attendee"){
-				 $recipients_to = $placeholder_data[0]['attendee_email'];
-				}
-				$form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
-                $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
-                $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
+                $placeholder_data = $this->Email_model->get_placeholder_data($urn, $appointment_id);
+                if ($recipients_to == "attendee") {
+                    $recipients_to = $placeholder_data[0]['attendee_email'];
+                }
+                $form['send_to'] .= (strlen($form['send_to']) > 0 ? "," : "") . $recipients_to . (strlen($recipients_to) > 0 ? "," : "").$email_address;
+                $form['bcc'] .= (strlen($form['bcc']) > 0 ? "," : "") . $recipients_bcc;
+                $form['cc'] .= (strlen($form['cc']) > 0 ? "," : "") . $recipients_cc;
                 $form['urn'] = $urn;
                 $placeholder_data[0]['comments'] = $last_comment;
                 $placeholder_data[0]['recipient_name'] = $recipients_to_name;
@@ -509,33 +611,32 @@ class Email extends CI_Controller
                             $val = str_replace("Mrs ", "", $val);
                             $val = str_replace("Mrs ", "", $val);
                         }
-						if(strpos($form['body'],"[$key]")!==false&&empty($val)){
-						echo json_encode(array(
-                            "success" => false,
-                            "msg" => "Email not sent. $key is empty!"
-                        ));
-						exit;
-						}
+                        if (strpos($form['body'], "[$key]") !== false && empty($val)) {
+                            echo json_encode(array(
+                                "success" => false,
+                                "msg" => "Email not sent. $key is empty!"
+                            ));
+                            exit;
+                        }
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
-						$form['subject'] = str_replace("[$key]", $val, $form['subject']);
-						$form['body'] = str_replace("[!$key]", $val, $form['body']);
-						$form['subject'] = str_replace("[!$key]", $val, $form['subject']);
-						//replace the optional placeholders with blanks
-						$form['body'] = str_replace("[!$key]", "-", $form['body']);
-						$form['subject'] = str_replace("[!$key]", "", $form['subject']);
+                        $form['subject'] = str_replace("[$key]", $val, $form['subject']);
+                        $form['body'] = str_replace("[!$key]", $val, $form['body']);
+                        $form['subject'] = str_replace("[!$key]", $val, $form['subject']);
+                        //replace the optional placeholders with blanks
+                        $form['body'] = str_replace("[!$key]", "-", $form['body']);
+                        $form['subject'] = str_replace("[!$key]", "", $form['subject']);
                     }
                 }
                 $history_visible = $form['history_visible'];
                 unset($form['history_visible']);
-				
-				
-				$attachments = array();
-                    if($template_id) {
-                        $attachments = $this->Email_model->get_attachments_by_template_id($template_id);
-						$form['template_attachments'] = $attachments;
-                    }
-                  
-				
+
+
+                $attachments = array();
+                if ($template_id) {
+                    $attachments = $this->Email_model->get_attachments_by_template_id($template_id);
+                    $form['template_attachments'] = $attachments;
+                }
+
                 if ($this->send($form)) {
                     $email_history = array(
                         'body' => $form['body'],
@@ -544,7 +645,7 @@ class Email extends CI_Controller
                         'send_to' => $form['send_to'],
                         'cc' => $form['cc'],
                         'bcc' => $form['bcc'],
-                        'user_id' => isset($_SESSION['user_id'])?$_SESSION['user_id']:0,
+                        'user_id' => isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0,
                         'urn' => $form['urn'],
                         'template_id' => $form['template_id'],
                         'template_unsubscribe' => $form['template_unsubscribe'],
@@ -561,8 +662,7 @@ class Email extends CI_Controller
                             "email_history_id" => $email_id
                         ));
                     }
-                }
-                else{
+                } else {
                     if ($this->input->is_ajax_request()) {
                         echo json_encode(array(
                             "success" => false,
@@ -570,8 +670,7 @@ class Email extends CI_Controller
                         ));
                     }
                 }
-            }
-            else {
+            } else {
                 if ($this->input->is_ajax_request()) {
                     echo json_encode(array(
                         "success" => false,
@@ -580,8 +679,7 @@ class Email extends CI_Controller
                 }
             }
 
-        }
-        else {
+        } else {
             if ($this->input->is_ajax_request()) {
                 echo json_encode(array(
                     "success" => false,

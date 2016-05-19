@@ -337,33 +337,62 @@ var email = {
 var modal = {
 
     add_contact: function (option) {
-       modal_header.text('Add Contact');
-        //Get the contacts
+       modal_header.text('Add Email Address');
+        //Get the email addresses
         var urn = $('#container-fluid form').find('input[name="urn"]').val();
+        var template_id = $('#container-fluid form').find('input[name="template_id"]').val();
+        var template_to = $('#container-fluid form').find('input[name="send_to"]').val().replaceAll(" ","");
+        var template_cc = $('#container-fluid form').find('input[name="cc"]').val().replaceAll(" ","");
+        var template_bcc = $('#container-fluid form').find('input[name="bcc"]').val().replaceAll(" ","");
         var contacts;
+        var companies;
         $.ajax({
-            url: helper.baseUrl + "email/get_contacts",
+            url: helper.baseUrl + "email/get_email_addresses",
             type: "POST",
             dataType: "JSON",
             data: {urn: urn}
         }).done(function (response) {
             if (response.success) {
-                contacts = '<table class="table"><thead><tr><th>Name</th><th>Email</th><th></th></tr></thead><tbody>';
-                var i = 1;
-                $.each(response.data, function (key, val) {
-                    options = '<span class="glyphicon glyphicon-plus pull-right add-contact-option" option="' + option + '" email="' + val["email"] + '"item-id="' + key + '"></span>';
-                    contacts += '<tr><td>' + val["name"] + '</td><td>' + val["email"] + '</td><td class="' + key + option + '">' + options + '</td></tr>';
-                    i += 1;
-                });
-                contacts += '</tbody></table>';
+                if(Object.keys(response.data.contacts).length) {
+                    contacts = '<div><h4>Contacts</h4></div><table class="table"><thead><tr><th>Name</th><th>Email</th><th></th></tr></thead><tbody>';
+                    var i = 1;
+                    $.each(response.data.contacts, function (key, val) {
+                        var addr = (template_to.split(",").concat(template_cc.split(",").concat(template_bcc.split(","))));
+                        var options = '<span class="glyphicon glyphicon-plus pull-right add-contact-option pointer" option="' + option + '" email="' + val["email"] + '"item-id="' + key + '"></span>';
+                        if (jQuery.inArray( val['email'], addr) >= 0){
+                            options = "Added";
+                        }
+                        contacts += '<tr><td>' + val["name"] + '</td><td>' + val["email"] + '</td><td class="' + key + option + '">' + options + '</td></tr>';
+                        i += 1;
+                    });
+                    contacts += '</tbody></table>';
+                }
+
+                if(Object.keys(response.data.companies).length) {
+                    companies = '<div>Companies</div><table class="table"><thead><tr><th>Name</th><th>Email</th><th></th></tr></thead><tbody>';
+                    var i = 1;
+                    $.each(response.data.companies, function (key, val) {
+                        var addr = (template_to.split(",").concat(template_cc.split(",").concat(template_bcc.split(","))));
+                        var options = '<span class="glyphicon glyphicon-plus pull-right add-contact-option pointer" option="' + option + '" email="' + val["email"] + '"item-id="' + key + '"></span>';
+                        if (jQuery.inArray( val['email'], addr) >= 0){
+                            options = "Added";
+                        }
+                        companies += '<tr><td>' + val["name"] + '</td><td>' + val["email"] + '</td><td class="' + key + option + '">' + options + '</td></tr>';
+                        i += 1;
+                    });
+                    companies += '</tbody></table>';
+                }
+
+                modal_body.append(companies);
                 modal_body.append(contacts);
+
             }
         });
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
         })
-		modal_body.text('Select the contact that you want to add').append('<br /><br />').append(contacts);
+		modal_body.text('Select the email address that you want to add').append('<br /><br />').append(contacts);
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             $('#modal').modal('toggle');

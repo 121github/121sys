@@ -8,8 +8,11 @@ class Booking extends CI_Controller
     public function __construct()
     {
 		parent::__construct();
-		        user_auth_check();
-        $this->_campaigns = campaign_access_dropdown();
+        if (strcmp($this->uri->segment(3),ACCESS_TOKEN) != 0) {
+            user_auth_check();
+            $this->_campaigns = campaign_access_dropdown();
+        }
+
         $this->project_version = $this->config->item('project_version');
 		$this->load->model('Booking_model');
         $this->load->model('Contacts_model');
@@ -564,7 +567,7 @@ public function create_description($appointment,$contact=false,$company=false){
             "expires_in" => $token['expires_in'],
             "id_token" => $token['id_token'],
             "created" => $token['created'],
-            "user_id" => $_SESSION['user_id'],
+            "user_id" => (isset($_SESSION['user_id'])?$_SESSION['user_id']:1),
             "date_added" => date('Y-m-d H:i:s')
         );
 
@@ -581,8 +584,8 @@ public function create_description($appointment,$contact=false,$company=false){
 
         foreach ($calendars as $calendar) {
             if ($calendar['auto_sync']) {
-                print_r("Sync Google Calendar: ".$calendar['google_calendar_id']. " for the user: ".$calendar['user_id']." => ");
-                print_r($this->sync_google_cal($calendar['google_calendar_id'], $calendar['user_id'])."\n");
+                echo "Sync Google Calendar: ".$calendar['google_calendar_id']. " for the user: ".$calendar['user_id']." => ";
+                echo $this->sync_google_cal($calendar['google_calendar_id'], $calendar['user_id'])."\n";
             }
         }
     }

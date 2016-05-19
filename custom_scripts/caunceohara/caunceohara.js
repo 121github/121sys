@@ -65,7 +65,7 @@ var campaign_functions = {
 
 function client_info_email(){
 	var recipient = $('#contact-email-address').text();
-custom_email.send_template_email(record.urn, 90, false, recipient, "", "rachaeln@121customerinsight.co.uk", "Quote link email",false);
+custom_email.send_template_email(record.urn, 90, false, recipient, "", "rachaeln@121customerinsight.co.uk", "Quote link email",null);
 }
 
 var custom_email = {

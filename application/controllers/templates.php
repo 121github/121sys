@@ -143,6 +143,14 @@ class Templates extends CI_Controller
 			$campaignsForm = $form['campaign_id'];
 			unset($form['campaign_id']);
 		}
+
+		//Check if the user selected any people destination for this template
+		if (isset($form['people_destination'])) {
+			$form['people_destination'] = implode(",",$form['people_destination']);
+		}
+        else {
+            $form['people_destination'] = NULL;
+        }
 		
 		//Check if the user selected any attachment for this template 
 		$attachmentsForm = array();

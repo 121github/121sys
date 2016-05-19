@@ -56,7 +56,16 @@
                title="Enter the sender" required/>
     </div>
     <div class="form-group input-group-sm">
-        <p>To</p>
+        <p>
+            To
+            <select name="people_destination[]" class="selectpicker" id="people_destination_select"
+                    data-width="15%" data-size="5" data-style="btn-info btn-xs" title="Select default destination"
+                    multiple>
+                    <option value="contacts">Contacts</option>
+                    <option value="company">Company</option>
+                    <option value="attendee">Attendee</option>
+            </select>
+        </p>
         <input type="text" class="form-control" name="template_to"
                title="Enter the destination" required/>
     </div>
