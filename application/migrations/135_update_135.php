@@ -18,7 +18,7 @@ class Migration_update_135 extends CI_Migration
 
         $check = $this->db->query("SHOW COLUMNS FROM `call_log` LIKE 'user'");
         if (!$check->num_rows()) {
-            $this->db->query("ALTER TABLE call_log ADD user VARCHAR(3) NULL");
+            $this->db->query("ALTER TABLE call_log ADD user VARCHAR(40) NULL");
         }
 	}
 	
