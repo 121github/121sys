@@ -237,6 +237,7 @@ class Modals extends CI_Controller
 	 public function view_appointment()
     {
         if ($this->input->is_ajax_request()) {
+			session_write_close();
             $this->load->model('Records_model');
             $ownership = array();
             $id = intval($this->input->post('id'));

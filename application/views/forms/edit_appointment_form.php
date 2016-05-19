@@ -101,23 +101,28 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- APPOINTMENT ADDRESS -->
+    </div>   
+    
+    <?php if(!in_array("other app address",$_SESSION['permissions'])&&count($addresses) == 0){ ?>
+    <p class="text-info"><i class="glyphicon glyphicon-info-sign"></i> This record has no primary address.</p>
+      <?php } ?>  
     <div class="row" id="select-appointment-address" <?php if (count($addresses) == 0) {
         echo 'style="display:none"';
     } ?>>
 
         <div class="col-lg-12">
-            <div class="row">
-                <p>Select the address the appointment will take place</p>
+            <div class="form-group">
+                <p>The address the appointment will take place</p>
                 <select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address" data-width="100%">
-                      <?php foreach ($addresses as $address):
+                      <?php foreach ($addresses as $address): $x=0;
+					  	if(strpos($address['description'],"Access")!==false){
+						continue;
+						}
                             $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
 							$add .= addressFormat($address);
                             if(empty($address['postcode'])){ $add .= "-This address has no postcode!"; }                            ?>
                             <option
-                                <?php if (count($addresses) == "1") {
+                                <?php if ($address['primary']=="1"){
                                     echo "selected";
                                 }
                                 if (empty($address['postcode'])) {
@@ -128,12 +133,15 @@
                             >
                                 <?php echo $add ?>
                             </option>
-                        <?php endforeach; ?>
+                        <?php $x++; endforeach; ?>
+                    <?php if(in_array("other app address",$_SESSION['permissions'])){ ?>
                     <option value="Other">Other</option>
-                </select>&nbsp;
+                    <?php } ?>
+                </select>
             </div>
         </div>
     </div>
+  <?php if(in_array("other app address",$_SESSION['permissions'])){ ?>
     <div class="row" id="add-appointment-address" <?php if (count($addresses) > 0) {
         echo 'style="display:none"';
     } ?> >
@@ -142,7 +150,7 @@
         <div class="col-sm-12">
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group  input-group-sm">
+                    <div class="form-group">
                         <input name="add1" class="form-control" type="text" style="width:95%"
                                placeholder="First line of address"/>
                     </div>
@@ -181,26 +189,35 @@
             </div>
         </div>
     </div>
+       <?php } ?>
+<?php if (in_array("access address", $_SESSION['permissions'])) { 
+$access_address = false;
+  foreach ($addresses as $address):
+						if(strpos($address['description'],"Access")!==false){ 
+							$access_address = true; 
+						}						
+endforeach;
 
-<?php if (in_array("access address", $_SESSION['permissions'])) { ?>
-        <div class="row" id="select-appointment-access-address" <?php if (count($addresses) == 0) { echo 'style="display:none"';} ?>>
+
+if($access_address){
+?>
+        <div class="row" id="select-appointment-access-address">
 
             <div class="col-lg-12">
-                <div class="form-group input-group-sm">
-                    <p>Select the access address for the appointment <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="This is a location that must be visited prior to attending the appointment. For example, if you need to collect some keys to gain entry"></span></p>
+                <div class="form-group">
+                    <p>The access address for the appointment <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="This is a location that must be visited prior to attending the appointment. For example, if you need to collect some keys to gain entry"></span></p>
                     <select name="access_address" class="selectpicker accessaddresspicker" id="accessaddresspicker"
                             data-width="100%">
-                            <option value="">Not Required</option>
                         <?php foreach ($addresses as $address):
-						if(strpos($address['description'],"access")!==false){
+						if(strpos($address['description'],"Access")!==false){
                             $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
 							$add .= addressFormat($address);
                             if(empty($address['postcode'])){ $add .= "-This address has no postcode!"; };
                             ?>
                             <option
-                                <?php if (count($addresses) == "1") {
-                                    echo "selected";
-                                }
+                                <?php 
+                                    echo "selected ";
+                              
                                 if (empty($address['postcode'])) {
                                     echo "disabled";
                                 } ?>
@@ -211,12 +228,14 @@
                             </option>
                             <?php } ?>
                         <?php endforeach; ?>
-                        <option value="Other">Other</option>
-                    </select>&nbsp;
+                        <?php if(in_array("other access address",$_SESSION['permissions'])){ ?>
+                    <option value="Other">Other</option>
+                    <?php } ?>
+                    </select>
                 </div>
             </div>
         </div>
-        <div id="add-appointment-access-address" <?php if (count($addresses) > 0) { echo 'style="display:none"'; } ?>>
+        <!--<div id="add-appointment-access-address" <?php if (count($addresses) > 0) { echo 'style="display:none"'; } ?>>
             <p>Select the access address for the appointment</p>
 
             <div class="col-sm-12">
@@ -259,8 +278,15 @@
                         <button class="btn btn-info btn-sm" id="confirm-add-access-address">Confirm</button>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
+        <?php } ?>
+      <?php    if(!$access_address){
+?>	
+<p class="text-info"><i class="glyphicon glyphicon-info-sign"></i> This record has no access address.</p>
+<?php } ?>
+        
+        
          <?php } ?>
 </form>
                              

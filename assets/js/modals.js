@@ -667,7 +667,7 @@ var modals = {
                 }).done(function(view_appointment_response){
                     if (view_appointment_response.success) {
                         $.each(view_appointment_response.data.appointment,function(title,column){
-                            description += '<h3><b>'+title+'</b></h3>\n';
+                            description += title+':\n';
                             $.each(column.fields,function(name,data){
                                 description += name+' - '+data.value+'\n';
                             });
@@ -924,7 +924,7 @@ var modals = {
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
             $.each($mbody.find('#addresspicker option'), function () {
-                if ($(this).val() == data.address + '|' + data.postcode) {
+                if ($(this).text().indexOf(data.address)) {
                     option_exists = true;
                 }
             });
@@ -936,7 +936,7 @@ var modals = {
             //check if the appointment access address is already in the dropdown and if not, add it.
             var option_exists = false;
             $.each($mbody.find('#accessaddresspicker option'), function () {
-                if ($(this).val() == data.access_address + '|' + data.access_postcode) {
+                if ($(this).text().indexOf(data.access_address)) {
                     option_exists = true;
                 }
             });
@@ -960,9 +960,10 @@ var modals = {
                 if (k == "branch_id") {
                    branch = v;
                 }
-                $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true).attr('selected','selected');
-                $mbody.find('#accessaddresspicker option[value="' + data.access_address + '|' + data.access_postcode + '"]').prop('selected', true).attr('selected','selected');
-            });
+			});
+                $mbody.find('#addresspicker option:contains("' + data.address + '")').prop('selected', true).attr('selected','selected');
+                $mbody.find('#accessaddresspicker option:contains("' + data.access_address  + '")').prop('selected', true).attr('selected','selected');
+          
             modals.load_modal(mheader, $mbody, mfooter);
             modals.appointment_contacts(data.urn, data.contact_id);
             modal_body.css('overflow', 'visible');
@@ -984,7 +985,8 @@ var modals = {
                 if (typeof campaign_functions.appointment_edit_setup !== "undefined") {
                     campaign_functions.appointment_edit_setup();
                 }
-        });
+				  });
+
     },
 	appointment_setup: function (start,attendee,type) {
 		if(typeof start == "undefined"&&$('#slots-panel').find('input:checked').length>0){

@@ -25,6 +25,24 @@ var campaign_functions = {
 
         $('select[name="tps"]').closest('.form-group').hide();
 		$modal.find('#address').empty();
+		
+		$.ajax({ url:helper.baseUrl+'custom_scripts/lhs/lhs.php?address_form',
+		type:"POST",
+		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn },
+		dataType:"HTML",
+		}).done(function(response){ 	
+		$modal.find('#address').html(response);
+		$modal.find('.panel-collapse').collapse('hide');
+		 $modal.find('[data-toggle="collapse"]').click(function(e){
+      e.preventDefault();
+      var target_element= $(this).attr("href");
+      $modal.find(target_element).collapse('toggle');
+	  $modal.find('.panel-collapse').not(target_element).collapse('hide');
+      return false;
+});
+		});
+		
+		
     },
     contact_panel_setup: function () {
         $('.Job-panel-label').html("Company");
@@ -81,6 +99,7 @@ var campaign_functions = {
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
  $modal.find('textarea[name="text"]').val($('#sticky-notes').val()).attr('readonly',true);
+ $modal.find('[data-toggle="tooltip"]').tooltip();
     },
 
     appointment_edit_setup: function () {
@@ -235,7 +254,7 @@ var campaign_functions = {
             var job_status = response.data[appointment.job_id]['Job Status']['value'];
             var type_of_survey = response.data[appointment.job_id]['Type of survey']['value'];
             var additional_services = response.data[appointment.job_id]['Additional services']['value'];
-            campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
+            campaign_functions.set_appointment_title(appointment_id,"");
         });
 
     },
@@ -325,7 +344,7 @@ var campaign_functions = {
             var job_status = $form.find("[name='6']").val();
             var type_of_survey = $form.find("[name='7']").val();
             var additional_services = $form.find("[name='11']").val();
-            campaign_functions.set_appointment_title(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services);
+            campaign_functions.set_appointment_title(appointment_id,"");
         }).fail( function() {
             flashalert.danger("Error saving the appointment title")
         });
@@ -390,92 +409,14 @@ var campaign_functions = {
             }
         }
     },
-    set_appointment_title: function(appointment_id, appointment_type_id, address, access_address, job_id, job_status, type_of_survey, additional_services) {
-        var title = "";
-        var type = "";
-        var add_services = "";
-
-        if (job_status != "Invoiced") {
-            title += job_id;
-        }
-
-        switch (appointment_type_id) {
-            case "1":
-                title += " [poss]";
-                break;
-            case "2":
-                title += " [tbc]";
-                break;
-            case "3":
-                title += " [conf]";
-                break;
-        }
-
-        switch (type_of_survey) {
-            case "Building Survey":
-                type = "BS";
-                break;
-            case "Home Buyer Report":
-                type = "HBR";
-                break;
-            case "General Structural Inspection":
-                type = "GSI";
-                break;
-            case "Specific Inspection":
-                type = "SSI";
-                break;
-            case "Site Visit":
-                type = "SV";
-                break;
-            case "Valuation":
-                type = "VAL";
-                break;
-            case "Schedule Of Condition":
-                type = "SOC";
-                break;
-            case "Structural Calculations":
-                type = "SCALC";
-                break;
-            case "Party Wall":
-                type = "PW";
-                break;
-        }
-
-        switch (additional_services) {
-            case "Valuation":
-                add_services = "VAL";
-                break;
-            case "Express Write Up Service":
-                add_services = "EXP";
-                break;
-            case "Platinum Plus":
-                add_services = "PP";
-                break;
-            case "High Level Images":
-                add_services = "HRP";
-                break;
-            case "Thermal Images":
-                add_services = "TI";
-                break;
-        }
-
-        if (access_address) {
-            title += " KA "+type+" "+add_services+" "+address;
-            title += " - KA "+access_address;
-        }
-        else {
-            title += " STP "+type+" "+add_services+" "+address;
-        }
-
-        //Update appointment title
+    set_appointment_title: function(appointment_id,urn) {
         $.ajax({
-            url: helper.baseUrl+'custom_scripts/lhs/lhs.php',
+            url: helper.baseUrl+'custom_scripts/lhs/lhs.php?set_appointment_title',
             type: "POST",
             dataType: "JSON",
             data: {
-                "action": "update_appointment_title",
-                "appointment_id": appointment_id,
-                "title": title
+                urn:urn,
+				appointment_id:appointment_id
             }
         }).done(function (response) {
             if (response.success) {
@@ -483,6 +424,42 @@ var campaign_functions = {
                 if (typeof record != "undefined") {
                     record.appointment_panel.load_appointments();
                 }
+				 if (typeof calendar != "undefined") {
+                     $('#calendar').fullCalendar('refetchEvents');
+                }
+				
+				var description = '';
+                $.ajax({
+                    url: helper.baseUrl + 'modals/view_appointment',
+                    data: {
+                        id: appointment_id
+                    },
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function(view_appointment_response){
+                    if (view_appointment_response.success) {
+                        $.each(view_appointment_response.data.appointment,function(title,column){
+                            description += title+':\n';
+                            $.each(column.fields,function(name,data){
+                                description += name+' - '+data.value+'\n';
+                            });
+                            description += '\n\n';
+                        });
+                    }
+
+                    $.ajax({
+                        url: helper.baseUrl + 'booking/add_google_event',
+                        data: {
+                            appointment_id: appointment_id,
+                            event_status: "confirmed",
+                            description: description
+                        },
+                        type: "POST",
+                        dataType: "JSON"
+                    });
+                });
+				
+				
             }
             else {
                 flashalert.danger(response.msg);

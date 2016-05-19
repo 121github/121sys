@@ -105,8 +105,9 @@ EOF
 
 	a2dissite 000-default
 	a2ensite vagrant_vhost
-
-	a2enmod rewrite
+	
+	a2enmod rewrites
+	a2enmod status
 
 	service apache2 reload
 	update-rc.d apache2 enable

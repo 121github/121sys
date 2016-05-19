@@ -619,7 +619,9 @@ var record = {
                                     primary_postcode = addr.postcode;
 									if(typeof quick_planner !== "undefined"&&quick_planner.contact_postcode!==primary_postcode){
 										quick_planner.contact_postcode = primary_postcode;
-										quick_planner.load_planner()
+										if($('#quick-planner-panel').length>0){
+											quick_planner.load_planner();
+										}	
 									}
                                 }
                                 var postcode = addr.postcode;

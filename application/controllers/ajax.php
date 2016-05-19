@@ -156,18 +156,12 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $error = false;
-            $postcodes = array();
-			$postcode = false;
-            if (is_array($this->input->post('postcode'))) {
-                foreach ($this->input->post() as $k => $postcode) {
-                    if (validate_postcode($postcode)) {
+			$postcode = $this->input->post('postcode');
+				  if (validate_postcode($postcode)) {
 						$postcode = postcodeFormat($postcode);
-                        $postcodes[] = $postcode;
                     } else {
                         $error = "Postcode " . $postcode . " is not valid";
                     }
-                }
-            } 
             if ($error) {
                 echo json_encode(array(
                     "success" => false,

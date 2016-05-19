@@ -188,7 +188,7 @@ class Modal_model extends CI_Model
             $qry .= $join_query;
         }
         $qry .= " where a.appointment_id = '$id' group by a.appointment_id";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->row_array();
     }
 	
