@@ -99,7 +99,7 @@ var campaign_functions = {
         //Title no editable
         $modal.find('input[name="title"]').prop('readonly', true);
  $modal.find('textarea[name="text"]').val($('#sticky-notes').val()).attr('readonly',true);
- $mbody.find('[data-toggle="tooltip"]').tooltip();
+ $modal.find('[data-toggle="tooltip"]').tooltip();
     },
 
     appointment_edit_setup: function () {
@@ -427,7 +427,44 @@ var campaign_functions = {
 				 if (typeof calendar != "undefined") {
                      $('#calendar').fullCalendar('refetchEvents');
                 }
+				
+				var description = '';
+                $.ajax({
+                    url: helper.baseUrl + 'modals/view_appointment',
+                    data: {
+                        id: appointment_id
+                    },
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function(view_appointment_response){
+                    if (view_appointment_response.success) {
+                        $.each(view_appointment_response.data.appointment,function(title,column){
+                            description += title+':\n';
+                            $.each(column.fields,function(name,data){
+                                description += name+' - '+data.value+'\n';
+                            });
+                            description += '\n\n';
+                        });
+                    }
+
+                    $.ajax({
+                        url: helper.baseUrl + 'booking/add_google_event',
+                        data: {
+                            appointment_id: appointment_id,
+                            event_status: "confirmed",
+                            description: description
+                        },
+                        type: "POST",
+                        dataType: "JSON"
+                    });
+                });
+				
+				
             }
+            else {
+                flashalert.danger(response.msg);
+            }
+
         });
     }
 
