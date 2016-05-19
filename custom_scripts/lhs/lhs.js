@@ -28,7 +28,7 @@ var campaign_functions = {
 		
 		$.ajax({ url:helper.baseUrl+'custom_scripts/lhs/lhs.php?address_form',
 		type:"POST",
-		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn },
+		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn }, 
 		dataType:"HTML",
 		}).done(function(response){ 	
 		$modal.find('#address').html(response);
