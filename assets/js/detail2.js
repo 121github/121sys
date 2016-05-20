@@ -665,9 +665,11 @@ var record = {
                     });
 					}
 					if(typeof val.transfer!=="undefined"){
+							transfer_telephone_items +=	'<dd>';
 					 $.each(val.transfer, function (dt, tel) {
-					transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '+'+record.campaign+'" target="_blank" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
+					transfer_telephone_items +=	'<a class="startcall btn btn-info btn-sm starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '+'+record.campaign+'" target="_blank" href="#" style="display:inline-block;margin:5px 5px 5px">'+tel.tel_name+' </a>';
 					 });
+					 	transfer_telephone_items +=	'<dd>';
 					 transfer_telephone_items += '<div class="clearfix"></div>';
 					}
 					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'">'+
