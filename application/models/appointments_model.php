@@ -352,6 +352,10 @@ $datafield_ids = array();
 		if(isset($_SESSION['current_campaign'])){
 			 $where .= " and r.campaign_id = '".$_SESSION['current_campaign']."' ";
 		}
+		if(in_array("own appointments",$_SESSION['permissions'])){
+			 $where .= " and aa.user_id = '".$_SESSION['user_id']."' ";
+		}
+		
         //Check the bounds of the map
         if ($options['bounds'] && $options['map']=='true') {
             $where .= " and (appointment_locations.lat < ".$options['bounds']['neLat']." and appointment_locations.lat > ".$options['bounds']['swLat']." and appointment_locations.lng < ".$options['bounds']['neLng']." and appointment_locations.lng > ".$options['bounds']['swLng'].") ";
