@@ -555,6 +555,19 @@ class Booking extends CI_Controller
         ));
     }
 
+    public function set_no_title_events()
+    {
+        $google_calendar_id = $this->input->post('google_calendar_id');
+        $no_title_events = $this->input->post('no_title_events');
+
+        $result = $this->Booking_model->set_no_title_events($google_calendar_id, $no_title_events);
+
+        echo json_encode(array(
+            'success' => (!empty($result)),
+            'msg' => (!empty($result) ? "Sync 'No Title' events was set as " . ($no_title_events ? "true" : "false") . " successfully!" : "ERROR: Sync 'No Title' events was not updated!")
+        ));
+    }
+
     public function refreshToken($token)
     {
         define('APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
@@ -665,7 +678,7 @@ class Booking extends CI_Controller
                 }
                 $data = array(
                     'google_id' => $event->id,
-                    'title' => ($event->summary ? $event->summary : "No Title"),
+                    'title' => ($event->summary ? $event->summary : "(No Title)"),
                     'start' => ($event->getStart()->dateTime ? $event->getStart()->dateTime : $event->getStart()->date),
                     'end' => ($event->getEnd()->dateTime ? $event->getEnd()->dateTime : $event->getEnd()->date),
                     'address' => $event->location,
@@ -687,31 +700,39 @@ class Booking extends CI_Controller
                     array_push($appointments['updated'], $appointment_id);
                 } else {
                     //set new appointment text value if description exists
-                    $data['text'] = $event->description ? $event->description : "";
 
-                    //get the campaign for the new record
-                    $this->db->where("user_id", $user_id);
-                    $campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
-                    //Create record					
-                    $urn = $this->Records_model->save_record(array(
-                        "campaign_id" => $campaign_id,
-                        "record_status" => 1,
-						"outcome_id"=>106 //appointment imported outcome
-                    ));
-                    //Add a contact with no name
-                    $contact_id = $this->Contacts_model->save_contact(array(
-                        "urn" => $urn,
-                        "fullname" => ""
-                    ));
+                    //If no_title_events is false, do not add the events without title on the 121system
+                    if (!$google_calendar['no_title_events'] && !$event->summary) {
+                        echo "sda";
+                        continue;
+                    }
+                    else {
+                        $data['text'] = $event->description ? $event->description : "";
 
-                    //Add the appointments to 121system
-                    $data['urn'] = $urn;
-                    $this->Records_model->save_notes($urn, $data['text']);
+                        //get the campaign for the new record
+                        $this->db->where("user_id", $user_id);
+                        $campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
+                        //Create record
+                        $urn = $this->Records_model->save_record(array(
+                            "campaign_id" => $campaign_id,
+                            "record_status" => 1,
+                            "outcome_id"=>106 //appointment imported outcome
+                        ));
+                        //Add a contact with no name
+                        $contact_id = $this->Contacts_model->save_contact(array(
+                            "urn" => $urn,
+                            "fullname" => ""
+                        ));
 
-                    unset($data['text']);
+                        //Add the appointments to 121system
+                        $data['urn'] = $urn;
+                        $this->Records_model->save_notes($urn, $data['text']);
 
-                    $appointment_id = $this->Records_model->save_appointment($data);
-                    array_push($appointments['added'], $appointment_id);
+                        unset($data['text']);
+
+                        $appointment_id = $this->Records_model->save_appointment($data);
+                        array_push($appointments['added'], $appointment_id);
+                    }
                 }
             }
 

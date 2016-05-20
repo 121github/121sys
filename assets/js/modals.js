@@ -3214,6 +3214,7 @@ var modals = {
                 var calendar = '';
                 $.each(response.data,function(k,val){
                     var checked = (val.auto_sync == "1"?"checked":"");
+                    var no_title_checked = (val.no_title_events == "1"?"checked":"");
                     calendar += '<tr class="google-calendar-id-'+val.id+'">' +
                             '<td>'+val.campaign_name+'</td>' +
                             '<td>'+val.calendar_name+'</td>' +
@@ -3223,7 +3224,13 @@ var modals = {
                                 '<img class="sync-google-loading" src="'+helper.baseUrl+'assets/img/ajax-load-black.gif" style="display: none"/>' +
                                 '<i class="fa fa-check sync-google-ok green tt" style="display: none" data-toggle="tooltip" data-placement="top" title="" data-html="true"></i>' +
                             '</td>' +
-                            '<td><input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="auto-sync" name="auto_sync" data-toggle="toggle" data-size="mini" data-width="100" data-onstyle="success" data-offstyle="danger" data-on="Automatic" data-off="Manual" value="'+val.auto_sync+'" '+checked+'></td>' +
+                            '<td>' +
+                                '<input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="auto-sync" name="auto_sync" data-toggle="toggle" data-size="mini" data-width="100" data-onstyle="success" data-offstyle="danger" data-on="Automatic" data-off="Manual" value="'+val.auto_sync+'" '+checked+'>' +
+                                '<div>' +
+                                    '<input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="no-title-events" name="no_title_events" value="'+val.no_title_events+'" '+no_title_checked+'>' +
+                                    ' Sync "No title" events' +
+                                '</div>' +
+                            '</td>' +
                         '</tr>';
                 });
 
@@ -3244,6 +3251,12 @@ var modals = {
                     modals.users.set_auto_sync(google_calendar_id, auto_sync);
                 });
 
+                $('#no-title-events').change(function() {
+                    var google_calendar_id = $(this).attr("data-calendar-id");
+                    var no_title_events = ($(this).prop("checked")?1:0);
+                    modals.users.set_no_title_events(google_calendar_id, no_title_events);
+                });
+
                 $modal.find('.tt').tooltip();
             });
         },
@@ -3252,6 +3265,16 @@ var modals = {
                 url: helper.baseUrl + 'booking/set_auto_sync',
                 type: "POST",
                 data: {'google_calendar_id': google_calendar_id, 'auto_sync': auto_sync},
+                dataType: "JSON"
+            }).done(function (response) {
+                flashalert.success(response.msg);
+            });
+        },
+        set_no_title_events: function(google_calendar_id, no_title_events) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/set_no_title_events',
+                type: "POST",
+                data: {'google_calendar_id': google_calendar_id, 'no_title_events': no_title_events},
                 dataType: "JSON"
             }).done(function (response) {
                 flashalert.success(response.msg);

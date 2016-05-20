@@ -208,4 +208,10 @@ class Booking_model extends CI_Model
 		$this->db->where('google_calendar_id', $google_calendar_id);
 		return  $this->db->update("google_calendar", array("auto_sync" => $auto_sync));
 	}
+
+	public function set_no_title_events($google_calendar_id, $no_title_events) {
+		$this->db->where('google_calendar_id', $google_calendar_id);
+		return  $this->db->update("google_calendar", array("no_title_events" => $no_title_events));
+	}
+
 }
