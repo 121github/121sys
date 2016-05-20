@@ -138,9 +138,22 @@ class User_model extends CI_Model
 		}
 		$this->set_permissions();
         $this->set_data_restrictions();
-       
-        
+		if(in_array("dashboard viewers",$_SESSION['permissions'])){ 
+		$this->set_dashboards();
+		}
 	}
+	
+	public function set_dashboards(){
+		$_SESSION['dashboards'] = $this->db->query("SELECT
+                 name,dashboard_id,dash_type
+                  FROM dashboards d
+                  LEFT JOIN dashboard_by_user du USING (dashboard_id)
+                  WHERE 1 and du.user_id = '".$_SESSION['user_id']."'
+                GROUP BY d.dashboard_id")->result_array();
+				
+		
+	}
+	
 	public function set_data_restrictions(){
 			$access = $this->db->query("select * from role_data_access where role_id = '" . $_SESSION['role'] . "'")->row_array();
 			$restriction = "";

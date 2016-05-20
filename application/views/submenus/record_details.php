@@ -6,7 +6,7 @@
         <p class="navbar-text" style="color:#fff; font-weight:700"><?php echo $title ?>
     <small>URN: <?php echo $data['record']['urn'] ?></small>
     <?php if(!empty($details['record']['client_ref'])){ ?><small id="client-ref">Ref: <?php echo $details['record']['client_ref'] ?></small><?php } ?>
-    <small><?php echo(!empty($details['record']['campaign']) ? " / " . $details['record']['campaign'] : "") ?> <?php echo(!empty($details['record']['pot_name']) ? " / " . $details['record']['pot_name'] : "") ?><?php echo(!empty($details['record']['source_name']) ? " [" . $details['record']['source_name'] ."]": "") ?></small>
+    <small><?php echo(!empty($details['record']['campaign']) ? " / " . $details['record']['campaign'] : "") ?> <?php echo(!empty($details['record']['pot_name']) ? " / " . $details['record']['pot_name'] : "") ?> <?php echo(!empty($details['record']['source_name']) ? "<span class='source-name'> [" . $details['record']['source_name'] ."]</span>": "") ?></small>
     </p>
     </ul>
     <?php if(!isset($hide_filter)){ ?>

@@ -2,6 +2,7 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
+		$('ul.nav .source-name').hide()
         $('#top-campaign-select').hide();
         if (record.role == "16") {
             $('div.custom-panel,#custom-panel,#email-panel').hide();
@@ -352,8 +353,9 @@ var campaign_functions = {
         record.email_panel.load_panel();
     },
     custom_items_loaded: function () {
-        $('.custom-panel').find('.id-title').closest('tr').hide();
-        if (record.role == "16") {
+        $('#email-panel').hide();
+        if (helper.role == "16") {
+		    $('#custom-panel').find('tr:contains(Quote)').hide();
             $('.edit-detail-btn').hide();
             $('#custom-panel').find('tr:contains(Quote)').hide();
             $('.custom-panel').find('tr:contains(Quote)').hide();

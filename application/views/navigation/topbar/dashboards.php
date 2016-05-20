@@ -39,7 +39,13 @@
                 <li <?php echo @($page == 'management_dash' ? "class='Selected'" : "") ?>><a
                         href="<?php echo base_url() ?>dashboard/management">Management Dash</a></li>
             <?php } ?>
+            <?php if(isset($_SESSION['dashboards'])){ ?>
                  <li role="separator" class="divider"></li>
+                 <?php foreach($_SESSION['dashboards'] as $dash){  if($dash['dash_type']=="Dashboard"){ ?>
+				<li><a href="<?php echo base_url() ?>dashboard/view/<?php echo $dash['dashboard_id'] ?>"><?php echo $dash['name'] ?></a></li>	 
+				<?php }  }  }?>
+                 
+                 
         </ul>
     </li>
 <?php } ?>

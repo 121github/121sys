@@ -49,7 +49,12 @@ $this->Cron_model->set_postcode_from_address();
 		$this->unassign_records();
 		//restrict any agents that have left //this uses the agent name so if we ever get 2 users with the same name it could cause problems
 		$this->remove_leavers();
+		$this->free_records();
     }
+	
+	public function free_records(){
+	$this->Cron_model->free_records();	
+	}
 	
 public function set_primary(){
 		$this->Cron_model->set_primary();

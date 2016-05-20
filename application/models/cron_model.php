@@ -29,6 +29,35 @@ class Cron_model extends CI_Model
 	$this->db->query("update records set pot_id = null where pot_id = 0");
 }
 	
+	public function free_records(){
+			//free up records where a user took ownership but didnt release ownership after they left the record. eg. they closed the page.
+		$this->db->query("DELETE FROM ownership WHERE urn IN (
+SELECT urn
+FROM records
+LEFT JOIN outcomes
+USING ( outcome_id )
+WHERE (
+requires_callback <>1
+AND keep_record <>1
+)
+)
+AND user_id
+IN (
+
+SELECT user_id
+FROM users
+JOIN user_roles
+USING ( role_id )
+JOIN role_permissions
+USING ( role_id )
+JOIN permissions
+USING ( permission_id )
+WHERE permission_name = 'keep records'
+)");
+
+		
+	}
+	
 	public function archive_old_recordings(){
 	//move all recordings older than 6 months to the archive table
 	$db2 = $this->load->database('121backup',true);
