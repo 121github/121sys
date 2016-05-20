@@ -1494,11 +1494,11 @@ JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn =
             );
             $post['location_id'] = NULL;
             $post['date_updated'] = date('Y-m-d H:i:s');
-            $post['updated_by'] = $_SESSION['user_id'];
+            $post['updated_by'] = (isset($_SESSION['user_id'])?$_SESSION['user_id']:1);
             $this->db->update("appointments", $post);
             return $post['appointment_id'];
         } else {
-            $post['created_by'] = $_SESSION['user_id'];
+            $post['created_by'] = (isset($_SESSION['user_id'])?$_SESSION['user_id']:1);
             $this->db->insert("appointments", $post);
             $insert = $this->db->insert_id();
             foreach ($attendees as $attendee) {
