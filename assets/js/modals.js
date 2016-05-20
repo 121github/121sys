@@ -3212,6 +3212,13 @@ var modals = {
                 dataType: "JSON"
             }).done(function (response) {
                 var calendar = '';
+
+                if (response.data.length) {
+                    $('#tabs a[href="#view-calendars-tab"]').tab('show');
+                    //Hide save button
+                    $('.add-google-calendar').hide();
+                }
+
                 $.each(response.data,function(k,val){
                     var checked = (val.auto_sync == "1"?"checked":"");
                     var no_title_checked = (val.no_title_events == "1"?"checked":"");
@@ -3233,10 +3240,6 @@ var modals = {
                             '</td>' +
                         '</tr>';
                 });
-
-                if (response.data.length) {
-                    $('#tabs a[href="#view-calendars-tab"]').tab('show');
-                }
 
                 $('.calendars-table').find('tbody').html(calendar);
 
