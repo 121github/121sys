@@ -13,7 +13,7 @@ class Records_model extends CI_Model
         $this->load->helper('query');
     }
 
-    public function save_notes($urn, $notes)
+    public function save_notes($urn, $notes="")
     {
 
         $this->db->where("urn", $urn);

@@ -643,10 +643,13 @@ public function create_description($appointment,$contact=false,$company=false){
 				if(empty($postcode)){
 				$postcode = postcode_from_string($event->description);
 				}
+				if(!$event->summary){
+				//if there is no appointment title ignore it!
+				continue;	
+				}
                 $data = array(
                     'google_id' => $event->id,
                     'title' => $event->summary,
-                    'text' => ($event->description?$event->description:''),
                     'start' => ($event->getStart()->dateTime?$event->getStart()->dateTime:$event->getStart()->date),
                     'end' => ($event->getEnd()->dateTime?$event->getEnd()->dateTime:$event->getEnd()->date),
                     'address' => $event->location,
@@ -655,7 +658,8 @@ public function create_description($appointment,$contact=false,$company=false){
                 );
 					if(empty($postcode)){
 						$data['postcode'] = $postcode;
-					}
+					}			
+					
                 //Check if the appointment already exist on the system
                 $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
 
@@ -663,11 +667,13 @@ public function create_description($appointment,$contact=false,$company=false){
                     //Update the appointments to 121system
                     $data['appointment_id'] = $appointment['appointment_id'];
                     $data['urn'] = $appointment['urn'];
-					unset($data['text']);
                     $appointment_id = $this->Records_model->save_appointment($data);
                     array_push($appointments['updated'], $appointment_id);
                 }
                 else {
+				//set new appointment text value if description exists
+				$data['text'] = $event->description?$event->description:"";	
+					
 					//get the campaign for the new record
 				$this->db->where("user_id",$user_id);
 				$campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
