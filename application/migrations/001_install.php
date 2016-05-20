@@ -1181,6 +1181,9 @@ CREATE TABLE IF NOT EXISTS `contacts` (
                 `name_to` VARCHAR(100) NOT NULL COLLATE 'utf8_unicode_ci',
                 `ref_to` VARCHAR(100) NOT NULL COLLATE 'utf8_unicode_ci',
                 `inbound` TINYINT(1) NOT NULL,
+                `campaign_id` INTEGER NULL,
+                `ext` VARCHAR(3) NULL COLLATE 'utf8_unicode_ci',
+                `user` VARCHAR(40) NULL COLLATE 'utf8_unicode_ci',
                 PRIMARY KEY (`id`),
                 INDEX `IDX_D663C42E93CB796C` (`file_id`),
                 CONSTRAINT `FK_D663C42E93CB796C` FOREIGN KEY (`file_id`) REFERENCES `call_log_file` (`id`)

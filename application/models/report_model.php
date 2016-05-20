@@ -588,7 +588,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
                   left join (
                     select  SUM(TIME_TO_SEC(call_log.duration)) as duration, SUM(call_log.ring_time) as ring_time, users.ext as extension
                       FROM call_log
-                        inner JOIN users on users.ext = call_log.call_from
+                        inner JOIN users on users.ext = call_log.ext
                         where call_log.inbound = 0 " . $where_calls . "
                       GROUP BY users.user_id
                     ) calls on (users.ext = extension)";
