@@ -28,6 +28,7 @@ if(isset($_GET['update_status'])){
 $conn->query("update `appointments` set `appointment_type_id` = 3 where `title` like '%[conf%'");
 $conn->query("update `appointments` set `appointment_type_id` = 2 where `title` like '%tbc%'");
 $conn->query("delete from appointments where title like 'https://www.google.co.uk%'");
+    $conn->query("delete from appointments where title = 'No Title'");
 echo "Appointment status was updated for LHS";
 exit;
 }
