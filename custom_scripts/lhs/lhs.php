@@ -6,16 +6,6 @@ include("../../application/config/database.php");
 ob_start();
 include("../../session.php");
 
-//Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(array(
-        "success" => false,
-        "msg" => "You should be logged"
-    ));
-    header("Location: " . substr(BASEPATH, 0, strlen(BASEPATH) - 7));
-    exit;
-}
-
 $data = ob_get_clean();
 ob_end_clean();
 
@@ -33,6 +23,25 @@ if ($conn->connect_error) {
 }
 
 mysqli_select_db($conn, $database);
+
+if(isset($_GET['update_status'])){ 
+$conn->query("update `appointments` set `appointment_type_id` = 3 where `title` like '%[conf%'");
+$conn->query("update `appointments` set `appointment_type_id` = 2 where `title` like '%tbc%'");
+echo "Appointment status was updated for LHS";
+exit;
+}
+
+//Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(array(
+        "success" => false,
+        "msg" => "You should be logged"
+    ));
+    header("Location: " . substr(BASEPATH, 0, strlen(BASEPATH) - 7));
+    exit;
+}
+
+
 
 if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title'])){
 	$urn = "";
