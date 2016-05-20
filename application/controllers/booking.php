@@ -703,7 +703,6 @@ class Booking extends CI_Controller
 
                     //If no_title_events is false, do not add the events without title on the 121system
                     if (!$google_calendar['no_title_events'] && !$event->summary) {
-                        echo "sda";
                         continue;
                     }
                     else {
