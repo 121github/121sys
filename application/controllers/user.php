@@ -411,7 +411,7 @@ class User extends CI_Controller
                 //reset the permissions
                 $this->User_model->set_permissions();
                 //this function lets you add and remove permissions based on the selected campaign rather than user role! :)
-
+				if(in_array("campaign override",$_SESSION['permissions'])){
                 $campaign_permissions = $this->User_model->campaign_permissions($campaign);
                 foreach ($campaign_permissions as $row) {
                     //a 1 indicates the permission should be added otherwize it is revoked!
@@ -421,7 +421,7 @@ class User extends CI_Controller
                         unset($_SESSION['permissions'][$row['permission_id']]);
                     }
                 }
-
+				}
                 $campaign_row = $this->User_model->campaign_row($campaign);
                 $_SESSION['current_client'] = $campaign_row['client_name'];
                 $_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];

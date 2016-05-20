@@ -260,7 +260,7 @@ if(isset($_GET['address_form'])){
           <div class="row">
             <div class="col-lg-12">
               <div class="form-group">
-             <button class="btn btn-default pull-left clear-address">Clear</button> <button class="btn btn-default pull-left reset-address">Reset</button>   <button class="btn btn-primary pull-right save-address">Save</button>
+             <button class="btn btn-default pull-left clear-address">Clear</button> <button class="btn btn-default pull-left reset-address marl">Reset</button>   <button class="btn btn-primary pull-right save-address">Save</button>
               </div>
             </div>
           </div>
@@ -329,7 +329,7 @@ if(isset($_GET['address_form'])){
           <div class="row">
             <div class="col-lg-12">
               <div class="form-group">
-                 <button class="btn btn-default pull-left clear-address">Clear</button><button class="btn btn-default pull-left reset-address">Reset</button> <button class="btn btn-primary pull-right save-address">Save</button>
+                 <button class="btn btn-default pull-left clear-address">Clear</button><button class="btn btn-default pull-left reset-address marl">Reset</button> <button class="btn btn-primary pull-right save-address">Save</button>
               </div>
             </div>
           </div>
@@ -388,7 +388,7 @@ if(isset($_GET['address_form'])){
           <div class="row">
             <div class="col-lg-12">
               <div class="form-group">
-               <button class="btn btn-default pull-left clear-address">Clear</button><button class="btn btn-default pull-left reset-address">Reset</button> <button class="btn btn-primary pull-right save-address">Save</button>
+               <button class="btn btn-default pull-left clear-address">Clear</button><button class="btn btn-default pull-left reset-address marl">Reset</button> <button class="btn btn-primary pull-right save-address">Save</button>
               </div>
             </div>
           </div>
