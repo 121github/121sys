@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-
+if (!function_exists('get_where')) {
    function get_where($options, $table_columns)
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
@@ -44,3 +44,18 @@ if (!defined('BASEPATH'))
         return $where;
 
     }
+}
+if (!function_exists('custom_assoc')) {
+	function custom_assoc($array=array(),$group="urn"){
+		$data = array();	
+		foreach($array as $k=>$row){
+			if(!isset($data[$row[$group]])){
+			$data[$row[$group]] = $row;
+			}
+			$data[$row[$group]][$row['name']] = $row['value'];
+			unset($data[$row[$group]]['value']);
+			unset($data[$row[$group]]['name']);
+		}
+		return $data;
+	}
+}

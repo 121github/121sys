@@ -116,7 +116,7 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 	 if(@$_SESSION['current_campaign']>0){
 		$campaign = "or campaign = ". $_SESSION['current_campaign'];
 	 }
-	$query = "select datafield_group,datafields.datafield_id,datafield_title from datafields join datatables_table_fields using(datafield_id) where table_id = '$table_id' and (campaign is null $campaign)";
+	$query = "select datafield_group,datafields.datafield_id,datafield_title from datafields join datatables_table_fields using(datafield_id) where table_id = '$table_id' and (campaign is null $campaign) and datafield_group <> '' ";
 
 	$result = $this->db->query($query)->result_array();
 	 if(@$_SESSION['current_campaign']>0){

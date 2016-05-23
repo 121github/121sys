@@ -220,6 +220,15 @@ class Exports extends CI_Controller
             }
         }
     }
+	/*
+	public function test_assoc_helper(){
+	$results = $this->db->query("select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id)")->result_array();	
+		$results = custom_assoc($results);
+		echo "<pre>";
+		print_r($results);	
+		echo "<pre>";
+	}
+	*/
 
     //Load the data for the report
     public function load_export_report_data() {
@@ -248,9 +257,13 @@ class Exports extends CI_Controller
 
 
             $export_form = $this->Export_model->get_export_forms_by_id($options['export_forms_id']);
-
+$this->firephp->log($export_form);
             if (!empty($export_form)) {
                 $results = $this->Export_model->get_data($export_form, $options);
+				$this->firephp->log($results);
+				$results = custom_assoc($results);
+				
+				$this->firephp->log($results);
 
                 //Get graphs
                 $graphs = $this->Export_model->get_export_graphs_by_export_id($options['export_forms_id']);

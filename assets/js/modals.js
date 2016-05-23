@@ -50,6 +50,7 @@ var modals = {
         });
         $(document).on('click', '[data-modal="view-record"]', function (e) {
             e.preventDefault();
+			e.stopPropagation()
 			var that = $(this);
 			var tab = that.attr('data-tab');
             var clicked_urn = that.attr('data-urn');			
@@ -1851,6 +1852,30 @@ var modals = {
         }
         modals.load_modal(mheader, mbody, mfooter);
 		$modal.find('.nav-tabs a[href="#'+tab+'"]').tab('show');
+		var copyBtn = document.querySelector("span.copy");
+copyBtn.addEventListener('click', function(event) {  
+console.log("clicked");
+event.preventDefault();
+event.stopPropagation()
+  // Select the email link anchor text  
+  var copyItem =  document.querySelector("span.copy");
+  var range = document.createRange();  
+  range.selectNode(copyItem);  
+  window.getSelection().addRange(range);  
+
+  try {  
+    // Now that we've selected the anchor text, execute the copy command  
+    var successful = document.execCommand('copy');  
+    var msg = successful ? 'successful' : 'unsuccessful';  
+    console.log('Copy command was ' + msg);  
+  } catch(err) {  
+    console.log('Oops, unable to copy');  
+  }  
+
+  // Remove the selections - NOTE: Should use
+  // removeRange(range) when it is supported  
+  window.getSelection().removeAllRanges();  
+});
     },
     view_filter_options: function () {
         $.ajax({

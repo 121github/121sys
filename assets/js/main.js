@@ -352,10 +352,14 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.split(search).join(replacement);
 }
 
+
 /* ==========================================================================
  MENU
  ========================================================================== */
 $(document).ready(function () {
+	
+	
+	
     $(".dropdown-menu > li > a.trigger").on("click", function (e) {
         var current = $(this).next();
         var grandparent = $(this).parent().parent();

@@ -113,6 +113,7 @@ var view = {
                         $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");
                     }
                 }
+				
             },
             "deferRender": true,
             "columns": table_columns.columns,
