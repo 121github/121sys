@@ -74,8 +74,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['teams'])) {
             $qry .= " and team_id IN (".implode(",",$filter['teams']).")";
         }
-        if (!empty($filter['agents'])) {
-            $qry .= " and user_id IN (".implode(",",$filter['agents']).")";
+        if (!empty($filter['user'])) {
+            $qry .= " and user_id IN (".implode(",",$filter['user']).")";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $qry .= " and user_id = '" . $_SESSION['user_id'] . "'";
@@ -99,8 +99,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['teams'])) {
             $qry .= " and h.team_id IN (".implode(",",$filter['teams']).")";
         }
-        if (!empty($filter['agents'])) {
-            $qry .= " and h.user_id IN (".implode(",",$filter['agents']).")";
+        if (!empty($filter['user'])) {
+            $qry .= " and h.user_id IN (".implode(",",$filter['user']).")";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $qry .= " and h.user_id = '" . $_SESSION['user_id'] . "'";
@@ -120,8 +120,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['teams'])) {
             $qry .= " and h.team_id IN (".implode(",",$filter['teams']).")";
         }
-        if (!empty($filter['agents'])) {
-            $qry .= " and h.user_id IN (".implode(",",$filter['agents']).")";
+        if (!empty($filter['user'])) {
+            $qry .= " and h.user_id IN (".implode(",",$filter['user']).")";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $qry .= " and h.user_id = '" . $_SESSION['user_id'] . "'";
@@ -212,10 +212,10 @@ class Dashboard_model extends CI_Model
             $notes_extra .= " and s.updated_by in(select user_id from users where team_id IN (" . implode(",",$filter['teams']) . ") ";
             $comments_extra .= " and history.user_id in(select user_id from users where team_id IN (" . implode(",",$filter['teams']) . ") ";
         }
-        if (!empty($filter['agents'])) {
-            $survey_extra .= " and surveys.user_id IN (" . implode(",",$filter['agents']) . ") ";
-            $notes_extra .= " and s.updated_by IN (" . implode(",",$filter['agents']) . ") ";
-            $comments_extra .= " and history.user_id IN (" . implode(",",$filter['agents']) . ") ";
+        if (!empty($filter['user'])) {
+            $survey_extra .= " and surveys.user_id IN (" . implode(",",$filter['user']) . ") ";
+            $notes_extra .= " and s.updated_by IN (" . implode(",",$filter['user']) . ") ";
+            $comments_extra .= " and history.user_id IN (" . implode(",",$filter['user']) . ") ";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $survey_extra .= " and surveys.user_id = '" . $_SESSION['user_id'] . "' ";
@@ -428,9 +428,9 @@ class Dashboard_model extends CI_Model
         $camp_url = "";
         $user_url = "";
         $where = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        if (!empty($filter['agents'])) {
-            $where .= " and email_history.user_id IN (".implode(",",$filter['agents']).")";
-            $user_url = "/user/".implode("_",$filter['agents']).(count($filter['agents'])>1?":in":"");
+        if (!empty($filter['user'])) {
+            $where .= " and email_history.user_id IN (".implode(",",$filter['user']).")";
+            $user_url = "/user/".implode("_",$filter['users']).(count($filter['user'])>1?":in":"");
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and email_history.user_id = '{$_SESSION['user_id']}'";
@@ -477,9 +477,9 @@ class Dashboard_model extends CI_Model
         $user_url = "";
         $where = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
-        if (!empty($filter['agents'])) {
-            $where .= " and sms_history.user_id IN (".implode(",",$filter['agents']).")";
-            $user_url = "/user/".implode("_",$filter['agents']).(count($filter['agents'])>1?":in":"");
+        if (!empty($filter['user'])) {
+            $where .= " and sms_history.user_id IN (".implode(",",$filter['user']).")";
+            $user_url = "/user/".implode("_",$filter['user']).(count($filter['user'])>1?":in":"");
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and sms_history.user_id = '{$_SESSION['user_id']}'";

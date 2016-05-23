@@ -129,6 +129,22 @@ public function index(){
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
 
+        $users = $this->Form_model->get_users();
+        $aux = array();
+        if (isset($_SESSION['user_id'])) {
+            $aux["-"] = array(array(
+                "name" => "User Logged in",
+                "id" => "user_id"
+            ));
+        }
+        foreach ($users as $user) {
+            if (!isset($aux[$user['role_name']])) {
+                $aux[$user['role_name']] = array();
+            }
+            array_push($aux[$user['role_name']], $user);
+        }
+        $users = $aux;
+
 
         $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
         $aux = array();
@@ -156,12 +172,22 @@ public function index(){
         }
         $campaign_outcomes = $aux;
 
+        $title = 'Overview Dashboard';
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-             'page' => "overview",
+            'title' => $title,
+            'page' => "overview",
+            'submenu' => array(
+                "file"=>'dashboard.php',
+                "title"=>$title,
+                "options" => array(
+                    "refresh_button"=>"refresh-overview-data",
+                    "submit_button"=>"filter-overview-submit",
+                    "date" => false
+                )
+            ),
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -171,6 +197,7 @@ public function index(){
             'agents' => $agents,
             'team_managers' => $teamManagers,
             'sources' => $sources,
+            'users' => $users,
             'email_campaigns' => $email_campaigns,
             'sms_campaigns' => $sms_campaigns,
             'campaigns_by_group' => $campaigns_by_group,
@@ -206,12 +233,19 @@ public function index(){
             $date_to = "";
             $btntext = "";
         }
+
+        $title = "Callbacks Dashboard";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
+            'title' => $title,
             'page' => 'callback_dash',
+            'submenu' => array(
+                "file"=>'dashboard.php',
+                "title"=>$title
+            ),
+            'hide_filter' => true,
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -238,6 +272,23 @@ public function index(){
     public function favorites()
     {
         $agents = $this->Form_model->get_agents();
+
+        $users = $this->Form_model->get_users();
+        $aux = array();
+        if (isset($_SESSION['user_id'])) {
+            $aux["-"] = array(array(
+                "name" => "User Logged in",
+                "id" => "user_id"
+            ));
+        }
+        foreach ($users as $user) {
+            if (!isset($aux[$user['role_name']])) {
+                $aux[$user['role_name']] = array();
+            }
+            array_push($aux[$user['role_name']], $user);
+        }
+        $users = $aux;
+
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
 
@@ -281,12 +332,23 @@ public function index(){
             $date_to = "";
             $btntext = "";
         }
+
+        $title = 'Favorites Dashboard';
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-               'page' => 'favorites_dash',
+            'title' => $title,
+            'page' => 'favorites_dash',
+            'submenu' => array(
+                "file"=>'dashboard.php',
+                "title"=>$title,
+                "options" => array(
+                    "refresh_button"=>"refresh-favorite-data",
+                    "submit_button"=>"filter-favorite-submit",
+                    "date" => false
+                )
+            ),
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -300,6 +362,7 @@ public function index(){
             'campaign_outcomes' => $campaign_outcomes,
             'sources' => $sources,
             'agents' => $agents,
+            'users' => $users,
             'team_managers' => $teamManagers,
             'css' => array(
                 'dashboard.css',
@@ -322,12 +385,18 @@ public function index(){
         $campaigns = $this->Form_model->get_user_campaigns();
         $surveys = $this->Form_model->get_surveys();
 
+        $title = "Client Dashboard";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-               'page' => 'client_dash',
+            'title' => $title,
+            'page' => 'client_dash',
+            'submenu' => array(
+                "file"=>'dashboard.php',
+                "title"=>$title
+            ),
+            'hide_filter' => true,
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version
@@ -347,12 +416,18 @@ public function index(){
     {
         $campaigns = $this->Form_model->get_user_campaigns();
 
+        $title = "New Business Dashboard";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-                'page' =>'nbf_dash',
+            'title' => $title,
+            'page' =>'nbf_dash',
+            'submenu' => array(
+                "file"=>'dashboard.php',
+                "title"=>$title
+            ),
+            'hide_filter' => true,
             'campaigns' => $campaigns,
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -374,12 +449,18 @@ public function index(){
         $sources = $this->Form_model->get_sources();
         $campaigns = $this->Form_model->get_user_campaigns();
 
+        $title = "Management Dashboard";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-               'page' => 'management_dash',
+            'title' => $title,
+            'page' => 'management_dash',
+            'submenu' => array(
+                "file"=>'dashboard.php',
+                "title"=>$title
+            ),
+            'hide_filter' => true,
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -1500,11 +1581,22 @@ public function index(){
             if (!empty($dashboard)) {
 
                 $dashboard = $dashboard[0];
+                $title = $dashboard['name'];
                 $data = array(
                     'campaign_access' => $this->_campaigns,
                     'pageId' => 'Dashboard',
-                    'title' => 'Dashboard - '.$dashboard['name'],
-                   'page' => $dashboard['name'],
+                    'title' => $title,
+                    'page' => $dashboard['name'],
+                    'submenu' => array(
+                        "file"=>'dashboard.php',
+                        "title"=>$title,
+                        "options" => array(
+                            "add_button" => "new-report",
+                            "refresh_button"=>"refresh-dashboard-data",
+                            "submit_button" => "filter-submit",
+                            "date" => true
+                        )
+                    ),
                     'dashboard' => $dashboard,
                     'agents' => $agents,
                     'team_managers' => $teamManagers,

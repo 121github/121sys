@@ -81,8 +81,8 @@
                 eventAfterRender: function (event, element, view) {
                     $(element).attr("event-id", event._id).find('.fc-content').prepend('<span class="' + event.icon + '"></span> ');
                 },
-                loading: function(bool) {
-                    if (bool){
+                loading: function (bool) {
+                    if (bool) {
                         $('.loading-overlay').fadeIn();
                     }
                     else {
@@ -112,11 +112,11 @@
                         text: 'Loading events...'
                     }
                 },
-                viewRender: function(view) {
+                viewRender: function (view) {
                     if (typeof $('#datetimepicker2').data("DateTimePicker") != "undefined") {
                         var view_mode = "months";
                         var format = "YYYY-MM";
-                        switch(view.name) {
+                        switch (view.name) {
                             case "month":
                                 view_mode = "months";
                                 format = "YYYY-MM";
@@ -143,15 +143,15 @@
                     {
                         url: helper.baseUrl + 'booking/google_events',
                         type: 'POST',
-                        data: function() { // a function that returns an object
-                            var calendar_selected = (!$('.calendar-list').find('#calendar-select').selectpicker('val')?['none']: $('.calendar-list').find('#calendar-select').selectpicker('val').length>0 ? $('.calendar-list').find('#calendar-select').selectpicker('val') : []);
+                        data: function () { // a function that returns an object
+                            var calendar_selected = (!$('.calendar-list').find('#calendar-select').selectpicker('val') ? ['none'] : $('.calendar-list').find('#calendar-select').selectpicker('val').length > 0 ? $('.calendar-list').find('#calendar-select').selectpicker('val') : []);
                             return {
                                 calendars_selected: calendar_selected.join(',')
                             };
                         }
                     }
                 ],
-                eventClick: function(event) {
+                eventClick: function (event) {
                     if (event.url) {
                         window.open(event.url);
                         return false;
@@ -159,8 +159,19 @@
                 }
             });
 
-            $('.fc-logoutEvent-button').css('color','green');
-            $('.fc-siginEvent-button').css('color','red');
+            //Style
+            $('.fc-toolbar').addClass('navbar navbar-inverse navbar-fixed-top');
+            $('.fc-left').addClass('navbar-btn');
+            $('.fc-right').addClass('navbar-btn');
+            $('.fc-center').addClass('navbar-btn');
+            $('.fc-toolbar').css('margin-top', '50px');
+            $('.fc-toolbar').css('color', 'white');
+            $('.fc-toolbar h2').css('font-size', '22px');
+            $('.fc-toolbar').css('padding-left', '10px');
+            $('#calendar').css('margin-top', '50px');
+
+            $('.fc-logoutEvent-button').css('color', 'green');
+            $('.fc-siginEvent-button').css('color', 'red');
 
 
             $('#calendar .fc-toolbar .fc-right').prepend('<div class="calendar-list"><select title="Calendars" id="calendar-select" multiple><option value=""></option></select></div>');
@@ -169,19 +180,19 @@
 
             $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
                 "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
-                "<input type='text' name='cal_date' style='display:none' />" +
-                "<span class='input-group-addon' style='display:inline; padding:0; background:none; border:none'>" +
-                "<span class='fa fa-calendar'></span>" +
-                "</span>" +
+                    "<input type='text' name='cal_date' style='display:none' />" +
+                    "<span class='input-group-addon' style='color:white; display:inline; padding:0; background:none; border:none'>" +
+                        "<span class='fa fa-calendar-o'></span>" +
+                    "</span>" +
                 "</div>"
             );
             $('#datetimepicker2').datetimepicker({
                 defaultDate: moment(),
                 format: 'YYYY-MM-DD',
-                enabledHours:false,
+                enabledHours: false,
                 viewMode: 'days',
-            }).on('dp.change', function(ev) {
-                $('#calendar').fullCalendar('gotoDate',new Date($('input[name="cal_date"]').val()));
+            }).on('dp.change', function (ev) {
+                $('#calendar').fullCalendar('gotoDate', new Date($('input[name="cal_date"]').val()));
             });
 
             calendar.signin();
@@ -198,7 +209,7 @@
 
             $(document).on("change", ".calendar-list", function (e) {
                 e.preventDefault();
-                $('#calendar').fullCalendar( 'refetchEvents' );
+                $('#calendar').fullCalendar('refetchEvents');
             });
 
 //            $('#datetimepicker2').change(function () {
@@ -219,12 +230,12 @@
 //                }
 //            });
         },
-        signin: function() {
+        signin: function () {
             $.ajax({
                 url: helper.baseUrl + 'booking/google_auth',
                 type: "POST",
                 dataType: "JSON",
-                beforeSend:function(){
+                beforeSend: function () {
                     //Show Loading button
                     $('.fc-logoutEvent-button').hide();
                     $('.fc-siginEvent-button').hide();
@@ -261,20 +272,20 @@
                 }
             });
         },
-        login: function() {
+        login: function () {
             window.location.href = helper.baseUrl + 'google/authenticate';
         },
-        logout: function() {
+        logout: function () {
             window.location.href = helper.baseUrl + 'google/logout';
         },
-        load_google_calendars: function(calendar_ar) {
+        load_google_calendars: function (calendar_ar) {
             var $options = "";
             $.each(calendar_ar, function (k, v) {
                 $options += "<option value='" + v.id + "' selected>" + v.name + "</options>";
             });
             $('.calendar-list').find('#calendar-select').html($options).selectpicker('refresh');
 
-           $('.calendar-list').show();
+            $('.calendar-list').show();
         }
     }
 

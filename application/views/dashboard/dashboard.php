@@ -1,105 +1,3 @@
-<div class="row">
-    <div class="col-lg-8">
-        <h1 class="page-header">
-            Dashboard
-            <small><?php if (isset($_SESSION['current_campaign_name'])) { echo @$_SESSION['current_campaign_name']; } ?></small>
-        </h1>
-    </div>
-    <div class="col-lg-4 page-header" style="text-align: right;">
-        <ul class="nav">
-            <li>
-                <div class="btn-group">
-                    <span class="btn btn-default btn show-charts" data-item="0" charts="chart-div-system,chart-div-email,chart-div-sms,chart-div-outcome" data="data-system,data-email,data-sms,data-outcome">
-                        <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
-                    </span>
-                    <span class="btn btn-default btn refresh-overview-data">
-                        <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
-                    </span>
-                    <a href="#filter-right" class="btn btn-default btn">
-                        <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                    </a>
-                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a href="#filter-view">View current filters</a></li>
-                        <li><a class='clear-filters' href="#">Set default filters</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-
-<nav id="filter-right" class="mm-menu mm--horizontal mm-offcanvas">
-    <div style="padding:30px 20px 3px">
-        <form class="filter-form">
-            <input type="hidden" name="comments">
-            <label style="margin-top: 5%;">Campaign</label>
-            <select name="campaigns[]" class="selectpicker campaign-filter" multiple data-width="100%"
-                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                <?php foreach ($campaigns_by_group as $type => $data) { ?>
-                    <optgroup label="<?php echo $type ?>">
-                        <?php foreach ($data as $row) { ?>
-                            <option <?php if (isset($_SESSION['current_campaign']) && $row['id'] == $_SESSION['current_campaign']) {
-                                echo "Selected";
-                            } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                        <?php } ?>
-                    </optgroup>
-                <?php } ?>
-            </select>
-
-            <?php if (count($campaign_outcomes) > 0) { ?>
-                <label style="margin-top: 5%;">Outcome</label>
-                <select name="outcomes[]" class="selectpicker outcome-filter" id="outcome-filter" multiple
-                        data-width="100%" data-live-search="true" data-live-search-placeholder="Search"
-                        data-actions-box="true">
-                    <?php foreach ($campaign_outcomes as $type => $data) { ?>
-                        <optgroup label="<?php echo $type ?>">
-                            <?php foreach ($data as $row) { ?>
-                                <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                            <?php } ?>
-                        </optgroup>
-                    <?php } ?>
-                </select>
-            <?php } ?>
-
-            <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
-                <label style="margin-top: 5%;">Team</label>
-                <select name="teams[]" class="selectpicker team-filter" multiple data-width="100%"
-                        data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                    <?php foreach ($team_managers as $row) { ?>
-                        <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                    <?php } ?>
-                </select>
-            <?php } ?>
-
-            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                <label style="margin-top: 5%;">User</label>
-                <select name="agents[]" class="selectpicker agent-filter" multiple data-width="100%"
-                        data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                    <?php foreach ($agents as $row) { ?>
-                        <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                    <?php } ?>
-                </select>
-            <?php } ?>
-
-            <label style="margin-top: 5%;">Source</label>
-            <select name="sources[]" class="selectpicker source-filter" id="source-filter" multiple data-width="100%"
-                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                <?php foreach ($sources as $row) { ?>
-                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                <?php } ?>
-            </select>
-
-            <button id="filter-overview-submit" class="btn btn-primary pull-right" style="margin-top: 5%;">Submit</button>
-        </form>
-    </div>
-</nav>
-
-<nav id="filter-view" class="mm-menu mm--horizontal mm-offcanvas">
-    <div id="filters"></div>
-</nav>
-
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
@@ -150,11 +48,6 @@
         <div class="panel panel-primary call-history">
             <div class="panel-heading clearfix" >
                 <i class="fa fa-history fa-fw"></i> Recent Activity</span>
-                <div class="pull-right" style="border:0px solid black;">
-                    <a href="#filter-right" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                    </a>
-                </div>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body" id="latest-history">
@@ -181,11 +74,6 @@
                             <li><a class="comment-filter" data-ref="comments">Show All</a></li>
                         </ul>
                     </div>
-                    <div class="btn-group">
-                        <a href="#filter-right" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                        </a>
-                    </div>
                 </div>
             </div>
             <!-- /.panel-heading -->
@@ -198,14 +86,8 @@
 
     <div class="col-lg-4">
             <div class="panel panel-primary">
-                <div class="panel-heading clearfix"><i class="fa fa-list-alt fa-fw"></i>Statistics
-                    <div class="pull-right">
-                        <div class="pull-right" style="border:0px solid black;">
-                            <a href="#filter-right" class="btn btn-default btn-xs">
-                                <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                            </a>
-                        </div>
-                    </div>
+                <div class="panel-heading clearfix">
+                    <i class="fa fa-list-alt fa-fw"></i>Statistics
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body" style="padding: 0px;">
@@ -260,12 +142,8 @@
             </div>
         <?php if (in_array("email", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading clearfix"><i class="fa fa-envelope-o fa-fw"></i> Email Statistics
-                    <div class="pull-right" style="border:0px solid black;">
-                        <a href="#filter-right" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                        </a>
-                    </div>
+                <div class="panel-heading clearfix">
+                    <i class="fa fa-envelope-o fa-fw"></i> Email Statistics
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body" style="padding: 0px;">
@@ -322,12 +200,8 @@
         <?php } ?>
         <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading clearfix"><i class="glyphicon glyphicon-phone"></i> Sms Statistics
-                    <div class="pull-right" style="border:0px solid black;">
-                        <a href="#filter-right" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                        </a>
-                    </div>
+                <div class="panel-heading clearfix">
+                    <i class="glyphicon glyphicon-phone"></i> Sms Statistics
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body" style="padding: 0px;">
@@ -383,12 +257,8 @@
             </div>
         <?php } ?>
         <div class="panel panel-primary">
-            <div class="panel-heading clearfix"><i class="fa fa-bell fa-fw"></i> Todays Outcomes
-                <div class="pull-right" style="border:0px solid black;">
-                    <a href="#filter-right" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                    </a>
-                </div>
+            <div class="panel-heading clearfix">
+                <i class="fa fa-bell fa-fw"></i> Todays Outcomes
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body" style="padding: 0px;">
