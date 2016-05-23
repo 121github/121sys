@@ -1,47 +1,11 @@
-<div class="row">
-<div class="col-xs-12">
-<div class="panel panel-primary">
-<div class="panel-heading">Appointments List
-
-<div class="pull-right">
-            <form class="filter-form">
-            <div class="btn-group">
-                    <input type="hidden" value="<?php echo date('Y-m-d') ?>" name="date_from">
-                    <input type="hidden" value="<?php echo date('Y-m-d',strtotime('+ 29 days')) ?>" name="date_to">
-                    <a class="daterange btn btn-default btn-xs" type="button">
-                        <span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> Next 30 Days </span>
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a type="button" class="btn btn-default btn-xs" data-modal="choose-columns"
-                            data-table-id="3"><span
-                            class="fa fa-table"></span> Views
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a class="btn btn-default btn-xs" href="<?php echo base_url() ?>appointments/mapview">Show Map
-                    </a>
-                </div>
-                
-                <input type="hidden" name="group"> 
-            </form>
-            </div>
-</div>
-<div class="panel-body" style="padding:0; margin:0; position:relative">
-  <div class="loading-overlay"></div>
-        <div class="row" style="padding:0; margin:0;">
-        <div class="col-xs-12">
-        <div id="view-container">                <img class="table-loading"
-                     src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
-            </div>
-            </div>
- 
+<div class="loading-overlay"></div>
+<div class="row" style="padding:0; margin:0;">
+    <div class="col-xs-12">
+        <div id="view-container">
+            <img class="table-loading" src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
         </div>
     </div>
 
-</div>
-</div>
-</div>
 </div>
 <style>
 body { }
@@ -62,11 +26,11 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
     $(document).ready(function () {
         view.init();
         view.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";
-		
+
 		 $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
-					'All': [],
+					'All': ["02/07/2014",moment().add(50,'years')],
 					'Last Month': [moment().add(-1,'month').startOf('month'), moment().add(-1,'month').endOf('month')],
 					'Last 7 Days': [moment().add(-7,'days'), moment()],
 					'Yesterday': [moment().add(-1,'days'), moment()],
@@ -84,7 +48,7 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
             },
             function (start, end, element) {
                 var $btn = this.element;
-                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.find('.date-text').html(start.format('D/M/Y') + ' - ' + end.format('D/M/Y'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
                 view.reload_table();

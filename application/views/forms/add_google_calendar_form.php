@@ -34,7 +34,7 @@
         </div>
         <div role="tabpanel" class="tab-pane" id="view-calendars-tab">
             <form name="change-sync-google-calendar-form" method="post" class="change-sync-google-calendar-form">
-                <table class="table ajax-table calendars-table">
+                <table class="table ajax-table calendars-table small">
                     <thead>
                         <tr>
                             <th>Campaign</th>

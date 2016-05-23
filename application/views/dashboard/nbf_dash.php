@@ -1,15 +1,8 @@
 <div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">New Business Dashboard</h1>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<!-- /.row -->
-<div class="row">
     <div class="col-lg-8">
         <div class="panel panel-primary">
             <div class="panel-heading clearfix"><i class="fa fa-star fa-fw"></i>My
-                Favorites     <?php if (!isset($_SESSION['current_campaign'])) { ?>
+                Favorites <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -70,7 +63,8 @@
         <?php } ?>
         <div class="panel panel-primary">
             <div class="panel-heading clearfix"><i
-                    class="fa fa-exclamation-triangle fa-fw"></i> Urgent <?php if (!isset($_SESSION['current_campaign'])) { ?>
+                    class="fa fa-exclamation-triangle fa-fw"></i>
+                Urgent <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -94,7 +88,8 @@
         </div>
         <div class="panel panel-primary">
             <div class="panel-heading clearfix"><i
-                    class="fa fa-calendar-o fa-fw"></i> Appointments <?php if (!isset($_SESSION['current_campaign'])) { ?>
+                    class="fa fa-calendar-o fa-fw"></i>
+                Appointments <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -118,25 +113,25 @@
     </div>
     <!-- /.row -->
 </div>
-    <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
 
-    <!-- Page-Level Plugin Scripts - Dashboard -->
-    <script src="<?php echo base_url() ?>assets/js/plugins/morris/raphael-2.1.0.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/js/plugins/morris/morris.js"></script>
+<!-- Page-Level Plugin Scripts - Dashboard -->
+<script src="<?php echo base_url() ?>assets/js/plugins/morris/raphael-2.1.0.min.js"></script>
+<script src="<?php echo base_url() ?>assets/js/plugins/morris/morris.js"></script>
 
-    <!-- SB Admin Scripts - Include with every page -->
-    <script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script>
-    <script>
-        $(document).ready(function () {
-            dashboard.urgent_panel();
-            dashboard.favorites_panel(3);
-            dashboard.appointments_panel();
-            dashboard.pending_panel();
-            dashboard.interest_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>);
-            $(document).on("click", ".interest-filter", function (e) {
-                e.preventDefault();
-                dashboard.interest_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>, $(this).attr('id'))
-            });
+<!-- SB Admin Scripts - Include with every page -->
+<script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script>
+<script>
+    $(document).ready(function () {
+        dashboard.urgent_panel();
+        dashboard.favorites_panel(3);
+        dashboard.appointments_panel();
+        dashboard.pending_panel();
+        dashboard.interest_panel(<?php echo($_SESSION['role'] > 1 ? $_SESSION['user_id'] : "false") ?>);
+        $(document).on("click", ".interest-filter", function (e) {
+            e.preventDefault();
+            dashboard.interest_panel(<?php echo($_SESSION['role'] > 1 ? $_SESSION['user_id'] : "false") ?>, $(this).attr('id'))
         });
-    </script>
+    });
+</script>

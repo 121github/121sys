@@ -130,12 +130,17 @@ class Appointments extends CI_Controller
         }
         $_SESSION['col_order'] = $this->Datatables_model->selected_columns(false, 3);
 
+        $title = "Appointment List";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'System appointment',
-            'title' => 'Appointments',
+            'title' => $title,
             'page' => 'appointments',
+            'submenu' => array(
+                "file"=>'appointment_list.php',
+                "title"=>$title
+            ),
             'columns' => $visible_columns,
             'css' => array(
                 'daterangepicker-bs3.css',
@@ -171,12 +176,17 @@ class Appointments extends CI_Controller
         }
         $_SESSION['col_order'] = $this->Datatables_model->selected_columns(false, 3);
 
+        $title = "Appointment List";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'System appointment',
             'title' => 'Appointments',
             'page' => 'appointments',
+            'submenu' => array(
+                "file"=>'appointment_list.php',
+                "title"=>$title
+            ),
             'columns' => $visible_columns,
             'css' => array(
                 'daterangepicker-bs3.css',

@@ -1310,11 +1310,6 @@ var dashboard = {
                     panels += '<div class="' + columns + '">' +
                         '<div class="panel panel-primary">' +
                         '<div class="panel-heading clearfix">' + report.name + ' <span class="glyphicon glyphicon-info-sign pointer" data-toggle="tooltip" title="' + report.description + '"></span>' +
-                        '<div class="pull-right">' +
-                        '<a href="#filter-right" class="btn btn-default btn-xs">' +
-                        '<span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter' +
-                        '</a>' +
-                        '</div>' +
                         '</div>' +
                         '<div class="panel-body" id="' + report.report_id + '-panel" style="padding: 0px;">' +
                         '<ul class="nav nav-tabs" id="panel-tabs-' + report.report_id + '" style=" background:#eee; width:100%;">' +
