@@ -158,6 +158,10 @@ $_SESSION['theme_color'] = $theme;
 if(!isset($_SESSION['timeout'])){
 $_SESSION['timeout'] = $timeout;
 }
+//clear the previous flashalert
+if(isset($_SESSION['flashalert'])){
+unset($_SESSION['flashalert']);	
+}
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

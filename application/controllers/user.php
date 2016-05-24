@@ -50,7 +50,7 @@ class User extends CI_Controller
                     }
                     $this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123") && ($_SESSION['environment'] != 'demo')) {
-                        $this->session->set_flashdata('warning', 'Your password is insecure, please change it');
+                        $_SESSION['flashdata']['warning']= 'Your password is insecure, please change it';
                         $redirect = "user/account";
                     } else if ($this->input->post('redirect')) {
 						  $redirect = base64_decode($this->input->post('redirect'));
@@ -64,8 +64,7 @@ class User extends CI_Controller
 
                     redirect($redirect);
                 }
-                $this->session->set_flashdata('error', 'Invalid username or password.');
-                $this->session->set_flashdata('username', $username);
+                $_SESSION['flashdata']['error'] = 'Invalid username or password.';
 
                 //Write on log
                 log_message('info', '[LOGIN][FAIL] The user '.$username.' (client_ip: '.$this->input->ip_address().') failed. Invalid username or password.');
@@ -80,6 +79,7 @@ class User extends CI_Controller
 
         $redirect = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
         $data = array(
+			'username'=>$username,
             'pageId' => 'login',
             'pageClass' => 'login',
             'title' => '121 Calling System',
@@ -130,7 +130,7 @@ class User extends CI_Controller
 
                 if ($this->User_model->validate_login($_SESSION['user_id'], $this->input->post('current_pass'), true)) {
                     $response = $this->User_model->set_password($this->input->post('new_pass'));
-                    $this->session->set_flashdata('success', 'Password was updated');
+                   $_SESSION['flashdata']['success'] = 'Password was updated';
                     echo 'Logout';
                     exit;
                 } else {
@@ -345,7 +345,7 @@ class User extends CI_Controller
             echo json_encode(array("success"=>true,"stats"=>$footer_stats));
 			exit;
         }
-			echo json_encode(array("success"=>false));
+			echo "Logout";
     }
 
     public function set_campaign_features()
@@ -529,13 +529,13 @@ class User extends CI_Controller
                     $send_email = $this->send_reset_password_email($user);
 
                     if ($send_email) {
-                        $this->session->set_flashdata('success', 'An email containing password reset instructions was sent to ' . htmlentities($user['user_email']));
-                        $this->session->set_flashdata('username', $username);
+                        $_SESSION['flashdata']['success'] = 'An email containing password reset instructions was sent to ' . htmlentities($user['user_email']);
                     }
 
                     echo json_encode(array(
                         "success" => ($send_email),
-                        "msg" => ($send_email ? "Password reset email was sent" : "Password reset email could not be sent")
+                        "msg" => ($send_email ? "Password reset email was sent" : "Password reset email could not be sent"),
+						"username"=>$username
                     ));
                 }
             }
@@ -592,7 +592,7 @@ class User extends CI_Controller
 
         //If the user replaced the password with this token before, redirect to login page
         if (empty($user)) {
-            $this->session->set_flashdata('error', 'This password reset request has already been used. Please submit another password reset request');
+           $_SESSION['flashdata']['error'] = 'This password reset request has already been used. Please submit another password reset request';
             redirect('user/login');
         } else {
             $user = $user[0];
@@ -634,18 +634,19 @@ class User extends CI_Controller
                 $restored = $this->User_model->restore_password($user_id, $form['new_pass']);
 
                 if ($restored) {
-                    $this->session->set_flashdata('success', 'Password restored successfully!');
-                    $this->session->set_flashdata('username', $username);
+                     $_SESSION['flashdata']['success']  ='Password restored successfully!';
                 }
 
                 echo json_encode(array(
                     "success" => ($restored),
-                    "msg" => ($restored ? "The password was restored successfully" : "ERROR: The password was not restored successfully! Please contact with the Administrator")
+                    "msg" => ($restored ? "The password was restored successfully" : "ERROR: The password was not restored successfully! Please contact with the Administrator"),
+					"username"=>$username
                 ));
             } else {
                 echo json_encode(array(
                     "success" => false,
-                    "msg" => validation_errors()
+                    "msg" => validation_errors(),
+					"username"=>$username
                 ));
             }
         }

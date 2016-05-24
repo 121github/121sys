@@ -82,7 +82,7 @@
 <!-- /content -->
 
 <!-- Modal -->
-<div class="isFixed">
+<div class="Fixed">
 <?php  $this->view('misc/alerts.php');  ?>
 <?php  $this->view('misc/modal.php');  ?>
 </div>

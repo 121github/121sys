@@ -1852,9 +1852,9 @@ var modals = {
         }
         modals.load_modal(mheader, mbody, mfooter);
 		$modal.find('.nav-tabs a[href="#'+tab+'"]').tab('show');
+		if($('span.copy').length>0){
 		var copyBtn = document.querySelector("span.copy");
 copyBtn.addEventListener('click', function(event) {  
-console.log("clicked");
 event.preventDefault();
 event.stopPropagation()
   // Select the email link anchor text  
@@ -1871,11 +1871,11 @@ event.stopPropagation()
   } catch(err) {  
     console.log('Oops, unable to copy');  
   }  
-
   // Remove the selections - NOTE: Should use
   // removeRange(range) when it is supported  
   window.getSelection().removeAllRanges();  
 });
+}
     },
     view_filter_options: function () {
         $.ajax({

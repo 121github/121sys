@@ -4442,14 +4442,7 @@ a.thumbnail.active {
   border: 1px solid transparent;
   border-radius: 4px;
 }
-#page-success,#page-danger,#page-info,#page-warning {
-position:fixed;
-bottom:0;
-z-index:9999;
-width:100%;
-text-align:center;
-margin:0 !important;
-}
+
 
 .alert h4 {
   margin-top: 0;

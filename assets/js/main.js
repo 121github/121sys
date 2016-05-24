@@ -274,25 +274,36 @@ $(document).ajaxComplete(function (event, xhr, settings) {
 /* ==========================================================================
  ALERTS
  ========================================================================== */
+var flashalert_div = '<div style="display:none;" class="alert page-alert alert-dismissable"><span class="alert-text"></span><span class="close close-alert">&times;</span></div>';
 var flashalert = {
-
     success: function (text) {
-        $('#page-success .alert-text').html(text);
-        $('#page-success').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+		var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+		$banner.addClass('alert-success');;
+        $('#flashalerts').append($banner);
+		$banner.fadeIn(1000).delay(2000).fadeOut(3000,function(){ $banner.remove() });
     },
     info: function (text) {
-        $('#page-info .alert-text').html(text);
-        $('#page-info').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+       var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+		$banner.addClass('alert-info');
+               $('#flashalerts').append($banner);
+				$banner.fadeIn(1000).delay(2000).fadeOut(1000,function(){ $banner.remove() });
     },
     danger: function (text) {
-        $('#page-danger .alert-text').html(text);
-        $('#page-danger').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+       var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+		$banner.addClass('alert-danger');
+            $('#flashalerts').append($banner);
+		$banner.fadeIn(1000).delay(2000).fadeOut(1000,function(){ $banner.remove() });
     },
     warning: function (text) {
-        $('#page-warning .alert-text').html(text);
-        $('#page-warning').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+        var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+		$banner.addClass('alert-warning');
+        $('#flashalerts').append($banner);
+			$banner.fadeIn(1000).delay(2000).fadeOut(1000,function(){ $banner.remove() });
     }
-
 }
 
 function timestamp_to_uk(timestamp, time) {

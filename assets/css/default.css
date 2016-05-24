@@ -1,3 +1,10 @@
+.page-alert {
+z-index:9999;
+text-align:center;
+margin:0 !important;
+border-radius:0 !important;
+}
+
 .panel-title a { text-decoration:none !important }
 /* .panel-heading a { display:inline-block; width:90% } */
 .layout-settings-btn, .dashboard-settings-btn, .report-settings-btn {

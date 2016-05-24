@@ -7,17 +7,7 @@ class Test extends CI_Controller
 {
     
 public function index(){
-//clean input
-
-//clean number
-array("turnover");
-
-//clean url
-
-//clean alphnumberic
-
-//clean_date
-
+echo "test2";
 }
 }
 

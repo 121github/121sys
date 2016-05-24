@@ -5,7 +5,7 @@ class Flexicart_admin extends CI_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-		        user_auth_check(false);
+		user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
 		// To load the CI benchmark and memory usage profiler - set 1==1.
 		if (1==2) 

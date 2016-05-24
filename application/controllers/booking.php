@@ -691,7 +691,9 @@ class Booking extends CI_Controller
 
                 //Check if the appointment already exist on the system
                 $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
-
+				//appointment imported outcome_id
+				$outcome_id = $this->Booking_model->imported_id();
+				
                 if (!empty($appointment)) {
                     //Update the appointments to 121system
                     $data['appointment_id'] = $appointment['appointment_id'];
@@ -715,7 +717,8 @@ class Booking extends CI_Controller
                         $urn = $this->Records_model->save_record(array(
                             "campaign_id" => $campaign_id,
                             "record_status" => 1,
-                            "outcome_id"=>106 //appointment imported outcome
+							"parked_code"=>2,
+                            "outcome_id"=>$outcome_id //appointment imported outcome
                         ));
                         //Add a contact with no name
                         $contact_id = $this->Contacts_model->save_contact(array(
