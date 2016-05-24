@@ -15,9 +15,11 @@
                                 <span class="fa fa-plus fa-fw" style="color:black;"></span>
                             </span>
                         <?php }?>
-                        <span class="btn btn-default btn show-charts" data-item="0" charts="" data="">
-                            <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
-                        </span>
+                        <?php if (isset($options['chart_button'])) {?>
+                            <span class="btn btn-default btn show-charts" data-item="0" charts="<?php echo $options['chart_button']['chart'];?>" data="<?php echo $options['chart_button']['data'];?>">
+                                <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
+                            </span>
+                        <?php }?>
                         <span class="btn btn-default btn <?php echo $options['refresh_button'];?>" dashboard-id="<?php echo (isset($dashboard['dashboard_id'])?$dashboard['dashboard_id']:"") ?>">
                             <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
                         </span>
