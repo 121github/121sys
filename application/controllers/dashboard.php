@@ -185,7 +185,11 @@ public function index(){
                 "options" => array(
                     "refresh_button"=>"refresh-overview-data",
                     "submit_button"=>"filter-overview-submit",
-                    "date" => false
+                    "date" => false,
+                    "chart_button" => array(
+                        'chart' => "chart-div-system,chart-div-email,chart-div-sms,chart-div-outcome",
+                        'data' => "data-system,data-email,data-sms,data-outcome"
+                    )
                 )
             ),
             'javascript' => array(
@@ -344,7 +348,7 @@ public function index(){
                 "file"=>'dashboard.php',
                 "title"=>$title,
                 "options" => array(
-                    "refresh_button"=>"refresh-favorite-data",
+                    "refresh_button"=>"refresh-favorites-data",
                     "submit_button"=>"filter-favorite-submit",
                     "date" => false
                 )
@@ -1594,7 +1598,11 @@ public function index(){
                             "add_button" => "new-report",
                             "refresh_button"=>"refresh-dashboard-data",
                             "submit_button" => "filter-submit",
-                            "date" => true
+                            "date" => true,
+                            "chart_button" => array(
+                                'chart' => "",
+                                'data' => ""
+                            )
                         )
                     ),
                     'dashboard' => $dashboard,
