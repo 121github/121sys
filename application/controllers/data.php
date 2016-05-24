@@ -532,12 +532,19 @@ class Data extends CI_Controller
         } else {
             $campaigns = $this->Form_model->get_campaigns_by_user($_SESSION['user_id']);
         }
+
+        $title = "Data | Add Record";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'Admin',
-            'title' => 'Admin | Add Record',
+            'title' => $title,
             'page' => 'add_record',
+            'submenu' => array(
+                "file"=>'default_submenu.php',
+                "title"=>$title
+            ),
+            'hide_filter' => true,
             'campaigns' => $campaigns,
             'css' => array(
                 'dashboard.css'

@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 class Files extends CI_Controller
 {
-    
+
     public function __construct()
     {
         parent::__construct();
@@ -16,51 +16,57 @@ class Files extends CI_Controller
         $this->load->model('Docscanner_model');
         $this->load->model('File_model');
     }
-    
-    
+
+
     public function user()
     {
         //this function returns all files upload by a specific user
     }
-    
-    
+
+
     public function campaign()
     {
         //this function returns all files uploaded to a specific campaign
     }
-    
+
     public function manager()
     {
         user_auth_check(false);
-		check_page_permissions("view files");
- $user_folders = $this->File_model->get_folders();
- if(count($user_folders)==0){
-	redirect('error/folder'); 
- }
- 
-/*
-        $folder_name  = $folder ? $user_folders[$folder]['folder_name'] : false;
-        $filetypes    = $folder ? $user_folders[$folder]['accepted_filetypes'] : false;
-        $ft           = explode(",", $filetypes);
-        $check_string = "";
-        foreach ($ft as $k => $v) {
-            $check_string .= "file.name.split('.').pop() != '$v'&&";
+        check_page_permissions("view files");
+        $user_folders = $this->File_model->get_folders();
+        if (count($user_folders) == 0) {
+            redirect('error/folder');
         }
-        $check_string = $folder ? rtrim($check_string, "&&") : false;
-        //$files = $this->File_model->get_files($folder);
-        */
-		
+
+        /*
+                $folder_name  = $folder ? $user_folders[$folder]['folder_name'] : false;
+                $filetypes    = $folder ? $user_folders[$folder]['accepted_filetypes'] : false;
+                $ft           = explode(",", $filetypes);
+                $check_string = "";
+                foreach ($ft as $k => $v) {
+                    $check_string .= "file.name.split('.').pop() != '$v'&&";
+                }
+                $check_string = $folder ? rtrim($check_string, "&&") : false;
+                //$files = $this->File_model->get_files($folder);
+                */
+
+        $title = "File Manager";
+
         $data = array(
-          //  'check_string' => $check_string,
-          ///  'filetypes' => $filetypes,
-           // 'write' => $write,
-           // 'read' => $read,
+            //  'check_string' => $check_string,
+            ///  'filetypes' => $filetypes,
+            // 'write' => $write,
+            // 'read' => $read,
             //'folder_name' => $folder_name,
             //'folder' => $folder,
             'page' => 'files',
             'campaign_access' => $this->_campaigns,
-
-            'title' => 'File Manager',
+            'title' => $title,
+            'submenu' => array(
+                "file" => 'default_submenu.php',
+                "title" => $title,
+                "hide_filter" => true
+            ),
             'user_folders' => $user_folders,
             //'files'=>$files,
             'javascript' => array(
@@ -75,13 +81,13 @@ class Files extends CI_Controller
         );
         $this->template->load('default', 'files/manager.php', $data);
     }
-    
+
     public function process_files()
     {
         if ($this->input->is_ajax_request()) {
-            $count = $this->File_model->get_files_for_table($this->input->post(),true); //second param just returns the count
+            $count = $this->File_model->get_files_for_table($this->input->post(), true); //second param just returns the count
             $files = $this->File_model->get_files_for_table($this->input->post());
-            $data  = array(
+            $data = array(
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
                 "recordsFiltered" => $count,
@@ -90,34 +96,34 @@ class Files extends CI_Controller
             echo json_encode($data);
         }
     }
-    
-	    public function get_permissions()
+
+    public function get_permissions()
     {
         if ($this->input->is_ajax_request()) {
-		$folder = $this->input->post('id');
-		if($_SESSION['role']==1){
-		$permissions = array("folder_id"=>$folder,"write_access"=>1,"read_access"=>1,"accepted_filetypes"=>"*");
-		} else {
-		$permissions = $this->File_model->get_permissions($folder);
-		}
-		/* doesnt work :(
-		$ft = explode(",", $permissions['accepted_filetypes']);
-        $check_string = "";
-        foreach ($ft as $k => $v) {
-            $check_string .= "file.name.split('.').pop() != '$v'&&";
+            $folder = $this->input->post('id');
+            if ($_SESSION['role'] == 1) {
+                $permissions = array("folder_id" => $folder, "write_access" => 1, "read_access" => 1, "accepted_filetypes" => "*");
+            } else {
+                $permissions = $this->File_model->get_permissions($folder);
+            }
+            /* doesnt work :(
+            $ft = explode(",", $permissions['accepted_filetypes']);
+            $check_string = "";
+            foreach ($ft as $k => $v) {
+                $check_string .= "file.name.split('.').pop() != '$v'&&";
+            }
+            $check_string = $folder ? rtrim($check_string, "&&") : false;
+            */
+            echo json_encode(array("success" => true, "permissions" => $permissions));
+
+
         }
-        $check_string = $folder ? rtrim($check_string, "&&") : false;
-		*/
-echo json_encode(array("success"=>true,"permissions"=>$permissions));
+    }
 
-
-		}
-	}
-	
     public function get_files($folder = NULL)
     {
         if ($this->input->is_ajax_request()) {
-            $folder  = $this->input->post('folder');
+            $folder = $this->input->post('folder');
             $showall = false;
             if ($this->input->post('showall')) {
                 $showall = true;
@@ -128,26 +134,26 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
                 "files" => $files
             ));
         }
-        
+
     }
-    
+
     public function download()
     {
         $this->load->library('zip');
         $file_id = $this->uri->segment(3);
-        $result  = $this->get_file_from_id($file_id, true);
-        $file    = FCPATH . "/upload/files/" . $result['folder_name'] . "/" .$result['subfolder']."/". $result['filename'];
+        $result = $this->get_file_from_id($file_id, true);
+        $file = FCPATH . "/upload/files/" . $result['folder_name'] . "/" . $result['subfolder'] . "/" . $result['filename'];
         $this->zip->read_file($file);
         //uncomment the below if you wish to archive downloads in the download folder
         //$zippath = FCPATH . "downloads/".date('ymdhis').$file['filename'].".zip";
         //$this->zip->archive($zippath);
         $this->zip->download($result['filename'] . '.zip');
     }
-    
+
     public function delete_file()
     {
         $file_id = $this->input->post('id');
-        
+
         $filepath = $this->get_file_from_id($file_id);
         if (@unlink($filepath)) {
             $result = $this->File_model->delete_file($file_id);
@@ -161,7 +167,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
             ));
         }
     }
-    
+
     public function get_file_from_id($file_id = false, $parts = false)
     {
         if (!$file_id) {
@@ -177,107 +183,114 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         $filepath = FCPATH . "/upload/files/" . $result['folder_name'] . "/" . $result['subfolder'] . "/" . $result['filename'];
         return $filepath;
     }
-    
+
     public function start_upload()
     {
-		$this->load->model('Docscanner_model');
+        $this->load->model('Docscanner_model');
         $this->load->helper('scan');
         $user_folders = $this->File_model->get_folders();
-        $folder       = $this->input->post('folder');
-		//$this->firephp->log($folder);
-		//check the user has access to write to this folder
-		if($user_folders[$folder]['write']=="1"){
-		$folder_name = $user_folders[$folder]['folder_name'];
-		$day = date('Y-m-d');
-		if(!is_dir(FCPATH . "upload/files/".$folder_name."/".$day)){
-		mkdir(FCPATH . "upload/files/$folder_name/$day");
-		}
-		} else {
-		//display an error
-		header('HTTP/1.0 406 Not Found');
-       	echo "You don't have permission to write to this folder";
-        exit;	
-		}
-        if (!is_dir(FCPATH . "upload/files/$folder_name")) {
-        header('HTTP/1.0 406 Not Found');
-       	echo "Selected folder does not exist";
-        exit;
+        $folder = $this->input->post('folder');
+        //$this->firephp->log($folder);
+        //check the user has access to write to this folder
+        if ($user_folders[$folder]['write'] == "1") {
+            $folder_name = $user_folders[$folder]['folder_name'];
+            $day = date('Y-m-d');
+            if (!is_dir(FCPATH . "upload/files/" . $folder_name . "/" . $day)) {
+                mkdir(FCPATH . "upload/files/$folder_name/$day");
+            }
+        } else {
+            //display an error
+            header('HTTP/1.0 406 Not Found');
+            echo "You don't have permission to write to this folder";
+            exit;
         }
-        
+        if (!is_dir(FCPATH . "upload/files/$folder_name")) {
+            header('HTTP/1.0 406 Not Found');
+            echo "Selected folder does not exist";
+            exit;
+        }
+
         if (!empty($_FILES) && is_dir(FCPATH . "upload/files/$folder_name/$day")) {
-            
-            $tempFile     = $_FILES['file']['tmp_name']; //3
+
+            $tempFile = $_FILES['file']['tmp_name']; //3
             $originalname = preg_replace("/[^A-Za-z0-9. ]/", '', $_FILES['file']['name']);
-            $targetPath   = FCPATH . "upload/files/$folder_name/$day"; //4
-            $targetFile   = $targetPath ."/". $originalname; //5
-            $filesize     = filesize($tempFile);
-			
-			//this checks the filetype is allowed
-			if(@!empty($user_folders[$folder]['accepted_filetypes'])){
-			$allowed =  explode(",",$user_folders[$folder]['accepted_filetypes']);
-			$ext = pathinfo($originalname, PATHINFO_EXTENSION);
-			if(!in_array($ext,$allowed) ) {
-   				header('HTTP/1.0 406 Not Found');
-                echo "File type is not allowed only {$user_folders[$folder]['accepted_filetypes']} may be added to this folder";
-                exit;
-				}
-			}
-			//check the file is not a duplicate
+            $targetPath = FCPATH . "upload/files/$folder_name/$day"; //4
+            $targetFile = $targetPath . "/" . $originalname; //5
+            $filesize = filesize($tempFile);
+
+            //this checks the filetype is allowed
+            if (@!empty($user_folders[$folder]['accepted_filetypes'])) {
+                $allowed = explode(",", $user_folders[$folder]['accepted_filetypes']);
+                $ext = pathinfo($originalname, PATHINFO_EXTENSION);
+                if (!in_array($ext, $allowed)) {
+                    header('HTTP/1.0 406 Not Found');
+                    echo "File type is not allowed only {$user_folders[$folder]['accepted_filetypes']} may be added to this folder";
+                    exit;
+                }
+            }
+            //check the file is not a duplicate
             if (file_exists($targetFile)) {
                 header('HTTP/1.0 406 Not Found');
                 echo "File already exists in the selected folder";
                 exit;
             }
-			//if there are no errors then move the file
+            //if there are no errors then move the file
             if (move_uploaded_file($tempFile, $targetFile)) {
                 //Send email to cvproject@121customerinsight.co.uk
-               if($this->File_model->add_file($originalname, $folder, $filesize)){
-					$this->send_email($targetFile);
+                if ($this->File_model->add_file($originalname, $folder, $filesize)) {
+                    $this->send_email($targetFile);
                     echo json_encode(array(
                         "success" => true
                     ));
                 }
             }
-            
+
         }
-        
+
     }
-    
+
     private function send_email($filePath)
     {
-        
+
         $this->load->library('email');
 
         $config = $this->config->item('email');
-        
+
         $this->email->initialize($config);
-        
+
         $this->email->from('no-reply@121system.com');
         $this->email->to('bradf@121customerinsight.co.uk,nicolab@121customerinsight.co.uk,rachaeln@121customerinsight.co.uk,charlotte.jennings@121customerinsight.co.uk');
-        $this->email->subject('A new file was uploaded to '.$_SESSION['base']);
-        $this->email->message('A new file was uploaded to '.$_SESSION['base'].' by ' . $_SESSION['name']);
-        
-        
+        $this->email->subject('A new file was uploaded to ' . $_SESSION['base']);
+        $this->email->message('A new file was uploaded to ' . $_SESSION['base'] . ' by ' . $_SESSION['name']);
+
+
         //Attach the file
         $this->email->attach($filePath);
-        
+
         $result = $this->email->send();
         //$this->email->print_debugger();
         $this->email->clear();
-        
+
         return $result;
     }
-    
-    
+
+
     public function index()
     {
         $folders = $this->File_model->get_folders();
-        $data    = array(
-            'campaign_access' => $this->_campaigns,
 
+        $title = "Admin - Files";
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
             'folders' => $folders,
             'pageId' => 'Admin',
-            'title' => 'Admin',
+            'title' => $title,
+            'submenu' => array(
+                "file" => 'default_submenu.php',
+                "title" => $title,
+                "hide_filter" => true
+            ),
             'javascript' => array(
                 'dashboard.js?v' . $this->project_version
             ),
@@ -286,35 +299,37 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
             )
         );
         $this->template->load('default', 'files/scanner.php', $data);
-        
+
     }
-    public function scantest(){
-		$file =  $this->scanfile(FCPATH . "upload/files/cv/2015-01-28/Abdul Parappil (7365989).doc", "Abdul Parappil (7365989).doc");
-	}
-    
+
+    public function scantest()
+    {
+        $file = $this->scanfile(FCPATH . "upload/files/cv/2015-01-28/Abdul Parappil (7365989).doc", "Abdul Parappil (7365989).doc");
+    }
+
     public function scanall()
     {
         $directory = FCPATH . "upload/files/cv";
-        $folders     = array_diff(scandir($directory), array(
+        $folders = array_diff(scandir($directory), array(
             '..',
             '.'
         ));
-        
-        
+
+
         foreach ($folders as $folder) {
-			$files     = array_diff(scandir($directory."/".$folder), array(
-            '..',
-            '.'
-        ));
-			foreach($files as $file){
-            $this->scanfile($directory."/".$folder . "/" . $file, $file);
-			}
+            $files = array_diff(scandir($directory . "/" . $folder), array(
+                '..',
+                '.'
+            ));
+            foreach ($files as $file) {
+                $this->scanfile($directory . "/" . $folder . "/" . $file, $file);
+            }
         }
     }
-    
+
     public function scanfile($filename, $file)
     {
-        $doctxt  = $this->Docscanner_model->convertToText($filename);
+        $doctxt = $this->Docscanner_model->convertToText($filename);
         //echo $doctxt;
         $joblist = array(
             "Quality Manager",
@@ -383,27 +398,27 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
             "Business Development Manager",
             "Commercial Manager",
             "Commercial Director",
-			"management"
+            "management"
         );
-        
+
         $this->load->helper('scan');
         $result = contains($doctxt, $joblist);
         $csv = "";
- 		if($result){
-		$list = implode('\, ', $result);
-		$csv .= "$file,$list\n";
-		}
-        
-header("Content-type: text/csv");
-header("Content-Disposition: attachment; filename=file.csv");
-header("Pragma: no-cache");
-header("Expires: 0");
-echo $csv;		
+        if ($result) {
+            $list = implode('\, ', $result);
+            $csv .= "$file,$list\n";
+        }
+
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=file.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        echo $csv;
     }
-    
+
     public function fix_db()
     {
-        
+
         $folder = FCPATH . "upload/files/cv";
         if (!is_dir($folder)) {
             echo "folder not found";
@@ -414,16 +429,14 @@ echo $csv;
             if ('..' === $original)
                 continue;
             $date = filemtime($folder . "/" . $original);
-            
-            $parts    = explode("-", $original);
+
+            $parts = explode("-", $original);
             $filedate = $parts[0];
-            $cvname   = str_replace($filedate . "-", "", $original);
-            
+            $cvname = str_replace($filedate . "-", "", $original);
+
             $file = $cvname . " ";
-            
-            
-            
-            
+
+
             $file2 = str_replace("doc ", ".doc", $file);
             $file3 = str_replace("docx ", ".docx", $file2);
             $file4 = str_replace("..", ".", $file3);
@@ -434,20 +447,22 @@ echo $csv;
             //$this->db->query($query);
             // echo $file . date('Y-m-d H:i:s',$date); echo formatSizeUnits(filesize($file));
         }
-        
+
     }
-       public function fix_db2(){
-		$files = $this->db->query("select filename,date(date_added) subfolder from files")->result_array();
-		  $folder = FCPATH . "upload/files/cv";
-		foreach( $files as $row){
-			echo $old = $folder."/".$row['filename'];
-			echo $new = $folder."/".$row['subfolder']."/".$row['filename'];
-			if(!is_dir($folder."/".$row['subfolder'])){
-			mkdir($folder."/".$row['subfolder']);	
-			}
-			if(file_exists($old)&&is_dir($row['subfolder'])){
-			rename($old,$new);
-			}
-		}
-	   }
+
+    public function fix_db2()
+    {
+        $files = $this->db->query("select filename,date(date_added) subfolder from files")->result_array();
+        $folder = FCPATH . "upload/files/cv";
+        foreach ($files as $row) {
+            echo $old = $folder . "/" . $row['filename'];
+            echo $new = $folder . "/" . $row['subfolder'] . "/" . $row['filename'];
+            if (!is_dir($folder . "/" . $row['subfolder'])) {
+                mkdir($folder . "/" . $row['subfolder']);
+            }
+            if (file_exists($old) && is_dir($row['subfolder'])) {
+                rename($old, $new);
+            }
+        }
+    }
 }
