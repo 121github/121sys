@@ -342,9 +342,10 @@ class User extends CI_Controller
                 }
                 $footer_stats[$row['outcome']] = $row['count'];
             }
-            echo json_encode($footer_stats);
-
+            echo json_encode(array("success"=>true,"stats"=>$footer_stats));
+			exit;
         }
+			echo json_encode(array("success"=>false));
     }
 
     public function set_campaign_features()

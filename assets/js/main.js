@@ -27,6 +27,34 @@ $.ajax({
 		});
 }
 
+function check_session() {
+        if (refreshIntervalId) {
+            clearInterval(refreshIntervalId);
+        }
+        $.getJSON(helper.baseUrl + 'user/check_session', function (response) {
+			if(response.success){
+            
+            $('.footer-stats').empty();
+            $.each(response.stats, function (name, count) {
+                $('.footer-stats').append('<div>' + name + ': ' + count + '</div>');
+            });
+			}
+            //var start = new Date;
+            /* we are not using the live rate features on the system
+             refreshIntervalId = setInterval(function() {
+             elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
+             $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
+             rate = response.transfers/(elapsed_seconds/60/60);
+             $('#rate_box').text(rate.toFixed(2)+ ' per hour');
+             }, 1000);
+
+             $('#time_box').fadeIn(800);
+             $('#rate_box').fadeIn(800);
+             */
+        });
+}
+
+
 function validate_email(email) 
 {
     var re = /\S+@\S+\.\S+/;
@@ -359,6 +387,96 @@ String.prototype.replaceAll = function(search, replacement) {
 $(document).ready(function () {
 	
 	
+	 $('.dropdown-menu ul').addClass('mm-nolistview');
+        $('nav#menu').mmenu({
+            "navbars": [
+                {
+                    "position": "top",
+                    "content": [
+                        "prev",
+                        "title",
+                        "close"
+                    ]
+                },
+                {
+                    "position": "top",
+                    "content": [
+                        "<a href='" + helper.baseUrl + helper.home +"'><span class='fa fa-home'></span> Home</a>",
+                        "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>"
+                        ,(helper.permissions['search records']>0?"<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>":"")
+                    ]
+                },
+                {
+                    "position": "bottom",
+                    "content": [
+                        "<a onclick=\"javascript:alert('121 Customer Insight')\" href='#'><span class='fa fa-book'></span> About</a>",
+                        "<a data-modal='contact-us' href='#'><span class='fa fa-phone'></span> Contact</a>",
+                        "<a href='" + helper.baseUrl + "user/logout'><span class='fa fa-sign-out'></span> Logout</a>"
+                    ]
+                }
+            ]
+            , "extensions": ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"]
+        });
+		 menu_api = $("nav#menu").data( "mmenu" );
+if(helper.permissions['enable global filter']>0){
+        $('nav#global-filter').mmenu({
+            navbar: {
+                title: "Filter Records <span class='text-primary'>"+helper.campaign_name+"</span>"
+            },
+            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+            offCanvas: {
+                position: "right",
+            }
+        }, {
+classNames: {
+fixedElements: {
+fixed: "isFixed"
+}
+}
+});
+ filter_api = $("nav#global-filter").data( "mmenu" );
+$('nav#global-filter').on('click', '#global-filter-submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: helper.baseUrl + 'user/set_data',
+                data: $('#global-filter-form').serialize(),
+                type: "POST"
+            }).done(function () {
+                var right_mmenu = $("nav#global-filter").data("mmenu");
+                right_mmenu.close();
+                if (typeof view_records !== "undefined") {
+                    map_table_reload()
+                } else {
+                    window.location = helper.baseUrl + 'records/detail/0';
+                }
+            });
+        });
+}
+	
+	
+	
+	    $(document).on('change', '#top-campaign-select,#side-campaign-select', function () {
+		var url = location.href;
+        $.ajax({
+            url: helper.baseUrl + 'user/current_campaign/' + $(this).val(),
+            type: "POST",
+            data: {campaign: $(this).val(), pot: $('#top-pot-filter select').val()},
+            dataType: "JSON",
+            beforeSend: function () {
+                $('[data-id="campaign-select"]').append('<span style="position:absolute; right:5px;" ><img src="' + helper.baseUrl + 'assets/img/small-loading.gif" /></span>');
+                $('[data-id="campaign-select"]').find('.caret').hide();
+            }
+        }).done(function (response) {
+            if (response.location == "dashboard") {
+                window.location = helper.baseUrl + 'dashboard';
+            } else if (url.indexOf('detail') > -1||url.indexOf('error') > -1){
+                window.location = helper.baseUrl + 'records/detail';
+			} else {
+                location.reload();
+            }
+        });
+    });
+	
 	
     $(".dropdown-menu > li > a.trigger").on("click", function (e) {
         var current = $(this).next();
@@ -480,28 +598,6 @@ function apply_quick_search(){
 
 
 });
-
-
-/* ==========================================================================
- BROWSER
- ========================================================================== */
-var browser = {
-	
-    init: function () {
-        if ($.browser.msie) {			
-  modal_header.text('Old browser detected');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        })
-		modal_body.append("<p>IE version (" + $.browser.versionNumber + ") does not support many of the features within this system.</p><p>The browsers below are guaranteed to work with this system, we <b>strongly</b> recommend you switch.</p><p><a href='https://www.google.com/chrome/index.html' target='blank'><img src='"+helper.baseUrl+"assets/img/chrome-logo.jpg'/></a> <a href='https://www.mozilla.org/en-GB/firefox/new/' target='blank'><img src='"+helper.baseUrl+"assets/img/firefox-logo.jpg' /></a></p>");
-        $(".confirm-modal").off('click').text('I don\'t care').show();
-		$('.confirm-modal').on('click', function (e) {
-            $('#modal').modal('toggle');
-        });
-        }
-    }
-}
 
 
 /* ==========================================================================
