@@ -163,12 +163,19 @@ class User extends CI_Controller
         $groups = $this->Form_model->get_groups();
         $teams = $this->Form_model->get_teams();
 		$campaign_access = campaign_access_dropdown();
+
+        $title = "My Account";
+
         $data = array(
             'campaign_access' => $campaign_access,
             'pageId' => 'my-account',
             'page' => 'account',
             'pageClass' => 'my-account',
-            'title' => 'My Account',
+            'title' => $title,
+            'submenu' => array(
+                "file"=>'account.php',
+                "title"=>$title
+            ),
             'roles' => $roles,
             'groups' => $groups,
             'teams' => $teams,

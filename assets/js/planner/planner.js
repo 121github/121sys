@@ -137,12 +137,18 @@ var view = {
         $.ajax({
             url: helper.baseUrl + process_url,
             type: "POST",
+            beforeSend: function() {
+                $('.loading-overlay').fadeIn();
+            },
             dataType: "JSON",
             data: {
                 bounds:maps.getBounds(),
                 map: true,
                 date: $('.filter-form').find('input[name="date"]').val(),
                 user_id: $('.filter-form').find('input[name="user"]').val()
+            },
+            complete: function(d) {
+                $('.loading-overlay').fadeOut();
             }
         }).done(function (response) {
             var button_size = "btn-lg";

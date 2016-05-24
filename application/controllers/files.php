@@ -50,6 +50,8 @@ class Files extends CI_Controller
                 //$files = $this->File_model->get_files($folder);
                 */
 
+        $title = "File Manager";
+
         $data = array(
             //  'check_string' => $check_string,
             ///  'filetypes' => $filetypes,
@@ -59,8 +61,12 @@ class Files extends CI_Controller
             //'folder' => $folder,
             'page' => 'files',
             'campaign_access' => $this->_campaigns,
-
-            'title' => 'File Manager',
+            'title' => $title,
+            'submenu' => array(
+                "file" => 'default_submenu.php',
+                "title" => $title,
+                "hide_filter" => true
+            ),
             'user_folders' => $user_folders,
             //'files'=>$files,
             'javascript' => array(

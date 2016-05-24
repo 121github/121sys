@@ -1,27 +1,7 @@
-<div class="page-header">
-    <div class="row">
-        <div class="col-lg-6">
-            <h2>My account</h2>
-        </div>
-        <div class="col-lg-6">
-        <div class="pull-right">
-            <?php if($_SESSION['role'] == 1): ?>
-                        <select data-title="Switch User" data-size="15" id="user-filter" class="selectpicker"></button>
-							<?php foreach($users as $row): ?>
-                                <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-
-            <?php endif ?>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-md-8 col-sm-12">
-    
-        <div class="panel panel-primary" >
+
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 <i class="fa fa-user fa-fw"></i>
                 Details
@@ -35,7 +15,8 @@
                         <div style="margin-top: 5px;" class="main-role"></div>
                     </div>
                     <div class="col-lg-9">
-                        <div style="border-bottom: 1px solid grey; margin-bottom: 10px; margin-top: 10px; font-weight: bold">
+                        <div
+                            style="border-bottom: 1px solid grey; margin-bottom: 10px; margin-top: 10px; font-weight: bold">
                             DETAILS:
                         </div>
                         <table class="table ajax-table">
@@ -61,11 +42,13 @@
                             </tr>
                         </table>
 
-                        <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
-                            CONTACT DETAILS 
+                        <div
+                            style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
+                            CONTACT DETAILS
 
-                                <span class="btn btn-default btn-xs marl pull-right" id="edit-details-btn" data-id="<?php echo $user_id ?>"><i class="glyphicon glyphicon-edit"></i> Edit</span>
-                     
+                            <span class="btn btn-default btn-xs marl pull-right" id="edit-details-btn"
+                                  data-id="<?php echo $user_id ?>"><i class="glyphicon glyphicon-edit"></i> Edit</span>
+
                         </div>
                         <table class="table ajax-table">
                             <tr>
@@ -86,9 +69,12 @@
                             </tr>
                         </table>
 
-                        <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
+                        <div
+                            style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
                             ADDRESSES
-                            <span class="btn btn-default btn-xs marl pull-right" id="add-user-address" data-modal="add-user-address" data-user-id="<?php echo $user_id ?>" data-address-id=""><i class="glyphicon glyphicon-plus"></i> Add</span>
+                            <span class="btn btn-default btn-xs marl pull-right" id="add-user-address"
+                                  data-modal="add-user-address" data-user-id="<?php echo $user_id ?>"
+                                  data-address-id=""><i class="glyphicon glyphicon-plus"></i> Add</span>
                         </div>
                         <!-- Addresses -->
                         <div class="user-addresses"></div>
@@ -103,7 +89,7 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <div class="col-lg-3" >
+                <div class="col-lg-3">
                     <div style="margin-top: 5px;" class="google-picture"></div>
                     <div style="margin-top: 5px;" class="google-name"></div>
                 </div>
@@ -158,55 +144,55 @@
                 </div>
             </div>
         <?php } ?>
-        <?php if($_SESSION['role'] == 1): ?>
-        <div class="panel panel-primary" >
-            <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i>Activity</div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <table class="table ajax-table">
-                    <tr>
-                        <td style="font-weight: bold">User status</td>
-                        <td class="user_status"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Login mode</td>
-                        <td class="login_mode"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Last login</td>
-                        <td class="last_login"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Failed logins</td>
-                        <td class="failed_logins"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Last failed login</td>
-                        <td class="last_failed_login"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Reload session</td>
-                        <td class="reload_session"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Token</td>
-                        <td class="token"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Attendee</td>
-                        <td class="attendee"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Pass changed</td>
-                        <td class="pass_changed"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold">Change pass required</td>
-                        <td class="reset_pass_token"></td>
-                    </tr>
-                </table>
+        <?php if ($_SESSION['role'] == 1): ?>
+            <div class="panel panel-primary">
+                <div class="panel-heading"><i class="fa fa-bell fa-fw"></i> Activity</div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table class="table ajax-table">
+                        <tr>
+                            <td style="font-weight: bold">User status</td>
+                            <td class="user_status"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Login mode</td>
+                            <td class="login_mode"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Last login</td>
+                            <td class="last_login"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Failed logins</td>
+                            <td class="failed_logins"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Last failed login</td>
+                            <td class="last_failed_login"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Reload session</td>
+                            <td class="reload_session"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Token</td>
+                            <td class="token"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Attendee</td>
+                            <td class="attendee"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Pass changed</td>
+                            <td class="pass_changed"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold">Change pass required</td>
+                            <td class="reset_pass_token"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-        </div>
         <?php endif ?>
     </div>
 </div>

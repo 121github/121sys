@@ -223,16 +223,22 @@ class Survey extends CI_Controller
             "column" => "options",
             "header" => "Options"
         );
-        
+
+        $title = "List Surveys";
         
         $data = array(
             'campaign_access' => $this->_campaigns,
-
-'pageId' => 'List-survey',
-            'title' => 'List Surveys',
+            'page' => 'Surveys',
+            'pageId' => 'List-survey',
+            'title' => $title,
+            'submenu' => array(
+                "file"=>'default_submenu.php',
+                "title"=>$title
+            ),
+            'hide_filter' => true,
             'columns' => $visible_columns,
             'javascript' => array(
-				'plugins/DataTables/js/jquery.dataTables.min.js',
+                'plugins/DataTables/datatables.min.js',
                 "lib/bootstrap-slider.js",
                 'survey_view.js?v' . $this->project_version,
 			

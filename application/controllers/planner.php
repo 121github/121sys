@@ -532,11 +532,17 @@ class Planner extends CI_Controller
             $campaign = $_SESSION['current_campaign'];
         }
         $attendees = $this->Records_model->get_attendees(false, $campaign);
+
+        $title = "Planner";
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
             'pageId' => 'System planner',
-            'title' => 'Planner',
+            'title' => $title,
+            'submenu' => array(
+                "file"=>'planner.php',
+                "title"=>$title
+            ),
             'page' => 'planner',
             'campaign_branch_users' => $campaign_branch_users,
             'user_id' => $user_id,

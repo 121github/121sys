@@ -10,9 +10,6 @@
     </div>
 
 </div>
-</div>
-
-</div>
 
 
 <style>
