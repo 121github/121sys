@@ -201,7 +201,7 @@ class User_model extends CI_Model
 	
 	public function set_campaign_access($all=false){
 		if($all){
-	echo $qry = "select campaign_id from `campaigns` where campaign_status = 1";
+	echo $qry = "select campaign_id from `campaigns`";
         } else {
             //other users can can only see what they have access to
             echo $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";

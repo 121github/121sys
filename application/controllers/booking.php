@@ -671,6 +671,12 @@ class Booking extends CI_Controller
                 "added" => array(),
                 "updated" => array()
             );
+			if(!empty($events)){
+			//appointment imported outcome_id
+				$imported_outcome = $this->Booking_model->imported_outcome();
+				//appointment imported outcome_id
+				$imported_type = $this->Booking_model->imported_type();
+			
             foreach ($events as $event) {
                 $postcode = postcode_from_string($event->summary);
                 if (empty($postcode)) {
@@ -691,8 +697,6 @@ class Booking extends CI_Controller
 
                 //Check if the appointment already exist on the system
                 $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
-				//appointment imported outcome_id
-				$outcome_id = $this->Booking_model->imported_id();
 				
                 if (!empty($appointment)) {
                     //Update the appointments to 121system
@@ -709,22 +713,23 @@ class Booking extends CI_Controller
                     }
                     else {
                         $data['text'] = $event->description ? $event->description : "";
-
+						$data['appointment_type_id'] = $imported_type;
                         //get the campaign for the new record
                         $this->db->where("user_id", $user_id);
                         $campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
                         //Create record
                         $urn = $this->Records_model->save_record(array(
                             "campaign_id" => $campaign_id,
-                            "record_status" => 1,
-							"parked_code"=>2,
-                            "outcome_id"=>$outcome_id //appointment imported outcome
+                            "record_status" => 4,
+                            "outcome_id"=>$imported_outcome //appointment imported outcome
                         ));
                         //Add a contact with no name
-                        $contact_id = $this->Contacts_model->save_contact(array(
+						//why?
+                       /* $contact_id = $this->Contacts_model->save_contact(array(
                             "urn" => $urn,
                             "fullname" => ""
                         ));
+						*/
 
                         //Add the appointments to 121system
                         $data['urn'] = $urn;
@@ -737,7 +742,7 @@ class Booking extends CI_Controller
                     }
                 }
             }
-
+			}
         } else {
             $appointments = array();
         }

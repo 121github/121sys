@@ -100,7 +100,9 @@ $columns = array();
 	$columns['filter'] = array("calls.id","servicename","date_format(starttime,'%d/%m/%Y %H:%i:%s')","timediff(endtime,starttime)","date_format(calldate,'%d/%m/%Y')","owner","substring(filepath,6,2)");
 	$columns['order'] = array("calls.id","servicename","calls.starttime","timediff(endtime,starttime) duration","calls.calldate","calls.owner","substring(filepath,6,2)");
 			$data = array("title"=>"recordings",
+			"page"=>"Recordings",
 			"columns"=>$columns,
+			"campaign_access"=> campaign_access_dropdown(),
 			"javascript"=>array( 'view.js?v' . $this->project_version,'plugins/DataTables/datatables.min.js'));
 	        $this->template->load('default', 'recordings/view.php', $data);
 }

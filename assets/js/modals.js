@@ -872,8 +872,9 @@ var modals = {
 		
         mbody += "This appointment was set by <b>" + data.created_by + "</b> on <b>" + data.date_added + "</b>";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+		console.log(data);
 		if(helper.permissions['edit appointments'] > 0){
-		mfooter += '<a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="' + data.id + '" >Edit Appointment</a> ';
+		mfooter += '<a class="btn btn-primary pull-right" '+(data.appointment_type=="Imported"?"disabled":"")+' data-modal="edit-appointment" data-id="' + data.id + '" >Edit Appointment</a> ';
 		}
 		//should change this permission to "appointment webform"
 		if(helper.permissions['edit appointments'] > 0&&data.btn_text!==null){

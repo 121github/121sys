@@ -72,6 +72,7 @@
     }
 
     .container-fluid {
+	padding:100px 0px 60px !important; 
     }
 
     .top-row {
@@ -127,7 +128,7 @@
         overflow: visible;
         transform: translateZ(0px);
         background-color: rgb(229, 227, 223);
-        min-height: 570px;
+        min-height: 585px;
         width: 100%;
         margin: 0px;
         padding: 0px

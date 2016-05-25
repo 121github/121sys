@@ -40,9 +40,8 @@ class User extends CI_Controller
             $this->form_validation->set_error_delimiters('<div class=\'error\'>', '</div>');
             $this->form_validation->set_rules('username', 'Username', 'trim|required|strtolower');
             $this->form_validation->set_rules('password', 'Password', 'trim|required|md5');
-
+ 			$username = $this->input->post('username');
             if ($this->form_validation->run()) {
-                $username = $this->input->post('username');
                 if ($this->User_model->validate_login($this->input->post('username'), $this->input->post('password'))) {
                     if (isset($_SESSION['current_campaign'])) {
                         $this->set_campaign_features();
@@ -79,7 +78,7 @@ class User extends CI_Controller
 
         $redirect = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
         $data = array(
-			'username'=>$username,
+			'username'=>htmlentities($username),
             'pageId' => 'login',
             'pageClass' => 'login',
             'title' => '121 Calling System',

@@ -248,9 +248,13 @@ class Modals extends CI_Controller
             $record = $this->Modal_model->get_appointment($options,$id);
 			$fields=array();
 			$modal = array();
+			$imported =false;
+			if($record["appointment_type"]=="Imported"){
+			$imported=true;	
+			}
             foreach($options['modal'] as $row){
 				$fields[$row['column_title']][$row['datafield_title']] = array("value"=>!empty($record[$row['datafield_title']])?$record[$row['datafield_title']]:"-","modal_keys"=>$row['modal_keys']);
-				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']]);
+				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']], "imported"=>$imported);
 			}
 			$data['appointment'] = $modal;
             echo json_encode(array("success" => true, "data" => $data));

@@ -145,7 +145,7 @@ class Modal_model extends CI_Model
             }
         }
 
-        $required_select_columns = array("a.appointment_id", "r.campaign_id");
+        $required_select_columns = array("a.appointment_id", "r.campaign_id","appointment_type");
         foreach ($required_select_columns as $required) {
             if (!in_array($required, $table_columns)) {
                 $table_columns[] = $required;

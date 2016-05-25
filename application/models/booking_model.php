@@ -214,8 +214,12 @@ class Booking_model extends CI_Model
 		return  $this->db->update("google_calendar", array("no_title_events" => $no_title_events));
 	}
 	
-	public function imported_id() {
+	public function imported_outcome() {
 		  return $this->db->query("select outcome_id from outcomes where outcome like 'Appointment Imported'")->row()->outcome_id;
+	}
+	
+		public function imported_type() {
+		  return $this->db->query("select * from appointment_types where appointment_type = 'Imported'")->row()->appointment_type_id;
 	}
 
 }

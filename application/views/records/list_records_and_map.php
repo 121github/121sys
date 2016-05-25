@@ -64,7 +64,7 @@
 <style>
 body { }
 .loading-overlay {  position:absolute; width:100%; height:100%; background:#000; opacity: 0.4; filter: alpha(opacity=40); z-index:10; top:0; left:0 }
-.container-fluid { }
+.container-fluid { 		padding:100px 0px 60px !important; }
 .top-row { padding:10px 10px 0; }
 .bottom-row { padding:0px 10px 10px; }
 .panel-body { overflow:hidden }
@@ -83,7 +83,7 @@ body { }
 		overflow: visible; 
 		transform: translateZ(0px); 
 		background-color: rgb(229, 227, 223);
-        min-height: 570px;
+        min-height: 585px;
 		width:100%;
         margin: 0px;
         padding: 0px

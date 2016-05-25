@@ -310,7 +310,7 @@ class Records extends CI_Controller
         $campaign_id                  = $campaign['campaign_id'];
         $campaign_layout              = $campaign['record_layout'];
 
-if($campaign_id<>@$_SESSION['current_campaign']){
+if(!isset($_SESSION['current_campaign'])||$campaign_id<>$_SESSION['current_campaign']){
 	$this->User_model->set_permissions();
 	 foreach ($this->User_model->campaign_permissions($campaign_id) as $row) {
                     //a 1 indicates the permission should be added otherwize it is revoked!
@@ -320,9 +320,11 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                         unset($_SESSION['permissions'][$row['permission_id']]);
                     }
                 }
+				if($campaign['campaign-status']=="1"){
                 $_SESSION['current_client'] = $campaign['client_name'];
                 $_SESSION['current_campaign_name'] = $campaign['campaign_name'];
                 $_SESSION['current_campaign'] = $campaign_id;
+				}
 }
 
         //get the features for the campaign and put the ID's into an array

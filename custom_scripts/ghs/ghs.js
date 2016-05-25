@@ -1,7 +1,7 @@
 // JavaScript Document
 var campaign_functions = {
     init: function() {
-
+		if(typeof record!=="undefined"){
         $.ajax({
             url: helper.baseUrl + 'trackvia/check_voicemail',
             type: "POST",
@@ -41,7 +41,7 @@ var campaign_functions = {
         if ($('#slot-attendee').val() !== "") {
             record.appointment_slots_panel.load_panel();
         }
-
+		}
     },
     appointment_setup: function() {
         console.log("Setting up appointment from ghs.js");
