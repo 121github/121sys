@@ -869,8 +869,7 @@ var modals = {
         }
         mbody += "</tbody></table>";
 		*/
-		
-        mbody += "This appointment was set by <b>" + data.created_by + "</b> on <b>" + data.date_added + "</b>";
+        mbody += "This appointment was created "+(data.created_by!=="Administrator"?"by <b>" + data.created_by + "</b>":"")+" on <b>" + data.date_added + "</b>";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 		console.log(data);
 		if(helper.permissions['edit appointments'] > 0){
