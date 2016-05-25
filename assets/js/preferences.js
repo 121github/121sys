@@ -51,18 +51,19 @@
 					var layout_panel = "<p>You must select a campaign to set the layout</p>";
 									 } 
                 var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li>'+(helper.permissions['change layout']>0?'<li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a>':'')+'</li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li><li style="'+display_messages+'"><a role="tab" data-toggle="tab" href="#last-messages-tab">Last actions</a></li></ul>';
-                var tabpanels = '<div class="tab-content" style="overflow-y: scroll; max-height: 400px">' +
+                var tabpanels = '<div class="tab-content" style="max-height: 400px">' +
                                     '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
                                         '<p>Fancy something different? Pick a new colour!</p>' +
                                         '<select id="color-changer" class="color-changer selectpicker">' +
                                             '<option value="'+helper.theme_color+'">--Change color--</option>' +
-                                            '<option value="voice">Bright Blue</option>' +
-                                            '<option value="hsl">Deep Blue</option>' +
-                                            '<option value="coop">Dark Blue</option>' +
-                                            '<option value="smartprospector">Green</option>' +
-                                            '<option value="default">Orange</option>' +
-                                            '<option value="pelican">Red</option>' +
-                                            '<option value="eldon">Purple</option>' +
+                                            '<option value="default">Default</option>' +
+                                            '<option value="brightblue">Bright Blue</option>' +
+                                            '<option value="deepblue">Deep Blue</option>' +
+                                            '<option value="darkblue">Dark Blue</option>' +
+                                            '<option value="green">Green</option>' +
+                                            '<option value="orange">Orange</option>' +
+                                            '<option value="red">Red</option>' +
+                                            '<option value="purple">Purple</option>' +
                                         '</select>' +
                                     '</div>' +
 									         '<div role="tabpanel" class="tab-pane" id="layout-tab">' +

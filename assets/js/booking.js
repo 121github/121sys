@@ -336,7 +336,7 @@ var calendar = {
         $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
             "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
             "<input type='text' name='cal_date' style='display:none' />" +
-            "<span class='input-group-addon' style='color:white; display:inline; padding:0; background:none; border:none'>" +
+            "<span class='input-group-addon calendar-icon' style='color:white; display:inline; padding:0; background:none; border:none'>" +
             "<span class='fa fa-calendar-o'></span>" +
             "</span>" +
             "</div>"

@@ -1,5 +1,5 @@
 <div class="loading-overlay"></div>
-<div class="row" style="padding:0; margin:0;">
+<div class="row" style=" margin:0;">
     <div class="col-xs-12 col-sm-6 col-md-6" id="view-container">
         <form class="directions-form">
             <div class="row">
@@ -110,6 +110,7 @@
     }
 
     .container-fluid {
+        padding: 100px 0px 60px !important;
     }
 
     .top-row {
@@ -133,7 +134,7 @@
 
     #view-container {
         margin: 0;
-        padding: 0 0px;
+        padding: 15px;
         overflow-y: auto;
         height: 100%;
         overflow-x: hidden;
@@ -160,7 +161,7 @@
         overflow: visible;
         transform: translateZ(0px);
         background-color: rgb(229, 227, 223);
-        min-height: 570px;
+        min-height: 585px;
         width: 100%;
         margin: 0px;
         padding: 0px

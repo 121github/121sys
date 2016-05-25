@@ -16,7 +16,17 @@
     <?php } else { ?>
  
     <div id="appointment-panel" class="panel panel-primary">
-      <div class="panel-heading clearfix">Appointments  <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><button class="btn btn-default btn-xs pointer pull-right marl" data-modal="create-appointment" data-urn="<?php echo $record['urn'] ?>"><span class="glyphicon glyphicon-plus"></span> New</button><?php } ?> <a href="#calendar-right" class="btn btn-default btn-xs pull-right pointer"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></div>
+      <div class="panel-heading clearfix">
+          Appointments
+          <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?>
+            <button class="btn btn-default btn-xs pointer pull-right marl" data-modal="create-appointment" data-urn="<?php echo $record['urn'] ?>">
+                  <span class="glyphicon glyphicon-plus"></span> New
+            </button>
+          <?php } ?>
+            <a href="#calendar-right" class="btn btn-default btn-xs pull-right pointer">
+                <span class="glyphicon glyphicon-calendar"></span> Calendar
+            </a>
+      </div>
       <div class="panel-body appointment-panel"> 
         <div class="panel-content"> 
           <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
@@ -35,52 +45,60 @@
 }
 </style>
  <script>
- $(document).ready(function(){
-	 slot_duration = '00:15:00'
- $('body').append('<nav id="calendar-right" style="display:none" class="mm-menu mm--horizontal mm-offcanvas"><div id="calendar"></div></nav>');
-  $('nav#calendar-right').mmenu({
-            navbar: {
-                title: "Showing Calendar <span class='text-primary'>Booking View</span>"
-            },
-            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
-            offCanvas: {
-                position: "right", zposition : "front"
-            }
-        }, {
-classNames: {
-fixedElements: {
-fixed: "isFixed"
-}
-}
-});
+     $(document).ready(function () {
+         slot_duration = '00:15:00'
+         $('body').append('<nav id="calendar-right" style="display:none" class="mm-menu mm--horizontal mm-offcanvas"><div id="calendar"></div></nav>');
+         $('nav#calendar-right').mmenu({
+             navbar: {
+                 title: ""
+             },
+             extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+             offCanvas: {
+                 position: "right", zposition: "front"
+             }
+         }, {
+             classNames: {
+                 fixedElements: {
+                     fixed: "isFixed"
+                 }
+             }
+         });
 
 
-	var api = $('nav#calendar-right').data('mmenu');
-api.bind('opened', function () {
-	$('#calendar-right').fadeIn(400,function(){
-	calendar.remove_button_triggers()	
-	calendar.init();
-	$modal.css('z-index','2000');
-	});
-});
-api.bind('closing', function(){ 
-	$('#calendar-right').fadeOut(200,function(){
-    calendar.destroy();
-	});
-});
-/*
-api.bind('opening', function(){
-$('html.mm-right.mm-opening .mm-slideout').each(function(){
-$(this).attr('style','transform: translate(-900px, 0px)');
-});
-});
+         var api = $('nav#calendar-right').data('mmenu');
+         api.bind('opened', function () {
+             $('#calendar-right').fadeIn(400, function () {
+                 calendar.remove_button_triggers()
+                 calendar.init();
+                 $modal.css('z-index', '2000');
+                 $('#calendar').css('margin-top','0px');
+                 $('#calendar .fc-toolbar').addClass('small');
+                 $('#calendar .fc-toolbar').css('color', 'black');
+                 $('#calendar .navbar-inverse').css('background-image','none');
+                 $('#calendar .navbar-inverse').css('background-color','transparent');
+                 $('#calendar .fc-toolbar .calendar-icon').css('color','black');
+                 $('#calendar .navbar-inverse').css('margin-top','0px');
+                 $('#calendar .fc-view-container').css('margin-top','50px');
+             });
+         });
+         api.bind('closing', function () {
+             $('#calendar-right').fadeOut(200, function () {
+                 calendar.destroy();
+             });
+         });
+         /*
+          api.bind('opening', function(){
+          $('html.mm-right.mm-opening .mm-slideout').each(function(){
+          $(this).attr('style','transform: translate(-900px, 0px)');
+          });
+          });
 
-api.bind('closed', function(){ 
-$('html.mm-right.mm-opening .mm-slideout').each(function(){
-	$(this).removeAttr('style');
-});
-});
-*/
-  });
+          api.bind('closed', function(){
+          $('html.mm-right.mm-opening .mm-slideout').each(function(){
+          $(this).removeAttr('style');
+          });
+          });
+          */
+     });
  </script>
  

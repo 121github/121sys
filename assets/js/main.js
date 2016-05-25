@@ -690,3 +690,39 @@ var filters = {
         });
     }
 }
+
+
+/* ==========================================================================
+ QUICK ACTIONS
+ ========================================================================== */
+
+$('nav#quick-actions-right').mmenu({
+    navbar: {
+        title: ""
+    },
+    extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+    autoHeight: true,
+    offCanvas: {
+        position: "bottom",
+        zposition: "front"
+    }
+}, {
+    classNames: {
+        fixedElements: {
+            fixed: "isFixed"
+        }
+    }
+});
+
+var api = $('nav#quick-actions-right').data('mmenu');
+api.bind('opened', function () {
+    $('#quick-actions-right').fadeIn(400, function () {
+
+        $modal.css('z-index', '2000');
+    });
+});
+api.bind('closing', function () {
+    $('#quick-actions-right').fadeOut(200, function () {
+
+    });
+});

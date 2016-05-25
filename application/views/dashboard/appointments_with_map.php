@@ -1,8 +1,9 @@
+
 <div class="loading-overlay"></div>
 <div class="row" style="padding:0; margin:0;">
     <div class="col-xs-12 col-sm-6 col-md-6">
-        <div id="view-container"><img class="table-loading"
-                                      src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
+        <div id="view-container">
+            <img class="table-loading" src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6" id="map-view">
@@ -15,7 +16,8 @@
                     <input hidden name="destination"><span class="pointer btn-default input-group-addon"
                                                            id="show-uk"><span
                             class="fa fa-globe"></span></span>
-                                <span class="pointer btn-default input-group-addon get-current-location-btn"><span
+                                <span
+                                    class="pointer btn-default input-group-addon get-current-location-btn"><span
                                         class="glyphicon glyphicon-map-marker"></span></span>
                     <input type="text" class="form-control input-sm" name="postcode"
                            placeholder="Postcode..."
@@ -23,13 +25,18 @@
                     <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
                 </div>
                 <div class="route-mode">
-                                         <span class="planner-travel-mode DRIVING pointer" item-mode="DRIVING"><img
-                                                 width="25px;" src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
+                                         <span class="planner-travel-mode DRIVING pointer"
+                                               item-mode="DRIVING"><img
+                                                 width="25px;"
+                                                 src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
                                         <span
-                                            class="planner-travel-mode BICYCLING pointer" item-mode="BICYCLING"><img
-                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/cycle.png"/></span>
+                                            class="planner-travel-mode BICYCLING pointer"
+                                            item-mode="BICYCLING"><img
+                                                width="25px;"
+                                                src="<?php echo base_url() ?>assets/img/icons/cycle.png"/></span>
                                         <span
-                                            class="planner-travel-mode WALKING pointer" item-mode="WALKING"><img
+                                            class="planner-travel-mode WALKING pointer"
+                                            item-mode="WALKING"><img
                                                 width="25px;"
                                                 src="<?php echo base_url() ?>assets/img/icons/walking.png"/></span>
                 </div>
@@ -72,7 +79,7 @@
     }
 
     .container-fluid {
-	padding:100px 0px 60px !important; 
+        padding: 100px 0px 60px !important;
     }
 
     .top-row {
@@ -193,16 +200,16 @@
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
-                    'All': ["02/07/2014",moment().add(50,'years')],
-                    'Last Month': [moment().add(-1,'month').startOf('month'), moment().add(-1,'month').endOf('month')],
-                    'Last 7 Days': [moment().add(-7,'days'), moment()],
-                    'Yesterday': [moment().add(-1,'days'), moment()],
+                    'All': ["02/07/2014", moment().add(50, 'years')],
+                    'Last Month': [moment().add(-1, 'month').startOf('month'), moment().add(-1, 'month').endOf('month')],
+                    'Last 7 Days': [moment().add(-7, 'days'), moment()],
+                    'Yesterday': [moment().add(-1, 'days'), moment()],
                     'Today': [moment(), moment()],
-                    'Tomorrow': [moment().add( 1,'days'), moment().add(1,'days')],
-                    'Next 7 Days': [moment(), moment().add(6,'days')],
-                    'Next 30 Days': [moment(), moment().add(29,'days')],
+                    'Tomorrow': [moment().add(1, 'days'), moment().add(1, 'days')],
+                    'Next 7 Days': [moment(), moment().add(6, 'days')],
+                    'Next 30 Days': [moment(), moment().add(29, 'days')],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Next Month': [moment().add(1,'month').startOf('month'), moment().add(1,'month').endOf('month')]
+                    'Next Month': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')]
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",

@@ -1,44 +1,55 @@
-<!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
-   <div class="panel panel-primary">
-            <div class="panel-heading clearfix" >
-               Quick Actions
-            </div>
- <div class="panel-body">
+        <div class="panel panel-primary">
+            <div class="panel-body">
 
-                <p>Hello <?php echo $_SESSION['name'] ?>, 
-                  <?php if(!isset($_SESSION['current_campaign'])&&in_array("use callpot",$_SESSION['permissions'])){ ?><span class="red">Please choose a campaign to begin!</span>
-                <?php } else { ?>
-                what do you want to do? 
-                <?php } ?>
+                <p>Hello <?php echo $_SESSION['name'] ?>,
+                    <?php if (!isset($_SESSION['current_campaign']) && in_array("use callpot", $_SESSION['permissions'])) { ?>
+                        <span class="red">Please choose a campaign to begin!</span>
+                    <?php } else { ?>
+                        what do you want to do?
+                    <?php } ?>
                 </p>
-                       <?php if(in_array("use callpot",$_SESSION['permissions'])){ ?>
-                       <a type="button" <?php if(!isset($_SESSION['current_campaign'])){ echo "disabled"; } ?> class="btn btn-default" href="records/detail" style="margin:0 3px 10px"><p>Start Calling</p><span class="fa fa-phone fa-3x"></span></a><script>$('[data-toggle="tooltip"]').tooltip();
-					   
-					   </script>
-                <?php } ?>
-                    <?php if(in_array("add records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){ ?>
-            <a type="button" class="btn btn-default" href="data/add_record<?php echo isset($_SESSION['current_campaign'])?"/".$_SESSION['current_campaign']:"" ?>" style="margin:0 3px 10px"><p>Create Record</p><span class="fa fa-plus fa-3x"></span></a>
-              <?php } ?>
-                 <?php if(in_array("list records",$_SESSION['permissions'])){ ?>
-                 <a type="button" class="btn btn-default" href="records/view" style="margin:0 3px 10px"><p>List Records</p><span class="fa fa-table fa-3x"></span></a>
-                 <?php } ?>
-                      <?php if(in_array("view appointments",$_SESSION['permissions'])){ ?>
-                      <a type="button" class="btn btn-default" href="appointments" style="margin:0 3px 10px"><p>View Appointments</p><span class="fa fa-clock-o fa-3x"></span></a>
-                     <?php } ?>
-                          <?php if(in_array("full calendar",$_SESSION['permissions'])){ ?> 
-                        <a type="button" class="btn btn-default" href="booking" style="margin:0 3px 10px"><p>View Calendar</p><span class="fa fa-calendar fa-3x"></span></a>
-                        <?php } ?>
-                         <?php if(in_array("view surveys",$_SESSION['permissions'])){ ?>
-                 <a type="button" class="btn btn-default" href="survey/view" style="margin:0 3px 10px"><p>View Surveys</p><span class="fa fa-clipboard fa-3x"></span></a>
-                 <?php } ?>
-                             <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
-                          <a type="button" class="btn btn-default" href="search" style="margin:0 3px 10px"><p>Search Records</p><span class="fa fa-search fa-3x"></span></a>
-            <?php } ?>
+
+                <div class="button-group">
+                    <?php if (in_array("use callpot", $_SESSION['permissions'])) { ?>
+                        <a type="button" <?php if (!isset($_SESSION['current_campaign'])) {
+                            echo "disabled";
+                        } ?> class="btn btn-default" href="records/detail" style="margin:0 3px 10px"><p>Start Calling</p>
+                            <span class="fa fa-phone fa-3x"></span></a>
+                        <script>$('[data-toggle="tooltip"]').tooltip();
+
+                        </script>
+                    <?php } ?>
+                    <?php if (in_array("add records", $_SESSION['permissions']) && isset($_SESSION['current_campaign'])) { ?>
+                        <a type="button" class="btn btn-default"
+                           href="data/add_record<?php echo isset($_SESSION['current_campaign']) ? "/" . $_SESSION['current_campaign'] : "" ?>"
+                           style="margin:0 3px 10px"><p>Create Record</p><span class="fa fa-plus fa-3x"></span></a>
+                    <?php } ?>
+                    <?php if (in_array("list records", $_SESSION['permissions'])) { ?>
+                        <a type="button" class="btn btn-default" href="records/view" style="margin:0 3px 10px"><p>List
+                                Records</p><span class="fa fa-table fa-3x"></span></a>
+                    <?php } ?>
+                    <?php if (in_array("view appointments", $_SESSION['permissions'])) { ?>
+                        <a type="button" class="btn btn-default" href="appointments" style="margin:0 3px 10px"><p>View
+                                Appointments</p><span class="fa fa-clock-o fa-3x"></span></a>
+                    <?php } ?>
+                    <?php if (in_array("full calendar", $_SESSION['permissions'])) { ?>
+                        <a type="button" class="btn btn-default" href="booking" style="margin:0 3px 10px"><p>View
+                                Calendar</p><span class="fa fa-calendar fa-3x"></span></a>
+                    <?php } ?>
+                    <?php if (in_array("view surveys", $_SESSION['permissions'])) { ?>
+                        <a type="button" class="btn btn-default" href="survey/view" style="margin:0 3px 10px"><p>View
+                                Surveys</p><span class="fa fa-clipboard fa-3x"></span></a>
+                    <?php } ?>
+                    <?php if (in_array("search records", $_SESSION['permissions'])) { ?>
+                        <a type="button" class="btn btn-default" href="search" style="margin:0 3px 10px"><p>Search
+                                Records</p><span class="fa fa-search fa-3x"></span></a>
+                    <?php } ?>
+                </div>
             </div>
-</div>
-</div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -50,7 +61,7 @@
                 <i class="fa fa-history fa-fw"></i> Recent Activity</span>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body" id="latest-history">
+            <div class="panel-body small" id="latest-history">
 
                 <p><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/></p>
                 <!-- /.panel-body -->
@@ -77,7 +88,7 @@
                 </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body" id="comment-panel">
+            <div class="panel-body small" id="comment-panel">
                     <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
             </div>
         </div>

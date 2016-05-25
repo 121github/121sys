@@ -1,11 +1,19 @@
-<div class="loading-overlay"></div>
-<div class="row" style="padding:0; margin:0;">
-    <div class="col-xs-12">
-        <div id="view-container">
-            <img class="table-loading" src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary" id="a_favorites">
+            <div class="panel-body">
+                <div class="loading-overlay"></div>
+                <div class="row" style="padding:0; margin:0;">
+                    <div class="col-xs-12">
+                        <div id="view-container">
+                            <img class="table-loading" src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 <style>
 body { }

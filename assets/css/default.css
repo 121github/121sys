@@ -11,6 +11,12 @@ border-radius:0 !important;
 width:30%; height: 100px; margin-right: 5px	
 }
 
+.panel {
+     border: 1px solid #BDBDBD;
+ }
+
+
+
 ul.navbar-nav.pull-right > li { float:right; margin-left:5px }
 ul.navbar-nav.pull-right { padding-right:15px !important;  }
 
@@ -26,12 +32,36 @@ ul.navbar-nav.pull-right { padding-right:15px !important;  }
 	width:100%;
 }
 .nav a { outline: 0 !important; }
+
+
+#quick-actions-box {
+    position:fixed;
+    right:0px;
+    bottom:0px;
+    padding:5px;
+    border:1px solid lightgray;
+    background:#fff;
+    width: 40px;
+    text-align: center;
+    z-index:100;
+}
+#quick-actions-box a {
+    text-decoration:none
+}
+#quick-actions-box .quick-actions-btn {
+    display:block;
+    width:100%;
+    height:100%;
+    font-size:24px
+}
+
 #color-box {
 	position:fixed;
 	right:0px;
-	bottom:50px;
+	bottom:35px;
 	padding:5px;
-	border:1px solid #333;
+    width: 40px;
+	border:1px solid lightgray;
 	background:#fff;
 	z-index:100
 }
@@ -93,6 +123,7 @@ display: table-cell;
 }
 body {
 	overflow-y:scroll;
+	background-color: #e6e6e6;
 }
 .container-fluid {
 	padding:60px 15px;
@@ -321,6 +352,11 @@ div.tooltip-inner {
  .panel:nth-of-type(even) {
  z-index: 1042 !important;
 }
+
+.modal {
+    z-index: 10000;
+}
+
 .modal-backdrop.in:nth-of-type(even) {
  z-index: 1041 !important;
 }
@@ -411,6 +447,11 @@ div.tooltip-inner {
  .navbar-toggle {
 	float: left;
 }
+
+.navbar-default {
+    z-index: 9999;
+}
+
 @media (min-width:992px) {
     .desktop-only {
        display:inline-block !important;

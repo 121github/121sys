@@ -1,9 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary" id="a_favorites">
-            <div class="panel-heading clearfix">
-                <i class="fa fa-star fa-fw"></i> Favorites
-            </div>
             <div class="panel-body favorites-panel"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
             </div>
         </div>

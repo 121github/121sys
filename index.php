@@ -67,7 +67,7 @@ switch ($domain) {
     case 'accept.hsl.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept_hsl';
-        $theme = "hsl";
+        $theme = "deepblue";
 		$timeout = 6000; //100 minutes
         break;
 
@@ -85,7 +85,7 @@ switch ($domain) {
     case 'eldon.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_eldon';
-		$theme = "eldon";
+		$theme = "purple";
 		$timeout = 6000; //100 minutes
         break;
 
@@ -97,14 +97,14 @@ switch ($domain) {
     case 'hsl.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
-		$theme = "hsl";
+		$theme = "deepblue";
 		$timeout = 6000; //100 minutes
         break;
 
     case 'hcs.hslchairs.com':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
-		$theme = "hsl";
+		$theme = "deepblue";
         break;
 
     case 'lhs.':
@@ -117,7 +117,7 @@ switch ($domain) {
     case 'demo.':
         define('ENVIRONMENT', 'demo');
         $session_name = '121sys_demo';
-		$theme = "smartprospector";
+		$theme = "green";
         break;
 
     case 'pro.':
