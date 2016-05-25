@@ -50,7 +50,10 @@
                     </div>
                     <div class="btn-group desktop-only">
                         <select name="distance" data-width="130" class="selectpicker">
-                            <option value="">Any Distance</option>
+                        <option <?php if (isset($_SESSION['filter']['values']['distance']) && $_SESSION['filter']['values']['distance'] == "9999") {
+                                echo "selected";
+                            } ?> value="9999">Any Distance</option>
+                            <option value="">Match Postcode</option>
                             <option <?php if (isset($_SESSION['filter']['values']['distance']) && $_SESSION['filter']['values']['distance'] == "1") {
                                 echo "selected";
                             } ?> value="1">1 Mile

@@ -561,7 +561,7 @@ function postcode_filter_callback(valid){
  if(valid){
 	 $('#submenu-filters input[name="postcode"]').val(valid);
 	 $('#global-filter-form').find('input[name="postcode"]').val(valid); 	
-     apply_filter();
+     apply_global_filter();
  } else {
 	 $('#submenu-filters input[name="postcode"]').val('');	
 	 $('#global-filter-form').find('input[name="postcode"]').val(''); 

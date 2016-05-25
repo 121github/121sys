@@ -120,7 +120,7 @@ class History_model extends CI_Model
         if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['filter']['order'];
         } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",h.urn";
+           $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",h.urn";
             unset($_SESSION['filter']['order']);
             unset($_SESSION['filter']['values']['order']);
         }

@@ -146,7 +146,7 @@ var view = {
         $('.data-table tfoot th').each(function() {
             var title = $('.data-table thead th').eq($(this).index()).text();
             var filter_attribute = 'placeholder="Filter..."';
-            if (title == "Icon") {
+                if (title == "Icon"||title== "Distance") {
                 var filter_attribute = "disabled";
             }
 

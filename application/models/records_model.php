@@ -511,7 +511,7 @@ class Records_model extends CI_Model
             "r.record_color",
             "r.map_icon",
             "camp.map_icon as campaign_map_icon"
-        );
+        );		
         //if any of the mandatory columns are missing from the columns array we push them in
         foreach ($required_select_columns as $required) {
             if (!in_array($required, $table_columns)) {
@@ -527,6 +527,7 @@ class Records_model extends CI_Model
                 from records r ";
         $numrows = "select count(distinct r.urn) numrows
                 from records r ";
+				
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
@@ -573,7 +574,7 @@ class Records_model extends CI_Model
         if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['filter']['order'];
         } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn";
+            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",r.urn";
             unset($_SESSION['filter']['order']);
             unset($_SESSION['filter']['values']['order']);
         }
@@ -582,7 +583,7 @@ class Records_model extends CI_Model
         if ($length > 0) {
             $qry .= "  limit $start,$length";
         }
-        //$this->firephp->log($select.$qry);
+        $this->firephp->log($select.$qry);
         $records = $this->db->query($select . $qry)->result_array();
         $records['count'] = $count;
 

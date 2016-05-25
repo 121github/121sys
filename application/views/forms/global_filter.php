@@ -13,7 +13,8 @@
                 <label>Distance <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                       data-placement="right" data-title="Enter a distance to search from the postcode entered" data-html="true"></span></label>
                                    <select name="distance" data-width="100%" class="selectpicker">
-            <option value="">Any Distance</option>
+            <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="9999"){ echo "selected"; } ?> value="9999">Any Distance</option>
+             <option value="">Match Postcocode</option>
              <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="1"){ echo "selected"; } ?> value="1">1 Mile</option>
              <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="3"){ echo "selected"; } ?> value="3">3 Miles</option>
              <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="5"){ echo "selected"; } ?> value="5">5 Miles</option>

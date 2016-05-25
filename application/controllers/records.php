@@ -177,11 +177,18 @@ class Records extends CI_Controller
 			$options['visible_columns'] = $visible_columns;
 			//check the options
 			foreach($options['columns'] as $k=>$column){
+				//$this->firephp->log($column);				
 				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
 					$options['columns'][$k]['search']['value']="";
 				}
+					if($column['data']=="distance"){
+					$distance_sql = $this->Datatables_model->get_distance_query();
+					$options['visible_columns']['select'][$k] = $distance_sql . "distance";
+					$options['visible_columns']['order'][$k] = $distance_sql;
+					}
 			}
 			$this->benchmark->mark('query_start');
+
             $records = $this->Records_model->get_records($options);
 			//$this->Records_model->get_nav($options);
 			$this->benchmark->mark('query_end');

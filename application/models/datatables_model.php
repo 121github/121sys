@@ -23,6 +23,23 @@ class Datatables_model extends CI_Model
 	$views = $this->db->get("datatables_views")->result_array();
 	return $views;
 	}
+	
+	public function get_distance_query(){
+		if(isset($_SESSION['filter']['values']['postcode'])){
+				$coords = postcode_to_coords($_SESSION['filter']['values']['postcode']);
+				$sql = "ROUND(if(camp.campaign_type_id=1,min((((ACOS(SIN((" .
+                    $coords['lat'] . "*PI()/180)) * SIN((contact_locations.lat*PI()/180))+COS((" .
+                    $coords['lat'] . "*PI()/180)) * COS((contact_locations.lat*PI()/180)) * COS(((" .
+                    $coords['lng'] . "- contact_locations.lng)*PI()/180))))*180/PI())*60*1.1515)),min((((ACOS(SIN((" .
+                    $coords['lat'] . "*PI()/180)) * SIN((company_locations.lat*PI()/180))+COS((" .
+                    $coords['lat'] . "*PI()/180)) * COS((company_locations.lat*PI()/180)) * COS(((" .
+                    $coords['lng'] . "- company_locations.lng)*PI()/180))))*180/PI())*60*1.1515))),2)";
+		} else {
+		$sql = "'-'"; //null distance
+		}
+		return $sql;
+	}
+	
 	public function get_visible_columns($table_id){
 		$query = "SELECT *
 FROM (`datatables_views`)
@@ -31,7 +48,6 @@ JOIN `datafields` ON `datatables_view_fields`.`datafield_id`=`datafields`.`dataf
 WHERE `user_id` =  '".$_SESSION['user_id']."'
 AND `table_id` =  '".$table_id."'
 AND `selected` =  1
-
 ORDER BY `sort`";
 //$this->firephp->log($query);
 		$columns = $this->db->query($query)->result_array();
@@ -39,7 +55,7 @@ ORDER BY `sort`";
 		return false;
 		}
 		$visible_columns = array();
-		foreach($columns as $column){
+		foreach($columns as $column){	
 		$visible_columns['view_id'] = $column['view_id'];
 		$visible_columns['columns'][] = array("data" => !empty($column['datafield_alias'])?$column['datafield_alias']:$column['datafield_select']);
 		$visible_columns['headings'][] = $column['datafield_title'];
