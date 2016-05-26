@@ -12,7 +12,7 @@ class Migration_update_141 extends CI_Migration
     public function up()
     {
 
-        $this->db->query("update user_groups set theme_color='brigthblue' where theme_color='voice'");
+        $this->db->query("update user_groups set theme_color='brightblue' where theme_color='voice'");
         $this->db->query("update user_groups set theme_color='deepblue' where theme_color='hsl'");
         $this->db->query("update user_groups set theme_color='darkblue' where theme_color='coop'");
         $this->db->query("update user_groups set theme_color='green' where theme_color='smartprospector'");
@@ -21,7 +21,7 @@ class Migration_update_141 extends CI_Migration
         $this->db->query("update user_groups set theme_color='purple' where theme_color='eldon'");
 
 
-        $this->db->query("update users set theme_color='brigthblue' where theme_color='voice'");
+        $this->db->query("update users set theme_color='brightblue' where theme_color='voice'");
         $this->db->query("update users set theme_color='deepblue' where theme_color='hsl'");
         $this->db->query("update users set theme_color='darkblue' where theme_color='coop'");
         $this->db->query("update users set theme_color='green' where theme_color='smartprospector'");

@@ -1,96 +1,104 @@
-<div class="loading-overlay"></div>
-<div class="row" style=" margin:0;">
-    <div class="col-xs-12 col-sm-6 col-md-6" id="view-container">
-        <form class="directions-form">
-            <div class="row">
-                <div class="col-sm-6 col-xs-12" style="margin-bottom: 10px;">
-                    <div class="input-group" style="margin-bottom: 5px;">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default btn-sm get-origin-location-btn"
-                                                    type="button">
-                                                <span style=""
-                                                      class="glyphicon glyphicon-map-marker"></span> Start
-                                            </button>
-                                        </span>
-                        <input type="text" class="form-control input-sm" name="origin"
-                               placeholder="Enter starting postcode"
-                               title="Enter starting postcode"/>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="loading-overlay"></div>
+                <div class="row" style=" margin:0;">
+                    <div class="col-xs-12 col-sm-6 col-md-6" id="view-container">
+                        <form class="directions-form">
+                            <div class="row">
+                                <div class="col-sm-6 col-xs-12" style="margin-bottom: 10px;">
+                                    <div class="input-group" style="margin-bottom: 5px;">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-default btn-sm get-origin-location-btn"
+                                                                    type="button">
+                                                                <span style=""
+                                                                      class="glyphicon glyphicon-map-marker"></span> Start
+                                                            </button>
+                                                        </span>
+                                        <input type="text" class="form-control input-sm" name="origin"
+                                               placeholder="Enter starting postcode"
+                                               title="Enter starting postcode"/>
+                                    </div>
+                                    <div class="input-group">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-default btn-sm get-destination-location-btn"
+                                                                    type="button">
+                                                                <span
+                                                                    class="glyphicon glyphicon-map-marker"></span> End&nbsp;
+                                                            </button>
+                                                        </span>
+                                        <input type="text" class="form-control input-sm" name="destination"
+                                               placeholder="Enter final postcode"
+                                               title="Enter final postcode"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <input type="checkbox" id="optimized" name="optimized"
+                                           data-on="<i class='glyphicon glyphicon-ok'></i> Best Route"
+                                           data-off="<i class='glyphicon glyphicon-remove'></i> Best Route"
+                                           data-toggle="toggle" data-size="small">
+                                    <button style="margin:3px 0px 3px"
+                                            class="btn btn-sm btn-success btn calc-route-btn">Get
+                                        Route!
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="draggablePanelList">
+                            <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
+                        </div>
                     </div>
-                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default btn-sm get-destination-location-btn"
-                                                    type="button">
-                                                <span
-                                                    class="glyphicon glyphicon-map-marker"></span> End&nbsp;
-                                            </button>
-                                        </span>
-                        <input type="text" class="form-control input-sm" name="destination"
-                               placeholder="Enter final postcode"
-                               title="Enter final postcode"/>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xs-12">
-                    <input type="checkbox" id="optimized" name="optimized"
-                           data-on="<i class='glyphicon glyphicon-ok'></i> Best Route"
-                           data-off="<i class='glyphicon glyphicon-remove'></i> Best Route"
-                           data-toggle="toggle" data-size="small">
-                    <button style="margin:3px 0px 3px"
-                            class="btn btn-sm btn-success btn calc-route-btn">Get
-                        Route!
-                    </button>
-                </div>
-            </div>
-        </form>
-        <div id="draggablePanelList">
-            <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-md-6" id="map-view">
-        <div id="map-canvas"></div>
-        <div class="directions-btn">
-            <form class="form-horizontal" id="map-form">
-                <div class="input-group" style="float:left;">
-                    <input hidden name="travel-mode">
-                    <input hidden name="destination"><span class="pointer btn-default input-group-addon"
-                                                           id="show-uk"><span
-                            class="fa fa-globe"></span></span>
-                                <span class="pointer btn-default input-group-addon get-current-location-btn"><span
-                                        class="glyphicon glyphicon-map-marker"></span></span>
-                    <input type="text" class="form-control input-sm" name="postcode"
-                           placeholder="Postcode..."
-                           title="Enter the location"/>
-                    <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
-                </div>
-                <div class="route-mode">
-                                         <span class="planner-travel-mode DRIVING pointer" item-mode="DRIVING"><img
-                                                 width="25px;" src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
-                                        <span
-                                            class="planner-travel-mode BICYCLING pointer" item-mode="BICYCLING"><img
-                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/cycle.png"/></span>
-                                        <span
-                                            class="planner-travel-mode WALKING pointer" item-mode="WALKING"><img
-                                                width="25px;"
-                                                src="<?php echo base_url() ?>assets/img/icons/walking.png"/></span>
-                </div>
-                <div style="clear:both"></div>
-                <div class="route-info"></div>
-                <div style="clear:both"></div>
-                <div id="show-directions"></div>
-            </form>
-        </div>
-        <div class="panel panel-primary directionsPanel-container">
-            <div class="panel-heading clearfix">
-                Route
-            </div>
-            <div class="panel-body" style="font-size: 12px; overflow: auto; height: 500px;">
-                <div class="directionsPanel-panel">
-                    <div class="directionsPanel-content">
-                        <div id="directionsPanel"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6" id="map-view">
+                        <div id="map-canvas"></div>
+                        <div class="directions-btn">
+                            <form class="form-horizontal" id="map-form">
+                                <div class="input-group" style="float:left;">
+                                    <input hidden name="travel-mode">
+                                    <input hidden name="destination"><span class="pointer btn-default input-group-addon"
+                                                                           id="show-uk"><span
+                                            class="fa fa-globe"></span></span>
+                                                <span class="pointer btn-default input-group-addon get-current-location-btn"><span
+                                                        class="glyphicon glyphicon-map-marker"></span></span>
+                                    <input type="text" class="form-control input-sm" name="postcode"
+                                           placeholder="Postcode..."
+                                           title="Enter the location"/>
+                                    <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
+                                </div>
+                                <div class="route-mode">
+                                                         <span class="planner-travel-mode DRIVING pointer" item-mode="DRIVING"><img
+                                                                 width="25px;" src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
+                                                        <span
+                                                            class="planner-travel-mode BICYCLING pointer" item-mode="BICYCLING"><img
+                                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/cycle.png"/></span>
+                                                        <span
+                                                            class="planner-travel-mode WALKING pointer" item-mode="WALKING"><img
+                                                                width="25px;"
+                                                                src="<?php echo base_url() ?>assets/img/icons/walking.png"/></span>
+                                </div>
+                                <div style="clear:both"></div>
+                                <div class="route-info"></div>
+                                <div style="clear:both"></div>
+                                <div id="show-directions"></div>
+                            </form>
+                        </div>
+                        <div class="panel panel-primary directionsPanel-container">
+                            <div class="panel-heading clearfix">
+                                Route
+                            </div>
+                            <div class="panel-body" style="font-size: 12px; overflow: auto; height: 500px;">
+                                <div class="directionsPanel-panel">
+                                    <div class="directionsPanel-content">
+                                        <div id="directionsPanel"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <style>
@@ -110,7 +118,7 @@
     }
 
     .container-fluid {
-        padding: 100px 0px 60px !important;
+        /*padding: 100px 0px 60px !important;*/
     }
 
     .top-row {
@@ -123,6 +131,7 @@
 
     .panel-body {
         overflow: hidden;
+        padding: 0px !important;
     }
 
     /*#view-container {*/
