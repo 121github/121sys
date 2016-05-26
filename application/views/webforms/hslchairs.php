@@ -1226,7 +1226,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-slider.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
