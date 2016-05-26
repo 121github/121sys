@@ -5,6 +5,9 @@
 </div>
 <div id='calendar'></div>
 <style>
+    body {
+        background-color: white;
+    }
     .tooltip-inner {
         text-align: left !important;
         max-width: 400px;
