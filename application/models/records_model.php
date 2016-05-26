@@ -20,7 +20,7 @@ class Records_model extends CI_Model
         return $this->db->replace('sticky_notes', array(
             "note" => $notes,
             "urn" => $urn,
-            "updated_by" => @$_SESSION['user_id']
+            "updated_by" => (isset($_SESSION['user_id'])?$_SESSION['user_id']:"1")
         ));
 
     }
