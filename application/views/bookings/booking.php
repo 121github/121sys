@@ -5,6 +5,7 @@
 </div>
 <div id='calendar'></div>
 <style>
+
 body { background:#fff }
 .fc button { padding:6px 12px !important; height:unset !important;  }
 .fc .bs-caret { margin-left:10px !important }
