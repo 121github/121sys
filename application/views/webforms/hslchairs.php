@@ -38,6 +38,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!--Need to make a new icon for this
           <link rel="apple-touch-icon" href="http://www.121system.com/assets/img/apple-touch-icon.png" />-->
     <style>
+        body {
+            background-color: white;
+        }
+
         .tooltip-inner {
             max-width: 450px;
             /* If max-width does not work, try using width instead */
@@ -1184,6 +1188,21 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <br>
             <textarea class="form-control" style="height:50px"
                       name="answers[a23][]"><?php echo @$values['a23'] ?></textarea>
+        </div>
+
+
+        <div class="form-group">
+            <label>What product is the customer interested in?</label>
+            <br>
+            <input type="text" name="answers[a38]" class="form-control"
+                   placeholder="Enter what product is the customer interested in" value="<?php echo @$values['a38'] ?>"/>
+        </div>
+
+        <div class="form-group">
+            <label>Is there any specific fabric customer has in mind?  </label>
+            <br>
+            <input type="text" name="answers[a39]" class="form-control"
+                   placeholder="Enter specific fabric customer has in mind" value="<?php echo @$values['a39'] ?>"/>
         </div>
 
         <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go

@@ -1,154 +1,152 @@
 platform = navigator.platform,
-            mapLink = 'http://maps.google.com/';
-        if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
-            mapLink = 'comgooglemaps://';
+    mapLink = 'http://maps.google.com/';
+if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
+    mapLink = 'comgooglemaps://';
+}
+if (typeof quick_planner == "undefined") {
+    var quick_planner = [];
+}
+if (typeof calendar == "undefined") {
+    var calendar = [];
+}
+function validate_postcode(postcode, callback) {
+    var valid;
+    $.ajax({
+        url: helper.baseUrl + 'ajax/validate_postcode',
+        data: {
+            postcode: postcode
+        },
+        dataType: 'JSON',
+        type: 'POST'
+    }).done(function (response) {
+        if (response.success) {
+            callback(response.postcode);
+        } else {
+            callback(false);
         }
-		if(typeof quick_planner == "undefined"){
-var quick_planner = [];
-		}
-if(typeof calendar == "undefined"){
-var calendar = [];
-		}
-function validate_postcode(postcode,callback){
-	var valid;
-$.ajax({
-            url: helper.baseUrl + 'ajax/validate_postcode',
-            data: {
-                postcode: postcode
-            },
-            dataType: 'JSON',
-            type: 'POST'
-        }).done(function(response){
-			if(response.success){
-			callback(response.postcode);	
-			} else {
-			callback(false);
-			}
-		});
+    });
 }
 
 function check_session() {
-        if (refreshIntervalId) {
-            clearInterval(refreshIntervalId);
-        }
-        $.getJSON(helper.baseUrl + 'user/check_session', function (response) {
-			if(response.success){
-            
+    if (refreshIntervalId) {
+        clearInterval(refreshIntervalId);
+    }
+    $.getJSON(helper.baseUrl + 'user/check_session', function (response) {
+        if (response.success) {
+
             $('.footer-stats').empty();
             $.each(response.stats, function (name, count) {
                 $('.footer-stats').append('<div>' + name + ': ' + count + '</div>');
             });
-			}
-            //var start = new Date;
-            /* we are not using the live rate features on the system
-             refreshIntervalId = setInterval(function() {
-             elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
-             $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
-             rate = response.transfers/(elapsed_seconds/60/60);
-             $('#rate_box').text(rate.toFixed(2)+ ' per hour');
-             }, 1000);
+        }
+        //var start = new Date;
+        /* we are not using the live rate features on the system
+         refreshIntervalId = setInterval(function() {
+         elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
+         $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
+         rate = response.transfers/(elapsed_seconds/60/60);
+         $('#rate_box').text(rate.toFixed(2)+ ' per hour');
+         }, 1000);
 
-             $('#time_box').fadeIn(800);
-             $('#rate_box').fadeIn(800);
-             */
-        });
+         $('#time_box').fadeIn(800);
+         $('#rate_box').fadeIn(800);
+         */
+    });
 }
 
 
-function validate_email(email) 
-{
+function validate_email(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
 }
 
 var device_type;
-$(window).ready(function() {
+$(window).ready(function () {
     setDevice($(window).width());
 });
 
-$(window).resize(function() {
+$(window).resize(function () {
     setDevice($(window).width());
 });
 
 function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
+    var timeout;
+    return function () {
+        var context = this, args = arguments;
+        var later = function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
 };
 
 function CleanPastedHTML(input) {
-  // 1. remove line breaks / Mso classes
-  var stringStripper = /(\n|\r| class=(")?Mso[a-zA-Z]+(")?)/g;
-  var output = input.replace(stringStripper, ' ');
-  // 2. strip Word generated HTML comments
-  var commentSripper = new RegExp('<!--(.*?)-->','g');
-  var output = output.replace(commentSripper, '');
-  var tagStripper = new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>','gi');
-  // 3. remove tags leave content if any
-  output = output.replace(tagStripper, '');
-  // 4. Remove everything in between and including tags '<style(.)style(.)>'
-  var badTags = ['style', 'script','applet','embed','noframes','noscript'];
-
-  for (var i=0; i< badTags.length; i++) {
-    tagStripper = new RegExp('<'+badTags[i]+'.*?'+badTags[i]+'(.*?)>', 'gi');
+    // 1. remove line breaks / Mso classes
+    var stringStripper = /(\n|\r| class=(")?Mso[a-zA-Z]+(")?)/g;
+    var output = input.replace(stringStripper, ' ');
+    // 2. strip Word generated HTML comments
+    var commentSripper = new RegExp('<!--(.*?)-->', 'g');
+    var output = output.replace(commentSripper, '');
+    var tagStripper = new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>', 'gi');
+    // 3. remove tags leave content if any
     output = output.replace(tagStripper, '');
-  }
-  // 5. remove attributes ' style="..."'
-  var badAttributes = ['style', 'start'];
-  for (var i=0; i< badAttributes.length; i++) {
-    var attributeStripper = new RegExp(' ' + badAttributes[i] + '="(.*?)"','gi');
-    output = output.replace(attributeStripper, '');
-  }
-  return output;
+    // 4. Remove everything in between and including tags '<style(.)style(.)>'
+    var badTags = ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'];
+
+    for (var i = 0; i < badTags.length; i++) {
+        tagStripper = new RegExp('<' + badTags[i] + '.*?' + badTags[i] + '(.*?)>', 'gi');
+        output = output.replace(tagStripper, '');
+    }
+    // 5. remove attributes ' style="..."'
+    var badAttributes = ['style', 'start'];
+    for (var i = 0; i < badAttributes.length; i++) {
+        var attributeStripper = new RegExp(' ' + badAttributes[i] + '="(.*?)"', 'gi');
+        output = output.replace(attributeStripper, '');
+    }
+    return output;
 }
 
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+        while (c.charAt(0) == ' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
     return "";
-} 
+}
 
 function setDevice(width) {
 
-    if (width <= 480){
+    if (width <= 480) {
         device_type = "mobile";
     }
-    else if (width <= 767){
+    else if (width <= 767) {
         device_type = "mobile2";
     }
-    else if (width <= 980){
+    else if (width <= 980) {
         device_type = "tablet";
     }
-    else if (width <= 1200){
+    else if (width <= 1200) {
         device_type = "tablet2";
     }
     else {
         device_type = "default";
     }
-	modals.set_size();
-	if(device_type=="default"||device_type=="tablet2"||device_type=="tablet"){
-		$('#top-campaign-container').css('display','inline-block');
-		$('#side-campaign-select').hide();
-	} else {
-		$('#top-campaign-container').hide();
-		$('#side-campaign-select').show();
-	}
+    modals.set_size();
+    if (device_type == "default" || device_type == "tablet2" || device_type == "tablet") {
+        $('#top-campaign-container').css('display', 'inline-block');
+        $('#side-campaign-select').hide();
+    } else {
+        $('#top-campaign-container').hide();
+        $('#side-campaign-select').show();
+    }
 }
-
 
 
 function addLeadingZero(num) {
@@ -196,22 +194,22 @@ function renew_js() {
     $('.tt').tooltip();
     $('.datetime').datetimepicker({
         format: 'DD/MM/YYYY HH:mm',
-		sideBySide:true,
-		
+        sideBySide: true,
+
     });
     $('.date').datetimepicker({
         format: 'DD/MM/YYYY',
-		enabledHours:false
+        enabledHours: false
     });
     $('.date2').datetimepicker({
         format: 'YYYY-MM-DD',
         maxDate: moment(),
-		enabledHours:false
+        enabledHours: false
     });
     $('.dob').datetimepicker({
         viewMode: 'years',
         format: 'DD/MM/YYYY',
-		enabledHours:false
+        enabledHours: false
     });
     $(document).on('keypress', '.date,.datetime,.dob', function (e) {
         e.preventDefault()
@@ -242,13 +240,13 @@ Date.prototype.addHours = function (h) {
 }
 
 var menu_api = false;
-var messages = (localStorage.getItem("messages")?JSON.parse(localStorage.getItem("messages")):[]);
+var messages = (localStorage.getItem("messages") ? JSON.parse(localStorage.getItem("messages")) : []);
 
 /* AJAX GLOBAL EVENT - This happens after ajax request. We check if the response is timeout then it redirects the user to the login page */
 $(document).ajaxError(function (event, xhr, settings) {
     if (xhr.status != 200) {
         var date = new Date();
-        var msg = [false, 'Access Error', settings.url+' ['+xhr.status+" - "+xhr.statusText+']', date];
+        var msg = [false, 'Access Error', settings.url + ' [' + xhr.status + " - " + xhr.statusText + ']', date];
         messages.unshift(msg);
         localStorage.setItem("messages", JSON.stringify(messages));
     }
@@ -256,8 +254,8 @@ $(document).ajaxError(function (event, xhr, settings) {
 $(document).ajaxComplete(function (event, xhr, settings) {
     if (typeof (xhr.responseJSON) != "undefined" && typeof (xhr.responseJSON.msg) != "undefined") {
         var date = new Date();
-        var title = (typeof xhr.responseJSON.msg_title != "undefined"?xhr.responseJSON.msg_title:"-");
-        var info = (typeof xhr.responseJSON.msg != "undefined"?xhr.responseJSON.msg:"-");
+        var title = (typeof xhr.responseJSON.msg_title != "undefined" ? xhr.responseJSON.msg_title : "-");
+        var info = (typeof xhr.responseJSON.msg != "undefined" ? xhr.responseJSON.msg : "-");
         var msg = [xhr.responseJSON.success, title, info, date];
         messages.unshift(msg);
         localStorage.setItem("messages", JSON.stringify(messages));
@@ -277,32 +275,41 @@ $(document).ajaxComplete(function (event, xhr, settings) {
 var flashalert_div = '<div style="display:none;" class="alert page-alert alert-dismissable"><span class="alert-text"></span><span class="close close-alert">&times;</span></div>';
 var flashalert = {
     success: function (text) {
-		var $banner = $(flashalert_div);
+        var $banner = $(flashalert_div);
         $banner.find('.alert-text').html(text);
-		$banner.addClass('alert-success');;
+        $banner.addClass('alert-success');
+        ;
         $('#flashalerts').append($banner);
-		$banner.fadeIn(1000).delay(2000).fadeOut(3000,function(){ $banner.remove() });
+        $banner.fadeIn(1000).delay(2000).fadeOut(3000, function () {
+            $banner.remove()
+        });
     },
     info: function (text) {
-       var $banner = $(flashalert_div);
+        var $banner = $(flashalert_div);
         $banner.find('.alert-text').html(text);
-		$banner.addClass('alert-info');
-               $('#flashalerts').append($banner);
-				$banner.fadeIn(1000).delay(2000).fadeOut(1000,function(){ $banner.remove() });
+        $banner.addClass('alert-info');
+        $('#flashalerts').append($banner);
+        $banner.fadeIn(1000).delay(2000).fadeOut(1000, function () {
+            $banner.remove()
+        });
     },
     danger: function (text) {
-       var $banner = $(flashalert_div);
+        var $banner = $(flashalert_div);
         $banner.find('.alert-text').html(text);
-		$banner.addClass('alert-danger');
-            $('#flashalerts').append($banner);
-		$banner.fadeIn(1000).delay(2000).fadeOut(1000,function(){ $banner.remove() });
+        $banner.addClass('alert-danger');
+        $('#flashalerts').append($banner);
+        $banner.fadeIn(1000).delay(2000).fadeOut(1000, function () {
+            $banner.remove()
+        });
     },
     warning: function (text) {
         var $banner = $(flashalert_div);
         $banner.find('.alert-text').html(text);
-		$banner.addClass('alert-warning');
+        $banner.addClass('alert-warning');
         $('#flashalerts').append($banner);
-			$banner.fadeIn(1000).delay(2000).fadeOut(1000,function(){ $banner.remove() });
+        $banner.fadeIn(1000).delay(2000).fadeOut(1000, function () {
+            $banner.remove()
+        });
     }
 }
 
@@ -322,8 +329,8 @@ function timestamp_to_uk(timestamp, time) {
     // var formattedTime = day + '/' + month + '/' + year;
 
     ukDateString = ('0' + timestamp.getDate()).slice(-2) + '/'
-    + ('0' + (timestamp.getMonth() + 1)).slice(-2) + '/'
-    + timestamp.getFullYear();
+        + ('0' + (timestamp.getMonth() + 1)).slice(-2) + '/'
+        + timestamp.getFullYear();
 
     if (time) {
         ukDateString += ' ' + hours + ':' + minutes
@@ -335,14 +342,20 @@ function timestamp_to_uk(timestamp, time) {
 }
 
 function toHHMMSS(sec_num) {
-    var hours   = Math.floor(sec_num / 3600);
+    var hours = Math.floor(sec_num / 3600);
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
     var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
-    if (hours   < 10) {hours   = "0"+hours;}
-    if (minutes < 10) {minutes = "0"+minutes;}
-    if (seconds < 10) {seconds = "0"+seconds;}
-    var time    = hours+':'+minutes+':'+seconds;
+    if (hours < 10) {
+        hours = "0" + hours;
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+    var time = hours + ':' + minutes + ':' + seconds;
 
     return time;
 }
@@ -375,18 +388,18 @@ function deserializeForm(dataForm) {
     var objs = [], temp;
     var temps = dataForm.split('&');
 
-    for(var i = 0; i < temps.length; i++){
+    for (var i = 0; i < temps.length; i++) {
         temp = temps[i].split('=');
         //objs.push(temp[0]);
         var key = decodeURIComponent(temp[0]);
-        var value = (temp.length > 1) ? decodeURIComponent(temp[1]).replaceAll("+"," ") : undefined;
+        var value = (temp.length > 1) ? decodeURIComponent(temp[1]).replaceAll("+", " ") : undefined;
         objs[key] = value;
     }
 
     return objs;
 }
 
-String.prototype.replaceAll = function(search, replacement) {
+String.prototype.replaceAll = function (search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 }
@@ -396,9 +409,10 @@ String.prototype.replaceAll = function(search, replacement) {
  MENU
  ========================================================================== */
 $(document).ready(function () {
-	
-	
-	 $('.dropdown-menu ul').addClass('mm-nolistview');
+
+
+    $('.dropdown-menu ul').addClass('mm-nolistview');
+    if (typeof $('nav#menu').mmenu != "undefined") {
         $('nav#menu').mmenu({
             "navbars": [
                 {
@@ -412,9 +426,9 @@ $(document).ready(function () {
                 {
                     "position": "top",
                     "content": [
-                        "<a href='" + helper.baseUrl + helper.home +"'><span class='fa fa-home'></span> Home</a>",
+                        "<a href='" + helper.baseUrl + helper.home + "'><span class='fa fa-home'></span> Home</a>",
                         "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>"
-                        ,(helper.permissions['search records']>0?"<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>":"")
+                        , (helper.permissions['search records'] > 0 ? "<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>" : "")
                     ]
                 },
                 {
@@ -428,46 +442,47 @@ $(document).ready(function () {
             ]
             , "extensions": ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"]
         });
-		 menu_api = $("nav#menu").data( "mmenu" );
-if(helper.permissions['enable global filter']>0){
-        $('nav#global-filter').mmenu({
-            navbar: {
-                title: "Filter Records <span class='text-primary'>"+helper.campaign_name+"</span>"
-            },
-            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
-            offCanvas: {
-                position: "right",
-            }
-        }, {
-classNames: {
-fixedElements: {
-fixed: "isFixed"
-}
-}
-});
- filter_api = $("nav#global-filter").data( "mmenu" );
-$('nav#global-filter').on('click', '#global-filter-submit', function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: helper.baseUrl + 'user/set_data',
-                data: $('#global-filter-form').serialize(),
-                type: "POST"
-            }).done(function () {
-                var right_mmenu = $("nav#global-filter").data("mmenu");
-                right_mmenu.close();
-                if (typeof view_records !== "undefined") {
-                    map_table_reload()
-                } else {
-                    window.location = helper.baseUrl + 'records/detail/0';
+        menu_api = $("nav#menu").data("mmenu");
+        if (helper.permissions['enable global filter'] > 0) {
+            $('nav#global-filter').mmenu({
+                navbar: {
+                    title: "Filter Records <span class='text-primary'>" + helper.campaign_name + "</span>"
+                },
+                extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+                offCanvas: {
+                    position: "right",
+                }
+            }, {
+                classNames: {
+                    fixedElements: {
+                        fixed: "isFixed"
+                    }
                 }
             });
-        });
-}
-	
-	
-	
-	    $(document).on('change', '#top-campaign-select,#side-campaign-select', function () {
-		var url = location.href;
+            filter_api = $("nav#global-filter").data("mmenu");
+            $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: helper.baseUrl + 'user/set_data',
+                    data: $('#global-filter-form').serialize(),
+                    type: "POST"
+                }).done(function () {
+                    var right_mmenu = $("nav#global-filter").data("mmenu");
+                    right_mmenu.close();
+                    if (typeof view_records !== "undefined") {
+                        map_table_reload()
+                    } else {
+                        window.location = helper.baseUrl + 'records/detail/0';
+                    }
+                });
+            });
+        }
+    }
+
+
+
+    $(document).on('change', '#top-campaign-select,#side-campaign-select', function () {
+        var url = location.href;
         $.ajax({
             url: helper.baseUrl + 'user/current_campaign/' + $(this).val(),
             type: "POST",
@@ -480,15 +495,15 @@ $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
         }).done(function (response) {
             if (response.location == "dashboard") {
                 window.location = helper.baseUrl + 'dashboard';
-            } else if (url.indexOf('detail') > -1||url.indexOf('error') > -1){
+            } else if (url.indexOf('detail') > -1 || url.indexOf('error') > -1) {
                 window.location = helper.baseUrl + 'records/detail';
-			} else {
+            } else {
                 location.reload();
             }
         });
     });
-	
-	
+
+
     $(".dropdown-menu > li > a.trigger").on("click", function (e) {
         var current = $(this).next();
         var grandparent = $(this).parent().parent();
@@ -512,100 +527,100 @@ $('nav#global-filter').on('click', '#global-filter-submit', function (e) {
         $('.navbar-brand').hide();
     }
 
-	$(document).on("click","#startsearch",function(e){
-		e.preventDefault();
-		$.ajax({ url:helper.baseUrl+'search/count_records',
-		type:"POST",
-		dataType:"JSON",
-		data:$('#quicksearchform').serialize()	
-	}).done(function(response){
-		if(response.success){
-			if(response.data>0){
-		$('#quicksearchresult').addClass('text-success').html('<a href="#" id="showquicksearchresults">'+response.data+' record(s) found</a>');
-			} else {
-		$('#quicksearchresult').addClass('text-warning').text('0 record(s) found');		
-			}
-		} else {
-		$('#quicksearchresult').addClass('text-danger').text(response.msg);
-		}
-	});
-});
-
-$('#global-filter-form').on("click",".apply-filter",function(e){
-	e.preventDefault();
-	var postcode =  $('#global-filter-form').find('input[name="postcode"]').val(); 
-	var distance = $('#global-filter-form').find('[name="distance"]').val(); 
-	if(distance!==""&&postcode==""){
-	flashalert.danger("Distance filter requires a postcode");
-	return false;	
-	}
-	if(postcode!==""){
-	var valid_postcode = validate_postcode(postcode,postcode_filter_callback);
-	return false;
-	}
-	apply_global_filter();
-});
-
-	$('#quicksearchform').on("click","#showquicksearchresults",function(e){
-	apply_quick_search();
-	});
-
-
-
-$('#global-filter-form').on('click', '.clear-filter', function(e) {
-		e.preventDefault();
-            modals.clear_filters();
+    $(document).on("click", "#startsearch", function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: helper.baseUrl + 'search/count_records',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#quicksearchform').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                if (response.data > 0) {
+                    $('#quicksearchresult').addClass('text-success').html('<a href="#" id="showquicksearchresults">' + response.data + ' record(s) found</a>');
+                } else {
+                    $('#quicksearchresult').addClass('text-warning').text('0 record(s) found');
+                }
+            } else {
+                $('#quicksearchresult').addClass('text-danger').text(response.msg);
+            }
         });
+    });
 
-function postcode_filter_callback(valid){
- if(valid){
-	 $('#submenu-filters input[name="postcode"]').val(valid);
-	 $('#global-filter-form').find('input[name="postcode"]').val(valid); 	
-     apply_global_filter();
- } else {
-	 $('#submenu-filters input[name="postcode"]').val('');	
-	 $('#global-filter-form').find('input[name="postcode"]').val(''); 
-	 flashalert.danger("Postcode is not valid"); 
-}
-}
+    $('#global-filter-form').on("click", ".apply-filter", function (e) {
+        e.preventDefault();
+        var postcode = $('#global-filter-form').find('input[name="postcode"]').val();
+        var distance = $('#global-filter-form').find('[name="distance"]').val();
+        if (distance !== "" && postcode == "") {
+            flashalert.danger("Distance filter requires a postcode");
+            return false;
+        }
+        if (postcode !== "") {
+            var valid_postcode = validate_postcode(postcode, postcode_filter_callback);
+            return false;
+        }
+        apply_global_filter();
+    });
 
-function apply_global_filter(){
- $.ajax({
+    $('#quicksearchform').on("click", "#showquicksearchresults", function (e) {
+        apply_quick_search();
+    });
+
+
+    $('#global-filter-form').on('click', '.clear-filter', function (e) {
+        e.preventDefault();
+        modals.clear_filters();
+    });
+
+    function postcode_filter_callback(valid) {
+        if (valid) {
+            $('#submenu-filters input[name="postcode"]').val(valid);
+            $('#global-filter-form').find('input[name="postcode"]').val(valid);
+            apply_global_filter();
+        } else {
+            $('#submenu-filters input[name="postcode"]').val('');
+            $('#global-filter-form').find('input[name="postcode"]').val('');
+            flashalert.danger("Postcode is not valid");
+        }
+    }
+
+    function apply_global_filter() {
+        $.ajax({
             url: helper.baseUrl + 'search/apply_filter',
             type: "POST",
             dataType: "JSON",
-            data:  $('#global-filter-form').serialize()
-        }).done(function(response) {
-			if(response.filter){
-				$('#submenu-filter-btn').removeClass('btn-default').addClass('btn-success');
-				$('nav#global-filter .clear-filter').prop('disabled',false);
-			} else {
-				$('#submenu-filter-btn').removeClass('btn-success').addClass('btn-default');
-					$('nav#global-filter .clear-filter').prop('disabled',true);
-			}
-			if(typeof view !== "undefined"){
-			view.reload_table();
-			} else {
-			location.href = helper.baseUrl+'records/detail/0';	
-			}
-        });	
-}
+            data: $('#global-filter-form').serialize()
+        }).done(function (response) {
+            if (response.filter) {
+                $('#submenu-filter-btn').removeClass('btn-default').addClass('btn-success');
+                $('nav#global-filter .clear-filter').prop('disabled', false);
+            } else {
+                $('#submenu-filter-btn').removeClass('btn-success').addClass('btn-default');
+                $('nav#global-filter .clear-filter').prop('disabled', true);
+            }
+            if (typeof view !== "undefined") {
+                view.reload_table();
+            } else {
+                location.href = helper.baseUrl + 'records/detail/0';
+            }
+        });
+    }
 
 
-function apply_quick_search(){
- $.ajax({
+    function apply_quick_search() {
+        $.ajax({
             url: helper.baseUrl + 'search/apply_filter',
             type: "POST",
             dataType: "JSON",
-            data:  $('#quicksearchform').serialize()
-        }).done(function(response) {
-			if(typeof view !== "undefined"){
-			view.reload_table();
-			} else {
-			window.location.href = helper.baseUrl+'records/view';
-			}
-        });	
-}
+            data: $('#quicksearchform').serialize()
+        }).done(function (response) {
+            if (typeof view !== "undefined") {
+                view.reload_table();
+            } else {
+                window.location.href = helper.baseUrl + 'records/view';
+            }
+        });
+    }
 
 
 });
@@ -615,8 +630,8 @@ function apply_quick_search(){
  FILTERS
  ========================================================================== */
 var filters = {
-    init: function() {
-		$('.dropdown-menu ul').addClass('mm-nolistview');
+    init: function () {
+        $('.dropdown-menu ul').addClass('mm-nolistview');
         $('nav#filter-right').mmenu({
             navbar: {
                 title: "Filters <span class='text-primary current-campaign'></span>"
@@ -644,46 +659,46 @@ var filters = {
             location.reload();
         });
 
-        $(document).on("click", '.plots-tab', function(e) {
+        $(document).on("click", '.plots-tab', function (e) {
             e.preventDefault();
             $('.graph-color').show();
         });
 
-        $(document).on("click", '.filters-tab,.searches-tab', function(e) {
+        $(document).on("click", '.filters-tab,.searches-tab', function (e) {
             e.preventDefault();
             $('.graph-color').hide();
         });
 
         $(document).on("click", ".show-charts", function (e) {
             e.preventDefault();
-            var charts = (typeof $(this).attr('charts') != "undefined"?$(this).attr('charts').split(","):null);
-            var data = (typeof $(this).attr('data') != "undefined"?$(this).attr('data').split(","):null);
+            var charts = (typeof $(this).attr('charts') != "undefined" ? $(this).attr('charts').split(",") : null);
+            var data = (typeof $(this).attr('data') != "undefined" ? $(this).attr('data').split(",") : null);
             if ($(this).attr('data-item') == 0 && charts) {
                 $.each(charts, function (i, val) {
-                    $('.nav-tabs a[href="#'+val+'"]').tab('show');
+                    $('.nav-tabs a[href="#' + val + '"]').tab('show');
                 });
                 $('.graph-color').show();
                 $('.show-charts').removeClass('btn-default').addClass('btn-success');
-                $(this).attr('data-item',1);
+                $(this).attr('data-item', 1);
             }
             else if ($(this).attr('data-item') == 1 && data) {
                 $.each(data, function (i, val) {
-                    $('.nav-tabs a[href="#'+val+'"]').tab('show');
+                    $('.nav-tabs a[href="#' + val + '"]').tab('show');
                 });
                 $('.graph-color').hide();
                 $('.show-charts').removeClass('btn-success').addClass('btn-default');
-                $(this).attr('data-item',0);
+                $(this).attr('data-item', 0);
             }
         });
 
         $(document).on("click", '.view-filters', function (e) {
             e.preventDefault();
-            var data = (typeof $('.show-charts').attr('data') != "undefined"?$('.show-charts').attr('data').split(","):null);
+            var data = (typeof $('.show-charts').attr('data') != "undefined" ? $('.show-charts').attr('data').split(",") : null);
             $.each(data, function (i, val) {
-                $('.nav-tabs a[href="#'+val+'"]').tab('show');
+                $('.nav-tabs a[href="#' + val + '"]').tab('show');
                 if ($('.show-charts').attr('data-item') == 1) {
                     $('.show-charts').removeClass('btn-success').addClass('btn-default');
-                    $('.show-charts').attr('data-item',0);
+                    $('.show-charts').attr('data-item', 0);
                 }
                 $('.graph-color').hide();
             });
@@ -696,33 +711,35 @@ var filters = {
  QUICK ACTIONS
  ========================================================================== */
 
-$('nav#quick-actions-right').mmenu({
-    navbar: {
-        title: ""
-    },
-    extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
-    autoHeight: true,
-    offCanvas: {
-        position: "bottom",
-        zposition: "front"
-    }
-}, {
-    classNames: {
-        fixedElements: {
-            fixed: "isFixed"
+if (typeof $('nav#quick-actions-right').mmenu != "undefined") {
+    $('nav#quick-actions-right').mmenu({
+        navbar: {
+            title: ""
+        },
+        extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+        autoHeight: true,
+        offCanvas: {
+            position: "bottom",
+            zposition: "front"
         }
-    }
-});
-
-var api = $('nav#quick-actions-right').data('mmenu');
-api.bind('opened', function () {
-    $('#quick-actions-right').fadeIn(400, function () {
-
-        $modal.css('z-index', '2000');
+    }, {
+        classNames: {
+            fixedElements: {
+                fixed: "isFixed"
+            }
+        }
     });
-});
-api.bind('closing', function () {
-    $('#quick-actions-right').fadeOut(200, function () {
 
+    var api = $('nav#quick-actions-right').data('mmenu');
+    api.bind('opened', function () {
+        $('#quick-actions-right').fadeIn(400, function () {
+
+            $modal.css('z-index', '2000');
+        });
     });
-});
+    api.bind('closing', function () {
+        $('#quick-actions-right').fadeOut(200, function () {
+
+        });
+    });
+}
