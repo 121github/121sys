@@ -386,6 +386,7 @@
     margin: 0px 10px 10px 10px;
     font-weight: bold;
     border-color: lightgray;
+  color: black;
 }
 
 .panel-success > .panel-heading {
