@@ -1,3 +1,6 @@
+
+.panel-primary > .panel-heading { border-color:#666 !important }
+
 .page-alert {
 z-index:9999;
 text-align:center;
@@ -352,17 +355,12 @@ div.tooltip-inner {
  .panel:nth-of-type(even) {
  z-index: 1042 !important;
 }
-
-.modal {
-    z-index: 10000;
-}
-
 .modal-backdrop.in:nth-of-type(even) {
  z-index: 1041 !important;
 }
 #timeropened {
 	position:fixed;
-	z-index:9999;
+	z-index:1020;
 	right:15px;
 	height:80px;
 	width:80px;
@@ -377,7 +375,7 @@ div.tooltip-inner {
 }
 #timerclosed {
 	position:fixed;
-	z-index:9999;
+	z-index:1020;
 	right:15px;
 	height:60px;
 	width:60px;
@@ -449,7 +447,7 @@ div.tooltip-inner {
 }
 
 .navbar-default {
-    z-index: 9999;
+    z-index: 1035;
 }
 
 @media (min-width:992px) {

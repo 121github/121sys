@@ -43,7 +43,7 @@ var calendar = {
             calendar.load_rules();
             $('#calendar').fullCalendar('refetchEvents');
         });
-        this.left_buttons = 'prev,next ';
+        this.left_buttons = 'prev,next,month,agendaWeek,agendaDay';
         if (helper.permissions['slot availability'] > 0) {
             this.left_buttons += ' rulesButton';
         }
@@ -61,8 +61,8 @@ var calendar = {
             //height: 700,
             header: {
                 left: calendar.left_buttons,
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
+                right: 'title',
+               // right: 'month,agendaWeek,agendaDay'
             },
             defaultView: calendar.view,
             eventDrop: function (event) {
@@ -175,14 +175,17 @@ var calendar = {
         //create the calendar
         this.fullCalendar = $('#calendar').fullCalendar(calendar.calendarOptions);
         //Style
-        $('.fc-toolbar').addClass('navbar navbar-inverse navbar-fixed-top');
-        $('.fc-left').addClass('navbar-btn');
-        $('.fc-right').addClass('navbar-btn');
-        $('.fc-center').addClass('navbar-btn');
-        $('.fc-toolbar').css('margin-top', '50px');
-        $('.fc-toolbar').css('color', 'white');
-        $('.fc-toolbar h2').css('font-size', '22px');
-        $('.fc-toolbar').css('padding-left', '10px');
+		$('#calendar .fc button').css('height','').css('padding','');
+		$('#calendar .fc-button-group').addClass('btn-group').removeClass('fc-button-group');
+		$('#calendar .fc-button').addClass('btn btn-default').removeClass('fc-button fc-state-default');
+        $('#calendar .fc-toolbar').addClass('navbar navbar-inverse navbar-fixed-top');
+        $('#calendar .fc-left').addClass('navbar-btn');
+        $('#calendar .fc-right').addClass('navbar-btn');
+        $('#calendar .fc-center').addClass('navbar-btn');
+        $('#calendar .fc-toolbar').css('margin-top', '50px');
+        $('#calendar .fc-toolbar').css('color', 'white');
+        $('#calendar .fc-toolbar h2').css('font-size', '22px');
+        $('#calendar .fc-toolbar').css('padding-left', '10px');
         $('#calendar').css('margin-top', '50px');
 
         //add the filters to the top
@@ -333,14 +336,14 @@ var calendar = {
         elem.selectpicker();
     },
     month_filter: function () {
-        $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
+        /* $('#calendar .fc-toolbar .fc-right .fc-button-group').appendAfter(
             "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
             "<input type='text' name='cal_date' style='display:none' />" +
             "<span class='input-group-addon calendar-icon' style='color:white; display:inline; padding:0; background:none; border:none'>" +
             "<span class='fa fa-calendar-o'></span>" +
             "</span>" +
-            "</div>"
-        );
+            "</div>" 
+        );*/
         $('#datetimepicker2').datetimepicker({
             defaultDate: moment(),
             format: 'YYYY-MM-DD',

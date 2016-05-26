@@ -79,6 +79,7 @@
                  $('#calendar .fc-toolbar .calendar-icon').css('color','black');
                  $('#calendar .navbar-inverse').css('margin-top','0px');
                  $('#calendar .fc-view-container').css('margin-top','50px');
+				 $('#calendar .fc-right').css('margin-right','10px');
              });
          });
          api.bind('closing', function () {

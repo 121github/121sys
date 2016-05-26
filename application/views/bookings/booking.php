@@ -5,6 +5,12 @@
 </div>
 <div id='calendar'></div>
 <style>
+body { background:#fff }
+.fc button { padding:6px 12px !important; height:unset !important;  }
+.fc .bs-caret { margin-left:10px !important }
+.fc-right { margin-right:10px; vertical-align:middle !important }
+.fc-right h2 { padding-top:5px !important }
+
     .tooltip-inner {
         text-align: left !important;
         max-width: 400px;

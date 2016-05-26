@@ -44,7 +44,7 @@
     <?php if ($_SESSION['environment'] == 'demo') { ?>
         <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!!</span>
     <?php } ?>
-    <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-5px;margin-right:5px;"
+    <a href="<?php echo (isset($_SESSION['home'])?base_url().$_SESSION['home']:'#') ?>" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-5px;margin-right:5px;"
                                                      src="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/small-logo.png"><img
             id="big-logo" style="margin-top:-5px; width:100%"
             src="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/logo.png"></a>
