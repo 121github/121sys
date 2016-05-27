@@ -99,6 +99,7 @@ class Survey extends CI_Controller
             $questions[$row['question_cat_id']][$row['question_id']]['guide']                      = htmlspecialchars($row['question_guide'], ENT_QUOTES, 'UTF-8');
             $questions[$row['question_cat_id']][$row['question_id']]['multiple']                   = $row['multiple'];
         }
+	
         $title = "Create Survey";
         $data = array(
             'urn' => $urn,
@@ -106,10 +107,14 @@ class Survey extends CI_Controller
 			'title'=>$title,
 			'submenu' => array(
                 "file"=>'edit_survey.php',
-                "title"=>$title
+                "title"=>$title,
+				"survey_name"=>"",
+				"contact"=>$contact_details['general']['fullname'],
+				"locked"=>false
             ),
 'pageId' => 'Create-survey',
             'title' => 'Create new survey',
+			'page'=>'create-survey',
             'campaign' => $campaign,
             "contact_id" => $contact_id,
             "contact" => $contact_details['general'],
