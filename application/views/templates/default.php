@@ -156,17 +156,18 @@ endif;
 
 
 <?php if (isset($_SESSION['user_id'])) { ?>
+<div id="quick-actions-box" class="Fixed">
+    <a href="#quick-actions-right">
+        <span class="fa fa-caret-left quick-actions-btn"></span>
+    </a>
+</div>
     <div id="color-box" class="Fixed">
         <a href="#"><span class="glyphicon glyphicon-cog color-btn"></span></a>
     </div>
     <script type="text/javascript" src="<?php echo base_url() ?>assets/js/preferences.js"></script>
 <?php } ?>
 
-<div id="quick-actions-box" class="Fixed">
-    <a href="#quick-actions-right">
-        <span class="fa fa-caret-left quick-actions-btn"></span>
-    </a>
-</div>
+
 
 </body>
 </html>
