@@ -71,7 +71,7 @@ function join_array(){
 	$array['contact_locations'] = array("contacts","contact_addresses","contact_locations");
 	$array['company_locations'] = array("companies","company_addresses","company_locations");	
 	$array['contact_telephone'] = array("contacts","contact_telephone");
-	$array['company_telephone'] = array("contacts","company_telephone");
+	$array['company_telephone'] = array("companies","company_telephone");
 	$array['clients'] = array("campaigns","clients");
 	$array['campaign_types'] = array("campaigns","campaign_types");
 	$array['ownership'] = array("ownership","ownership_users");
