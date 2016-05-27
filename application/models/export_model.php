@@ -83,23 +83,23 @@ class Export_model extends CI_Model
                 $qry .= " and ".$export_form['date_filter']." <= '" . $options['to'] . "' ";
             }
         }
-        if ($export_form['campaign_filter'] && isset($options['campaign']) && !empty($options['campaign'])) {
-            $qry .= " and ".$export_form['campaign_filter'] . " IN (".implode(",",$options['campaign']).") ";
+        if ($export_form['campaign_filter'] && isset($options['campaigns']) && !empty($options['campaigns'])) {
+            $qry .= " and ".$export_form['campaign_filter'] . " IN (".implode(",",$options['campaigns']).") ";
         }
-        if ($export_form['outcome_filter'] && isset($options['outcome']) && !empty($options['outcome'])) {
-            $qry .= " and ".$export_form['outcome_filter'] . " IN (".implode(",",$options['outcome']).") ";
+        if ($export_form['outcome_filter'] && isset($options['outcomes']) && !empty($options['outcomes'])) {
+            $qry .= " and ".$export_form['outcome_filter'] . " IN (".implode(",",$options['outcomes']).") ";
         }
         if ($export_form['source_filter'] && isset($options['sources']) && !empty($options['sources'])) {
             $qry .= " and " . $export_form['source_filter'] . " IN (".implode(",",$options['sources']).") ";
         }
-		if ($export_form['pot_filter'] && isset($options['pot']) && !empty($options['pot'])) {
-            $qry .= " and " . $export_form['pot_filter'] . " IN (".implode(",",$options['pot']).") ";
+		if ($export_form['pot_filter'] && isset($options['pots']) && !empty($options['pots'])) {
+            $qry .= " and " . $export_form['pot_filter'] . " IN (".implode(",",$options['pots']).") ";
         }
-        if ($export_form['team_filter'] && isset($options['team']) && !empty($options['team'])) {
-            $qry .= " and " . $export_form['team_filter'] . " IN (".implode(",",$options['team']).") ";
+        if ($export_form['team_filter'] && isset($options['teams']) && !empty($options['teams'])) {
+            $qry .= " and " . $export_form['team_filter'] . " IN (".implode(",",$options['teams']).") ";
         }
-        if ($export_form['agent_filter'] && isset($options['agent']) && !empty($options['agent'])) {
-            $qry .= " and " . $export_form['agent_filter'] . " IN (".implode(",",$options['agent']).") ";
+        if ($export_form['branch_filter'] && isset($options['branches']) && !empty($options['branches'])) {
+            $qry .= " and " . $export_form['branch_filter'] . " IN (".implode(",",$options['branches']).") ";
         }
         if ($export_form['user_filter'] && isset($options['user']) && !empty($options['user'])) {
             if (in_array("user_id", $options['user']) && isset($_SESSION['user_id'])) {

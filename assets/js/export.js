@@ -211,10 +211,10 @@ var export_data = {
         filters += "</ul>";
 
 
-        //Agents
-        var size = ($('.agent-filter  option:selected').size() > 0 ? "(" + $('.agent-filter  option:selected').size() + ")" : '');
-        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Agents</strong> " + size + "</h5><ul>";
-        $('.agent-filter  option:selected').each(function (index) {
+        //Branches
+        var size = ($('.branch-filter  option:selected').size() > 0 ? "(" + $('.branch-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Branches</strong> " + size + "</h5><ul>";
+        $('.branch-filter  option:selected').each(function (index) {
             filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
         });
         filters += "</ul>";

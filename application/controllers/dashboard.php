@@ -1533,7 +1533,7 @@ public function index(){
                 );
             }
             $filters = $aux;
-            $agents = $this->Form_model->get_agents();
+            $branches = $this->Form_model->get_branches();
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();
             $pots = $this->Form_model->get_pots();
@@ -1606,7 +1606,7 @@ public function index(){
                         )
                     ),
                     'dashboard' => $dashboard,
-                    'agents' => $agents,
+                    'branches' => $branches,
                     'team_managers' => $teamManagers,
                     'sources' => $sources,
                     'pots' => $pots,
@@ -1729,6 +1729,7 @@ public function index(){
                 $position = 0;
                 foreach ($dash_reports as $dash_report) {
                     unset($dash_report['name']);
+                    unset($dash_report['description']);
                     $dash_report['position'] = $position;
                     $position++;
                     array_push($aux, $dash_report);
@@ -1775,6 +1776,7 @@ public function index(){
                 $aux = array();
                 foreach ($dash_reports as $dash_report) {
                     unset($dash_report['name']);
+                    unset($dash_report['description']);
                     if (($dash_report['dashboard_id'] == $form['dashboard_id']) && ($dash_report['report_id'] == $form['report_id'])) {
                         $dash_report['position'] = $form['next_position'];
                     }

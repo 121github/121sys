@@ -59,15 +59,13 @@
                 </select>
             <?php } ?>
 
-            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                <label style="margin-top: 5%;">User</label>
-                <select name="agents[]" class="selectpicker agent-filter" multiple data-width="100%"
-                        data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                    <?php foreach ($agents as $row) { ?>
-                        <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                    <?php } ?>
-                </select>
-            <?php } ?>
+            <label style="margin-top: 5%;">Branches</label>
+            <select name="branches[]" class="selectpicker branch-filter" id="branch-filter" multiple data-width="100%"
+                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                <?php foreach ($branches as $row) { ?>
+                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php } ?>
+            </select>
 
             <label style="margin-top: 5%;">Source</label>
             <select name="sources[]" class="selectpicker source-filter" id="source-filter" multiple data-width="100%"
@@ -78,7 +76,7 @@
             </select>
 
             <label style="margin-top: 5%;">Data Pot</label>
-            <select name="sources[]" class="selectpicker pot-filter" id="pot-filter" multiple data-width="100%"
+            <select name="pots[]" class="selectpicker pot-filter" id="pot-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                 <?php foreach ($pots as $row) { ?>
                     <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>

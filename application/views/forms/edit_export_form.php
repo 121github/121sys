@@ -114,9 +114,9 @@
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group input-group-sm">
-                                <p>Agent Filter</p>
-                                <input type="text" class="form-control" name="agent_filter"
-                                       placeholder="Eg. agent_id"/>
+                                <p>Branch Filter</p>
+                                <input type="text" class="form-control" name="branch_filter"
+                                       placeholder="Eg. branch_id"/>
                             </div>
                         </div>
                         <div class="col-lg-3">

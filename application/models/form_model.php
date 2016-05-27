@@ -614,4 +614,10 @@ class Form_model extends CI_Model
         $qry = "select sender_id id,name from sms_sender order by name";
         return $this->db->query($qry)->result_array();
     }
+
+    public function get_branches()
+    {
+        $qry = "select branch_id id,branch_name name from branch order by branch_name";
+        return $this->db->query($qry)->result_array();
+    }
 }

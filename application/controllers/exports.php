@@ -46,7 +46,7 @@ class Exports extends CI_Controller
         $pots = $this->Form_model->get_pots_by_campaign_list($current_campaign);
 
         $teams = $this->Form_model->get_teams();
-        $agents = $this->Form_model->get_agents();
+        $branches = $this->Form_model->get_branches();
 
         $users = $this->Form_model->get_users();
         $aux = array();
@@ -86,7 +86,7 @@ class Exports extends CI_Controller
             'sources' => $sources,
 			'pots' => $pots,
             'teams' => $teams,
-            'agents' => $agents,
+            'branches' => $branches,
             'users' => $users
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
@@ -238,18 +238,18 @@ class Exports extends CI_Controller
             $nowDate = new \DateTime('now');
             $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
             $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : $nowDate->format('Y-m-d'));
-            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
+            $options['campaigns'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
-            $options['outcome'] = ($this->input->post('outcome') ? $this->input->post('outcome') : "");
+            $options['outcomes'] = ($this->input->post('outcomes') ? $this->input->post('outcomes') : "");
             $options['outcome_name'] = ($this->input->post('outcome_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
             $options['sources'] = ($this->input->post('sources') ? $this->input->post('sources') : "");
             $options['source_name'] = ($this->input->post('source_name') ? str_replace(" ", "", $this->input->post('source_name')) : "");
-			$options['pot'] = ($this->input->post('pot') ? $this->input->post('pot') : "");
+			$options['pots'] = ($this->input->post('pot') ? $this->input->post('pot') : "");
             $options['pot_name'] = ($this->input->post('pot_name') ? str_replace(" ", "", $this->input->post('pot_name')) : "");
-            $options['team'] = ($this->input->post('team') ? $this->input->post('team') : "");
+            $options['teams'] = ($this->input->post('team') ? $this->input->post('team') : "");
             $options['team_name'] = ($this->input->post('team_name') ? str_replace(" ", "", $this->input->post('team_name')) : "");
-            $options['agent'] = ($this->input->post('agent') ? $this->input->post('agent') : "");
-            $options['agent_name'] = ($this->input->post('agent_name') ? str_replace(" ", "", $this->input->post('agent_name')) : "");
+            $options['branches'] = ($this->input->post('branches') ? $this->input->post('branches') : "");
+            $options['branch_name'] = ($this->input->post('branch_name') ? str_replace(" ", "", $this->input->post('branch_name')) : "");
             $options['user'] = ($this->input->post('user') ? $this->input->post('user') : "");
             $options['user_name'] = ($this->input->post('user_name') ? str_replace(" ", "", $this->input->post('user_name')) : "");
 
@@ -257,13 +257,12 @@ class Exports extends CI_Controller
 
 
             $export_form = $this->Export_model->get_export_forms_by_id($options['export_forms_id']);
-$this->firephp->log($export_form);
+
             if (!empty($export_form)) {
                 $results = $this->Export_model->get_data($export_form, $options);
-				$this->firephp->log($results);
-				$results = custom_assoc($results);
-				
-				$this->firephp->log($results);
+				//$this->firephp->log($results);
+				//$results = custom_assoc($results);
+				//$this->firephp->log($results);
 
                 //Get graphs
                 $graphs = $this->Export_model->get_export_graphs_by_export_id($options['export_forms_id']);

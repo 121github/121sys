@@ -95,6 +95,20 @@
                 </div>
             <?php } ?>
 
+            <?php if (isset($branches) && !empty($branches)) { ?>
+                <div style="display: <?php echo (isset($filters['branches'])?($filters['branches']['editable'] == "1"?"":"none"):""); ?>">
+                    <label style="margin-top: 5%;">Branches</label>
+                    <select name="branches[]" class="selectpicker branch-filter" multiple data-width="100%"
+                            data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                        <?php foreach ($branches as $row) { ?>
+                            <option <?php if ((isset($filters['branches'])) && (in_array($row['id'],$filters['branches']['values'])))  {
+                                echo "Selected";
+                            } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+
             <?php if (isset($team_managers) && !empty($team_managers)) { ?>
                 <div style="display: <?php echo (isset($filters['teams'])?($filters['teams']['editable'] == "1"?"":"none"):""); ?>">
                     <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
