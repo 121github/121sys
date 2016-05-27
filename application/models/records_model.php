@@ -1418,7 +1418,7 @@ JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn =
 
         $this->db->set("status", '0');
         $this->db->set("cancellation_reason", $data['cancellation_reason']);
-        $this->db->set("updated_by", $_SESSION['user_id']);
+        $this->db->set("updated_by", (isset($_SESSION['user_id'])?$_SESSION['user_id']:"1"));
         $this->db->set("date_updated", date('Y-m-d H:i:s'));
 
         $this->db->update("appointments");

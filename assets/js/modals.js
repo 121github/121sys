@@ -3249,6 +3249,7 @@ event.stopPropagation()
                 $.each(response.data,function(k,val){
                     var checked = (val.auto_sync == "1"?"checked":"");
                     var no_title_checked = (val.no_title_events == "1"?"checked":"");
+                    var cancelled_checked = (val.cancelled_events == "1"?"checked":"");
                     calendar += '<tr class="google-calendar-id-'+val.id+'">' +
                             '<td>'+val.campaign_name+'</td>' +
                             '<td>'+val.calendar_name+'</td>' +
@@ -3263,6 +3264,10 @@ event.stopPropagation()
                                 '<div>' +
                                     '<input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="no-title-events" name="no_title_events" value="'+val.no_title_events+'" '+no_title_checked+'>' +
                                     ' Sync "No title" events' +
+                                '</div>' +
+                                '<div>' +
+                                    '<input type="checkbox" data-calendar-id="'+val.google_calendar_id+'" id="cancelled-events" name="cancelled_events" value="'+val.cancelled_events+'" '+cancelled_checked+'>' +
+                                    ' Sync "Cancelled" events' +
                                 '</div>' +
                             '</td>' +
                         '</tr>';
@@ -3287,6 +3292,12 @@ event.stopPropagation()
                     modals.users.set_no_title_events(google_calendar_id, no_title_events);
                 });
 
+                $('#cancelled-events').change(function() {
+                    var google_calendar_id = $(this).attr("data-calendar-id");
+                    var cancelled_events = ($(this).prop("checked")?1:0);
+                    modals.users.set_cancelled_events(google_calendar_id, cancelled_events);
+                });
+
                 $modal.find('.tt').tooltip();
             });
         },
@@ -3305,6 +3316,16 @@ event.stopPropagation()
                 url: helper.baseUrl + 'booking/set_no_title_events',
                 type: "POST",
                 data: {'google_calendar_id': google_calendar_id, 'no_title_events': no_title_events},
+                dataType: "JSON"
+            }).done(function (response) {
+                flashalert.success(response.msg);
+            });
+        },
+        set_cancelled_events: function(google_calendar_id, cancelled_events) {
+            $.ajax({
+                url: helper.baseUrl + 'booking/set_cancelled_events',
+                type: "POST",
+                data: {'google_calendar_id': google_calendar_id, 'cancelled_events': cancelled_events},
                 dataType: "JSON"
             }).done(function (response) {
                 flashalert.success(response.msg);

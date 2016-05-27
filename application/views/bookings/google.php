@@ -9,6 +9,36 @@
     body {
         background-color: white;
     }
+    .fc button { padding:6px 12px !important; height:unset !important;  }
+    .fc .bs-caret { margin-left:10px !important }
+    .fc-right { margin-right:10px; vertical-align:middle !important }
+    .fc-right h2 { padding-top:5px !important }
+
+    .tooltip-inner {
+        text-align: left !important;
+        max-width: 400px;
+    }
+
+    #calendar .tt-month {
+        color: #fff;
+        background: #FF0000;
+        border-radius: 5px;
+        padding: 2px 4px
+    }
+
+    #calendar .tt-week {
+        color: #FF0000;
+    }
+
+    .fc-toolbar .bootstrap-select {
+        text-align: left;
+        width: auto !important;
+        max-width: 200px
+    }
+
+    .context-menu-icon-updated {
+        padding-left: 8px !important
+    }
 
     .loading-overlay {
         position: absolute;
@@ -70,9 +100,8 @@
                 slotDuration: '00:30:00',
                 height: 700,
                 header: {
-                    left: 'prev,next today localevents siginEvent logoutEvent loadingEvent',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+                    left: 'today,prev,next,month,agendaWeek,agendaDay localevents siginEvent logoutEvent loadingEvent',
+                    right: 'title'
                 },
                 defaultView: 'agendaWeek',
                 eventDrop: function (event) {
@@ -161,14 +190,17 @@
             });
 
             //Style
-            $('.fc-toolbar').addClass('navbar navbar-inverse navbar-fixed-top');
-            $('.fc-left').addClass('navbar-btn');
-            $('.fc-right').addClass('navbar-btn');
-            $('.fc-center').addClass('navbar-btn');
-            $('.fc-toolbar').css('margin-top', '50px');
-            $('.fc-toolbar').css('color', 'white');
-            $('.fc-toolbar h2').css('font-size', '22px');
-            $('.fc-toolbar').css('padding-left', '10px');
+            $('#calendar .fc button').css('height','').css('padding','');
+            $('#calendar .fc-button-group').addClass('btn-group').removeClass('fc-button-group');
+            $('#calendar .fc-button').addClass('btn btn-default').removeClass('fc-button fc-state-default');
+            $('#calendar .fc-toolbar').addClass('navbar navbar-inverse navbar-fixed-top');
+            $('#calendar .fc-left').addClass('navbar-btn');
+            $('#calendar .fc-right').addClass('navbar-btn');
+            $('#calendar .fc-center').addClass('navbar-btn');
+            $('#calendar .fc-toolbar').css('margin-top', '50px');
+            $('#calendar .fc-toolbar h2').css('color', 'white');
+            $('#calendar .fc-toolbar h2').css('font-size', '22px');
+            $('#calendar .fc-toolbar').css('padding-left', '10px');
             $('#calendar').css('margin-top', '50px');
 
             $('.fc-logoutEvent-button').css('color', 'green');
@@ -179,7 +211,7 @@
             $('#calendar-select').selectpicker();
             $('.calendar-list').hide();
 
-            $('#calendar .fc-toolbar .fc-right .fc-button-group').append(
+            $('#calendar .fc-toolbar .fc-right').append(
                 "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
                     "<input type='text' name='cal_date' style='display:none' />" +
                     "<span class='input-group-addon' style='color:white; display:inline; padding:0; background:none; border:none'>" +

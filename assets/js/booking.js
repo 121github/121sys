@@ -43,7 +43,7 @@ var calendar = {
             calendar.load_rules();
             $('#calendar').fullCalendar('refetchEvents');
         });
-        this.left_buttons = 'prev,next,month,agendaWeek,agendaDay';
+        this.left_buttons = 'today,prev,next,month,agendaWeek,agendaDay';
         if (helper.permissions['slot availability'] > 0) {
             this.left_buttons += ' rulesButton';
         }
@@ -183,7 +183,7 @@ var calendar = {
         $('#calendar .fc-right').addClass('navbar-btn');
         $('#calendar .fc-center').addClass('navbar-btn');
         $('#calendar .fc-toolbar').css('margin-top', '50px');
-        $('#calendar .fc-toolbar').css('color', 'white');
+        $('#calendar .fc-toolbar h2').css('color', 'white');
         $('#calendar .fc-toolbar h2').css('font-size', '22px');
         $('#calendar .fc-toolbar').css('padding-left', '10px');
         $('#calendar').css('margin-top', '50px');
@@ -336,19 +336,19 @@ var calendar = {
         elem.selectpicker();
     },
     month_filter: function () {
-        /* $('#calendar .fc-toolbar .fc-right .fc-button-group').appendAfter(
+         $('#calendar .fc-toolbar .fc-right').append(
             "<div class='input-group date' id='datetimepicker2' style='display:inline;width:50px;margin:5px 0 0 10px '>" +
             "<input type='text' name='cal_date' style='display:none' />" +
-            "<span class='input-group-addon calendar-icon' style='color:white; display:inline; padding:0; background:none; border:none'>" +
+            "<span class='input-group-addon calendar-icon' style='color:white; display:inline; padding:0; background:white; border:none'>" +
             "<span class='fa fa-calendar-o'></span>" +
             "</span>" +
-            "</div>" 
-        );*/
+            "</div>"
+        );
         $('#datetimepicker2').datetimepicker({
             defaultDate: moment(),
             format: 'YYYY-MM-DD',
             enabledHours: false,
-            viewMode: 'days',
+            viewMode: 'days'
         }).on('dp.change', function (ev) {
             $('#calendar').fullCalendar('gotoDate', new Date($('input[name="cal_date"]').val()));
         });

@@ -568,18 +568,39 @@ class Booking extends CI_Controller
         ));
     }
 
+    public function set_cancelled_events()
+    {
+        $google_calendar_id = $this->input->post('google_calendar_id');
+        $cancelled_events = $this->input->post('cancelled_events');
+
+        $result = $this->Booking_model->set_cancelled_events($google_calendar_id, $cancelled_events);
+
+        echo json_encode(array(
+            'success' => (!empty($result)),
+            'msg' => (!empty($result) ? "Sync 'Cancelled' events was set as " . ($cancelled_events ? "true" : "false") . " successfully!" : "ERROR: Sync 'Cancelled' events was not updated!")
+        ));
+    }
+
     public function refreshToken($token)
     {
-        define('APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
-        define('CREDENTIALS_PATH', '.credentials/calendar-php-quickstart.json');
-        define('CLIENT_SECRET_PATH', 'client_secret.json');
-        // If modifying these scopes, delete your previously saved credentials
-        // at ~/.credentials/calendar-php-quickstart.json
-        define('SCOPES', implode(' ', array(
-                Google_Service_Calendar::CALENDAR,
-                'https://www.googleapis.com/auth/userinfo.email'
-            )
-        ));
+        if(!defined('APPLICATION_NAME')){
+            define('APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
+        }
+        if(!defined('CREDENTIALS_PATH')){
+            define('CREDENTIALS_PATH', '.credentials/calendar-php-quickstart.json');
+        }
+        if(!defined('CLIENT_SECRET_PATH')){
+            define('CLIENT_SECRET_PATH', 'client_secret.json');
+        }
+        if(!defined('SCOPES')){
+            // If modifying these scopes, delete your previously saved credentials
+            // at ~/.credentials/calendar-php-quickstart.json
+            define('SCOPES', implode(' ', array(
+                    Google_Service_Calendar::CALENDAR,
+                    'https://www.googleapis.com/auth/userinfo.email'
+                )
+            ));
+        }
 
         $client = new Google_Client();
         $client->setApplicationName(APPLICATION_NAME);
@@ -660,6 +681,7 @@ class Booking extends CI_Controller
             $optParams = array(
                 'orderBy' => 'startTime',
                 'singleEvents' => TRUE,
+                'showDeleted' => TRUE,
                 //Get the events since the previous month
                 'timeMin' => $timeMin
             );
@@ -669,80 +691,95 @@ class Booking extends CI_Controller
             $appointments = array(
                 "date_from" => $timeMin,
                 "added" => array(),
-                "updated" => array()
+                "updated" => array(),
+                "cancelled" => array()
             );
 			if(!empty($events)){
-			//appointment imported outcome_id
-				$imported_outcome = $this->Booking_model->imported_outcome();
-				//appointment imported outcome_id
-				$imported_type = $this->Booking_model->imported_type();
-			
-            foreach ($events as $event) {
-                $postcode = postcode_from_string($event->summary);
-                if (empty($postcode)) {
-                    $postcode = postcode_from_string($event->description);
-                }
-                $data = array(
-                    'google_id' => $event->id,
-                    'title' => ($event->summary ? $event->summary : "(No Title)"),
-                    'start' => ($event->getStart()->dateTime ? $event->getStart()->dateTime : $event->getStart()->date),
-                    'end' => ($event->getEnd()->dateTime ? $event->getEnd()->dateTime : $event->getEnd()->date),
-                    'address' => $event->location,
-                    'attendees' => array($user_id),
-                    'contact_id' => 'other'
-                );
-                if (empty($postcode)) {
-                    $data['postcode'] = $postcode;
-                }
+                //appointment imported outcome_id
+                $imported_outcome = $this->Booking_model->imported_outcome();
+                //appointment imported outcome_id
+                $imported_type = $this->Booking_model->imported_type();
 
-                //Check if the appointment already exist on the system
-                $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
-				
-                if (!empty($appointment)) {
-                    //Update the appointments to 121system
-                    $data['appointment_id'] = $appointment['appointment_id'];
-                    $data['urn'] = $appointment['urn'];
-                    $appointment_id = $this->Records_model->save_appointment($data);
-                    array_push($appointments['updated'], $appointment_id);
-                } else {
-                    //set new appointment text value if description exists
-
-                    //If no_title_events is false, do not add the events without title on the 121system
-                    if (!$google_calendar['no_title_events'] && !$event->summary) {
-                        continue;
+                foreach ($events as $event) {
+                    $status = $event->status;
+                    $this->firephp->log($status);
+                    $postcode = postcode_from_string($event->summary);
+                    if (empty($postcode)) {
+                        $postcode = postcode_from_string($event->description);
                     }
-                    else {
-                        $data['text'] = $event->description ? $event->description : "";
-						$data['appointment_type_id'] = $imported_type;
-                        //get the campaign for the new record
-                        $this->db->where("user_id", $user_id);
-                        $campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
-                        //Create record
-                        $urn = $this->Records_model->save_record(array(
-                            "campaign_id" => $campaign_id,
-                            "record_status" => 4,
-                            "outcome_id"=>$imported_outcome //appointment imported outcome
-                        ));
-                        //Add a contact with no name
-						//why?
-                       /* $contact_id = $this->Contacts_model->save_contact(array(
-                            "urn" => $urn,
-                            "fullname" => ""
-                        ));
-						*/
+                    $data = array(
+                        'google_id' => $event->id,
+                        'title' => ($event->summary ? $event->summary : "(No Title)"),
+                        'start' => ($event->getStart()->dateTime ? $event->getStart()->dateTime : $event->getStart()->date),
+                        'end' => ($event->getEnd()->dateTime ? $event->getEnd()->dateTime : $event->getEnd()->date),
+                        'address' => $event->location,
+                        'attendees' => array($user_id),
+                        'contact_id' => 'other'
+                    );
+                    if (empty($postcode)) {
+                        $data['postcode'] = $postcode;
+                    }
 
-                        //Add the appointments to 121system
-                        $data['urn'] = $urn;
-                        $this->Records_model->save_notes($urn, $data['text']);
+                    //Check if the appointment already exist on the system
+                    $appointment = $this->Booking_model->get_appointments_by_google_id($event->id);
 
-                        unset($data['text']);
+                    if (!empty($appointment)) {
+                        //Update/Cancell the appointments in 121system
+                        if ($status === "cancelled" && $appointment['status'] == 1) {
+                            //Cancel appointment if is not cancelled yet and "cancelled_events" is checked on the google calendar sync preferences
+                            if ($google_calendar['cancelled_events']){
+                                $data['appointment_id'] = $appointment['appointment_id'];
+                                $data['cancellation_reason'] = "Cancelled from google calendar";
+                                $this->Records_model->delete_appointment($data);
+                                array_push($appointments['cancelled'], $appointment['appointment_id']);
+                            }
+                        }
+                        else {
+                            //Update appointment
+                            $data['appointment_id'] = $appointment['appointment_id'];
+                            $data['urn'] = $appointment['urn'];
+                            $appointment_id = $this->Records_model->save_appointment($data);
+                            array_push($appointments['updated'], $appointment_id);
+                        }
+                    } else if ($status !== "cancelled") {
+                        //set new appointment text value if description exists
 
-                        $appointment_id = $this->Records_model->save_appointment($data);
-                        array_push($appointments['added'], $appointment_id);
+                        //If no_title_events is false, do not add the events without title on the 121system
+                        if (!$google_calendar['no_title_events'] && !$event->summary) {
+                            continue;
+                        }
+                        else {
+                            $data['text'] = $event->description ? $event->description : "";
+                            $data['appointment_type_id'] = $imported_type;
+                            //get the campaign for the new record
+                            $this->db->where("user_id", $user_id);
+                            $campaign_id = $this->db->get("google_calendar")->row()->campaign_id;
+                            //Create record
+                            $urn = $this->Records_model->save_record(array(
+                                "campaign_id" => $campaign_id,
+                                "record_status" => 4,
+                                "outcome_id"=>$imported_outcome //appointment imported outcome
+                            ));
+                            //Add a contact with no name
+                            //why?
+                           /* $contact_id = $this->Contacts_model->save_contact(array(
+                                "urn" => $urn,
+                                "fullname" => ""
+                            ));
+                            */
+
+                            //Add the appointments to 121system
+                            $data['urn'] = $urn;
+                            $this->Records_model->save_notes($urn, $data['text']);
+
+                            unset($data['text']);
+
+                            $appointment_id = $this->Records_model->save_appointment($data);
+                            array_push($appointments['added'], $appointment_id);
+                        }
                     }
                 }
             }
-			}
         } else {
             $appointments = array();
         }
