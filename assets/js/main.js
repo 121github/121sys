@@ -551,7 +551,7 @@ $(document).ready(function () {
         e.preventDefault();
         var postcode = $('#global-filter-form').find('input[name="postcode"]').val();
         var distance = $('#global-filter-form').find('[name="distance"]').val();
-        if (distance !== "" && postcode == "") {
+        if (distance !== "" && distance !== "9999" && postcode == "") {
             flashalert.danger("Distance filter requires a postcode");
             return false;
         }
