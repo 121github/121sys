@@ -12,7 +12,7 @@ class Migration_update_142 extends CI_Migration
     public function up()
     {
 	$check = $this->db->query("SHOW INDEX FROM `datatables_table_names` where Column_name = 'table_name'");
-	if(!$check->num_rows()){
+	if($check->num_rows()==0){
 $this->db->query("ALTER TABLE `datatables_table_names` ADD UNIQUE (`table_name`)");
 	}
 

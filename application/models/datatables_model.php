@@ -88,7 +88,7 @@ ORDER BY `sort`";
 }
 	
 	public function set_default_columns($user_id){
-		 $this->db->query("delete from `datatables_views` where user_id = '$user_id'");
+		 $this->db->query("delete from `datatables_views` where user_id = '$user_id' and table_id = 1");
 		 $this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 1,selected=1");
 		
 		 $view_id = $this->db->insert_id();
@@ -100,7 +100,8 @@ ORDER BY `sort`";
 ($view_id, 4, 1),
 ($view_id, 17, 1)");
 
-$this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 3,selected=1");
+		 $this->db->query("delete from `datatables_views` where user_id = '$user_id' and table_id = 3");
+$this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default appointment list view', user_id = '".$_SESSION['user_id']."', table_id = 3,selected=1");
  $view_id = $this->db->insert_id();
  $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
 ($view_id, 4, 1),
@@ -108,7 +109,13 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 ($view_id, 45, 1),
 ($view_id, 48, 1),
 ($view_id, 50, 1),
-($view_id, 52, 1)");		
+($view_id, 52, 1)");	
+
+		 $this->db->query("delete from `datatables_views` where user_id = '$user_id' and table_id = 5");
+$this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 5,selected=1");
+ $view_id = $this->db->insert_id();
+ $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
+($view_id, 1, 1)");	
 	}
 	
 	public function dynamic_panel_fields($campaign){
@@ -129,13 +136,13 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 	
 	public function all_columns($table_id){
 		$campaign = "";
-	 if(@$_SESSION['current_campaign']>0){
+	 if(isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']>0){
 		$campaign = "or campaign = ". $_SESSION['current_campaign'];
 	 }
 	$query = "select datafield_group,datafields.datafield_id,datafield_title from datafields join datatables_table_fields using(datafield_id) where table_id = '$table_id' and (campaign is null $campaign) and datafield_group <> '' ";
 
 	$result = $this->db->query($query)->result_array();
-	 if(@$_SESSION['current_campaign']>0){
+	 if(isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']>0){
 		  foreach($result as $k => $row){			    
 		if(in_array($row['datafield_title'],$this->custom_fields)){
 		$this->db->where(array("campaign_id"=>$_SESSION['current_campaign'],"field"=>$row['datafield_title']));

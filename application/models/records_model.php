@@ -562,11 +562,11 @@ class Records_model extends CI_Model
         }
 
         $qry .= get_where($options, $filter_columns);
-
+		
         //get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows . $qry)->row()->numrows;
-
-        $qry .= " group by r.urn";
+		$qry .= " group by r.urn";
+        
 
         //if any order has been set then we should apply it here
         $start = $options['start'];

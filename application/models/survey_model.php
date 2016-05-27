@@ -251,48 +251,107 @@ class Survey_model extends CI_Model
         return $answers;
     }
     
-    public function get_all_surveys($options)
-    {
-        $table_columns = array(
-            "campaign_name",
-            "name",
-            "fullname",
-            "survey_name",
-            "date_format(s.completed_date,'%d/%m/%y %H:%i')",
-            "answer",
-            "description",
-            "rand()"
-        );
-        
-        $qry = "select s.urn,campaign_name, survey_id,date_format(s.date_created,'%d/%m/%y %H:%i') date_created,IF(s.completed_date is NULL,'Incomplete',date_format(s.completed_date,'%d/%m/%y %H:%i')) completed_date,IF(s.completed = 1,'Complete','Incomplete') is_completed,fullname,if(urgent=1,'Yes','No') urgent, u.name,survey_name, progress_id,progress_color,IF(pd.description IS NULL, 'Not Required', pd.description) progress, answer, completed,s.user_id from surveys s left join survey_answers using(survey_id) left join survey_info using(survey_info_id) left join questions using(question_id)  left join records using(urn) left join campaigns using(campaign_id) left join progress_description pd using(progress_id) left join contacts using(contact_id) left join users u on s.user_id = u.user_id where 1 and survey_id is not null and nps_question = 1 ";
-		
-				$where = " and campaigns.campaign_id in(".$_SESSION['campaign_access']['list'].") ";
-				if(isset($_SESSION['current_campaign'])){
-				$where .= " and campaigns.campaign_id = '".$_SESSION['current_campaign']."'";
-				}
-				
-			$qry .= $where;
-		
-        //check the tabel header filter
-        foreach ($options['columns'] as $k => $v) {
-            //if the value is not empty we add it to the where clause
-            if ($v['search']['value'] <> "") {
-                $qry .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
+    public function get_survey_data($options)
+    {	
+		 $tables = $options['visible_columns']['tables'];
+      $columns =  $options['visible_columns']['columns'];
+        $table_columns = $options['visible_columns']['select'];
+        $filter_columns = $options['visible_columns']['filter'];
+        $order_columns = $options['visible_columns']['order'];	
+$datafield_ids = array();
+		foreach($table_columns as $k=>$col){
+				$datafield_ids[$k] = 0;	
+		if(strpos($col,"custom_")!==false){
+			$split = explode("_",$col);
+			$datafield_ids[$k] = intval($split[1]);
+			$filter_columns[$k] = "t_".intval($split[1]).".value";
+			$order_columns[$k] = "t_".intval($split[1]).".value";
+			$table_columns[$k] = "t_".intval($split[1]).".value " .$columns[$k]['data'];
+		}
+		}
+  //these tables must be joined to the query regardless of the selected columns to allow the map to function
+        $required_tables = array("campaigns", "companies","company_addresses", "survey_contacts" ,"survey_locations", "company_locations","ownership");
+        foreach ($required_tables as $rt) {
+            if (!in_array($rt, $tables)) {
+                $tables[] = $rt;
             }
         }
-		$qry .= " group by s.survey_id ";
-        $count = $this->db->query($qry)->num_rows();
-        $qry .= "order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-        $start  = $options['start'];
-        $length = $options['length'];
-        
-        $qry .= "  limit $start,$length";
-        $data = $this->db->query($qry)->result_array();
-       
-        return array(
-            "data" => $data,
-            "count" => $count
+		   $join = array();
+        //add mandatory column selections here
+           $required_select_columns = array(
+            "r.urn",
+			 "r.record_color"
         );
+
+				          //if any of the mandatory columns are missing from the columns array we push them in
+        foreach ($required_select_columns as $required) {
+            if (!in_array($required, $table_columns)) {
+                $table_columns[] = $required;
+            }
+        }
+		 $qry = "";
+        //turn the selection array into a list
+        $selections = implode(",", $table_columns);	  
+        $select = "select $selections from surveys join records r using(urn) ";
+	$numrows = "select count(distinct surveys.survey_id) numrows
+                from surveys join records r using(urn) ";
+        $table_joins = table_joins();
+		unset($table_joins['appointments']);
+        $join_array = join_array();
+		unset($join_array['appointments']);
+
+      $tablenum=0;
+	  $tableappnum=0;
+        foreach ($tables as $k=>$table) {
+			if($table=="custom_panels"){ $tablenum++;
+			$field_id = $datafield_ids[$k];
+				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+			}
+			if($table=="custom_panels_appointments"){ $tableappnum++;
+			$field_id = $datafield_ids[$k];
+				$join[] = " left join (select id,appointment_id from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id') mc_$field_id on mc_$field_id.appointment_id =  a.appointment_id left join custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+			}
+			if($table<>"custom_panels"){
+            if (array_key_exists($table, $join_array)) {
+                foreach ($join_array[$table] as $t) {
+					if(isset($table_joins[$t])){
+                    $join[$t] = @$table_joins[$t];
+					}
+                }
+            } else if(isset($table_joins[$table])&&isset($table_joins[$table])){
+                $join[$table] = @$table_joins[$table];
+            }
+        }
+		}
+
+        foreach ($join as $join_query) {
+
+            $qry .= $join_query;
+        }
+		
+        $qry .= get_where($options, $filter_columns);
+
+		 //get the total number of records before any limits or pages are applied
+        $count = $this->db->query($numrows . $qry)->row()->numrows;
+        $qry .= " group by surveys.survey_id";
+        $start = $options['start'];
+        $length = $options['length'];
+        if (isset($_SESSION['survey_table']['order']) && $options['draw'] == "1") {
+            $order = $_SESSION['survey_table']['order'];
+        } else {
+            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+            unset($_SESSION['survey_table']['order']);
+            unset($_SESSION['survey_table']['values']['order']);
+        }
+
+        $qry .= $order;
+		if($length>0){
+        $qry .= "  limit $start,$length";
+		}
+			
+        $result = $this->db->query($select . $qry)->result_array();
+		$result['count'] = $count;
+        return $result;
     }
     
 }

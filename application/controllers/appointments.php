@@ -225,9 +225,9 @@ class Appointments extends CI_Controller
                 }
             }
 
-            $records = $this->Appointments_model->appointment_data(false, $options);
-            $count = $this->Appointments_model->appointment_data(true, $options);
-
+            $records = $this->Appointments_model->appointment_data($options);
+			$count = $records['count'];
+			unset($records['count']);
             foreach ($records as $k => $v) {
                 //Location
                 if ($records[$k]["company_location"]) {

@@ -13,7 +13,7 @@ class Survey extends CI_Controller
 		check_page_permissions('view surveys');
         $this->_campaigns = campaign_access_dropdown();
         $this->project_version = $this->config->item('project_version');
-
+		$this->load->model('Filter_model');
         $this->load->model('Survey_model');
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
@@ -188,62 +188,59 @@ class Survey extends CI_Controller
     
     public function view()
     {
+		
         
-        //this array contains data for the visible columsn in the table on the view page
-        $visible_columns   = array();
-        $visible_columns[] = array(
-            "column" => "campaign_name",
-            "header" => "Campaign"
-        );
-        $visible_columns[] = array(
-            "column" => "name",
-            "header" => "Agent"
-        );
-        $visible_columns[] = array(
-            "column" => "fullname",
-            "header" => "Contact"
-        );
-        $visible_columns[] = array(
-            "column" => "survey_name",
-            "header" => "Survey"
-        );
-        $visible_columns[] = array(
-            "column" => "completed_date",
-            "header" => "Date Completed"
-        );
-        $visible_columns[] = array(
-            "column" => "score",
-            "header" => "NPS"
-        );
-        $visible_columns[] = array(
-            "column" => "progress",
-            "header" => "Follow Up"
-        );
-        $visible_columns[] = array(
-            "column" => "options",
-            "header" => "Options"
-        );
+//this array contains data for the visible columns in the table on the view page
+        $this->load->model('Datatables_model');
+        $visible_columns = $this->Datatables_model->get_visible_columns(5);
 
-        $title = "List Surveys";
-        
+        //Get the campaign_triggers if exists
+        $campaign_triggers = array();
+        if (isset($_SESSION['current_campaign'])) {
+            $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($_SESSION['current_campaign']);
+        }
+
+        if (!$visible_columns) {
+            $this->load->model('Admin_model');
+            $this->Datatables_model->set_default_columns($_SESSION['user_id']);
+            $visible_columns = $this->Datatables_model->get_visible_columns(5);
+        }
+        $_SESSION['col_order'] = $this->Datatables_model->selected_columns(false, 5);
+
+        $title = "Surveys";
+			$global_filter = false;
+if(in_array("enable global filter",$_SESSION['permissions'])){
+      		$global_filter = $this->Filter_model->build_global_filter();
+		}
         $data = array(
+		'global_filter'=>$global_filter,
             'campaign_access' => $this->_campaigns,
-            'page' => 'Surveys',
-            'pageId' => 'List-survey',
+            'pageId' => 'Surveys',
             'title' => $title,
+            'page' => 'surveys',
             'submenu' => array(
-                "file"=>'default_submenu.php',
+                "file"=>'survey_list.php',
                 "title"=>$title
             ),
-            'hide_filter' => true,
             'columns' => $visible_columns,
-            'javascript' => array(
-                'plugins/DataTables/datatables.min.js',
-                "lib/bootstrap-slider.js",
-                'survey_view.js?v' . $this->project_version,
-			
+            'css' => array(
+                'daterangepicker-bs3.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+                'map.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
-
+            'javascript' => array(
+                'view.js?v' . $this->project_version,
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js',
+                'plugins/DataTables/datatables.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            "campaign_triggers" => $campaign_triggers
         );
         
         $this->template->load('default', 'survey/list.php', $data);
@@ -253,16 +250,38 @@ class Survey extends CI_Controller
     {
 		 if ($this->input->is_ajax_request()) {
 			 			
-            $surveys = $this->Survey_model->get_all_surveys($this->input->post());
-            foreach ($surveys['data'] as $k => $v) {
-                $surveys['data'][$k]["options"] = '<a href="'.base_url().'survey/edit/' . $v['survey_id'] . '"><span class="glyphicon glyphicon-eye-open view-survey"></span></a> <a href="'.base_url().'records/detail/' . $v['urn'] . '"><span class="glyphicon glyphicon glyphicon-play padl"></span></a>';
+            session_write_close();
+			/* debug loading times */
+            $options = $this->input->post();
+			$this->load->model('Datatables_model');
+			$visible_columns = $this->Datatables_model->get_visible_columns(5);
+			//$this->firephp->log($visible_columns);
+			$options['visible_columns'] = $visible_columns;
+
+			foreach($options['columns'] as $k=>$column){
+				//$this->firephp->log($column);				
+				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
+					$options['columns'][$k]['search']['value']="";
+				}
+					if($column['data']=="distance"){
+					$distance_sql = $this->Datatables_model->get_distance_query();
+					$options['visible_columns']['select'][$k] = $distance_sql . "distance";
+					$options['visible_columns']['order'][$k] = $distance_sql;
+					}
+			}
+
+            $surveys = $this->Survey_model->get_survey_data($options);
+			$count = $surveys['count'];
+			unset($surveys['count']);
+            foreach ($surveys as $k => $v) {
+               // $surveys[$k]["options"] = '<a href="'.base_url().'survey/edit/' . $v['survey_id'] . '"><span class="glyphicon glyphicon-eye-open view-survey"></span></a> <a href="'.base_url().'records/detail/' . $v['urn'] . '"><span class="glyphicon glyphicon glyphicon-play padl"></span></a>';
             }
             
             $data = array(
                 "draw" => $this->input->post('draw'),
-                "recordsTotal" => $surveys['count'],
-                "recordsFiltered" => $surveys['count'],
-                "data" => $surveys['data']
+                "recordsTotal" => $count,
+                "recordsFiltered" => $count,
+                "data" => $surveys
             );
             echo json_encode($data);
         }

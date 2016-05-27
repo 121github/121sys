@@ -88,6 +88,10 @@ function join_array(){
 	$array['all_notes'] = array("sticky_notes","record_comments");
 	$array['all_addresses'] = array("all_contacts","all_companies","all_addresses");
 	$array['all_telephones'] = array("all_contacts","all_companies","all_telephones");
+	$array['surveys'] = array("survey_answers","survey_info","answers_to_options","answer_notes","questions","questions_to_categories","question_options","surveys_to_questions");
+	$array['survey_user'] = array("survey_user");
+	$array['survey_locations'] = array("survey_contacts","survey_addresses","survey_locations");
+	$array['survey_nps'] = array("survey_nps");
 	return $array;
 }
 
@@ -148,6 +152,24 @@ function table_joins(){
 		$join['appointment_types'] = " left JOIN appointment_types using(appointment_type_id) ";
 		$join['record_comments'] = " left join record_comments on record_comments.urn = r.urn ";
 		$join['sticky_notes'] = " left join sticky_notes on sticky_notes.urn = r.urn ";
+		$join['surveys'] = " left join surveys on surveys.urn = r.urn ";
+		$join['survey_info'] = " left join survey_info si on si.survey_info_id = surveys.survey_info_id ";
+		$join['survey_answers'] = " left join survey_answers on survey_answers.survey_id = surveys.survey_id ";
+		$join['questions'] = " left join questions q on survey_answers.question_id = q.question_id ";
+		$join['answer_notes'] = " left join answer_notes on answer_notes.answer_id = survey_answers.answer_id ";
+		$join['answers_to_options'] = " left join answers_to_options on answers_to_options.answer_id = survey_answers.answer_id ";
+		$join['question_options'] = " left join question_options qo on answers_to_options.option_id = qo.option_id ";
+		$join['survey_contacts'] = " left join contacts survey_contacts on survey_contacts.contact_id = surveys.contact_id ";
+		$join['survey_addresses'] = " left join contact_addresses survey_addresses on survey_addresses.contact_id = survey_contacts.contact_id ";
+		$join['survey_locations'] = " left join locations survey_locations on survey_locations.location_id = survey_addresses.address_id ";
+		$join['survey_nps'] = " left join (select answer nps_score,survey_id  from survey_answers join questions using(question_id) where nps_question = 1) survey_nps on surveys.survey_id = survey_nps.survey_id ";
+		$join['survey_user'] = " left join users survey_user on survey_user.user_id = surveys.user_id ";
+
+		
+		
+		
+		
+		
 		return $join;
 }
 

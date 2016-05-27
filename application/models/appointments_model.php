@@ -226,7 +226,7 @@ class Appointments_model extends CI_Model
 
     }
 
-    public function appointment_data($count = false, $options = false)
+    public function appointment_data($options = false)
     {
 		 $tables = $options['visible_columns']['tables'];
       $columns =  $options['visible_columns']['columns'];
@@ -280,10 +280,12 @@ $datafield_ids = array();
                 $table_columns[] = $required;
             }
         }
+		 $qry = "";
         //turn the selection array into a list
         $selections = implode(",", $table_columns);	  
-        $qry = "select $selections from appointments a join records r using(urn) ";
-				  
+        $select = "select $selections from appointments a join records r using(urn) ";
+	$numrows = "select count(distinct a.appointment_id) numrows
+                from appointments a join records r using(urn) ";
         $table_joins = table_joins();
 		unset($table_joins['appointments']);
         $join_array = join_array();
@@ -300,7 +302,6 @@ $datafield_ids = array();
 			$field_id = $datafield_ids[$k];
 				$join[] = " left join (select id,appointment_id from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id') mc_$field_id on mc_$field_id.appointment_id =  a.appointment_id left join custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
 			}
-			
 			if($table<>"custom_panels"){
             if (array_key_exists($table, $join_array)) {
                 foreach ($join_array[$table] as $t) {
@@ -315,17 +316,14 @@ $datafield_ids = array();
 		}
 
         foreach ($join as $join_query) {
+
             $qry .= $join_query;
         }
-
-        $qry .= $this->get_where($options, $filter_columns);
+		
+        $qry .= get_where($options, $filter_columns);
+		 //get the total number of records before any limits or pages are applied
+        $count = $this->db->query($numrows . $qry)->row()->numrows;
         $qry .= " group by appointment_id";
-        if ($count) {
-
-            return $this->db->query($qry)->num_rows();
-        }
-
-
         $start = $options['start'];
         $length = $options['length'];
         if (isset($_SESSION['appointment_table']['order']) && $options['draw'] == "1") {
@@ -340,7 +338,8 @@ $datafield_ids = array();
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-        $result = $this->db->query($qry)->result_array();
+        $result = $this->db->query($select . $qry)->result_array();
+		$result['count'] = $count;
         return $result;
     }
 
