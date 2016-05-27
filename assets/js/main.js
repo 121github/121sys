@@ -733,7 +733,6 @@ if (typeof $('nav#quick-actions-right').mmenu != "undefined") {
     var api = $('nav#quick-actions-right').data('mmenu');
     api.bind('opened', function () {
         $('#quick-actions-right').fadeIn(400, function () {
-
             $modal.css('z-index', '2000');
         });
     });
