@@ -1167,6 +1167,8 @@ class Email extends CI_Controller
                     $answers .= "<tr><td>".$webform['q21']."</td><td>".$webform['a21']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q22']."</td><td>".$webform['a22']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q23']."</td><td>".$webform['a23']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q38']."</td><td>".$webform['a38']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q39']."</td><td>".$webform['a39']."</td></tr>";
 
                     $webform_table = "<table>
                     <thead style='margin-bottom: 2px;'><th colspan='2'><h3>".$webform['webform_name']."</h3></th>
@@ -1402,6 +1404,8 @@ class Email extends CI_Controller
                     $answers .= "<tr><td>".$webform['q21']."</td><td>".$webform['a21']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q22']."</td><td>".$webform['a22']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q23']."</td><td>".$webform['a23']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q38']."</td><td>".$webform['a38']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q39']."</td><td>".$webform['a39']."</td></tr>";
 
                     $webform_table = "<table>
                         <thead style='margin-bottom: 2px;'><th colspan='2'><h3>" . $webform['webform_name'] . "</h3></th>
@@ -1626,6 +1630,8 @@ $description = "<style>body { font-family:veranda,calibri,arial;font-size:10pt }
                 $answers .= "<tr><td>".$webform['q21']."</td><td>".$webform['a21']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q22']."</td><td>".$webform['a22']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q23']."</td><td>".$webform['a23']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q38']."</td><td>".$webform['a38']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q39']."</td><td>".$webform['a39']."</td></tr>";
 
                 $webform_table = "<table>
                         <thead style='margin-bottom: 2px;'><th colspan='2'><h3>" . $webform['webform_name'] . "</h3></th>
