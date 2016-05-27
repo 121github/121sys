@@ -67,10 +67,12 @@
     </script>
 </head>
 <body>
+
+<?php if (isset($_SESSION['permissions'])) { ?>
+
 <nav id="quick-actions-right" style="display:none; text-align:center; z-index: 110" class="mm-menu mm--horizontal mm-offcanvas">
      <?php $this->view('misc/quick_actions.php'); ?>
 </nav>
-<?php if (isset($_SESSION['permissions'])) { ?>
     <?php $this->view('misc/timer.php'); ?>
     <?php if (isset($submenu)) { ?>
         <?php $this->view('submenus/' . $submenu['file'], $submenu); ?>
