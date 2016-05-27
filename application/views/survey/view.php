@@ -1,6 +1,3 @@
-<div class="page-header">
-  <h2>Create Survey <small>URN: <?php echo $urn ?> <?php echo (!empty($campaign['campaign_name'])?" [". $campaign['campaign_name']."]":"") ?></small> <span class="pull-right"><?php echo $contact['fullname'] ?></span></h2>
-</div>
 
 <div class="panel panel-primary contact-panel">
   <!-- Default panel contents -->
@@ -9,7 +6,7 @@ Questions<span class="glyphicon glyphicon-question-sign pull-right tt" data-togg
       </h4></div>
       <div class="panel-body">
 
-            <form role="form" role="form">
+            <form role="form" id="survey-form">
             <input type="hidden" name="urn" value="<?php echo $urn ?>" />
             <input type="hidden" name="contact_id" value="<?php echo $contact['contact_id'] ?>" />
             <input type="hidden" name="survey_info_id" value="<?php echo $survey_info_id ?>" />

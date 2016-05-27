@@ -99,11 +99,15 @@ class Survey extends CI_Controller
             $questions[$row['question_cat_id']][$row['question_id']]['guide']                      = htmlspecialchars($row['question_guide'], ENT_QUOTES, 'UTF-8');
             $questions[$row['question_cat_id']][$row['question_id']]['multiple']                   = $row['multiple'];
         }
-        
+        $title = "Create Survey";
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
-
+			'title'=>$title,
+			'submenu' => array(
+                "file"=>'edit_survey.php',
+                "title"=>$title
+            ),
 'pageId' => 'Create-survey',
             'title' => 'Create new survey',
             'campaign' => $campaign,
