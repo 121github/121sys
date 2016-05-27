@@ -88,7 +88,7 @@ ORDER BY `sort`";
 }
 	
 	public function set_default_columns($user_id){
-		 $this->db->query("delete from `datatables_views` where user_id = '$user_id' and table_id = 1");
+		 $this->db->query("delete from `datatables_views` where user_id = '".$_SESSION['user_id']."' and table_id = 1");
 		 $this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 1,selected=1");
 		
 		 $view_id = $this->db->insert_id();
@@ -100,7 +100,7 @@ ORDER BY `sort`";
 ($view_id, 4, 1),
 ($view_id, 17, 1)");
 
-		 $this->db->query("delete from `datatables_views` where user_id = '$user_id' and table_id = 3");
+		 $this->db->query("delete from `datatables_views` where user_id = '".$_SESSION['user_id']."' and table_id = 3");
 $this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default appointment list view', user_id = '".$_SESSION['user_id']."', table_id = 3,selected=1");
  $view_id = $this->db->insert_id();
  $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
@@ -111,11 +111,14 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 ($view_id, 50, 1),
 ($view_id, 52, 1)");	
 
-		 $this->db->query("delete from `datatables_views` where user_id = '$user_id' and table_id = 5");
+		 $this->db->query("delete from `datatables_views` where user_id = '".$_SESSION['user_id']."' and table_id = 5");
 $this->db->query("insert ignore into datatables_views set view_name = 'Default view', view_description = 'The default record list view', user_id = '".$_SESSION['user_id']."', table_id = 5,selected=1");
  $view_id = $this->db->insert_id();
- $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`) VALUES
-($view_id, 1, 1)");	
+  $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`)  VALUES($view_id,1,1)");	
+ $this->db->query("INSERT ignore INTO `datatables_view_fields` (`view_id`, `datafield_id`, `sort`)  (select $view_id,datafield_id,1 from datafields where datafield_table='survey_contacts' or datafield_group = 'Survey')");	
+
+
+
 	}
 	
 	public function dynamic_panel_fields($campaign){

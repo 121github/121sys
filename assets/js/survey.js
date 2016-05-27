@@ -70,12 +70,11 @@ var survey = {
                 url: helper.baseUrl + "survey/save_survey",
                 type: "POST",
                 dataType: "JSON",
-                data: $btn.closest('form').serialize() + '&' + complete
+                data: $('#survey-form').serialize() + '&' + complete
             }).done(function (response) {
                 if (response.success) {
-                    flashalert.success("Survey saved successfully");
 					if(response.id){
-					 $btn.closest('form').append('<input name="survey_id" value="'+response.id+'" type="hidden"/>');
+					 $('#survey-form').append('<input name="survey_id" value="'+response.id+'" type="hidden"/>');
 					}
 					if(complete){
 					window.location.href=helper.baseUrl + "records/detail/"+survey.urn;	

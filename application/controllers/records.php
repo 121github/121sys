@@ -320,7 +320,7 @@ if(!isset($_SESSION['current_campaign'])||$campaign_id<>$_SESSION['current_campa
                         unset($_SESSION['permissions'][$row['permission_id']]);
                     }
                 }
-				if($campaign['campaign-status']=="1"){
+				if($campaign['campaign_status']=="1"){
                 $_SESSION['current_client'] = $campaign['client_name'];
                 $_SESSION['current_campaign_name'] = $campaign['campaign_name'];
                 $_SESSION['current_campaign'] = $campaign_id;

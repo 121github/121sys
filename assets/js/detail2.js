@@ -675,8 +675,8 @@ var record = {
 					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'">'+
                                                             '<a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a>'
                                                             +'<span style="padding-left: 20px">'+contact_detail_links_items+'</span>'+
-															(helper.permissions['delete contacts'] > 0?'<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span>Delete</span>':'')+
-                                                           	(helper.permissions['edit contacts'] > 0?'<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span>Edit</span>':'')+
+															(helper.permissions['delete contacts'] > 0?'<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span> Delete</span>':'')+
+                                                           	(helper.permissions['edit contacts'] > 0?'<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span> Edit</span>':'')+
                                                             '<div class="clearfix"></div>' +
                                                             '<div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'">' +
                                                                 '<dl class="dl-horizontal contact-detail-list">'+contact_detail_list_items+contact_detail_telephone_items+transfer_telephone_items+'</dl>' +
@@ -1943,13 +1943,13 @@ if(val.read_confirmed==1){
                         var $options = "";
 
                         if (helper.permissions['delete surveys'] > 0) {
-                            $options += '<span class="btn btn-default btn-xs pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ><span class="glyphicon glyphicon-trash"><span> Delete</span>';
+                            $options += '<span class="marl btn btn-default btn-xs pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ><i class="glyphicon glyphicon-trash"></i> Delete</span>';
                         }
                         if (helper.permissions['edit surveys'] > 0 || !val.locked) {
-                            $options += '<span class="marl btn btn-default btn-xs pull-right edit-survey-btn"  item-id="' + key + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span>';
+                            $options += '<span class="marl btn btn-default btn-xs pull-right edit-survey-btn"  item-id="' + key + '"><i class="glyphicon glyphicon-pencil"></i> Edit</span>';
                         }
                         if ($options == "") {
-                            $options = '<span class="btn btn-default btn-xs pull-right eye-survey-btn"  item-id="' + key + '"><span class="glyphicon glyphicon-eye-open"></span> View</span>';
+                            $options = '<span class="btn btn-default btn-xs pull-right eye-survey-btn"  item-id="' + key + '"><i class="glyphicon glyphicon-eye-open"></i> View</span>';
                         }
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';

@@ -1843,6 +1843,8 @@ var modals = {
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 		if(helper.permissions['view record'] > 0){
 		mfooter += '<a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>' } 
+		if(helper.permissions['view surveys'] > 0&&typeof data.sid!=="undefined"){
+		mfooter += '<a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'survey/edit/' + data.sid + '">View Survey</a>' } 
 		mfooter += merge_btn;
 		if (data.planner_postcode&&getCookie('current_postcode')) {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?q=' + data.planner_postcode + '",+UK">View Map</a>';

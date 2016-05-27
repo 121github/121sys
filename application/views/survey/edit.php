@@ -1,7 +1,4 @@
-<div class="page-header">
-  <h2>Edit Survey <small>URN: <a href="<?php echo base_url()."records/detail/". $urn ?>"><?php echo $urn ?></a> <?php echo (!empty($campaign['campaign_name'])?" [". $campaign['campaign_name']."]":"") ?></small> <span class="pull-right"><?php echo $survey_name ?> <small><?php echo $contact ?></small>
-    </span></h2>
-</div>
+
 
 <div class="panel panel-primary contact-panel">
   <!-- Default panel contents -->
@@ -10,7 +7,7 @@ Questions<span class="glyphicon glyphicon-question-sign pull-right tt <?php if($
       </h4></div>
       <div class="panel-body">
 
-            <form role="form" role="form">
+            <form role="form" id="survey-form">
             <input type="hidden" name="urn" value="<?php echo $urn ?>" />
             <input type="hidden" name="contact_id" value="<?php echo $contact_id ?>" />
             <input type="hidden" name="survey_id" value="<?php echo $survey_id ?>" />
@@ -31,9 +28,9 @@ Questions<span class="glyphicon glyphicon-question-sign pull-right tt <?php if($
         <span class="padl pull-right glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="<?php echo ($question['guide']?$question['guide']."<br>":"");  echo ($question['other']?"<span style='color:red'>".$question['other']."</span>":"") ?>"></span>
         <?php } ?>
         <?php if(!empty($question['script'])){ ?>
-    <span class="padl pull-right glyphicon glyphicon glyphicon-comment tt" data-html="true" data-toggle="tooltip" data-html="true" data-placement="top" title="<?php echo $question['script']; ?>"></span>  
+    <span class="padl pull-right glyphicon glyphicon-comment tt" data-html="true" data-toggle="tooltip" data-placement="top" title="<?php echo $question['script']; ?>"></span>  
     <?php } ?>
-          <labeL><?php echo $question['question'] ?></labeL><br>
+          <label><?php echo $question['question'] ?></labeL><br>
     <?php if(isset($question['options'])){ ?>
     <select class="selectpicker form-control" data-width="100%" data-title="Please Select" <?php if($question['multiple']=="1"):echo "multiple"; endif ?> name="answers[<?php echo $question['question_id'] ?>][answer][]">
  <?php foreach($question['options'] as $option_id => $option): ?>
