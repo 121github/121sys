@@ -12,7 +12,7 @@ class Migration_update_144 extends CI_Migration
     public function up()
     {
         $check = $this->db->query("SHOW INDEX FROM `record_details` where Key_name = 'urn_2'");
-        if (!$check->num_rows()) {
+        if ($check->num_rows()) {
             $this->db->query("DROP INDEX `urn_2` ON `record_details`");
         }
     }
