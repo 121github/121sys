@@ -20,7 +20,7 @@
                                 <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
                             </span>
                         <?php }?>
-                        <span class="btn btn-default btn <?php echo $options['refresh_button'];?>" dashboard-id="<?php echo (isset($dashboard['dashboard_id'])?$dashboard['dashboard_id']:"") ?>">
+                        <span class="btn btn-default btn refresh-data <?php echo $options['refresh_button'];?>" dashboard-id="<?php echo (isset($dashboard['dashboard_id'])?$dashboard['dashboard_id']:"") ?>">
                             <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
                         </span>
                         <a href="#filter-right" class="btn btn-default btn">

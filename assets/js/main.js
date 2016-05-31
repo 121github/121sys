@@ -428,7 +428,7 @@ $(document).ready(function () {
                     "content": [
                         "<a href='" + helper.baseUrl + helper.home + "'><span class='fa fa-home'></span> Home</a>",
                         "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>"
-                        , (helper.permissions['search records'] > 0 ? "<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>" : "")
+                        , (helper.permissions['quick search'] > 0 ? "<a class='mm-next' data-target='#searchnav' href='#searchnav' id='quicksearch-btn'><span class='fa fa-search'></span> Search</a>" : "")
                     ]
                 },
                 {

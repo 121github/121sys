@@ -1,11 +1,11 @@
 <nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
-    <?php if (isset($_SESSION['permissions'])) { ?>
+    <?php if (isset($campaign_access)&&$campaign_access) { ?>
         <ul>
             <li><a class="mm-title">
                     <small><span class="text-primary"><?php echo date('l jS F') ?></span> -
                         Welcome <?php echo $_SESSION['name'] ?></small>
                 </a></li>
-            <?php if (isset($campaign_access) && count($_SESSION['campaign_access']['array']) > "2") { ?>
+            <?php if (count($_SESSION['campaign_access']['array']) > "2") { ?>
                 <li style="padding:0;">
                     <select id="side-campaign-select" class="form-control">
                         <?php if ($_SESSION['data_access']['mix_campaigns'] || (!isset($_SESSION['current_campaign']) && !$_SESSION['data_access']['mix_campaigns'])) { ?>
@@ -24,11 +24,7 @@
                     </select>
                 </li>
             <?php } ?>
-            <?php if (in_array("files only", $_SESSION['permissions'])) {
-                $this->view('navigation/sidebar/files_only.php');
-            } else if (in_array("survey only", $_SESSION['permissions'])) {
-                $this->view('navigation/sidebar/survey_only.php');
-            } else if (in_array("mix_campaigns", $_SESSION['data_access']) || isset($_SESSION['current_campaign'])) {
+<?php if ($_SESSION['data_access']['mix_campaigns'] || isset($_SESSION['current_campaign'])) {
                 ?>
                 <?php
                 //The system will give the agents the records that need dialing

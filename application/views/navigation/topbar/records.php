@@ -1,6 +1,6 @@
-<?php if(@in_array("search records", $_SESSION['permissions'])||in_array("add records", $_SESSION['permissions'])||in_array("list records", $_SESSION['permissions'])){ ?> <li><a href="#records">Records</a>
+<?php if(@in_array("advanced search", $_SESSION['permissions'])||in_array("add records", $_SESSION['permissions'])||in_array("list records", $_SESSION['permissions'])){ ?> <li><a href="#records">Records</a>
                         <ul id="records">
-                            <?php if (@in_array("search records", $_SESSION['permissions']) || isset($_SESSION['current_campaign']) && isset($_SESSION['search records'])) { ?>
+                            <?php if (@in_array("advanced search", $_SESSION['permissions'])) { ?>
                                 <li <?php if (@$page == "search") {
                                     echo "class='Selected'";
                                 } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>

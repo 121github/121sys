@@ -214,12 +214,12 @@ class Calendar extends CI_Controller
         }
 
         $users = array();
-        if (in_array("mix campaigns", $_SESSION['permissions'])) {
+        if ($_SESSION['data_access']['mix_campaigns']) {
             $campaigns = $this->Form_model->get_calendar_campaigns();
             $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
             $disable_campaign_filter = false;
         }
-        if (!in_array("mix campaigns", $_SESSION['permissions'])) {
+        if (!$_SESSION['data_access']['mix_campaigns']) {
             $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
             $campaigns = $this->Form_model->get_calendar_campaigns();
             $disable_campaign_filter = true;

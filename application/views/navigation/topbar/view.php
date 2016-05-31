@@ -19,7 +19,7 @@
                       <li><a href="<?php echo base_url() ?>planner">Planner</a></li>
                       <?php } ?>
         
-<?php if (isset($_SESSION['campaign_features']) && @in_array('Surveys', $_SESSION['campaign_features']) && isset($_SESSION['permissions']) && in_array("view surveys", $_SESSION['permissions']) || in_array("view surveys", $_SESSION['permissions']) && in_array("mix campaigns", $_SESSION['permissions'])) { ?><li><a href="<?php echo base_url() ?>survey/view">Surveys</a></li>
+<?php if (isset($_SESSION['campaign_features']) && @in_array('Surveys', $_SESSION['campaign_features']) && isset($_SESSION['permissions']) && in_array("view surveys", $_SESSION['permissions']) || in_array("view surveys", $_SESSION['permissions']) && $_SESSION['data_access']['mix_campaigns']) { ?><li><a href="<?php echo base_url() ?>survey/view">Surveys</a></li>
             <?php } ?>
           </ul>
         </li>

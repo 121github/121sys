@@ -24,7 +24,7 @@
             <div class="form-group">
 
                 <label style="display:block">Campaign</label>
-                <select id="campaign_id" name="campaign_id[]" class="selectpicker campaigns_select" data-width="100%" data-size="5" <?php if(in_array("mix campaigns",$_SESSION['permissions'])){ echo "multiple"; } ?> title="All campaigns">
+                <select id="campaign_id" name="campaign_id[]" class="selectpicker campaigns_select" data-width="100%" data-size="5" <?php if($_SESSION['data_access']['mix_campaigns']){ echo "multiple"; } ?> title="All campaigns">
 <?php foreach($campaigns as $row): ?>
                   <?php if(in_array($row['id'],$_SESSION['campaign_access']['array'])):  ?>
                   <option <?php if(isset($_SESSION['filter']['values']['campaign_id']) && @in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])||count($campaigns)=="1"){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
@@ -112,7 +112,7 @@
                   <?php endforeach; ?>
                 </select>
               </div>
-              <?php if(in_array("search parked",$_SESSION['permissions'])){ ?>
+              <?php if($_SESSION['data_access']['parked']){ ?>
                <div class="form-group">
                 <label>Parked Status</label>
                 <select id="parked_code" name="parked_code[]" class="selectpicker parked-code" data-width="100%" title="Unparked" data-size="5" multiple>
@@ -122,26 +122,30 @@
                 </select>
               </div>
               <?php } ?>
-               <?php if(in_array("group filter",$_SESSION['permissions'])){ ?>
+               <?php if(!$_SESSION['data_access']['group_records']){ ?>
               <div class="form-group">
                 <label>Group Ownership</label>
                 <select id="group_id" name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple title="Any">
                   <?php foreach($groups as $row): ?>
-                  <option  <?php if(isset($_SESSION['filter']['values']['group_id']) && @in_array($row['id'],$_SESSION['filter']['values']['group_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['group']&&in_array("view own group",$_SESSION['permissions'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option  <?php if(isset($_SESSION['filter']['values']['group_id']) && @in_array($row['id'],$_SESSION['filter']['values']['group_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
-                <?php } ?>
-                 <?php if(in_array("user filter",$_SESSION['permissions'])){ ?>
+                <?php } else { ?>
+                <input name="group_id[]" value="<?php echo $_SESSION['group'] ?>" />
+                 <?php } ?>
+                  <?php if(!$_SESSION['data_access']['user_records']){ ?>
               <div class="form-group">
                 <label>User Ownership</label>
                 <select id="user_id" name="user_id[]" class="selectpicker" data-width="100%" data-size="5" <?php if(count($users)>1){ echo "multiple"; } ?>  title="Any">
                   <?php foreach($users as $row): ?>
-                  <option <?php if(isset($_SESSION['filter']['values']['user_id']) && @in_array($row['id'],$_SESSION['filter']['values']['user_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['user_id']&&$_SESSION['role_data_access']['user records']&&!$_SESSION['role_data_access']['unassigned user']){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option <?php if(isset($_SESSION['filter']['values']['user_id']) && @in_array($row['id'],$_SESSION['filter']['values']['user_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
-              <?php } ?>
+            <?php } else { ?>
+                <input name="user_id[]" value="<?php echo $_SESSION['user_id'] ?>" />
+                 <?php } ?>
               <div class="form-group">
                 <label>Next Call Date</label>
                 <div class="row">

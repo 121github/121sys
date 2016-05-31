@@ -304,19 +304,19 @@ class Records_model extends CI_Model
             //next priority is lapsed callbacks	beloning to the user
             $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and (ow.user_id = '$user_id') $where order by case when outcome_id = 2 then 1 else 2 end,nextcall,r.date_updated,dials";
             //next priority is lapsed callbacks	unassigned
-            if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
+            if ($_SESSION['data_access']['unassigned_user']) {
                 $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1  and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and ow.user_id is null $where order by case when outcome_id = 2 then 1 else 2 end,r.date_updated,dials";
             }
             //next priority is virgin and assigend to the user
             $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (ow.user_id = '$user_id') $where " . $custom_order;
-            if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
+                if (in_array("view unassigned", $_SESSION['permissions']) ||$_SESSION['data_access']['unassigned_user']) {
                 //next priority is virgin and unassigned
                 $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and ow.user_id is null $where " . $custom_order;
             }
             //next priority is any other record with a nextcall date in order of lowest dials (current user)
             $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (ow.user_id = '$user_id') $where order by date_updated,dials";
             //next any other record with a nextcall date in order of lowest dials (any user)
-            if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
+            if (in_array("view unassigned", $_SESSION['permissions']) ||$_SESSION['data_access']['unassigned_user']) {
                 $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and ow.user_id is null $where order by date_updated,dials";
             }
             foreach ($priority as $k => $qry) {

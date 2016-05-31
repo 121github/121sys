@@ -88,22 +88,21 @@ var dashboard = {
             dashboard.get_sources_filter();
         });
 
-        $(document).on("click", ".refresh-overview-data", function (e) {
-            e.preventDefault();
-            dashboard.refresh_panels();
-        });
 
-        $(document).on("click", ".refresh-favorites-data", function (e) {
-            e.preventDefault();
+        $(document).on("click", ".refresh-data", function (e) {
+			e.preventDefault();
+			if($(this).hasClass('refresh-favorites-data')){
             dashboard.filter_panel();
             dashboard.favorites_panel();
-        });
-
-        $(document).on("click", ".refresh-dashboard-data", function (e) {
-            e.preventDefault();
-            dashboard.load_dash($(this).attr('dashboard-id'));
+			}
+			if($(this).hasClass('refresh-overview-data')){
+            dashboard.refresh_panels();
+			}
+			if($(this).hasClass('refresh-dashboard-data')){
+             dashboard.load_dash($(this).attr('dashboard-id'));
             $('.show-charts').removeClass('btn-success').addClass('btn-default');
             $('.show-charts').attr('data-item', 0);
+			}
         });
 
         $(document).on("click", ".new-report", function (e) {

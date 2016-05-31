@@ -92,7 +92,7 @@
     <?php echo $body; ?>
 </div>
 <!-- /content -->
-
+ <?php $this->view('misc/footer.php'); ?>
 <!-- Modal -->
 <div class="isFixed">
     <?php $this->view('misc/alerts.php'); ?>

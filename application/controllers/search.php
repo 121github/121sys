@@ -124,8 +124,9 @@ class Search extends CI_Controller
 	}
 	
 	
-		public function filter_display(){
-			$mappings = array("campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),
+		 private function filter_display($filter_options)
+    {
+        $mappings = array("campaign_id"=>array("name"=>"Campaign name","remove"=>$_SESSION['data_access']['mix_campaigns']?true:false),
 			"source_id"=>array("name"=>"Data source"),
 			"client_id"=>array("name"=>"Client name"),
 			"campaign_type_id"=>array("name"=>"Campaign type"),
@@ -133,40 +134,41 @@ class Search extends CI_Controller
 			"client_ref"=>array("name"=>"Client reference"),
 			"outcome_id"=>array("name"=>"Outcome"),
 			"progress_id"=>array("name"=>"Progress"),
-			"record_status"=>array("name"=>"Record status","remove"=>$_SESSION['data_access']['dead']),
-			"parked_code"=>array("name"=>"Parked code","remove"=>$_SESSION['data_access']['parked']),
-			"group_id"=>array("name"=>"Group ownership","remove"=>$_SESSION['data_access']['group_records']),
-			"user_id"=>array("name"=>"User ownership","remove"=>$_SESSION['data_access']['user_records']),
-			"nextcall"=>array("name"=>"Nextcall date"),
-			"date_updated"=>array("name"=>"Lastcall date"),
-			"date_added"=>array("name"=>"Created date"),
-			"contact_id"=>array("name"=>"Contact ID"),
-			"fullname"=>array("name"=>"Contact name"),
-			"phone"=>array("name"=>"Contact phone"),
-			"position"=>array("name"=>"Contact position"),
-			"dob"=>array("name"=>"Contact DOB"),
-			"contact_email"=>array("name"=>"Contact email"),
-			"address"=>array("name"=>"Contact address"),
-			"company_id"=>array("name"=>"Company ID"),
-			"coname"=>array("name"=>"Company Name"),
-			"company_phone"=>array("name"=>"Company phone"),
-			"sector_id"=>array("name"=>"Sector"),
-			"subsector_id"=>array("name"=>"Subsector"),
-			"turnover"=>array("name"=>"Turnover"),
-			"employees"=>array("name"=>"Employees"),
-			"postcode"=>array("name"=>"Postcode"),
-			"distance"=>array("name"=>"Distance"),
-			"new_only"=>array("name"=>"New records only"),
-			"dials"=>array("name"=>"Number of dials"),
-			"survey"=>array("name"=>"With survey only"),
-			"favorites"=>array("name"=>"Favorites only"),
-			"urgent"=>array("name"=>"Urgent only"),
-			"email"=>array("name"=>"Email filter"),
-			"no_company_tel"=>array("name"=>"Companies without numbers"),
-			"no_phone_tel"=>array("name"=>"Contacts without numbers"),
-			"order"=>array("name"=>"Order by"),
-			"order_direction"=>array("name"=>"Order direction")
-			);
+			"record_status"=>array("name"=>"Record status",$_SESSION['data_access']['dead']?true:false),
+			"parked_code"=>array("name"=>"Parked code",!$_SESSION['data_access']['parked']?true:false),
+			"group_id"=>array("name"=>"Group ownership",!$_SESSION['data_access']['group_records']?true:false),
+			"user_id"=>array("name"=>"User ownership","remove"=>!$_SESSION['data_access']['user_records']?true:false),
+            "nextcall" => array("name" => "Nextcall date"),
+            "date_updated" => array("name" => "Lastcall date"),
+            "date_added" => array("name" => "Created date"),
+            "contact_id" => array("name" => "Contact ID"),
+            "fullname" => array("name" => "Contact name"),
+            "phone" => array("name" => "Contact phone"),
+            "position" => array("name" => "Contact position"),
+            "dob" => array("name" => "Contact DOB"),
+            "contact_email" => array("name" => "Contact email"),
+            "address" => array("name" => "Contact address"),
+            "company_id" => array("name" => "Company ID"),
+            "coname" => array("name" => "Company Name"),
+            "company_phone" => array("name" => "Company phone"),
+            "sector_id" => array("name" => "Sector"),
+            "subsector_id" => array("name" => "Subsector"),
+            "turnover" => array("name" => "Turnover"),
+            "employees" => array("name" => "Employees"),
+            "postcode" => array("name" => "Postcode"),
+            "distance" => array("name" => "Distance"),
+            "new_only" => array("name" => "New records only"),
+            "dials" => array("name" => "Number of dials"),
+            "survey" => array("name" => "With survey only"),
+            "favorites" => array("name" => "Favorites only"),
+            "urgent" => array("name" => "Urgent only"),
+            "email" => array("name" => "Email filter"),
+            "no_company_tel" => array("name" => "Companies without numbers"),
+            "no_phone_tel" => array("name" => "Contacts without numbers"),
+            "order" => array("name" => "Order by"),
+            "order_direction" => array("name" => "Order direction")
+        );
+
 			
 		$campaigns = $this->input->post('campaign_id');
 		if(is_array($campaigns)){         
@@ -219,7 +221,7 @@ class Search extends CI_Controller
     //this is the default controller for search, its specified in application/config/routes.php.  
     public function search_form()
     {
-	check_page_permissions("search records");
+	check_page_permissions("advanced search");
 
         $campaigns      = $this->Form_model->get_user_campaigns();
         $clients        = $this->Form_model->get_clients();

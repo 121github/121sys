@@ -23,7 +23,7 @@
       <?php } ?>
      <?php } ?>
     <ul class="nav navbar-nav desktop-only" id="desktop-nav">
-    <?php if(in_array("search records",$_SESSION['permissions'])){ ?>
+    <?php if(in_array("quick search",$_SESSION['permissions'])){ ?>
 		 <li><a href="#" id='open-quicksearch'><i class="fa fa-search"></i> Search</a></li>
          <?php } ?>
            <?php if(in_array("use callpot",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){ ?>

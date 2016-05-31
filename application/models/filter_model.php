@@ -532,7 +532,7 @@ return $query->result_array();
                 }
                 /*apply the special filetrs */
                 if ($field == "favorites") {
-					if(@!in_array("search any owner",$_SESSION['permissions'])){
+					if($_SESSION['data_access']['user_records']){
                     $where .= " and r.urn in(select distinct urn from favorites where user_id = '{$_SESSION['user_id']}') ";
 					} else {
 					$where .= " and r.urn in(select distinct urn from favorites) ";	
@@ -600,7 +600,7 @@ return $query->result_array();
                 if ($filter_options[$field]['table'] == "ownership") {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                 }
-                if ($filter_options[$field]['table'] == "users"||!in_array("search any owner",$_SESSION['permissions'])) {
+                if ($filter_options[$field]['table'] == "users"||$_SESSION['data_access']['user_records']) {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                     $join['users']     = " left join users u on u.user_id = ow.user_id";
                 }
@@ -835,10 +835,13 @@ return $query->result_array();
 
             $group_by      = " group by records.urn";
 			
-						
-			 //if they dont have permission to view other agent records
-            if (!in_array("search any owner", $_SESSION['permissions'])&&!in_array("search unassigned", $_SESSION['permissions'])&&!in_array("view unassigned", $_SESSION['permissions'])) {
-                $agent .= " and ownership.user_id = '{$_SESSION['user_id']}' ";
+            if ($_SESSION['data_access']['user_records']) {
+                $agent .= " and (ownership.user_id = '{$_SESSION['user_id']}' ";
+				
+				if($_SESSION['data_access']['unassigned_user']){
+					  $agent .= " or ownership.user_id is NULL ";
+				}
+				$agent .= ")";
             }
 			
         } else {
@@ -864,8 +867,8 @@ return $query->result_array();
             
             
             //if they dont have permission to view other agent records
-            if (!in_array("by agent", $_SESSION['permissions'])) {
-                $agent .= " and history.user_id = '{$_SESSION['user_id']}' ";
+            if ($_SESSION['data_access']['user_records']) {
+                $agent .= " and (history.user_id = '{$_SESSION['user_id']}') ";
             }
         }
         
@@ -888,7 +891,7 @@ return $query->result_array();
             $qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
             $qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id ";
             //only join the user tables if we need them
-            if (in_array("user", $fields) || in_array("group_id", $fields) || in_array("team_id", $fields)||!in_array("search any owner", $_SESSION['permissions'])) {
+            if (in_array("user", $fields) || in_array("group_id", $fields) || in_array("team_id", $fields)||$_SESSION['data_access']['user_records']) {
                 $qry .= " left join ownership on records.urn = ownership.urn ";
                 $qry .= " left join users on users.user_id = ownership.user_id ";
                 $qry .= " left join teams on users.team_id = teams.team_id ";
@@ -1427,7 +1430,7 @@ return $query->result_array();
 		$campaign = (isset($_SESSION['current_campaign'])?" and campaigns.campaign_id = '".$_SESSION['current_campaign']."'":"");
 		$campaign_user_table = "";
 		$campaign_user = "";
-		if(!in_array("all campaigns",$_SESSION['permissions'])){	
+		if($_SESSION['data_access']['all_campaigns']){	
 		$campaign_user_table = " join users_to_campaigns on users_to_campaigns.campaign_id = campaigns.campaign_id ";
 		$campaign_user = " and users_to_campaigns.user_id = ".$_SESSION['user_id'];
 		}

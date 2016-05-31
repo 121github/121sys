@@ -244,6 +244,7 @@ var record_update = {
                     $('#update-record').prop('disabled', true);
 					if($('#update-record-tab').length){
 					modals.update_record(urn);	
+					$('.refresh-data').trigger('click');
 					}
                 } else {
                     flashalert.warning(response.msg);

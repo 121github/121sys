@@ -348,7 +348,7 @@ if(!isset($_SESSION['current_campaign'])||$campaign_id<>$_SESSION['current_campa
         $details['record']['logo'] = $campaign['logo'];
         //check if this user has already updated the record and if they have they can select next without an update
         $allow_skip                = $this->Records_model->updated_recently($urn);
-        if (in_array("search records", $_SESSION['permissions'])) {
+        if (in_array("quick search", $_SESSION['permissions'])||in_array("advanced search", $_SESSION['permissions'])) {
             $allow_skip = true;
         }
         $progress_options = $this->Form_model->get_progress_descriptions();

@@ -37,10 +37,10 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-if(isset($_SESSION['permissions'])&&!in_array('view dashboard',$_SESSION['permissions'])){
+if(!isset($_SESSION['home'])){
 $route['default_controller'] = "user/account";	
 } else {
-$route['default_controller'] = "dashboard/user_dash";
+$route['default_controller'] = $_SESSION['home'];
 }
 $route['search'] = "search/search_form";
 $route['admin/shop/(:any)'] = "flexicart_admin/$1";

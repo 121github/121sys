@@ -41,9 +41,8 @@ if (!function_exists('user_auth_check')) {
     {
 		
         $CI =& get_instance();		
-		
         $user = $_SESSION['user_id'];
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
+        if ($_SESSION['data_access']['all_campaigns']) {
             $qry = "select campaign_id id,campaign_name name,client_name client,campaign_type_desc type from campaigns left join clients using(client_id) left join campaign_types using(campaign_type_id) where campaign_status = 1 group by campaign_id order by client_name,campaign_name";
         } else {
             $qry = "select campaign_id id,campaign_name name,client_name client,campaign_type_desc type from users_to_campaigns join campaigns using(campaign_id) left join clients using(client_id) left join campaign_types using(campaign_type_id) where user_id = '$user' and campaign_status = 1 group by campaign_id order by client_name,campaign_name";
@@ -73,7 +72,7 @@ if (!function_exists('user_auth_check')) {
     {
         if (@!in_array($required, $_SESSION['permissions'])) {
             $CI =& get_instance();
-            $CI->session->set_flashdata('warning', 'You do not have permission to access that');
+            $_SESSION['flashdata']['warning'] = 'You do not have permission to access that';
             if (isset($_SESSION['home'])) {
                 redirect(base_url() . $_SESSION['home']);
             } else {

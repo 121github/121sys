@@ -23,8 +23,8 @@ function logo_text(){
 </script>
 	<img id="login-logo" class="img-responsive" onerror="logo_text()" src="<?php echo $logo ?>">	
 <div id="no-logo"></div>
-					<input type="text" name="username" placeholder="Username" <?php echo (!$username?"autofocus":"") ?> required class="form-control input-lg" />
-					<input type="password" name="password" placeholder="Password" required class="form-control input-lg" <?php echo ($username?"autofocus":"") ?> />
+					<input type="text" name="username" placeholder="Username" <?php echo (empty($username)?"autofocus":"") ?> value="<?php echo $username ?>" required class="form-control input-lg" />
+					<input type="password" name="password" placeholder="Password" required class="form-control input-lg" <?php echo (!empty($username)?"autofocus":"") ?> />
 					<button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
 					<div>
 						<!--<a href="#">Sign up</a> or --><a href="#" class="forgot-password">Reset password</a>

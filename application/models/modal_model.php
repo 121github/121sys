@@ -202,7 +202,7 @@ class Modal_model extends CI_Model
 	}
 	
 	public function table_fields(){
-	$fields = array("campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),
+	$fields = array("campaign_id"=>array("name"=>"Campaign name","remove"=>$_SESSION['data_access']['mix_campaigns']?true:false),
 			"source_id"=>array("name"=>"Data source"),
 			"client_id"=>array("name"=>"Client name"),
 			"campaign_type_id"=>array("name"=>"Campaign type"),
@@ -210,10 +210,10 @@ class Modal_model extends CI_Model
 			"client_ref"=>array("name"=>"Client reference"),
 			"outcome_id"=>array("name"=>"Outcome"),
 			"progress_id"=>array("name"=>"Progress"),
-			"record_status"=>array("name"=>"Record status",in_array("search dead",$_SESSION['permissions'])?true:false),
-			"parked_code"=>array("name"=>"Parked code"),
-			"group_id"=>array("name"=>"Group ownership",in_array("search groups",$_SESSION['permissions'])?true:false),
-			"user_id"=>array("name"=>"User ownership","remove"=>in_array("search any owner",$_SESSION['permissions'])?true:false),
+			"record_status"=>array("name"=>"Record status",$_SESSION['data_access']['dead']?true:false),
+			"parked_code"=>array("name"=>"Parked code",!$_SESSION['data_access']['parked']?true:false),
+			"group_id"=>array("name"=>"Group ownership",!$_SESSION['data_access']['group_records']?true:false),
+			"user_id"=>array("name"=>"User ownership","remove"=>!$_SESSION['data_access']['user_records']?true:false),
 			"nextcall"=>array("name"=>"Nextcall date"),
 			"date_updated"=>array("name"=>"Lastcall date"),
 			"date_added"=>array("name"=>"Created date"),

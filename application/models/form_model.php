@@ -260,7 +260,7 @@ class Form_model extends CI_Model
     {
         if ($_SESSION['role'] == 1) {
             $qry = "select user_id id,name, ur.role_name from users inner join user_roles ur using (role_id) where user_status = 1 order by name";
-        } else if (@in_array("search any owner", $_SESSION['permissions'])) {
+        } else if (!$_SESSION['data_access']['user_records']) {
             $qry = "select user_id id,name, ur.role_name from users_to_campaigns left join users using(user_id) inner join user_roles ur using (role_id) where user_status = 1 and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id order by name";
         } else {
             $qry = "select user_id id,name, ur.role_name from users inner join user_roles ur using (role_id) where user_id = '{$_SESSION['user_id']}'";
@@ -271,7 +271,7 @@ class Form_model extends CI_Model
     {
         if ($_SESSION['role'] == 1) {
             $qry = "select user_id id,name, ur.role_name from users inner join user_roles ur using (role_id) where user_status = 1 and user_email is not null order by name";
-        } else if (@in_array("search any owner", $_SESSION['permissions'])) {
+        } else if (!$_SESSION['data_access']['user_records']) {
             $qry = "select user_id id,name, ur.role_name from users_to_campaigns left join users using(user_id) inner join user_roles ur using (role_id) where user_status = 1 and campaign_id in ({$_SESSION['campaign_access']['list']}) and user_email is not null group by user_id order by name";
         } else {
             $qry = "select user_id id,name, ur.role_name from users inner join user_roles ur using (role_id) where user_id = '{$_SESSION['user_id']}' and user_email is not null";
@@ -291,7 +291,7 @@ class Form_model extends CI_Model
     }
     public function get_sources()
     {
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
+		if($_SESSION['data_access']['all_campaigns']){	
             $qry = "select source_id id,source_name name from data_sources";
         } else {
             $qry = "select source_id id,source_name name from data_sources join records  using(source_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by source_name order by source_name";
@@ -383,7 +383,9 @@ class Form_model extends CI_Model
     public function get_status_list()
     {
         $qry = "select record_status_id id,status_name name from status_list where record_status_id = 1";
-		if(in_array("search dead",$_SESSION['permissions'])){  $qry .= " or record_status_id > 1"; } 
+		if($_SESSION['data_access']['dead']){  $qry .= " or record_status_id == 3"; }
+		if($_SESSION['data_access']['pending']){  $qry .= " or record_status_id == 2"; } 
+		if($_SESSION['data_access']['complete']){  $qry .= " or record_status_id == 4"; } 
         return $this->db->query($qry)->result_array();
     }
 	    public function get_all_groups()
@@ -393,12 +395,12 @@ class Form_model extends CI_Model
     }
     public function get_groups()
     {
-        $qry = "select group_id id,group_name name,theme_images,user_groups.theme_color from user_groups left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by user_groups.group_id";
+        $qry = "select group_id id,group_name name,theme_images,user_groups.theme_color from user_groups left join users using(group_id) left join users_to_campaigns using(user_id) where users.user_id ='".$_SESSION['user_id']."' or users.role_id = 1 group by user_groups.group_id";
         return $this->db->query($qry)->result_array();
     }
     public function get_teams()
     {
-        $qry = "select teams.team_id id,team_name name,group_id,if(group_name is not null,group_name,'-') group_name from teams left join user_groups using(group_id) left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by teams.team_id order by team_name";
+        $qry = "select teams.team_id id,team_name name,group_id,if(group_name is not null,group_name,'-') group_name from teams join user_groups using(group_id) join users using(group_id) join users_to_campaigns using(user_id) where users.user_id ='".$_SESSION['user_id']."' or users.role_id = 1 group by teams.team_id order by team_name";
         return $this->db->query($qry)->result_array();
     }
     public function get_roles()
@@ -408,7 +410,7 @@ class Form_model extends CI_Model
     }
     public function get_managers()
     {
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
+       		if($_SESSION['data_access']['all_campaigns']){	
             $qry = "select user_id id,name from users where user_id in (select user_id from team_managers) and user_status = 1";
         } else {
             $qry = "select user_id id,name from users where user_id in team_managers left join users using(user_id) where group_id = '{$_SESSION['group']}'";
@@ -432,7 +434,7 @@ class Form_model extends CI_Model
     }
     public function get_templates()
     {
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
+      		if($_SESSION['data_access']['all_campaigns']){	
             $qry = "select template_id id,template_name name from email_templates order by template_name";
         } else {
             $qry = "select template_id id,template_name name from email_templates left join email_template_to_campaigns using(template_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by template_id order by template_name";
@@ -536,7 +538,7 @@ class Form_model extends CI_Model
      */
     public function get_sms_templates()
     {
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
+       		if($_SESSION['data_access']['all_campaigns']){	
             $qry = "select template_id id,template_name name from sms_templates order by template_name";
         } else {
             $qry = "select template_id id,template_name name from sms_templates left join sms_template_to_campaigns using(template_id) where campaign_id in({$_SESSION['campaign_access']['list']}) order by template_name";

@@ -89,12 +89,14 @@
                 <h4>System Permissions <span class="pull-right"><button id="check-all" class="btn btn-default btn-xs"><span class="fa fa-check"></span> Check All</button> <button id="uncheck-all" class="btn btn-default btn-xs"><span class="fa fa-remove"></span> Uncheck All</button></span></h4>
         <ul class="list-group">
        <?php foreach($permissions as $group_name => $group_permissions){ ?>
+       <?php if($group_name!=="Override"){ ?>
     <li class="list-group-item" style="height:auto"><?php echo $group_name ?><span class="pull-right" style="width:80%">
     <?php foreach($group_permissions as $id=>$name){ ?>
     <div style="display:inline-block; width:150px"><input class="permbox" id="pm_<?php echo $id ?>" type="checkbox" name="permission[<?php echo $id ?>]"> <span data-toggle="tooltip" class="tt" title="<?php echo $name['description'] ?>"><?php echo $name['name'] ?></span></div ><?php } ?>
 </span>
 <div class="clearfix"></div>
     </li>
+     <?php } ?>
     <?php } ?>
   </ul>
     

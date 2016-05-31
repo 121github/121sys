@@ -34,6 +34,14 @@ class User extends CI_Controller
     public function login()
     {
 
+		if(isset($_SESSION['user_id'])){
+			if(isset($_SESSION['home'])){
+			redirect($_SESSION['home']);
+			} else {
+		    redirect('user/logout');
+			}
+		}
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $this->load->library('form_validation');
@@ -59,26 +67,22 @@ class User extends CI_Controller
                         $redirect = "dashboard";
                     }
                     //Write on log
-                    log_message('info', '[LOGIN][ACCESS] The user '.$_SESSION['name'].' (user_id: '.$_SESSION['user_id'].', client_ip: '.$this->input->ip_address().') has been connected');
+                    log_message('info', '[LOGIN][ACCESS] The user '.$_SESSION['name'].' (user_id: '.$_SESSION['user_id'].', client_ip: '.$this->input->ip_address().') connected');
 
                     redirect($redirect);
                 }
-                $_SESSION['flashdata']['error'] = 'Invalid username or password.';
+
+                $_SESSION['flashdata']['danger'] = 'Invalid username or password.';
 
                 //Write on log
                 log_message('info', '[LOGIN][FAIL] The user '.$username.' (client_ip: '.$this->input->ip_address().') failed. Invalid username or password.');
-
-                redirect('user/login'); //Need to redirect to show the flash error.
             }
         }
-		if(isset($_SESSION['user_id'])){
-		    $this->User_model->log_logout($_SESSION['user_id']);
-		}
-        session_destroy();
+
 
         $redirect = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
         $data = array(
-			'username'=>htmlentities($username),
+			'username'=>isset($username)?htmlentities($username):'',
             'pageId' => 'login',
             'pageClass' => 'login',
             'title' => '121 Calling System',
@@ -468,7 +472,7 @@ class User extends CI_Controller
             $filter = $_SESSION['filter']['values'];
             $this->Filter_model->apply_filter($filter);
 
-            if (@!in_array('mix campaigns', $_SESSION['permissions'])) {
+            if (!$_SESSION['data_access']['mix_campaigns']) {
                 echo json_encode(array(
                     "location" => 'dashboard'
                 ));
