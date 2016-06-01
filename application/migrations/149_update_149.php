@@ -31,7 +31,7 @@ class Migration_update_149 extends CI_Migration
 	   
 	   $this->db->query("DELETE FROM role_permissions WHERE permission_id NOT IN (
 SELECT permission_id
-FROM permissions");
+FROM permissions)");
 
 
 $this->db->query("DELETE FROM campaign_permissions WHERE permission_id NOT IN (
