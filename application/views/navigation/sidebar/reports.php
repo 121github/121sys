@@ -107,6 +107,16 @@
             <?php } ?>
             <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a
                     href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
+            <?php if (isset($_SESSION['dashboards'])) { ?>
+                <li role="separator" class="divider"></li>
+                <?php foreach ($_SESSION['dashboards'] as $dash) {
+                    if ($dash['dash_type'] == "Report") { ?>
+                        <li>
+                            <a href="<?php echo base_url() ?>dashboard/view/<?php echo $dash['dashboard_id'] ?>"><?php echo $dash['name'] ?></a>
+                        </li>
+                    <?php }
+                }
+            } ?>
         </ul>
     </li>
 <?php } ?>
