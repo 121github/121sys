@@ -6,7 +6,7 @@ class Migration_update_149 extends CI_Migration
 
     public function __construct()
     {
-        $this->load->model('Database_model');
+        $this->load->model('Database_model'); 
     }
 
     public function up()
