@@ -610,7 +610,6 @@ class Data extends CI_Controller
             $response = true;
         } else if (!empty($form['contact_name'])) {
             $contact['fullname'] = $form['contact_name'];
-			$contact['primary'] = 1;
             if (!empty($form['contact_telephone'])) {
                 $contact_telephone = array("telephone_number" => $form['contact_telephone'], "description" => "Telephone");
             }
@@ -704,14 +703,15 @@ class Data extends CI_Controller
                         $response = ($insert_id) ? true : false;
                     } elseif (!empty($contact)) {
                         $contact['urn'] = $record_id;
+						$contact['primary'] = 1;
                         $insert_id = $this->Contacts_model->save_contact($contact);
                         if (isset($contact_telephone)) {
                             $contact_telephone["contact_id"] = $insert_id;
-                            $this->firephp->log($contact_telephone);
                             $this->Contacts_model->add_telephone($contact_telephone);
                         }
                         if (isset($contact_address)) {
                             $contact_address["contact_id"] = $insert_id;
+							$contact_address['primary'] = 1;
                             $this->Contacts_model->add_address($contact_address);
                             $this->Locations_model->set_location_id($contact_address['postcode']);
                         }

@@ -1430,7 +1430,7 @@ return $query->result_array();
 		$campaign = (isset($_SESSION['current_campaign'])?" and campaigns.campaign_id = '".$_SESSION['current_campaign']."'":"");
 		$campaign_user_table = "";
 		$campaign_user = "";
-		if($_SESSION['data_access']['all_campaigns']){	
+		if(!$_SESSION['data_access']['all_campaigns']){	
 		$campaign_user_table = " join users_to_campaigns on users_to_campaigns.campaign_id = campaigns.campaign_id ";
 		$campaign_user = " and users_to_campaigns.user_id = ".$_SESSION['user_id'];
 		}

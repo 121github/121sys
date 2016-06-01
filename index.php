@@ -123,13 +123,13 @@ switch ($domain) {
     case 'pro.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_prosales';
-		$theme = "leadsontap";
+		$theme = "kinnell";
         break;
 		
 	case 'localhost:8082':
         define('ENVIRONMENT', 'development');
         $session_name = '121sys_local';
-		$theme="leadsontap";
+		$theme="kinnell";
     break;
 
     default:

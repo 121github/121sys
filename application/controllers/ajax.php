@@ -385,8 +385,11 @@ class Ajax extends CI_Controller
             $array["facebook"] = (@!empty($array["facebook"]) ? $array["facebook"] : NULL);
             $array["linkedin"] = (@!empty($array["linkedin"]) ? $array["linkedin"] : NULL);
             $array["notes"] = (@!empty($array["notes"]) ? $array["notes"] : NULL);
-
-
+			
+			$this->db->where(array("urn"=>$array['urn'],"primary"=>"1"));
+			if($this->db->get('contacts')->num_rows()==0){
+				$array['primary'] = "1";
+			}
             if ($this->db->insert('contacts', array_filter($array))) {
                 $id = $this->db->insert_id();
                 $array['contact_id'] = $id;

@@ -73,7 +73,9 @@
                  $modal.css('z-index', '2000');
                  $('#calendar').css('margin-top','0px');
                  $('#calendar .fc-toolbar').addClass('small');
+				 $('#calendar .fc-toolbar').css('min-height','40px');
                  $('#calendar .fc-toolbar').css('color', 'black');
+				 $('#calendar .navbar-inverse h2').css('color','black');
                  $('#calendar .navbar-inverse').css('background-image','none');
                  $('#calendar .navbar-inverse').css('background-color','transparent');
                  $('#calendar .fc-toolbar .calendar-icon').css('color','black');

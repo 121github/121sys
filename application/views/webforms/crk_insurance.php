@@ -170,7 +170,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             </div>
             <div class="radio" style="display:inline-block; margin-left:20px">
                 <label>
-                    <input type="radio" name="answers[11][]" id="optionsRadios2" 
+                    <input type="radio" name="answers[a11][]" id="optionsRadios2" 
                            value="No" <?php if (@strpos($values['a11'], "No") !== false) {
                         echo "checked";
                     } ?>>
@@ -327,7 +327,7 @@ The following assumptions have been made and will form the basis of the quote pr
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-slider.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
