@@ -4,12 +4,15 @@ var record_update = {
 		var $record_panel = $(document);
 		this.urn = urn;
 		console.log("init record update");
-		    $record_panel.on('click', '#update-record', function (e) {
-			e.preventDefault();
-			if(record_update.check_record_update()){
-			record_update.save($(this));	
-			}
-			});
+        $record_panel.on('click', '#update-record', function (e) {
+            e.preventDefault();
+            if (record_update.check_record_update()) {
+                record_update.save($(this));
+                if (typeof $('.refresh-data').html() != 'undefined') {
+                    $('.refresh-data').trigger('click');
+                }
+            }
+        });
 
         $record_panel.on('click', '#reset-record', function (e) {
             e.preventDefault();
