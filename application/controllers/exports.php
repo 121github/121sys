@@ -325,6 +325,7 @@ class Exports extends CI_Controller
                     "success" => true,
                     "data" => ($results?$results:"No export forms were created yet!"),
                     "header" => explode(";",$export_form['header']),
+                    "order_by" => explode(";",$export_form['order_by']),
                     'graphs' => $graphs
                 ));
             }

@@ -607,6 +607,7 @@ var export_data = {
         var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <span class="btn btn-primary pull-right marl modal-export-file-btn" item-id="'+export_forms_id+'">Export</span> ';
+        var order_by;
 
         $.ajax({
             url: helper.baseUrl + 'exports/load_export_report_data',
@@ -633,8 +634,13 @@ var export_data = {
                 $.each(response.data, function (i, data) {
                     if (response.data.length) {
                         mbody += "<tr>";
+                        var j=0;
                         $.each(data, function (k, val) {
+                            if ((typeof order_by == 'undefined') && response.order_by == k) {
+                                order_by = j;
+                            }
                             mbody += "<td style='padding: 5px;'>" + val + "</td>";
+                            j++;
                         });
                         mbody += "</tr>";
                     }
@@ -734,17 +740,17 @@ var export_data = {
                 mbody += "</div></div>";
 
                 //Open modal
-                export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
+                export_data.show_export_report(export_forms_id, mheader, mbody, mfooter, order_by);
             }
             else {
                 mbody += "<div style='padding: 20px;'>" + response.data + "</div>";
-                export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
+                export_data.show_export_report(export_forms_id, mheader, mbody, mfooter, order_by);
                 $(".modal-export-file-btn").attr('disabled', true);
             }
 
         }).fail(function () {
             mbody += "<div style='padding: 20px;'>There is something wrong with export</div>";
-            export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
+            export_data.show_export_report(export_forms_id, mheader, mbody, mfooter, order_by);
             $(".modal-export-file-btn").attr('disabled', true);
 
         });
@@ -802,7 +808,7 @@ var export_data = {
         });
     },
 
-    show_export_report: function (export_forms_id, mheader, mbody, mfooter) {
+    show_export_report: function (export_forms_id, mheader, mbody, mfooter, order_by) {
 
         modals.load_modal(mheader, mbody, mfooter);
 
@@ -816,7 +822,8 @@ var export_data = {
         var dom_size = 6;
         $('#table-'+export_forms_id).DataTable({
             "dom": 'rt<"bottom-'+export_forms_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
-            "pagingType": "full"
+            "pagingType": "full",
+            "order": [[ (typeof order_by != 'undefined'?order_by:0), "desc" ]]
         });
         $(".bottom-"+export_forms_id).css("min-height", "100px");
         if (dom_size == 12) {
