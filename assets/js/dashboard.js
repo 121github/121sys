@@ -1372,6 +1372,7 @@ var dashboard = {
                 $.each(response.reports, function (i, report) {
                     var show_first = true;
                     var order_by;
+                    var order_by_dir;
                     $('.filter-form').find('input[name="export_forms_id"]').val(report.report_id);
                     $.ajax({
                         url: helper.baseUrl + 'exports/load_export_report_data',
@@ -1399,8 +1400,9 @@ var dashboard = {
                                     body += "<tr>";
                                     var j=0;
                                     $.each(data, function (k, val) {
-                                        if ((typeof order_by == 'undefined') && resp.order_by == k) {
+                                        if ((typeof order_by == 'undefined') && resp.order_by[0] == k) {
                                             order_by = j;
+                                            order_by_dir = resp.order_by[1];
                                         }
                                         body += "<td>" + val + "</td>";
                                         j++;
@@ -1425,7 +1427,7 @@ var dashboard = {
                                 ],
                                 "dom": '<"top top-row small" <"col-lg-' + dom_size + '"<"pull-left"f>><"col-lg-' + dom_size + '"<"pull-right"B>>>rt<"bottom-' + report.report_id + ' bottom-row small"<"col-lg-' + dom_size + '"l><"col-lg-' + dom_size + '"<"pull-right"i>><"col-lg-' + dom_size*2 + '"p>><"clear">',
                                 "pagingType": "full",
-                                "order": [[ (typeof order_by != 'undefined'?order_by:0), "desc" ]],
+                                "order": [[ (typeof order_by != 'undefined'?order_by:0), (typeof order_by_dir != 'undefined'?order_by_dir:"asc") ]],
                                 "createdRow": function (row, data, dataIndex) {
 
                                     if (resp.header[0] == "URN") {
