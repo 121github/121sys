@@ -38,7 +38,7 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
 		 $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
-					'All': ["02/07/2014",moment().add(50,'years')],
+					'Any Time': ["01/01/2015",moment()],
 					'Last Month': [moment().add(-1,'month').startOf('month'), moment().add(-1,'month').endOf('month')],
 					'Last 7 Days': [moment().add(-7,'days'), moment()],
 					'Yesterday': [moment().add(-1,'days'), moment()],
@@ -50,15 +50,21 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
                     'Next Month': [moment().add(1,'month').startOf('month'), moment().add(1,'month').endOf('month')]
                 },
                 format: 'DD/MM/YYYY',
-                minDate: "02/07/2014",
+                minDate: "01/01/2015",
                 startDate: moment(),
                 endDate: moment().add(29,'days')
             },
             function (start, end, element) {
                 var $btn = this.element;
+				if(element=='Any Time'){
+				$btn.find('.date-text').html('Any Time');
+                $btn.closest('form').find('input[name="date_from"]').val('');
+                $btn.closest('form').find('input[name="date_to"]').val('');	
+				} else {
                 $btn.find('.date-text').html(start.format('D/M/Y') + ' - ' + end.format('D/M/Y'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+				}
                 view.reload_table();
             });
 

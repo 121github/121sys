@@ -4,9 +4,6 @@ var campaign_functions = {
     init: function () {
 		$('ul.nav .source-name').hide()
         $('#top-campaign-select').hide();
-        if (record.role == "16") {
-            $('div.custom-panel,#custom-panel,#email-panel').hide();
-        }
 		$('#sticky-panel .panel-heading').text('Job Notes');
 		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');
     },
@@ -353,8 +350,8 @@ var campaign_functions = {
         record.email_panel.load_panel();
     },
     custom_items_loaded: function () {
-        $('#email-panel').hide();
         if (helper.role == "16") {
+			$('#email-panel').hide();
 		    $('#custom-panel').find('tr:contains(Quote)').hide();
             $('.edit-detail-btn').hide();
             $('#custom-panel').find('tr:contains(Quote)').hide();

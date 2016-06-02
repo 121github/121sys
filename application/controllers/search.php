@@ -415,7 +415,7 @@ class Search extends CI_Controller
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,2);
 		
 		$title = "History";
-		$global_filter = $this->Filter_model->build_global_filter();
+		$global_filter = $this->Filter_model->build_filter_options();
         $data = array(
 		'global_filter' => $global_filter,
             'campaign_access' => $this->_campaigns,

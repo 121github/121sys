@@ -12,70 +12,16 @@ class Report_model extends CI_Model
         parent::__construct();
     }
 	
-	public function get_overview($options,$by_pots=false){
-        $date_from = $options['date_from'];
-        $date_to = $options['date_to'];
-        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
-        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
-        $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
- $pots= isset($options['pots']) ? $options['pots'] : array();
-
-        $where = "";
-        if (!empty($date_from)) {
-            $where .= " and date(contact) >= '$date_from' ";
-        }
-        if (!empty($date_to)) {
-            $where .= " and date(contact) <= '$date_to' ";
-        }
-        if (!empty($campaigns)) {
-            $where .= " and history.campaign_id IN (".implode(",",$campaigns).") ";
-        }
-        if (!empty($outcomes)) {
-            $where .= " and history.outcome_id IN (".implode(",",$outcomes).") ";
-        }
-        if (!empty($users)) {
-            $where .= " and history.user_id IN (".implode(",",$users).") ";
-        }
-        if (!empty($teams)) {
-            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
-        }
-        if (!empty($sources)) {
-            $where .= " and history.source_id IN (".implode(",",$sources).") ";
-        }
-if (!empty($pots)) {
-            $where .= " and history.pot_id IN (".implode(",",$pots).") ";
-        }
-        //if the user does not have the agent reporting permission they can only see their own stats
-        if (@!in_array("by agent", $_SESSION['permissions'])) {
-            $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
-        }
-
-        //if the user does not have the group reporting permission they can only see their own stats
-        if (@!in_array("by group", $_SESSION['permissions'])) {
-            //$where .= " and history.group_id = '{$_SESSION['group']}' ";
-        }
-
-        //if the user does not have the group reporting permission they can only see their own stats
-        if (@!in_array("by team", $_SESSION['permissions'])) {
-            //this doesnt work because some people dont have a team such as clients
-            //$where .= " and history.team_id = '{$_SESSION['team']}' ";
-        }
+	public function get_overview($params,$by_pots=false){
 		if($by_pots==true){
-		$fields = "if(pot_name is null,'No Pot',pot_name) campaign_name,history.pot_id campaign_id";
-		$group = "history.pot_id";
+		$fields = "if(pot_name is null,'No Pot',pot_name) campaign_name,h.pot_id campaign_id";
+		$group = "h.pot_id";
 		} else {
-		$fields = "campaign_name,history.campaign_id";
-		$group = "history.campaign_id";
+		$fields = "campaign_name,h.campaign_id";
+		$group = "h.campaign_id";
 		}
-        $qry = "select campaign_group_id,$fields,history.user_id,users.name,if(count(*) is null,0,count(*)) count,if(total is null,0,total) total from history join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join data_pots on history.pot_id = data_pots.pot_id left join (select count(*) total,history.outcome_id from history join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join data_pots on history.pot_id = data_pots.pot_id left join records using(urn) where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= $where;
-
-        $qry .= " ) t on history.campaign_id = campaigns.campaign_id where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-
-        $qry .= $where;
-        $qry .= " group by $group,history.user_id order by campaign_group_id,campaign_name,name,count desc ";
-		//$this->firephp->log($qry);
+        $qry = "select campaign_group_id,$fields,h.user_id,users.name,if(count(*) is null,0,count(*)) count,if(total is null,0,total) total from history h join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join data_pots on h.pot_id = data_pots.pot_id ".$params['join']." left join (select count(*) total,h.outcome_id from history h join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join data_pots on h.pot_id = data_pots.pot_id left join records using(urn) ".$params['join']."  where 1 ".$params['where']." ) t on h.campaign_id = campaigns.campaign_id where 1 ".$params['where']." group by $group,h.user_id order by campaign_group_id,campaign_name,name,count desc ";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     	
 	}
@@ -136,64 +82,84 @@ if (!empty($pots)) {
         return $this->db->query($qry)->result_array();
     }
 
-    public function get_activity($options)
+	public function build_filter_query($filter,$fields){
+		unset($_SESSION['report_filter']);
+		$join = "";
+		$where .= "";
+		if(!$_SESSION['data_access']['all_campaigns']){
+		$join .= " join users_to_campaigns uc on ".$fields['campaign_id']." = uc.campaign_id ";
+        $where .= " and uc.user_id = '".$_SESSION['user_id']."' ";
+		}
+		
+		foreach($filter as $k=>$v){
+		if(!empty($v)&&is_array($v)){
+		 $_SESSION['report_filter'][$k] = $v;
+			  $where .= " and ".$fields[$k]." IN (".implode(",",$v).") ";
+		}
+		}
+		
+		if (isset($filter['date_from'])&&!empty($filter['date_from'])) {
+            $where .= " and date(".$fields['date_from'].") >= '".addslashes($filter['date_from'])."' ";
+			 $_SESSION['report_filter']['date_from'] = $filter['date_from'];
+        }
+       	if (isset($filter['date_to'])&&!empty($filter['date_to'])) {
+            $where .= " and date(".$fields['date_to'].") <= '".addslashes($filter['date_to'])."' ";
+			 $_SESSION['report_filter']['date_to'] = $filter['date_to'];
+        }
+
+        //if the user does not have the all user data access they can only see their own stats
+        if ($_SESSION['data_access']['user_records']) {
+            $where .= " and (".$fields['user_id']." = '{$_SESSION['user_id']}' ";
+			 if ($_SESSION['data_access']['unassigned_group']) {
+			$where .= " or ".$fields['user_id']." is null ";
+			 }
+			$where .= ") ";
+        }
+
+        //if the user does not have the all group data access they can only see their own stats
+        if ($_SESSION['data_access']['group_records']) {
+              $where .= " and (".$fields['group_id']." = '{$_SESSION['team']}'";
+			 if ($_SESSION['data_access']['unassigned_group']) {
+			$where .= " or ".$fields['group_id']." is null ";
+			 }
+			$where .= ") ";
+        }
+
+        //if the user does not have the all team data access they can only see their own stats
+        if ($_SESSION['data_access']['team_records']) {
+            $where .= " and (".$fields['team_id']." = '{$_SESSION['team']}'";
+			 if ($_SESSION['data_access']['unassigned_team']) {
+			$where .= " or ".$fields['team_id']." is null ";
+			 }
+			$where .= ") ";
+        }
+		
+		//if the user does not have the all branch data access they can only see their own stats
+        if ($_SESSION['data_access']['branch_records']) {
+             $join .= " left join branch_user bu on r.branch_id = bu.branch_id ";
+			 $where .= " and (bu.user_id = '".$_SESSION['user_id']."' ";
+			  if ($_SESSION['data_access']['unassigned_branch']) {
+			$where .= " or bu.user_id is null ";
+			 }
+			$where .= ") ";
+        }
+
+        //if the user does not have the all region data permission they can only see their own stats
+        if ($_SESSION['data_access']['region_records']) {
+			$join .= " left join branch_region_users bru on r.region_id = bru.region_id ";
+            $where .= " and (".$fields['region_id']." = '{$_SESSION['region_id']}'";
+			 if ($_SESSION['data_access']['unassigned_region']) {
+			$where .= " or bru.user_id is null ";
+			 }
+			$where .= ") ";
+        }
+
+		return array("where"=>$where,"join"=>$join);
+	}
+
+    public function get_activity($params)
     {
-        $date_from = $options['date_from'];
-        $date_to = $options['date_to'];
-        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
-        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
-        $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
- $pots= isset($options['pots']) ? $options['pots'] : array();
-
-        $where = "";
-        if (!empty($date_from)) {
-            $where .= " and date(contact) >= '$date_from' ";
-        }
-        if (!empty($date_to)) {
-            $where .= " and date(contact) <= '$date_to' ";
-        }
-        if (!empty($campaigns)) {
-            $where .= " and history.campaign_id IN (".implode(",",$campaigns).") ";
-        }
-        if (!empty($outcomes)) {
-            $where .= " and history.outcome_id IN (".implode(",",$outcomes).") ";
-        }
-        if (!empty($users)) {
-            $where .= " and history.user_id IN (".implode(",",$users).") ";
-        }
-        if (!empty($teams)) {
-            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
-        }
-        if (!empty($sources)) {
-            $where .= " and history.source_id IN (".implode(",",$sources).") ";
-        }
-if (!empty($pots)) {
-            $where .= " and history.pot_id IN (".implode(",",$pots).") ";
-        }
-        //if the user does not have the agent reporting permission they can only see their own stats
-        if (@!in_array("by agent", $_SESSION['permissions'])) {
-            $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
-        }
-
-        //if the user does not have the group reporting permission they can only see their own stats
-        if (@!in_array("by group", $_SESSION['permissions'])) {
-            //$where .= " and history.group_id = '{$_SESSION['group']}' ";
-        }
-
-        //if the user does not have the group reporting permission they can only see their own stats
-        if (@!in_array("by team", $_SESSION['permissions'])) {
-            //this doesnt work because some people dont have a team such as clients
-            //$where .= " and history.team_id = '{$_SESSION['team']}' ";
-        }
-
-        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join outcomes using(outcome_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= $where;
-
-        $qry .= " ) t on history.outcome_id = outcomes.outcome_id where 1 and outcome is not null and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-
-        $qry .= $where;
-        $qry .= " group by history.outcome_id order by count desc ";
+        $qry = "select outcome,count(*) count,total from history h left join outcomes using(outcome_id) left join records r using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id ".$params['join']." left join (select count(*) total,h.outcome_id from history h left join outcomes using(outcome_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records r using(urn) ".$params['join']." where 1 ".$params['where']." and outcome is not null) t on h.outcome_id = outcomes.outcome_id where 1 ".$params['where']." and outcome is not null group by h.outcome_id order by count desc ";
         return $this->db->query($qry)->result_array();
     }
 

@@ -222,7 +222,7 @@ class Survey extends CI_Controller
         $title = "Surveys";
 			$global_filter = false;
 if(in_array("enable global filter",$_SESSION['permissions'])){
-      		$global_filter = $this->Filter_model->build_global_filter();
+      		$global_filter = $this->Filter_model->build_filter_options();
 		}
         $data = array(
 		'global_filter'=>$global_filter,

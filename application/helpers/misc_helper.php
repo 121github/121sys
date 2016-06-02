@@ -105,12 +105,13 @@ function table_joins(){
 		
 		$join['appointment_contacts'] = "left join contacts appointment_contacts on appointment_contacts.contact_id = appointments.contact_id left join contact_telephone appointment_telephone on appointment_telephone.contact_id = appointments.contact_id ";
 		$join['history'] = "left join history h on h.urn = r.urn ";
+		$join['history_campaign'] = "left join campaigns hist_camp on h.campaign_id = hist_camp.campaign_id ";
 		$join['history_users'] = " left join users hu on h.user_id = hu.user_id ";
 		$join['history_outcomes'] = " left join outcomes ho on h.outcome_id = ho.outcome_id ";
-		$join['history_reasons'] = " left join outcome_reasons hor on hor.oucome_reason_id = h.outcome_reason_id ";
+		$join['history_reasons'] = " left join outcome_reasons hor on hor.outcome_reason_id = h.outcome_reason_id ";
 		$join['history_contacts'] = " left join contacts hc on hc.contact_id = h.contact_id ";
-		$join['history_group_id'] = " left join groups hg on hg.group_id = h.group_id ";
-		$join['history_team_id'] = " left join teams ht on hc.team_id = hc.group_id ";
+		$join['history_groups'] = " left join user_groups hg on hg.group_id = h.group_id ";
+		$join['history_teams'] = " left join teams ht on ht.team_id = h.team_id ";
 		
 		$join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
 		$join['progress_description'] = " left join progress_description on r.progress_id = progress_description.progress_id ";
@@ -123,7 +124,8 @@ function table_joins(){
        
         $join['contacts'] = " left join contacts con on con.urn = r.urn and con.`primary` = 1 ";
         $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id and cona.`primary` = 1 ";
-		
+		$join['branch'] = " left join branch branch on branch.branch_id = r.branch_id ";
+		$join['branch_regions'] = " left join branch_regions branch_regions on branch_regions.region_id = r.region_id ";
         $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
         $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";

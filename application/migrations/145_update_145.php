@@ -31,7 +31,7 @@ $this->db->query("INSERT INTO `datatables_table_names` (`table_id`, `table_name`
 ");
 
 $this->db->query("INSERT ignore INTO `datatables_table_fields` (`table_id`, `datafield_id`) (select 5,datafield_id from datafields where datafield_group='Survey')");
-$this->db->query("INSERT ignore INTO `datatables_table_fields` (`table_id`, `datafield_id`) (select 5,datafield_id from datafields where datafield_group='Companies')");
+$this->db->query("INSERT ignore INTO `datatables_table_fields` (`table_id`, `datafield_id`) (select 5,datafield_id from datafields where datafield_group='Company')");
 $this->db->query("INSERT ignore INTO `datatables_table_fields` (`table_id`, `datafield_id`) (select 5,datafield_id from datafields where datafield_group='Record')");
 $this->db->query("INSERT ignore INTO `datatables_table_fields` (`table_id`, `datafield_id`) (select 5,datafield_id from datafields where datafield_group='Campaign')");
 $this->db->query("INSERT ignore INTO `datatables_table_fields` (`table_id`, `datafield_id`) (select 5,datafield_id from datafields where datafield_group='Extra Fields')");

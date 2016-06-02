@@ -16,6 +16,9 @@ class User extends CI_Controller
         $this->load->model('Filter_model');
         $this->load->model('Booking_model');
     }
+	public function home(){
+		redirect($_SESSION['home']);	
+	}
 
 	public function layout(){
 		//update user layout

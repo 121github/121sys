@@ -482,6 +482,8 @@ var maps = {
                 maps.addAppointmentMarker(item);
             } else if (page_name == "records") {
                 maps.addRecordMarker(item);
+            } else if (page_name == "history") {
+                maps.addRecordMarker(item);
             } else if (page_name == "planner") {
                 maps.addPlannerMarker(item);
             }

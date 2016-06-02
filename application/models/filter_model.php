@@ -1422,7 +1422,7 @@ return $query->result_array();
         return $this->db->insert_batch('email_history', $data);
     }
 	
-	public function build_global_filter(){
+	public function build_filter_options(){
 		if(!isset($_SESSION['current_campaign'])&&!$_SESSION['data_access']['mix_campaigns']){
 		return false;	
 		}
@@ -1446,6 +1446,9 @@ return $query->result_array();
 			//get branches
 			$qry = "select branch_id id,branch_name name,campaign_name from branch join branch_campaigns using(branch_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by branch_id,campaigns.campaign_id order by campaign_name,branch_name";
 			$filter['branches'] = $this->db->query($qry)->result_array();
+			//get regions
+			$qry = "select region_id id,region_name name,campaign_name from branch_regions join branch using(region_id) join branch_campaigns using(branch_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by region_id,campaigns.campaign_id order by campaign_name,region_name";
+			$filter['regions'] = $this->db->query($qry)->result_array();
 			
 			$filter['special'][] = array("id"=>1,"name"=>"New");
 			$filter['special'][] = array("id"=>2,"name"=>"Lapsed Tasks");

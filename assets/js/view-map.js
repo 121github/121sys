@@ -128,7 +128,7 @@ var view = {
             "createdRow": function(row, data, dataIndex) {
                 $(row).attr('data-urn', data.urn);
                 $(row).attr('data-id', data.marker_id);
-				if(page_name=="records"){
+				if(page_name=="records"||page_name=="history"||page_name=="survey"){
                 $(row).attr('data-modal', 'view-record');
 				} else if(page_name=="appointment"){
 				$(row).attr('data-modal', 'view-appointment');	

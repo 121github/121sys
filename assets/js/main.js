@@ -643,17 +643,6 @@ var filters = {
             }
         });
 
-        $('nav#filter-view').mmenu({
-            navbar: {
-                title: "Current Filters <span class='text-primary current-campaign'></span>"
-            },
-            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
-            offCanvas: {
-                position: "right",
-                zposition: "front"
-            }
-        });
-
         $(document).on("click", ".clear-filters", function (e) {
             e.preventDefault();
             location.reload();
@@ -729,16 +718,17 @@ if (typeof $('nav#quick-actions-right').mmenu != "undefined") {
             }
         }
     });
-
-    var api = $('nav#quick-actions-right').data('mmenu');
-    api.bind('opened', function () {
+	if($('nav#quick-actions-right').length>0){
+    var quick_menu = $('nav#quick-actions-right').data('mmenu');
+    quick_menu.bind('opened', function () {
         $('#quick-actions-right').fadeIn(400, function () {
             $modal.css('z-index', '2000');
         });
     });
-    api.bind('closing', function () {
+    quick_menu.bind('closing', function () {
         $('#quick-actions-right').fadeOut(200, function () {
 
         });
     });
+	}
 }

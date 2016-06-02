@@ -1,56 +1,60 @@
-
-                
-                <div class="navbar navbar-inverse navbar-fixed-top" style="margin-top:50px">
+<div class="navbar navbar-inverse navbar-fixed-top" style="margin-top:50px">
     <ul class="nav navbar-nav desktop-only">
-    <p class="navbar-text" style="color:#fff; font-weight:700"><?php echo $title ?></p>
+        <p class="navbar-text" style="color:#fff; font-weight:700"><?php echo $title ?></p>
     </ul>
-    <?php if(!isset($hide_filter)){ ?>
-       <ul class="nav navbar-nav pull-right" id="submenu-filters">
-               <li>
-         <div class="navbar-btn">
-                     <div class="btn-group">
-                    <a type="button" class="btn btn-default btn" data-modal="choose-columns"
-                            data-table-id="2"><span
-                            class="fa fa-table"></span> Views
-                    </a>
-                </div>
-              <?php 
-            if ($this->uri->segment(2)=="mapview") {
-                $map_class = "btn-success";
-            } else {
-                $map_class = "btn-default";
-            } ?>   
-                
-                <div class="btn-group">
-                    <a class="btn <?php echo $map_class ?> btn" href="<?php echo base_url() ?>records/mapview"><span
-                            class="fa fa-globe"></span> Map
-                    </a>
-                </div>
-                
-                 <?php if (isset($global_filter)) { ?>
-            <?php if (array_key_exists("pot_id",$_SESSION['filter']['values'])||array_key_exists("source_id",$_SESSION['filter']['values'])||array_key_exists("outcome_id",$_SESSION['filter']['values'])||array_key_exists("postcode",$_SESSION['filter']['values'])) {    
-           
-                $filter_class = "btn-success";
-            } else {
-                $filter_class = "btn-default";
-            } ?>
-                  <div class="btn-group">
-                    <a href="#global-filter" id="submenu-filter-btn" class="btn <?php echo $filter_class ?>"><span
-                            class="fa fa-filter"></span> Filter
-                    </a>
-              
-                </div>
-             <?php } ?>   
+    <?php if (!isset($hide_filter)) { ?>
+        <ul class="nav navbar-nav pull-right" id="submenu-filters">
+            <li>
+                <div class="navbar-btn">
+                    <div class="btn-group">
+                        <a type="button" class="btn btn-default btn" data-modal="choose-columns"
+                           data-table-id="2"><span
+                                class="fa fa-table"></span> Views
+                        </a>
+                    </div>
+                    <?php
+                    if ($this->uri->segment(2) == "mapview") {
+                        $map_class = "btn-success";
+                        $url = "history/view";
+                    } else {
+                        $map_class = "btn-default";
+                        $url = "history/mapview";
+                    } ?>
+
+                    <div class="btn-group">
+                        <a class="btn <?php echo $map_class ?> btn" href="<?php echo base_url().$url; ?>"><span
+                                class="fa fa-globe"></span> Map
+                        </a>
+                    </div>
+
+                    <?php if ($global_filter) {
+                        $filter_class = "btn-default"; ?>
+                        <?php if (isset($_SESSION['filter']['values'])) { ?>
+                            <? if (@array_key_exists("pot_id", $_SESSION['filter']['values']) || @array_key_exists("source_id", $_SESSION['filter']['values']) || @array_key_exists("outcome_id", $_SESSION['filter']['values']) || @array_key_exists("postcode", $_SESSION['filter']['values'])) {
+
+                                $filter_class = "btn-success";
+                            } ?>
+                        <?php } ?>
+                        <div class="btn-group">
+                            <a href="#global-filter" id="submenu-filter-btn"
+                               class="btn <?php echo $filter_class ?>"><span
+                                    class="fa fa-filter"></span> Filter
+                            </a>
+
+                        </div>
+                    <?php } ?>
                     <div class="btn-group desktop-only">
-         <input value="<?php echo @$_SESSION['filter']['values']['postcode'] ?>"  name="postcode" class="form-control" style="width:130px" placeholder="Enter Postcode"/>
-         </div>
-               <div class="btn-group desktop-only">
-            <select name="distance" data-width="130" class="selectpicker">
-             <option <?php if (isset($_SESSION['filter']['values']['distance']) && $_SESSION['filter']['values']['distance'] == "9999") {
+                        <input
+                            value="<?php echo isset($_SESSION['filter']['values']['postcode']) ? $_SESSION['filter']['values']['postcode'] : "" ?>"
+                            name="postcode" class="form-control" style="width:130px" placeholder="Enter Postcode"/>
+                    </div>
+                    <div class="btn-group desktop-only">
+                        <select name="distance" data-width="130" class="selectpicker">
+                        <option <?php if (isset($_SESSION['filter']['values']['distance']) && $_SESSION['filter']['values']['distance'] == "9999") {
                                 echo "selected";
                             } ?> value="9999">Any Distance</option>
-             <option value="">Any Distance</option>
-           <option <?php if (isset($_SESSION['filter']['values']['distance']) && $_SESSION['filter']['values']['distance'] == "1") {
+                            <option value="">Match Postcode</option>
+                            <option <?php if (isset($_SESSION['filter']['values']['distance']) && $_SESSION['filter']['values']['distance'] == "1") {
                                 echo "selected";
                             } ?> value="1">1 Mile
                             </option>
@@ -86,29 +90,29 @@
                                 echo "selected";
                             } ?> value="100">100 Miles
                             </option>
-            </select>
-            </div>
-     <div class="btn-group desktop-only">
-         <button class="btn btn-primary" id="submenu-filter-submit">Go</button>
-         </div>
-       </div>
-        </li>
-        
-            </ul>
-            <?php } ?>
-            </div>
-            
-   <script>
-   $(document).ready(function(){
-	  $('#submenu-filter-submit').on('click',function(e){
-		 e.preventDefault();
-		 var postcode = $('#submenu-filters input[name="postcode"]').val();
-		 var distance = $('#submenu-filters select[name="distance"]').val();
-		 $('#global-filter-form').find('input[name="postcode"]').val(postcode);
-		 $('#global-filter-form').find('select[name="distance"]').val(distance).selectpicker('refresh');
-		 //submit the filter
-		 $('#global-filter-form').find('.apply-filter').trigger('click');
-	  });
-   });
-   
-   </script>         
+                        </select>
+                    </div>
+                    <div class="btn-group desktop-only">
+                        <button class="btn btn-primary" id="submenu-filter-submit">Go</button>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    <?php } ?>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#submenu-filter-submit').on('click', function (e) {
+            e.preventDefault();
+            var postcode = $('#submenu-filters input[name="postcode"]').val();
+            var distance = $('#submenu-filters select[name="distance"]').val();
+            $('#global-filter-form').find('input[name="postcode"]').val(postcode);
+            $('#global-filter-form').find('select[name="distance"]').val(distance).selectpicker('refresh');
+            //submit the filter
+            $('#global-filter-form').find('.apply-filter').trigger('click');
+        });
+    });
+
+</script>

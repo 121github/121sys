@@ -123,18 +123,12 @@ var view = {
                 "defaultContent": "-"
             }],
             "createdRow": function(row, data, dataIndex) {
-				if(page_name=="records"){
 				$(row).attr('data-urn', data.urn);
                 $(row).attr('data-id', data.marker_id);
+				if(page_name=="records"||page_name=="history"||page_name=="survey"){
                 $(row).attr('data-modal', 'view-record');
 				} else if(page_name=="appointment"){
-				$(row).attr('data-urn', data.urn);
-                $(row).attr('data-id', data.marker_id);
 				$(row).attr('data-modal', 'view-appointment');	
-				} else if(page_name=="survey"){
-				$(row).attr('data-urn', data.urn);
-                $(row).attr('data-id', data.urn);
-                $(row).attr('data-modal', 'view-record');
 				}
                 $(row).attr('postcode', data['postcode']);
                 $(row).addClass('pointer');

@@ -36,7 +36,7 @@ class History_model extends CI_Model
 		}
 
 //these tables must be joined to the query regardless of the selected columns to allow the map to function
-        $required_tables = array("record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
+        $required_tables = array("history", "record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
         foreach ($required_tables as $rt) {
             if (!in_array($rt, $tables)) {
                 $tables[] = $rt;
@@ -71,9 +71,9 @@ class History_model extends CI_Model
         $selections = implode(",", $table_columns);
 		$qry = "";
         $select = "select $selections
-                from records r  ";
+                from records r ";
 		$numrows = "select count(distinct h.urn) numrows
-                from  records r ";		
+                from records r ";		
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];

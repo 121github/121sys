@@ -39,7 +39,7 @@ class History extends CI_Controller
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,2);
 		
 		$title = "History";
-		$global_filter = $this->Filter_model->build_global_filter();
+		$global_filter = $this->Filter_model->build_filter_options();
         $data = array(
 		'global_filter' => $global_filter,
             'campaign_access' => $this->_campaigns,
@@ -68,6 +68,46 @@ class History extends CI_Controller
 
     }
 	
+		    public function mapview()
+    {
+        //this array contains data for the visible columns in the table on the view page
+		$this->load->model('Datatables_model');
+		$visible_columns = $this->Datatables_model->get_visible_columns(2);
+		if(!$visible_columns){
+		 $this->load->model('Admin_model');
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);
+		$visible_columns = $this->Datatables_model->get_visible_columns(2);
+		}
+		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,2);
+		$global_filter = $this->Filter_model->build_filter_options();
+		$title = "History List";
+        $data = array(
+		'global_filter' => $global_filter,
+            'campaign_access' => $this->_campaigns,
+            'page' => 'list_history',
+            'title' => $title,
+            'columns' => $visible_columns,
+			'submenu' => array("file"=>'record_list.php',"title"=>$title),
+            'css' => array(
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+				'map.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
+            ),
+            'javascript' => array(
+				'location.js?v' . $this->project_version,
+                'map.js?v' . $this->project_version,
+                'view-map.js?v' . $this->project_version,
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js',
+				'plugins/DataTables/datatables.min.js',
+		'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
+            )
+        );
+        $this->template->load('default', 'records/list_history_and_map.php', $data);
+
+    }
 	
 	public function process_view()
     {
@@ -84,6 +124,12 @@ class History extends CI_Controller
 				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
 					$options['columns'][$k]['search']['value']="";
 				}
+				if($column['data']=="distance"){
+					$distance_sql = $this->Datatables_model->get_distance_query();
+					$options['visible_columns']['select'][$k] = $distance_sql . "distance";
+					$options['visible_columns']['order'][$k] = $distance_sql;
+				}
+				
 			}
 			$this->benchmark->mark('query_start');
             $records = $this->History_model->get_history($options);

@@ -36,42 +36,34 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
 
-        $agents = $this->Form_model->get_agents();
-        $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
-        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
-		$title = 'Overview';
+        $report_filter = $this->Filter_model->build_filter_options();
+		$report_filter['campaigns'] = $this->_campaigns;
+		$title = "Overview Report";
         $data = array(
+			'report_filter'=>$report_filter,
             'campaign_access' => $this->_campaigns,
-
-            'pageId' => 'Reports',
             'title' => $title,
-            'page' => 'activity'
-        ,
+            'page' => 'activity',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
+				'report/reports.js?v' . $this->project_version,
                 'report/overview.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
-            'campaigns_by_group' => $campaigns_by_group,
-            'campaign_outcomes' => $campaign_outcomes,
-            'team_managers' => $teamManagers,
-            'agents' => $agents,
-            'sources' => $sources,
-            'data_pot' => $data_pot, 'css' => array(
+				 'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
@@ -94,14 +86,28 @@ class Reports extends CI_Controller
             if ($this->uri->segment(3) == "pots") {
                 $by_pots = true;
             }
-            $results = $this->Report_model->get_overview($this->input->post(), $by_pots);
+           
+$field_assoc = array("date_from"=>"h.contact",
+			"date_to"=>"h.contact",
+			"user_id"=>"h.user_id",
+			"campaign_id"=>"h.campaign_id",
+			"team_id"=>"h.team_id",
+			"pot_id"=>"h.pot_id",
+			"outcome_id"=>"h.outcome_id",
+			"source_id"=>"h.source_id",
+			"group_id"=>"h.group_id");
+			
+			$query_params = $this->Report_model->build_filter_query($this->input->post(),$field_assoc);
+			$results = $this->Report_model->get_overview($query_params, $by_pots);
             $date_from = $this->input->post("date_from");
             $date_to = $this->input->post("date_to");
-            $users = $this->input->post("agents");
-            $campaigns = $this->input->post("campaigns");
-            $teams = $this->input->post("teams");
-            $pots = $this->input->post("pots");
-            $outcomes = $this->input->post("outcomes");
+            $users = $this->input->post("user_id");
+            $campaigns = $this->input->post("campaign_id");
+            $teams = $this->input->post("team_id");
+            $pots = $this->input->post("pot_id");
+			$sources = $this->input->post("source_id");
+			$branches = $this->input->post("branch_id");
+			$regions = $this->input->post("region_id");
             /*
                         $overall_array = array();
                         $post = $this->input->post();
@@ -125,6 +131,7 @@ class Reports extends CI_Controller
             $url .= (!empty($teams) ? "/team/" . implode("_", $teams) . (count($teams) > 1 ? ":in" : "") : "");
             $url .= (!empty($sources) ? "/hsource/" . implode("_", $sources) . (count($sources) > 1 ? ":in" : "") : "");
             $url .= (!empty($outcomes) ? "/outcome/" . implode("_", $outcomes) . (count($outcomes) > 1 ? ":in" : "") : "");
+			
             $total_url = $url;
             $campaign_results = array();
             $campaign_total = array();
@@ -235,14 +242,14 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
@@ -449,40 +456,34 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
 
-        $agents = $this->Form_model->get_agents();
-        $teamManagers = $this->Form_model->get_teams();
-        $sources = $this->Form_model->get_sources_by_campaign_list($current_campaign);
-        $data_pot = $this->Form_model->get_pots_by_campaign_list($current_campaign);
+        $report_filter = $this->Filter_model->build_filter_options();
+		$report_filter['campaigns'] = $this->_campaigns;
 		$title = "Activity Report";
         $data = array(
+			'report_filter'=>$report_filter,
             'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
             'title' => $title,
             'page' => 'activity',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
+				'report/reports.js?v' . $this->project_version,
                 'report/activity.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
-            'campaigns_by_group' => $campaigns_by_group,
-            'campaign_outcomes' => $campaign_outcomes,
-            'team_managers' => $teamManagers,
-            'agents' => $agents,
-            'sources' => $sources,
-            'data_pot' => $data_pot, 'css' => array(
+                'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
@@ -499,7 +500,18 @@ class Reports extends CI_Controller
             $data = array();
             $data_array = array();
             $total = 0;
-            $results = $this->Report_model->get_activity($this->input->post());
+			$field_assoc = array("date_from"=>"h.contact",
+			"date_to"=>"h.contact",
+			"user_id"=>"h.user_id",
+			"campaign_id"=>"h.campaign_id",
+			"team_id"=>"h.team_id",
+			"outcome_id"=>"h.outcome_id",
+			"pot_id"=>"h.pot_id",
+			"source_id"=>"h.source_id",
+			"group_id"=>"h.group_id");
+			
+			$query_params = $this->Report_model->build_filter_query($this->input->post(),$field_assoc);
+            $results = $this->Report_model->get_activity($query_params);
             $date_from = $this->input->post("date_from");
             $date_to = $this->input->post("date_to");
             $users = $this->input->post("agents");
@@ -514,7 +526,7 @@ class Reports extends CI_Controller
                 $colname = $this->input->post('colname');
                 unset($post['teams']);
                 unset($post['agents']);
-                $overall = $this->Report_model->get_activity($post);
+                $overall = $this->Report_model->get_activity($post,$field_assoc);
                 $overall_array = array();
                 foreach ($overall as $k => $row) {
                     $overall_array[$row['outcome']]["overall_total"] = $row['total'];
@@ -598,14 +610,14 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
@@ -785,14 +797,14 @@ class Reports extends CI_Controller
             $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($campaigns);
 
             $aux = array(
-                "positive" => array(),
-                "No_positive" => array(),
+                "Positive" => array(),
+                "Not_Positive" => array(),
             );
             foreach ($campaign_outcomes as $outcome) {
                 if ($outcome['positive']) {
-                    array_push($aux['positive'], $outcome);
+                    array_push($aux['Positive'], $outcome);
                 } else {
-                    array_push($aux['No_positive'], $outcome);
+                    array_push($aux['Not_Positive'], $outcome);
                 }
             }
             $campaign_outcomes = $aux;
@@ -1083,14 +1095,14 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
@@ -1292,14 +1304,14 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
@@ -1407,14 +1419,14 @@ class Reports extends CI_Controller
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
         $aux = array(
-            "positive" => array(),
-            "No_positive" => array(),
+            "Positive" => array(),
+            "Not_Positive" => array(),
         );
         foreach ($campaign_outcomes as $outcome) {
             if ($outcome['positive']) {
-                array_push($aux['positive'], $outcome);
+                array_push($aux['Positive'], $outcome);
             } else {
-                array_push($aux['No_positive'], $outcome);
+                array_push($aux['Not_Positive'], $outcome);
             }
         }
         $campaign_outcomes = $aux;
@@ -1880,5 +1892,31 @@ $title = "Dials Report";
             ));
         }
     }
+
+	public function appointment_summary(){
+			$title="Appointment Summary";
+		
+		     $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Reports',
+            'title' =>$title,
+            'page' => "appointment_summary",
+            'javascript' => array(
+                'charts.js?v' . $this->project_version,
+                'report/appointment_summary.js?v' . $this->project_version,
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'css' => array(
+                'dashboard.css',
+                'daterangepicker-bs3.css'
+            ),
+			'submenu' => array("file"=>'default_submenu.php',"title"=>$title)
+        );
+        $this->template->load('default', 'reports/appointment_summary.php', $data);
+		
+		
+	}
 
 }

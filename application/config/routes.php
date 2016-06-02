@@ -40,7 +40,7 @@
 if(!isset($_SESSION['home'])){
 $route['default_controller'] = "user/account";	
 } else {
-$route['default_controller'] = $_SESSION['home'];
+$route['default_controller'] = "user/home";
 }
 $route['search'] = "search/search_form";
 $route['admin/shop/(:any)'] = "flexicart_admin/$1";

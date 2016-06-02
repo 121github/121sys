@@ -67,7 +67,7 @@ class Records extends CI_Controller
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
 		
 		$title = "Record List";
-		$global_filter = $this->Filter_model->build_global_filter();
+		$global_filter = $this->Filter_model->build_filter_options();
         $data = array(
 		'global_filter' => $global_filter,
             'campaign_access' => $this->_campaigns,
@@ -107,7 +107,7 @@ class Records extends CI_Controller
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		}
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
-		$global_filter = $this->Filter_model->build_global_filter();
+		$global_filter = $this->Filter_model->build_filter_options();
 		$title = "Record List";
         $data = array(
 		'global_filter' => $global_filter,
@@ -374,7 +374,7 @@ if(!isset($_SESSION['current_campaign'])||$campaign_id<>$_SESSION['current_campa
         }
 		$title = "View Details";
 		if(in_array("enable global filter",$_SESSION['permissions'])){
-      		$global_filter = $this->Filter_model->build_global_filter();
+      		$global_filter = $this->Filter_model->build_filter_options();
 		}
         $data = array(
 		'global_filter' => $global_filter,

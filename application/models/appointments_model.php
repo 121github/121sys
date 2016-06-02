@@ -321,6 +321,9 @@ $datafield_ids = array();
         }
 		
         $qry .= get_where($options, $filter_columns);
+		if(!empty($options['date_to'])&&!empty($options['date_from'])){
+			$qry .= " and date(a.start) between date('".$options['date_from']."') and date('".$options['date_to']."')";
+		}
 		 //get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows . $qry)->row()->numrows;
         $qry .= " group by appointment_id";

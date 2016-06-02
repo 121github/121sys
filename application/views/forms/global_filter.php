@@ -1,32 +1,7 @@
  <nav id="global-filter" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">
             <form id="global-filter-form">
-            <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
-            <div class="form-group">
-                <label>Postcode <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
-                                      data-placement="right" data-title="Enter a postcode to find records in the same area" data-html="true"></span></label>
-                                      <input  value="<?php echo isset($_SESSION['filter']['values']['postcode'])?$_SESSION['filter']['values']['postcode']:"" ?>" class="form-control" placeholder="Enter full postcode" name="postcode" />
-            </div>
-            <?php } ?>
-   <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
-                   <div class="form-group">
-                <label>Distance <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
-                                      data-placement="right" data-title="Enter a distance to search from the postcode entered" data-html="true"></span></label>
-                                   <select name="distance" data-width="100%" class="selectpicker">
-            <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="9999"){ echo "selected"; } ?> value="9999">Any Distance</option>
-             <option value="">Match Postcocode</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="1"){ echo "selected"; } ?> value="1">1 Mile</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="3"){ echo "selected"; } ?> value="3">3 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="5"){ echo "selected"; } ?> value="5">5 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="10"){ echo "selected"; } ?> value="10">10 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="20"){ echo "selected"; } ?> value="20">20 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="30"){ echo "selected"; } ?> value="30">30 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="50"){ echo "selected"; } ?> value="50">50 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="75"){ echo "selected"; } ?> value="75">75 Miles</option>
-             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="100"){ echo "selected"; } ?> value="100">100 Miles</option>
-            </select>
-            </div>
-           <?php } ?>
+          
               <?php if(in_array("filter pot",$_SESSION['permissions'])){ ?> 
             <?php  if(isset($pots) && count($pots) > 0){ ?>
             <div class="form-group">
@@ -113,10 +88,10 @@
                   <?php if(in_array("filter region",$_SESSION['permissions'])){ ?>
                  <?php if(isset($regions) && count($regions) > 0){ ?>
                 <div class="form-group">
-                <label>Branch <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
+                <label>Region <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                          data-placement="right" data-title="The branch the record is assigned to"
                                          data-html="true"></span></label>
-                <select name="branch_id[]" title="All Branches" multiple class="selectpicker" data-width="100%">
+                <select name="region_id[]" title="All Regions" multiple class="selectpicker" data-width="100%">
     
                     <?php foreach ($regions as $row) { ?>
                      
@@ -126,9 +101,36 @@
                 </div>
                  <?php } ?>
                  <?php } ?> 
+                 
+                   <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
+            <div class="form-group">
+                <label>Postcode <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
+                                      data-placement="right" data-title="Enter a postcode to find records in the same area" data-html="true"></span></label>
+                                      <input  value="<?php echo isset($_SESSION['filter']['values']['postcode'])?$_SESSION['filter']['values']['postcode']:"" ?>" class="form-control" placeholder="Enter full postcode" name="postcode" />
+            </div>
+            <?php } ?>
+   <?php if(in_array("filter postcode",$_SESSION['permissions'])){ ?>
+                   <div class="form-group">
+                <label>Distance <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
+                                      data-placement="right" data-title="Enter a distance to search from the postcode entered" data-html="true"></span></label>
+                                   <select name="distance" data-width="100%" class="selectpicker">
+            <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="9999"){ echo "selected"; } ?> value="9999">Any Distance</option>
+             <option value="">Match Postcocode</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="1"){ echo "selected"; } ?> value="1">1 Mile</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="3"){ echo "selected"; } ?> value="3">3 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="5"){ echo "selected"; } ?> value="5">5 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="10"){ echo "selected"; } ?> value="10">10 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="20"){ echo "selected"; } ?> value="20">20 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="30"){ echo "selected"; } ?> value="30">30 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="50"){ echo "selected"; } ?> value="50">50 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="75"){ echo "selected"; } ?> value="75">75 Miles</option>
+             <option <?php if(isset($_SESSION['filter']['values']['distance'])&&$_SESSION['filter']['values']['distance']=="100"){ echo "selected"; } ?> value="100">100 Miles</option>
+            </select>
+            </div>
+           <?php } ?>
                 <div class="form-group">
               
-                  <button class="btn btn-danger pull-left clear-filter"  <?php if(isset($_SESSION['filter']['values'])?$_SESSION['filter']['values']:"") ?> >Clear</button>
+                  <button class="btn btn-danger pull-left clear-filter"  <?php echo (isset($_SESSION['report-filter']['values'])?"":"disabled") ?> >Clear</button>
                 <button class="btn btn-primary pull-right apply-filter">Submit</button>
                 </div>
             </form>

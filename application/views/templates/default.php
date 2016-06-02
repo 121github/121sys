@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<?php if (isset($_SESSION['permissions'])) { ?>
+<?php if (isset($_SESSION['user_id'])) { ?>
 
 <nav id="quick-actions-right" style="display:none; text-align:center; z-index: 110" class="mm-menu mm--horizontal mm-offcanvas">
      <?php $this->view('misc/quick_actions.php'); ?>
@@ -83,6 +83,9 @@
     <?php $this->view('navigation/sidebar/main.php', array("campaign_access" => $campaign_access, "page" => $page)); ?>
     <?php if (isset($global_filter)) {
         $this->view('forms/global_filter.php', $global_filter);
+    } ?>
+     <?php if (isset($report_filter)) {
+        $this->view('forms/report_filter.php', $report_filter);
     } ?>
 <?php } ?>
 
