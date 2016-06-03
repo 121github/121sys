@@ -911,7 +911,7 @@ class Audit_model extends CI_Model
         return $audit_id;
     }
 
-    public function audit_data($count = false, $options = false)
+    public function audit_data($options = false)
     {
         $table_columns = array(
             "campaign_name",
@@ -929,19 +929,26 @@ class Audit_model extends CI_Model
             "name",
             "timestamp"
         );
-        if ($count) {
-            $fields = "audit_id";
-        } else {
-            $fields = "campaign_name,table_name,change_type,column_name,name,date_format(`timestamp`,'%d/%m/%Y %H:%i') `timestamp`,urn,audit_id ";
-        }
-        $qry = "select $fields from audit left join audit_values using(audit_id) left join records using(urn) left join campaigns using(campaign_id) left join users using(user_id)";
-        $where = $this->get_where($options, $table_columns);
-        $qry .= $where;
-        if ($count) {
-            $qry .= " group by audit_id";
-            return $this->db->query($qry)->num_rows();
-        }
 
+        $fields = "campaign_name,table_name,change_type,column_name,name,date_format(`timestamp`,'%d/%m/%Y %H:%i') `timestamp`,urn,audit_id ";
+		$user_campaigns = "";
+		if(!$_SESSION['data_access']['all_campaigns']){
+		$user_campaigns = " join users_to_campaigns uc on uc.user_id = users.user_id ";
+		}
+			
+        $qry = "select $fields from audit left join audit_values using(audit_id) left join records using(urn) left join campaigns using(campaign_id) left join users using(user_id) $user_campaigns ";
+		$numrows = "select count(distinct audit_id) numrows from audit left join audit_values using(audit_id) left join records using(urn) left join campaigns using(campaign_id) left join users using(user_id) $user_campaigns";
+		
+		
+        $where = $this->get_where($options, $table_columns);
+		
+		if($_SESSION['data_access']['user_records']){
+		$where .= " and users.user_id = '".$_SESSION['user_id']."' ";
+		}
+		
+        $qry .= $where;
+		$this->firephp->log($qry);
+		$count = $this->db->query($numrows.$where)->row()->numrows;
 
         $start = $options['start'];
         $length = $options['length'];
@@ -956,6 +963,7 @@ class Audit_model extends CI_Model
         $qry .= $order;
         $qry .= "  limit $start,$length";
         $result = $this->db->query($qry)->result_array();
+		$result['count'] = $count;
         return $result;
     }
 
@@ -963,8 +971,11 @@ class Audit_model extends CI_Model
     private function get_where($options, $table_columns)
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
-        $where = " where campaign_id in({$_SESSION['campaign_access']['list']}) ";
-
+        $where = " where 1 ";
+		if(isset($_SESSION['current_campaign'])){
+		 $where .= " and campaign_id = '".$_SESSION['current_campaign']."' ";
+		}
+		
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause

@@ -69,8 +69,8 @@ var view = {
             },
             "dom": '<"row top-row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"row bottom-row"<"col-lg-12"<"pull-left"l> <"pull-right marl" B>>><"clear">',
             "lengthMenu": [
-                [10, 25, 50, 100, 1000],
-                [10, 25, 50, 100, 1000]
+               [10, 25, 50, 100, 1000, 999999999],
+               [10, 25, 50, 100, 1000, 'All']
             ],
             "width": "100%",
             "scrollX": true,
@@ -88,7 +88,7 @@ var view = {
                 beforeSend: function() {
                     $('.dt_info div').empty()
                     start_time = new Date().getTime();
-					$('.loading-overlay').fadeIn();
+					$('#loading-overlay').fadeIn();
                 },
                 data: function(d) {
                     d.extra_field = false;
@@ -107,7 +107,7 @@ var view = {
                     request_time = (new Date().getTime() - start_time) / 1000;
                     $('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" data-placement="bottom" title="Process time ' + Number(d.responseJSON.process_time) + ' seconds<br>Query time ' + Number(d.responseJSON.query_time) + ' seconds<br>Request time ' + request_time + ' seconds"><span class="glyphicon glyphicon-info-sign"></span></span>');
                     $('.tt').tooltip();
-					$('.loading-overlay').fadeOut();
+					$('#loading-overlay').fadeOut();
                     //Show search options if some filter exist
                     if (view.has_filter) {
                         $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");

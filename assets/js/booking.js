@@ -126,10 +126,10 @@ var calendar = {
             editable: true,
             loading: function (bool) {
                 if (bool) {
-                    $('.loading-overlay').fadeIn();
+                    $('#loading-overlay').fadeIn();
                 }
                 else {
-                    $('.loading-overlay').fadeOut();
+                    $('#loading-overlay').fadeOut();
                 }
             },
             customButtons: {

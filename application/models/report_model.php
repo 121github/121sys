@@ -85,7 +85,7 @@ class Report_model extends CI_Model
 	public function build_filter_query($filter,$fields){
 		unset($_SESSION['report_filter']);
 		$join = "";
-		$where .= "";
+		$where = "";
 		if(!$_SESSION['data_access']['all_campaigns']){
 		$join .= " join users_to_campaigns uc on ".$fields['campaign_id']." = uc.campaign_id ";
         $where .= " and uc.user_id = '".$_SESSION['user_id']."' ";

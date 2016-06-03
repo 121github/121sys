@@ -82,7 +82,7 @@ var view = {
                     $('.dt_info div').empty()
                     start_time = new Date().getTime();
                     maps.items = [];
-					$('.loading-overlay').fadeIn();
+					$('#loading-overlay').fadeIn();
                 },
                 data: function(d) {
                     d.extra_field = false;
@@ -111,7 +111,7 @@ var view = {
                     maps.current_postcode = getCookie('current_postcode');
                     view.planner_permission = d.responseJSON.planner_permission;
                     maps.temp_bounds = false;
-					$('.loading-overlay').fadeOut();
+					$('#loading-overlay').fadeOut();
                     //Show search options if some filter exist
                     if (view.has_filter) {
                         $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");

@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-body">
-                <div class="loading-overlay"></div>
+                <div id="loading-overlay"></div>
                 <div class="row" style="padding:0; margin:0;">
                     <div class="col-xs-12">
                         <div id="view-container">

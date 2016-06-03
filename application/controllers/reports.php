@@ -103,6 +103,7 @@ $field_assoc = array("date_from"=>"h.contact",
             $date_to = $this->input->post("date_to");
             $users = $this->input->post("user_id");
             $campaigns = $this->input->post("campaign_id");
+			$outcomes = $this->input->post("outcome_id");
             $teams = $this->input->post("team_id");
             $pots = $this->input->post("pot_id");
 			$sources = $this->input->post("source_id");

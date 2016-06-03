@@ -138,7 +138,7 @@ var view = {
             url: helper.baseUrl + process_url,
             type: "POST",
             beforeSend: function() {
-                $('.loading-overlay').fadeIn();
+                $('#loading-overlay').fadeIn();
             },
             dataType: "JSON",
             data: {
@@ -148,7 +148,7 @@ var view = {
                 user_id: $('.filter-form').find('input[name="user"]').val()
             },
             complete: function(d) {
-                $('.loading-overlay').fadeOut();
+                $('#loading-overlay').fadeOut();
             }
         }).done(function (response) {
             var button_size = "btn-lg";

@@ -13,7 +13,7 @@ if (!function_exists('get_where')) {
             //this is already added to the session filter when the campaign is selected
 			$where .= " and r.campaign_id = '".$_SESSION['current_campaign'] ."'";
         }		
-        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+       $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         //Check the bounds of the map
         if ($options['bounds'] && $options['map'] == 'true') {
 			if($table=="records"){

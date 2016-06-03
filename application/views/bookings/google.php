@@ -1,4 +1,4 @@
-<div class="loading-overlay">
+<div id="loading-overlay">
     <div class="loader-img">
         <img src="<?php echo base_url(); ?>assets/img/ajax-loader-snake-black.gif" width="5%"/>
     </div>

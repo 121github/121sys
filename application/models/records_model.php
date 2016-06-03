@@ -556,7 +556,7 @@ class Records_model extends CI_Model
                 }
             }
         }
-
+		
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }

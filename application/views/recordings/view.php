@@ -4,7 +4,7 @@
 <div class="panel-heading">Recordings List
 </div>
 <div class="panel-body" style="padding:0; margin:0; position:relative">
-  <div class="loading-overlay"></div>
+  <div id="loading-overlay"></div>
         <div class="row" style="padding:0; margin:0;">
         <div class="col-xs-12">
         <div id="view-container">                <img class="table-loading"
