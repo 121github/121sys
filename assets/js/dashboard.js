@@ -8,15 +8,21 @@ var dashboard = {
                 ranges: {
                     'Any Time': ["01/01/2014", moment()],
                     'Today': [moment(), moment()],
+                    'Tomorrow': [moment(), moment().add(1, 'days')],
                     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Next 7 Days': [moment(), moment().add(6, 'days')],
                     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Next 30 Days': [moment(), moment().add(29, 'days')],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Next Month': [moment().startOf('month'), moment().add(1, 'month').endOf('month')],
+                    'Future Days': [moment(), moment().add(5, 'years')],
+                    'Past Days': [moment().subtract(5, 'years'), moment()]
+
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",
-                maxDate: moment(),
                 startDate: "02/07/2014",
                 endDate: moment(),
             },
@@ -26,6 +32,16 @@ var dashboard = {
                     $btn.find('.date-text').html("Any time");
                     $btn.closest('form').find('input[name="date_from"]').val('');
                     $btn.closest('form').find('input[name="date_to"]').val('');
+                }
+                else if (element == "Future Days") {
+                    $btn.find('.date-text').html("Future Days");
+                        $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                        $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                }
+                else if (element == "Past Days") {
+                    $btn.find('.date-text').html("Past Days");
+                    $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                    $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
                 } else {
                     $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                     $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
@@ -168,6 +184,8 @@ var dashboard = {
         dashboard.emails_panel();
         dashboard.sms_panel();
         dashboard.outcomes_panel();
+
+        //numbers.animate($('.tile_stats_count'));
     },
 
     filter_panel: function () {
@@ -268,7 +286,8 @@ var dashboard = {
                 $('#email-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
             }
         }).done(function (response) {
-            $('#email-stats').html("<div><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read<br><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today<br><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today<br><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today<br><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime<br><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</div>");
+            $('#email-stats').html("<div><a class='count' href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read<br><a class='count' href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "<br><a class='count' href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today<br><a class='count' href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today<br><a class='count' href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today<br><a class='count' href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime<br><a class='count' href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</div>");
+            //numbers.animate($('#email-stats'));
 
             //GRAPHS
             google.load('visualization', '1', {
@@ -348,7 +367,8 @@ var dashboard = {
             }
         }).done(function (response) {
             $('#sms-stats').html("<ul>" +
-                "<div><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today <br><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "<br><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "<br><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "<br><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "<br><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "<br><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "<br><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "<br><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "<br><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "<br><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</div>");
+                "<div><a class='count' href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today <br><a class='count' href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "<br><a class='count' href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "<br><a class='count' href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "<br><a class='count' href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "<br><a class='count' href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "<br><a class='count' href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "<br><a class='count' href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "<br><a class='count' href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "<br><a class='count' href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "<br><a class='count' href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "<br><a class='count' href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</div>");
+            //numbers.animate($('#sms-stats'));
 
             //GRAPHS
             google.load('visualization', '1', {
@@ -442,10 +462,11 @@ var dashboard = {
             if (response.data.length > 0) {
                 var rows = [];
                 $.each(response.data, function (i, val) {
-                    $outcomes += '<a href="' + helper.baseUrl + 'search/custom/history/outcome/' + val.outcome + '/contact-from/' + response.date + campaign + '" class="list-group-item">' + val.outcome + '<span class="pull-right text-muted small"><em>' + val.count + '</em></span></a>';
+                    $outcomes += '<a href="' + helper.baseUrl + 'search/custom/history/outcome/' + val.outcome + '/contact-from/' + response.date + campaign + '" class="list-group-item">' + val.outcome + '<span class="pull-right text-muted small"><em class="count">' + val.count + '</em></span></a>';
                     rows.push([val.outcome, parseInt(val.count)]);
                 });
                 $('.outcome-stats').append('<div class="list-group">' + $outcomes + '</div>');
+                //numbers.animate($('.outcome-stats'));
 
                 //GRAPHS
                 google.load('visualization', '1', {
@@ -489,23 +510,24 @@ var dashboard = {
             }
         }).done(function (response) {
             $('#system-stats').empty();
-            $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.'
+            $contents = '<div><h4>Campaign Stats</h4><p><a class="count" href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.'
             if (helper.permissions['view live'] > 0) {
-                $contents += '<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress'
+                $contents += '<br><a class="count" href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress'
             }
             if (helper.permissions['view parked'] > 0) {
-                $contents += '<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked'
+                $contents += '<br><a class="count" href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked'
             }
             if (helper.permissions['view dead'] > 0) {
-                '<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
+                '<br><a class="count" href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
             }
             if (helper.permissions['set progress'] > 0) {
-                $contents += '<div><h4>Follow up Stats</h4></div><div><p><a href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div>';
+                $contents += '<div><h4>Follow up Stats</h4></div><div><p><a class="count" href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div>';
             }
             if (response.data.surveys > 0) {
-                $contents += '<div><h4>Survey Stats</h4></div><div><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div>';
+                $contents += '<div><h4>Survey Stats</h4></div><div><p class="count">' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div>';
             }
             $('#system-stats').append($contents);
+            //numbers.animate($('#system-stats'));
 
             //GRAPHS
             google.load('visualization', '1', {
@@ -1361,6 +1383,8 @@ var dashboard = {
                 //Get the data content of the panels
                 $.each(response.reports, function (i, report) {
                     var show_first = true;
+                    var order_by;
+                    var order_by_dir;
                     $('.filter-form').find('input[name="export_forms_id"]').val(report.report_id);
                     $.ajax({
                         url: helper.baseUrl + 'exports/load_export_report_data',
@@ -1386,8 +1410,14 @@ var dashboard = {
                             $.each(resp.data, function (i, data) {
                                 if (resp.data.length) {
                                     body += "<tr>";
+                                    var j=0;
                                     $.each(data, function (k, val) {
+                                        if ((typeof order_by == 'undefined') && resp.order_by[0] == k) {
+                                            order_by = j;
+                                            order_by_dir = resp.order_by[1];
+                                        }
                                         body += "<td>" + val + "</td>";
+                                        j++;
                                     });
                                     body += "</tr>";
                                 }
@@ -1401,6 +1431,7 @@ var dashboard = {
                              $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
                              });
                              */
+
                             var dom_size = (report.column_size < 6 ? 12 : 6);
                             $('#table-' + report.report_id).DataTable({
                                 buttons: [
@@ -1408,8 +1439,7 @@ var dashboard = {
                                 ],
                                 "dom": '<"top top-row small" <"col-lg-' + dom_size + '"<"pull-left"f>><"col-lg-' + dom_size + '"<"pull-right"B>>>rt<"bottom-' + report.report_id + ' bottom-row small"<"col-lg-' + dom_size + '"l><"col-lg-' + dom_size + '"<"pull-right"i>><"col-lg-' + dom_size*2 + '"p>><"clear">',
                                 "pagingType": "full",
-
-
+                                "order": [[ (typeof order_by != 'undefined'?order_by:0), (typeof order_by_dir != 'undefined'?order_by_dir:"asc") ]],
                                 "createdRow": function (row, data, dataIndex) {
 
                                     if (resp.header[0] == "URN") {

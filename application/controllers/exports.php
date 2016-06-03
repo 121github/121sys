@@ -320,11 +320,14 @@ class Exports extends CI_Controller
                 $graphs = $aux;
             }
 
+            $order_by = explode(' ',$export_form['order_by']);
+
 			if(count($results)){
                 echo json_encode(array(
                     "success" => true,
                     "data" => ($results?$results:"No export forms were created yet!"),
                     "header" => explode(";",$export_form['header']),
+                    "order_by" => $order_by,
                     'graphs' => $graphs
                 ));
             }
