@@ -266,6 +266,7 @@ var campaign_functions = {
 
         var appointment_id = false;
         var urn = $form.find("[name='urn']").val();
+        var data_id = $form.find("[name='data_id']").val();
         if ($form.find('input[name="3"]').val() !== "") {
             appointment_id = $form.find('input[name="3"]').val();
         }
@@ -298,6 +299,39 @@ var campaign_functions = {
                 })
 		 }
 		*/
+
+        //Report Status is Submitted -> set the submitted date
+        if ($form.find("[name='16']").val() === "Written report submitted" && $form.find("[name='17']").val() === ''){
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1;
+            var yyyy = today.getFullYear();
+            if(dd<10){
+                dd='0'+dd
+            }
+            if(mm<10){
+                mm='0'+mm
+            }
+            submitted_date = dd+'/'+mm+'/'+yyyy;
+        }
+        else if ($form.find("[name='16']").val() !== "Written report submitted" && $form.find("[name='17']").val() !== '') {
+            var submitted_date = '';
+        }
+
+        //Set the submitted field if it is necessary
+        if (typeof submitted_date != 'undefined') {
+            $.ajax({
+                url: helper.baseUrl + 'records/update_custom_data_field',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: urn,
+                    data_id: data_id,
+                    field_id: 17,
+                    value: submitted_date
+                }
+            });
+        }
 		
         //Job Status is Paid
         if ($form.find("[name='6']").val() === "Paid"){
