@@ -312,7 +312,7 @@ class Form_model extends CI_Model
 
 	public function get_pots()
     {
-            $qry = "select pot_id id,pot_name name from records left join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name order by pot_name";
+            $qry = "select pot_id id,pot_name name from records inner join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name order by pot_name";
 
         $x =  $this->db->query($qry)->result_array();
 		return $x;

@@ -46,15 +46,20 @@
             <input type="hidden" name="comments">
 
             <?php if (isset($options['date']) && ($options['date'])) { ?>
-                <input type="hidden" name="date_from" value="<?php echo ((isset($filters['date_from']))?$filters['date_from']['values'][0]:"2014-02-07"); ?>">
-                <input type="hidden" name="date_to" value="<?php echo ((isset($filters['date_to']))?$filters['date_to']['values'][0]:date('Y-m-d')); ?>">
+                <input type="hidden" name="date_from" value="">
+                <input type="hidden" name="date_to" value="">
                 <div style="margin-bottom: 5%;">
-                    <button type="button" class="daterange btn btn-default" data-width="100%">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                        <span class="date-text"> <?php echo "Any Time"; ?> </span>
-                    </button>
+                    <?php if (!isset($filters['date']) || (isset($filters['date']) && ($filters['date']['editable']))) { ?>
+                        <button type="button" class="daterange btn btn-default" data-width="100%">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            <span class="date-text"> <?php echo "Any Time"; ?> </span>
+                        </button>
+                    <?php } else { ?>
+                        <span class="date-filter"><span style="font-weight: bold">Date Filter: </span><?php echo ((isset($filters['date']))?$filters['date']['values'][0]:"Any Time"); ?></span>
+                    <?php } ?>
                 </div>
             <?php } ?>
+
 
             <?php if (isset($campaigns_by_group) && !empty($campaigns_by_group)) { ?>
                 <div style="display: <?php echo (isset($filters['campaigns'])?($filters['campaigns']['editable'] == "1"?"":"none"):""); ?>">

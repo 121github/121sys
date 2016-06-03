@@ -16,7 +16,9 @@ var dashboard = {
                     'Next 30 Days': [moment(), moment().add(29, 'days')],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
                     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'Next Month': [moment().startOf('month'), moment().add(1, 'month').endOf('month')]
+                    'Next Month': [moment().startOf('month'), moment().add(1, 'month').endOf('month')],
+                    'Future Days': [moment(), moment().add(5, 'years')],
+                    'Past Days': [moment().subtract(5, 'years'), moment()]
 
                 },
                 format: 'DD/MM/YYYY',
@@ -30,6 +32,16 @@ var dashboard = {
                     $btn.find('.date-text').html("Any time");
                     $btn.closest('form').find('input[name="date_from"]').val('');
                     $btn.closest('form').find('input[name="date_to"]').val('');
+                }
+                else if (element == "Future Days") {
+                    $btn.find('.date-text').html("Future Days");
+                        $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                        $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                }
+                else if (element == "Past Days") {
+                    $btn.find('.date-text').html("Past Days");
+                    $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                    $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
                 } else {
                     $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                     $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
