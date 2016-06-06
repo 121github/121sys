@@ -31,7 +31,7 @@ function check_session() {
     $.getJSON(helper.baseUrl + 'user/check_session', function (response) {
         if (response.footer) {
             $('.footer-stats').empty();
-            $.each(response.stats, function (name, count) {
+            $.each(response.footer, function (name, count) {
                 $('.footer-stats').append('<div>' + name + ': ' + count + '</div>');
             });
         }

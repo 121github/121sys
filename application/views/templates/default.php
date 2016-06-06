@@ -98,11 +98,11 @@
     <?php echo $body; ?>
 </div>
 <!-- /content -->
- <?php $this->view('misc/footer.php'); ?>
 <!-- Modal -->
 <div class="isFixed">
     <?php $this->view('misc/alerts.php'); ?>
     <?php $this->view('misc/modal.php'); ?>
+     <?php $this->view('misc/footer.php'); ?>
 </div>
 <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
 <script type="text/javascript"
