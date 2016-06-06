@@ -609,7 +609,7 @@ session_write_close();
      */
     public function check_contact_telephone_numbers()
     {
-		session_write_close();
+        session_write_close();
         $output = "";
         $output .= "\nChecking and fixing wrong contact telephone numbers... \n\n";
 
@@ -624,17 +624,21 @@ session_write_close();
             $aux[$contact['contact_id']] = $contact['telephone_number'];
 
             $new_telephone_number = $contact['telephone_number'];
-if(substr($new_telephone_number,0,3)=="044"){
-                        $new_telephone_number = "0".ltrim($new_telephone_number,'044');
-                        }
-if(substr($new_telephone_number,0,2)=="44"){
-$new_telephone_number = "0".ltrim($new_telephone_number,'44');
-}
-            $new_telephone_number = str_replace('+44', '0', $new_telephone_number);
-            $new_telephone_number = str_replace('+', '00', substr($new_telephone_number, 0, 2)) . substr($new_telephone_number, 2);
+            if (substr($new_telephone_number, 0, 3) === "044") {
+                $new_telephone_number = "0" . ltrim($new_telephone_number, '044');
+            }
+            if (substr($new_telephone_number, 0, 2) === "44") {
+                $new_telephone_number = "0" . ltrim($new_telephone_number, '44');
+            }
+            if (substr($new_telephone_number, 0, 3) === "+44") {
+                $new_telephone_number = str_replace('+44', '0', $new_telephone_number);
+            }
+            if (substr($new_telephone_number, 0, 1) === "+") {
+                $new_telephone_number = str_replace('+', '00', substr($new_telephone_number, 0, 1)) . substr($new_telephone_number, 1);
+            }
             $new_telephone_number = str_replace('(0)', '', $new_telephone_number);
-                        $new_telephone_number = str_replace(' ', '', $new_telephone_number);
-           $new_telephone_number = preg_replace('/[^0-9]/', '', $new_telephone_number);
+            $new_telephone_number = str_replace(' ', '', $new_telephone_number);
+            $new_telephone_number = preg_replace('/[^0-9]/', '', $new_telephone_number);
 
             if (strlen($new_telephone_number) < 7) {
                 $contact['telephone_number'] = '';
@@ -644,7 +648,8 @@ $new_telephone_number = "0".ltrim($new_telephone_number,'44');
 
                 if ($new_telephone_number !== $contact['telephone_number']) {
                     $contact['telephone_number'] = $new_telephone_number;
-                                        echo $new_telephone_number; echo "<br>";
+                    echo $new_telephone_number;
+                    echo "<br>";
                     array_push($update_telephone_numbers, $contact);
                 }
             }
@@ -685,7 +690,7 @@ $new_telephone_number = "0".ltrim($new_telephone_number,'44');
             $email_output = $output;
             $email_output = str_replace("\n", "<br>", $email_output);
             $output .= "Sending email...";
-            $this->send_email('', 'estebanc@121customerinsight.co.uk,bradf@121customerinsight.co.uk', '[121SYS][CRON] Checking contact telephone numbers', $email_output);
+            //$this->send_email('', 'estebanc@121customerinsight.co.uk,bradf@121customerinsight.co.uk', '[121SYS][CRON] Checking contact telephone numbers', $email_output);
             $output .= "OK\n\n";
         }
 
