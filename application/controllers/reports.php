@@ -20,33 +20,6 @@ class Reports extends CI_Controller
 
     public function overview()
     {
-        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
-        $aux = array();
-        foreach ($campaigns_by_group as $campaign) {
-            if (!isset($aux[$campaign['group_name']])) {
-                $aux[$campaign['group_name']] = array();
-            }
-            array_push($aux[$campaign['group_name']], $campaign);
-        }
-        $campaigns_by_group = $aux;
-
-        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
-
-
-        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
-
-        $aux = array(
-            "Positive" => array(),
-            "Not_Positive" => array(),
-        );
-        foreach ($campaign_outcomes as $outcome) {
-            if ($outcome['positive']) {
-                array_push($aux['Positive'], $outcome);
-            } else {
-                array_push($aux['Not_Positive'], $outcome);
-            }
-        }
-        $campaign_outcomes = $aux;
 
         $report_filter = $this->Filter_model->build_filter_options();
 		$report_filter['campaigns'] = $this->_campaigns;

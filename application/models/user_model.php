@@ -98,7 +98,6 @@ class User_model extends CI_Model
     public function check_session()
     {
         //this function is called from main.js on every page load. if the user has a session and the reload_session flag in the user table is set then it will reload permissions and access for the user
-        if (isset($_SESSION['user_id'])) {
             $this->db->where('user_id', $_SESSION['user_id']);
             $query = $this->db->get('users');
             if ($query->row()->reload_session == "1") {
@@ -108,8 +107,9 @@ class User_model extends CI_Model
                 unset($_SESSION['role']);
                 unset($_SESSION['filter']);
 				return true;
-            }
-        }
+            } else {
+				return false;	
+			}
     }
     public function load_user_session()
     {

@@ -314,10 +314,10 @@ class Records_model extends CI_Model
                 $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and ow.user_id is null $where " . $custom_order;
             }
             //next priority is any other record with a nextcall date in order of lowest dials (current user)
-            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (ow.user_id = '$user_id') $where order by date_updated,dials";
+            $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn) $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (ow.user_id = '$user_id') $where order by r.date_updated,dials";
             //next any other record with a nextcall date in order of lowest dials (any user)
             if (in_array("view unassigned", $_SESSION['permissions']) ||$_SESSION['data_access']['unassigned_user']) {
-                $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and ow.user_id is null $where order by date_updated,dials";
+                $priority[] = "select r.urn,ow.user_id from records r left join ownership ow using(urn)  $custom_join where 1 and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and ow.user_id is null $where order by r.date_updated,dials";
             }
             foreach ($priority as $k => $qry) {
                 $query = $this->db->query($qry . " limit 1");

@@ -29,11 +29,7 @@ var record = {
             workbooks.view_workbooks_data($(this).attr('item-id'));
         });
 */
-        /* Initialize all the jquery widgets */
-        $("span.close-alert").click(function () {
-            $(this).closest('.alert').addClass('hidden');
-            $(this).closest('.alert-text').text('');
-        });
+
         /*initialize the call when the agent calls */
         $(document).on('click', 'dd a.startcall', function (e) {
             e.preventDefault();

@@ -82,7 +82,7 @@ class Form_model extends CI_Model
     public function get_campaign_access($id, $array = false)
     {
         $this->db->select("users.user_id id,name");
-        $this->db->join("users", "users.user_id = users_to_campaigns.user_id", "left");
+        $this->db->join("users", "users.user_id = users_to_campaigns.user_id");
         if (!empty($id)) {
             $this->db->where("campaign_id", $id);
         }

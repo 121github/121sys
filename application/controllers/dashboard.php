@@ -1906,13 +1906,13 @@ public function index(){
             echo json_encode(array(
                 "success" => (!empty($reports)),
                 "reports" => $reports,
-                "msg" => (!empty($reports)?"":"There are no panels to be loaded on yet! Please start adding one from the butotn bar on the top")
+                "msg" => (!empty($reports)?"":"No dashboard panels have been added yet. Press the add button in the toolbar to add panels")
             ));
         }
         else {
             echo json_encode(array(
                     "success" => false,
-                    "msg" => "ERROR: It's not an ajax request!"
+                    "msg" => "You can not access this page directly"
                 )
             );
         }

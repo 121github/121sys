@@ -1561,7 +1561,7 @@ var dashboard = {
                 });
             }
             else {
-                flashalert.danger(response.msg);
+                topalert.danger(response.msg);
             }
         });
     }

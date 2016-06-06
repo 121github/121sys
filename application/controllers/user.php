@@ -322,15 +322,25 @@ class User extends CI_Controller
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
     public function check_session()
     {
+		//if not logged in they should be redirected to the login page
+		if(!isset($_SESSION['user_id'])){
+		$_SESSION['flashalert']['warning'] = "You have been logged out";
+		redirect('user/logout');
+		exit;
+		}
+		
         if ($this->User_model->check_session()) {
             $this->User_model->load_user_session();
             $this->apply_default_filter();
             //if the user has been removed from their current campaign we should kick them out by unsetting the current campaign
+			if(isset($_SESSION['current_campaign'])){
             if (@!in_array($_SESSION['current_campaign'], $_SESSION['campaign_access']['array'])) {
                 unset($_SESSION['current_campaign']);
                 unset($_SESSION['current_campaign_name']);
+				unset($_SESSION['current_client']);
             }
-            echo "Session reloaded";
+			}
+            $session[] = 'session reloaded';
         }
         //no longer showing footer 
         if (in_array("show footer", $_SESSION['permissions']) && isset($_SESSION['current_campaign'])) {
@@ -355,16 +365,17 @@ class User extends CI_Controller
                 }
                 $footer_stats[$row['outcome']] = $row['count'];
             }
-            echo json_encode(array("success"=>true,"stats"=>$footer_stats));
-			exit;
+			
+            	$session["footer"] = $footer_stats;
         }
-			echo "Logout";
+		$session["success"] = true;
+		echo json_encode($session);
     }
 
     public function set_campaign_features()
     {
         $campaign_features = $this->Form_model->get_campaign_features($_SESSION['current_campaign']);
-		$this->firephp->log($campaign_features);
+		//$this->firephp->log($campaign_features);
         $features = array();
         foreach ($campaign_features as $row) {
             $features[] = $row['name'];

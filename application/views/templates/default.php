@@ -87,6 +87,9 @@
      <?php if (isset($report_filter)) {
         $this->view('forms/report_filter.php', $report_filter);
     } ?>
+       <?php if (isset($dashboard_filter)) {
+        $this->view('forms/dashboard_filter.php', $dashboard_filter);
+    } ?>
 <?php } ?>
 
 

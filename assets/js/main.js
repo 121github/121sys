@@ -28,19 +28,18 @@ function validate_postcode(postcode, callback) {
 }
 
 function check_session() {
-    if (refreshIntervalId) {
-        clearInterval(refreshIntervalId);
-    }
     $.getJSON(helper.baseUrl + 'user/check_session', function (response) {
-        if (response.success) {
-
+        if (response.footer) {
             $('.footer-stats').empty();
             $.each(response.stats, function (name, count) {
                 $('.footer-stats').append('<div>' + name + ': ' + count + '</div>');
             });
         }
-        //var start = new Date;
-        /* we are not using the live rate features on the system
+		 /* we are not using the live rate features on the system
+		if (refreshIntervalId) {
+        clearInterval(refreshIntervalId);
+    	}
+        var start = new Date;
          refreshIntervalId = setInterval(function() {
          elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
          $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
@@ -313,6 +312,40 @@ var flashalert = {
     }
 }
 
+var topalert_div = '<div style="display:none;" class="alert page-alert alert-dismissable"><span class="alert-text"></span><span class="close close-alert">&times;</span></div>';
+var topalert = {
+    success: function (text) {
+        var $banner = $(topalert_div);
+        $banner.find('.alert-text').html(text);
+        $banner.addClass('alert-success');
+        ;
+        $('#top-alerts').append($banner);
+        $banner.show();
+    },
+    info: function (text) {
+        var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+        $banner.addClass('alert-info');
+        $('#top-alerts').append($banner);
+        $banner.show();
+    },
+    danger: function (text) {
+        var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+        $banner.addClass('alert-danger');
+        $('#top-alerts').append($banner);
+        $banner.show();
+    },
+    warning: function (text) {
+        var $banner = $(flashalert_div);
+        $banner.find('.alert-text').html(text);
+        $banner.addClass('alert-warning');
+        $('#top-alerts').append($banner);
+       $banner.show();
+    }
+}
+
+
 function timestamp_to_uk(timestamp, time) {
     // multiplied by 1000 so that the argument is in milliseconds, not seconds
     var ukDateString;
@@ -409,7 +442,11 @@ String.prototype.replaceAll = function (search, replacement) {
  MENU
  ========================================================================== */
 $(document).ready(function () {
-
+        /* Initialize all the jquery widgets */
+        $(document).on('click','span.close-alert',function () {
+            $(this).closest('.alert').addClass('hidden');
+            $(this).closest('.alert-text').text('');
+        });
 
     $('.dropdown-menu ul').addClass('mm-nolistview');
     if (typeof $('nav#menu').mmenu != "undefined") {

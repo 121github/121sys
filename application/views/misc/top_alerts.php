@@ -1,3 +1,4 @@
+<div id="top-alerts">
 <?php if(isset($_SESSION['flashdata'])){  ?>
 <?php if(isset($_SESSION['flashdata']['success'])){ ?>
 <div class="alert alert-success alert-dismissable" style="margin-top:10px">
@@ -20,3 +21,4 @@
   <span class="glyphicon glyphicon-exclamation-sign"></span> <?php echo $_SESSION['flashdata']['warning'] ?> </div>
 <?php  unset($_SESSION['flashdata']['warning']); } ?>
 <?php } ?>
+</div>
