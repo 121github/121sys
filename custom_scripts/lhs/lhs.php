@@ -286,7 +286,7 @@ if(isset($_GET['address_form'])){
       <div class="panel-body">
       <?php
 	  $access_contact = $contact_id;
-	    $sql = "select * from contacts left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where (contact_addresses.description = 'Access address'  or contact_telephone.description = 'Access number') and urn = $urn ";
+	    $sql = "select * from contacts left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where (contact_addresses.description = 'Access address' or contact_telephone.description = 'Access number') or (contacts.notes = 'Access Details' and contact_addresses.description is null and contact_telephone.description is null) and urn = $urn";
 		$row = array();
 		$result = $conn->query($sql);
         if($result){
@@ -415,7 +415,7 @@ $(document).ready(function(){
 	});
 	$modal.find('.clear-address').click(function(e){
 		e.preventDefault();
-		$(this).closest('form input').val('');
+		$(this).closest('form').find('input').val('');
 	});
 	
 	$modal.find('.save-address').click(function(e){
@@ -455,14 +455,10 @@ if(isset($_GET['save_address'])){
 	}
 	
 	
-	//if the address is ok then we can proceed
-		if(!empty($_POST['add1'])&&!empty($_POST['postcode'])){
-	$postcode = postcodeFormat($_POST['postcode']);
-	
-	//if its the access address we have to create a new contact and link the address to the access contact because they have might their own name and number.
+		//if its the access address we have to create a new contact and link the address to the access contact because they have might their own name and number.
 	if($_POST['description']=="Access Address"){
 		if(empty($_POST['contact_id'])){
-			 $add_access_contact = "insert into contacts set fullname = '".$_POST['name']."', urn = '$urn'";
+			 $add_access_contact = "insert into contacts set fullname = '".$_POST['name']."', urn = '$urn',notes ='Access details'";
 			 $conn->query($add_access_contact);
 			 $contact_id = $conn->insert_id;
 			if($contact_id&&!empty($_POST['telephone_number'])){
@@ -472,14 +468,16 @@ if(isset($_GET['save_address'])){
 		} else {
 			$update_access_contact = "update contacts set fullname = '".$_POST['name']."' where contact_id = '".$_POST['contact_id']."'";
 			 $conn->query($update_access_contact);
-			 $update_access_phone = "update contact_telephone set telephone_number = '".$_POST['telephone_number']."',description = 'Access Number' where contact_id = '".$_POST['contact_id']."'";
-			 $conn->query($update_access_phone);
+			  $delete_access_phone = "delete from contact_telephone where description = 'Access Number'  and contact_id = '".$_POST['contact_id']."'";
+			  	 $conn->query($delete_access_phone);
+	 $add_access_phone = "insert into contact_telephone set contact_id = $contact_id, telephone_number = '".$_POST['telephone_number']."',description = 'Access Number'";
+			 $conn->query($add_access_phone);
 		}
-
-		
-
 	}
 	
+	//if the address is ok then we can proceed
+		if(!empty($_POST['add1'])&&!empty($_POST['postcode'])){
+	$postcode = postcodeFormat($_POST['postcode']);
 	
 	$sql = "delete from contact_addresses where contact_id = '".$contact_id."' and description = '".addslashes($_POST['description'])."'";
 	$conn->query($sql);
