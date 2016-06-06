@@ -44,7 +44,7 @@ var admin = {
 
             $(document).on("click", '#google-logout-btn', function (e) {
                 e.preventDefault();
-                admin.users.logout($(this).attr('data-user-id'));
+                modal.logout_google_account($(this).attr('data-user-id'));
             });
 
             $(document).on("click", '.google-calendar-btn', function (e) {
@@ -202,6 +202,18 @@ var modal = {
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             admin.users.remove(id);
+            $('#modal').modal('toggle');
+        });
+    },
+    logout_google_account: function(id) {
+        $('.modal-title').text('Confirm Logout');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html('<p style="padding: 10px">Are you sure you want to logout the google account? The events from the calendars of this account will not be synchronizated</p>');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            admin.users.logout(id);
             $('#modal').modal('toggle');
         });
     }
