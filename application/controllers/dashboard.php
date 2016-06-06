@@ -1523,7 +1523,7 @@ public function index(){
                     $aux[$filter['filter_name']] = array();
                 }
                 $aux[$filter['filter_name']] = array(
-                    "values" => explode(",",$filter['filter_value']),
+                    "values" => ($filter['filter_value'] != ''?explode(",",$filter['filter_value']):array()),
                     "editable" => $filter['editable']
                 );
             }

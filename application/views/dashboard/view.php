@@ -7,7 +7,7 @@
 
         //Set the default filter if exists, if not, set any time by default
         $('.daterange').trigger("click");
-        $('.daterangepicker .ranges').find('li:contains("<?php echo ((isset($filters['date']))?$filters['date']['values'][0]:"Any Time"); ?>")').trigger("click");
+        $('.daterangepicker .ranges').find('li:contains("<?php echo ((isset($filters['date']) && !empty($filters['date']['values']))?$filters['date']['values'][0]:"Any Time"); ?>")').trigger("click");
 
         dashboard.load_dash(<?php echo $dashboard['dashboard_id']; ?>);
     });

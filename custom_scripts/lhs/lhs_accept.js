@@ -30,6 +30,9 @@ var campaign_functions = {
 		type:"POST",
 		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn },
 		dataType:"HTML",
+            beforeSend:function(){
+                $modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+            }
 		}).done(function(response){ 	
 		$modal.find('#address').html(response);
 		$modal.find('.panel-collapse').collapse('hide');
