@@ -1449,7 +1449,13 @@ var dashboard = {
                                         $(row).addClass('pointer');
                                     } else if (resp.header[0] == "Appointment ID") {
                                         show_first = false;
-                                        $(row).attr('data-id', data[0]);
+                                        var appointment_id = data[0];
+                                        //Get urn if exists on the table (for double click action)
+                                        if (jQuery.inArray("URN", resp.header) >= 0) {
+                                            var appointment_urn = data[jQuery.inArray("URN", resp.header)];
+                                            $(row).attr('data-urn', appointment_urn);
+                                        }
+                                        $(row).attr('data-id', appointment_id);
                                         $(row).attr('data-modal', 'view-appointment');
                                         $(row).addClass('pointer');
                                     }
