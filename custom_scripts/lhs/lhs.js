@@ -2,7 +2,7 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
-		$('ul.nav .source-name').hide()
+		$('ul.nav .source-name').css('color','yellow');
         $('#top-campaign-select').hide();
 		$('#sticky-panel .panel-heading').text('Job Notes');
 		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');

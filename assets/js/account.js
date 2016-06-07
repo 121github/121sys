@@ -61,7 +61,7 @@ var details = {
 
         $(document).on("click", '#google-logout-btn', function (e) {
             e.preventDefault();
-            details.logout($(this).attr('data-user-id'));
+            modal.logout_google_account($(this).attr('data-user-id'));
         });
 
         $(document).on("click", '.sync-google-cal', function(e) {
@@ -495,6 +495,24 @@ var password = {
         $(document).on("click", '.save-password-btn', function(e) {
             e.preventDefault();
             export_data.save_password($(this));
+        });
+    }
+}
+
+/* ==========================================================================
+ MODALS ON THIS PAGE
+ ========================================================================== */
+var modal = {
+    logout_google_account: function(id) {
+        $('.modal-title').text('Confirm Logout');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html('<p style="padding: 10px">Are you sure you want to logout the google account? The events from the calendars of this account will not be synchronizated</p>');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            details.logout(id);
+            $('#modal').modal('toggle');
         });
     }
 }

@@ -2,7 +2,11 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
+<<<<<<< HEAD
 		$('ul.nav .source-name').hide()
+=======
+        $('ul.nav .source-name').css('color','yellow');
+>>>>>>> a75dd83c4841e9a7bb5f769f5e6ce1b2031a9444
         $('#top-campaign-select').hide();
 		$('#sticky-panel .panel-heading').text('Job Notes');
 		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');
@@ -29,7 +33,11 @@ var campaign_functions = {
 		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn }, 
 		dataType:"HTML",
 		beforeSend:function(){
+<<<<<<< HEAD
 		$modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");	
+=======
+		$modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+>>>>>>> a75dd83c4841e9a7bb5f769f5e6ce1b2031a9444
 		}
 		}).done(function(response){ 	
 		$modal.find('#address').html(response);
