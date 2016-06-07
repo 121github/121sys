@@ -656,7 +656,8 @@ var record = {
 								} else {
 								var timer = "";	
 								}
-                            contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a target='_blank' href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "+"+record.campaign+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
+									/*user 72 is roger in 34 he cannot append campaign it doesnt work for him */
+                            contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a target='_blank' href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+(helper.user_id!==72?"+"+record.campaign:'')+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
 							}
                     });
 					}
@@ -963,7 +964,8 @@ var record = {
                                 } else {
                                     var timer = "";
                                 }
-                                company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a target='_blank' href='#' class='startcall " + timer + "' item-url='" + tel.tel_protocol + tel.tel_prefix + tel.tel_num + "+" + record.campaign + "'>" + tel.tel_num + "</a> " + tps + "</dd>";
+								/*user 72 is roger in 34 he cannot append campaign it doesnt work for him */
+                                company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a target='_blank' href='#' class='startcall " + timer + "' item-url='" + tel.tel_protocol + tel.tel_prefix + tel.tel_num+(helper.user_id!==72?"+"+record.campaign:'')+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
                             }
                         });
                         if (typeof val.transfer !== "undefined") {

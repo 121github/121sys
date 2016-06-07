@@ -136,6 +136,18 @@
                 </div>
                  <?php } ?>
                  <?php } ?> 
+                 
+                       
+              <?php if(in_array("filter status",$_SESSION['permissions'])){ ?>
+                <div class="form-group">
+                <label>Status <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="The status of the record" data-html="true"></span></label>
+                <select name="record_status[]" title="Any Status" multiple class="selectpicker" data-width="100%">                   <?php foreach($status as $row): ?>
+                  <option <?php if(isset($_SESSION['filter']['values']['record_status']) && @in_array($row['id'],$_SESSION['filter']['values']['record_status'])
+				  ||count($status)=="1"){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <?php endforeach; ?>
+                </select>
+                </div>
+               <?php } ?> 
 
                 <div class="form-group">
               

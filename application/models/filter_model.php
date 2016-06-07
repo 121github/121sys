@@ -51,7 +51,7 @@ public function search_urn_by_c1($ref){
 
 }
 
-    public function quicksearch($type = "b2b", $companies = false, $postcode = false, $add1 = false, $telephone = false, $campaigns = array(), $ref = false)
+    public function quicksearch($type = "b2b", $companies = false, $postcode = false, $add1 = false, $telephone = false, $campaigns = array(), $ref = false, $contact_name = false)
     {
         $where = "";
         $joins = " left join companies using(urn) left join contacts using(urn)";
@@ -59,19 +59,19 @@ public function search_urn_by_c1($ref){
             $campaigns = implode(",", $campaigns);
             $where .= " and records.campaign_id in($campaigns) ";
         }
-        if ($ref) {
+        if ($ref&&!empty($ref)) {
             $joins .= " left join client_refs using(urn) left join record_details using(urn) ";
             $where .= " and (client_ref = '".addslashes($ref)."' or c1 = '".addslashes($ref)."') ";
         }
         if ($type == "b2b") {
             $joins .= " left join company_addresses using(company_id) left join company_telephone using(company_id)";
-            if ($add1) {
+            if ($add1&&!empty($add1)) {
                 $where .= " and company_addresses.add1 like '".addslashes($add1)."%' ";
             }
-            if ($postcode) {
+            if ($postcode&&!empty($postcode)) {
                 $where .= " and (replace(company_addresses.postcode,' ','') like '".addslashes($postcode)."%' ) ";
             }
-            if ($telephone) {
+            if ($telephone&&!empty($telephone)) {
                 $where .= " and (company_telephone.telephone_number like '%".addslashes($telephone)."%') ";
             }
             if ($companies) {
@@ -81,14 +81,17 @@ public function search_urn_by_c1($ref){
             }
         } else {
             $joins .= " left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) ";
-            if ($postcode) {
+            if ($postcode&&!empty($postcode)) {
                 $where .= " and (replace(contact_addresses.postcode,' ','') like '".addslashes($postcode)."%') ";
             }
-            if ($add1) {
+            if ($add1&&!empty($add1)) {
                 $where .= " and (contact_addresses.add1 like '".addslashes($add1)."%') ";
             }
-            if ($telephone) {
+            if ($telephone&&!empty($telephone)) {
                 $where .= " and (contact_telephone.telephone_number like '%".addslashes($telephone)."%') ";
+            }
+			 if ($contact_name&&!empty($contact_name)) {
+                $where .= " and (contacts.fullname like '%".addslashes($contact_name)."%') ";
             }
         }
         $qry = "select campaign_name,urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name) user, if(outcome is null,'-',outcome) outcome,status_name,date_format(records.date_added,'%d/%m/%y') date_added,if(postcode is null or postcode='','-',postcode) postcode,if(add1 is null or add1='','-',add1) add1,if(companies.name is not null,companies.name,fullname) name,source_name from records join campaigns using(campaign_id) $joins left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) join status_list on record_status = record_status_id left join history using(urn) left join users husers on husers.user_id = history.user_id where 1 $where group by records.urn ";
@@ -1422,32 +1425,28 @@ return $query->result_array();
         return $this->db->insert_batch('email_history', $data);
     }
 	
-	public function build_filter_options(){
-		if(!isset($_SESSION['current_campaign'])&&!$_SESSION['data_access']['mix_campaigns']){
+	public function build_filter_options($reports=false){
+		if(!$reports&&!isset($_SESSION['current_campaign'])&&!$_SESSION['data_access']['mix_campaigns']){
 		return false;	
 		}
 		$filter = array();
 		$campaign = (isset($_SESSION['current_campaign'])?" and campaigns.campaign_id = '".$_SESSION['current_campaign']."'":"");
-		$campaign_user_table = "";
-		$campaign_user = "";
-		if(!$_SESSION['data_access']['all_campaigns']){	
-		$campaign_user_table = " join users_to_campaigns on users_to_campaigns.campaign_id = campaigns.campaign_id ";
-		$campaign_user = " and users_to_campaigns.user_id = ".$_SESSION['user_id'];
-		}
+		$campaign_user = " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']})  ";
 			//get sources
-			$qry = "select source_id id,source_name name,campaign_name from campaigns join records using(campaign_id) join data_sources using(source_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by source_id,campaigns.campaign_id order by campaign_name,source_name";
+			$qry = "select source_id id,source_name name,campaign_name from campaigns join records using(campaign_id) join data_sources using(source_id)  where 1 $campaign_user  $campaign group by source_id,campaigns.campaign_id order by campaign_name,source_name";
 			$filter['sources'] = $this->db->query($qry)->result_array();
 			//get pots
-			$qry = "select pot_id id,pot_name name,campaign_name from campaigns join records using(campaign_id) join data_pots using(pot_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by pot_id,campaigns.campaign_id order by campaign_name,pot_name";
+			$qry = "select pot_id id,pot_name name,campaign_name from campaigns join records using(campaign_id) join data_pots using(pot_id)  where 1 $campaign_user  $campaign group by pot_id,campaigns.campaign_id order by campaign_name,pot_name";
+		
 			$filter['pots'] = $this->db->query($qry)->result_array();	
 			//get owners
-			$qry = "select users.user_id id,name, group_name from users join ownership using(user_id) join records using(urn) join campaigns using(campaign_id) join user_groups on user_groups.group_id = users.group_id $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by users.user_id,users.group_id order by group_name,name";
+			$qry = "select users.user_id id,name, group_name from users join ownership using(user_id) join records using(urn) join campaigns using(campaign_id) join user_groups on user_groups.group_id = users.group_id  where 1 $campaign_user  $campaign group by users.user_id,users.group_id order by group_name,name";
 			$filter['owners'] = $this->db->query($qry)->result_array();		
 			//get branches
-			$qry = "select branch_id id,branch_name name,campaign_name from branch join branch_campaigns using(branch_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by branch_id,campaigns.campaign_id order by campaign_name,branch_name";
+			$qry = "select branch_id id,branch_name name,campaign_name from branch join branch_campaigns using(branch_id) join campaigns using(campaign_id)  where 1 $campaign_user  $campaign group by branch_id,campaigns.campaign_id order by campaign_name,branch_name";
 			$filter['branches'] = $this->db->query($qry)->result_array();
 			//get regions
-			$qry = "select region_id id,region_name name,campaign_name from branch_regions join branch using(region_id) join branch_campaigns using(branch_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by region_id,campaigns.campaign_id order by campaign_name,region_name";
+			$qry = "select region_id id,region_name name,campaign_name from branch_regions join branch using(region_id) join branch_campaigns using(branch_id) join campaigns using(campaign_id)  where 1 $campaign_user  $campaign group by region_id,campaigns.campaign_id order by campaign_name,region_name";
 			$filter['regions'] = $this->db->query($qry)->result_array();
 			
 			$filter['special'][] = array("id"=>1,"name"=>"New");
@@ -1471,7 +1470,7 @@ return $query->result_array();
 			$filter['appointments'][] = array("id"=>6,"name"=>"Completed appointment");
 			
 			//outcomes
-			$qry = "select outcome_id id,outcome name from outcomes join outcomes_to_campaigns using(outcome_id) join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by outcome_id order by outcome";
+			$qry = "select outcome_id id,outcome name from outcomes join outcomes_to_campaigns using(outcome_id) join campaigns using(campaign_id)  where 1 $campaign_user $campaign group by outcome_id order by outcome";
 			$filter['outcomes'] = $this->db->query($qry)->result_array();
 			
 			//status
@@ -1493,8 +1492,12 @@ return $query->result_array();
 			$filter['dials'][] = array("id"=>4,"name"=>"4 Dials");
 			$filter['dials'][] = array("id"=>5,"name"=>"5 Dials");
 
+			//parked
+			$qry = "select parked_code id,park_reason name from park_codes join records using(parked_code) join campaigns using(campaign_id)  where 1 $campaign_user $campaign group by parked_code order by park_reason";
+			$filter['parked_codes'] = $this->db->query($qry)->result_array();
+	
 			//color
-			$qry = "select record_color id, record_color name from records join campaigns using(campaign_id) $campaign_user_table where 1 $campaign_user and campaign_status = 1 $campaign group by record_color";
+			$qry = "select record_color id, record_color name from records join campaigns using(campaign_id)  where 1 $campaign_user $campaign group by record_color";
 			$filter['record_colors'] = $this->db->query($qry)->result_array();
 						
 			$newfilter = array();

@@ -123,7 +123,6 @@ class Contacts_model extends CI_Model
 		$query = $this->db->query($qry);
         $results = $query->result_array();
         //put the contact details into array
-        // $this->firephp->log($qry);
 		if(count($results)==0){
 			return false;
 		} 

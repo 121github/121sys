@@ -889,8 +889,9 @@ var add_record = {
 				add_record.check_dupes();
 			} else {
 				flashalert.danger(response.msg);
-                $('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> "+response.msg+"</p>");
+                $('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> "+response.msg+". To add the record without an address just click the create record button</p>");
 				$('#postcode').css('border-color','red');
+				add_record.check_dupes();
 			}
 		});
 		}

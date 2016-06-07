@@ -55,6 +55,10 @@ class Search extends CI_Controller
 			$type = "b2c";
 			$telephone = $this->input->post('contact_telephone');
 		}  
+		if($this->input->post('contact_name')) {
+			$type = "b2c";
+			$contact_name = $this->input->post('contact_name');
+		}  
 		 if($this->input->post('company_postcode')) {
 			 $type = "b2b";
 			$postcode = str_replace(" ","",postcodeFormat($this->input->post('company_postcode')));
@@ -85,7 +89,7 @@ class Search extends CI_Controller
 			$company_names=array($company);
 			} 
 		}
-		$result = $this->Filter_model->quicksearch($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref);
+		$result = $this->Filter_model->quicksearch($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref,$contact_name);
 		echo json_encode(array("success"=>true,"data"=>$result));	
 
 	}
@@ -235,7 +239,7 @@ class Search extends CI_Controller
 		}
         $subsectors     = $this->Form_model->get_subsectors($selected_sectors);
         $status         = $this->Form_model->get_status_list();
-	$parked_codes   = $this->Form_model->get_parked_codes();
+		$parked_codes   = $this->Form_model->get_parked_codes();
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();

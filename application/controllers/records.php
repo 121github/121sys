@@ -68,6 +68,11 @@ class Records extends CI_Controller
 		
 		$title = "Record List";
 		$global_filter = $this->Filter_model->build_filter_options();
+		if(isset($_SESSION['current_campaign'])){
+		$global_filter['campaigns'] = array("name"=>$_SESSION['current_campaign_name'],"id"=>$_SESSION['current_campaign']);
+		} else {
+		$global_filter['campaigns'] = $this->_campaigns;
+		}
         $data = array(
 		'global_filter' => $global_filter,
             'campaign_access' => $this->_campaigns,

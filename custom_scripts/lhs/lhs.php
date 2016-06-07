@@ -286,7 +286,7 @@ if(isset($_GET['address_form'])){
       <div class="panel-body">
       <?php
 	  $access_contact = $contact_id;
-	    $sql = "select * from contacts left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where (contact_addresses.description = 'Access address' or contact_telephone.description = 'Access number') or (contacts.notes = 'Access Details' and contact_addresses.description is null and contact_telephone.description is null) and urn = $urn";
+	    $sql = "select * from contacts left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where ((contact_addresses.description = 'Access address' or contact_telephone.description = 'Access number') or (contacts.notes = 'Access Details' and contact_addresses.description is null and contact_telephone.description is null)) and urn = $urn";
 		$row = array();
 		$result = $conn->query($sql);
         if($result){
@@ -446,8 +446,8 @@ if(isset($_GET['save_address'])){
 	exit;	
 	}
 	if(empty($_POST['add1'])&&!empty($_POST['postcode'])){
-	echo json_encode(array("success"=>false,"msg"=>"Please complete address line 1"));
-	exit;	
+	//echo json_encode(array("success"=>false,"msg"=>"Please complete address line 1"));
+	//exit;	
 	}
 	if(empty($_POST['add1'])&&empty($_POST['postcode'])){
 		 $sql = "delete from contact_addresses where contact_id = '".intval($_POST['contact_id'])."' and description = '".addslashes($_POST['description'])."'";

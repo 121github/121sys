@@ -2,10 +2,8 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
+		$('ul.nav .source-name').hide()
         $('#top-campaign-select').hide();
-        if (record.role == "16") {
-            $('div.custom-panel,#custom-panel,#email-panel').hide();
-        }
 		$('#sticky-panel .panel-heading').text('Job Notes');
 		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');
     },
@@ -28,11 +26,11 @@ var campaign_functions = {
 		
 		$.ajax({ url:helper.baseUrl+'custom_scripts/lhs/lhs.php?address_form',
 		type:"POST",
-		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn },
+		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn }, 
 		dataType:"HTML",
-            beforeSend:function(){
-                $modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
-            }
+		beforeSend:function(){
+		$modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");	
+		}
 		}).done(function(response){ 	
 		$modal.find('#address').html(response);
 		$modal.find('.panel-collapse').collapse('hide');
@@ -277,7 +275,7 @@ var campaign_functions = {
         if ($('[name="appointment_contact_email"]').length > 0) {
             var client_email = $('[name="appointment_contact_email"]').val();
         }
-		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced"||$form.find("[name='6']").val() === "Paid & Issued"||$form.find("[name='6']").val() === "Invoiced & Report Ready")) {
+		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced")) {
 			 $.ajax({
                     url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
                     type: "POST",
@@ -354,7 +352,7 @@ var campaign_functions = {
 
         }
         //Job Status is Paid & Issued
-        else if ($form.find("[name='6']").val() === "Paid & Issued") {
+        else if ($form.find("[name='16']").val() === "Report Issued") {
             //Send email Feedback Email to Client email address on the record
             lhs.send_template_email(urn, 8, "Client", 'bradf@121customerinsight.co.uk', "", "", "Feedback email", appointment_id);
         }
@@ -389,8 +387,9 @@ var campaign_functions = {
         record.email_panel.load_panel();
     },
     custom_items_loaded: function () {
-        $('.custom-panel').find('.id-title').closest('tr').hide();
-        if (record.role == "16") {
+        if (helper.role == "16") {
+			$('#email-panel').hide();
+		    $('#custom-panel').find('tr:contains(Quote)').hide();
             $('.edit-detail-btn').hide();
             $('#custom-panel').find('tr:contains(Quote)').hide();
             $('.custom-panel').find('tr:contains(Quote)').hide();

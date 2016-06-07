@@ -303,7 +303,7 @@ class Form_model extends CI_Model
     {
         $where = " campaign_id in({$_SESSION['campaign_access']['list']})";
         if (isset($campaign_list) && !empty($campaign_list)) {
-            $where = " campaign_id IN (" . implode(",", $campaign_list) . ") ";
+            $where .= " and campaign_id IN (" . implode(",", $campaign_list) . ") ";
         }
         $qry = "select source_id id,source_name name from records inner join data_sources using(source_id) where " . $where . " group by source_name order by source_name";
 
@@ -322,7 +322,7 @@ class Form_model extends CI_Model
     {
         $where = " campaign_id in({$_SESSION['campaign_access']['list']})";
         if (isset($campaign_list) && !empty($campaign_list)) {
-            $where = " campaign_id IN (" . implode(",", $campaign_list) . ") ";
+            $where .= " and campaign_id IN (" . implode(",", $campaign_list) . ") ";
         }
         $qry = "select pot_id id,pot_name name from records inner join data_pots using(pot_id) where " . $where . " group by pot_name order by pot_name";
 
@@ -344,10 +344,29 @@ class Form_model extends CI_Model
     {
         $where = " campaign_id in({$_SESSION['campaign_access']['list']})";
         if (isset($campaign_list) && !empty($campaign_list)) {
-            $where = " campaign_id IN (" . implode(",", $campaign_list) . ") ";
+            $where .= " and campaign_id IN (" . implode(",", $campaign_list) . ") ";
         }
-        $qry = "select outcome_id id,outcome name, positive from outcomes left join outcomes_to_campaigns using(outcome_id) where " . $where . " group by outcome_id order by outcome ";
-
+        $qry = "select outcome_id id,outcome name, positive from outcomes join outcomes_to_campaigns using(outcome_id) where " . $where . " group by outcome_id order by outcome ";
+        return $this->db->query($qry)->result_array();
+    }
+	
+	    public function get_users_by_campaign_list($campaign_list)
+    {
+        $where = " campaign_id in({$_SESSION['campaign_access']['list']})";
+        if (isset($campaign_list) && !empty($campaign_list)) {
+            $where .= " and campaign_id IN (" . implode(",", $campaign_list) . ") ";
+        }
+        $qry = "select user_id id,name name from history join users using(user_id) where " . $where . " group by user_id order by name ";
+        return $this->db->query($qry)->result_array();
+    }
+	
+		    public function get_branch_by_campaign_list($campaign_list)
+    {
+        $where = " campaign_id in({$_SESSION['campaign_access']['list']})";
+        if (isset($campaign_list) && !empty($campaign_list)) {
+            $where .= " and campaign_id IN (" . implode(",", $campaign_list) . ") ";
+        }
+        $qry = "select branch_id id,branch_name name, region_name from branch join branch_campaigns using(branch_id) left join branch_regions using(region_id) where " . $where . " group by branch_id order by region_name,branch_name ";
         return $this->db->query($qry)->result_array();
     }
 

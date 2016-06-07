@@ -35,12 +35,14 @@ var common_report_functions = {
 
 
         //optgroup
-        $('li.dropdown-header').on('click', function(e) {
+        $('div.campaign-filter li.dropdown-header').on('click', function(e) {
             setTimeout(function() {
                 //Get outcomes by campaigns selected
                 common_report_functions.get_outcomes_filter();
                 common_report_functions.get_sources_filter();
                 common_report_functions.get_pots_filter();
+				common_report_functions.get_users_filter();
+				common_report_functions.get_branches_filter();
             }, 500);
         });
 
@@ -60,6 +62,8 @@ var common_report_functions = {
             common_report_functions.get_outcomes_filter();
             common_report_functions.get_sources_filter();
             common_report_functions.get_pots_filter();
+				common_report_functions.get_users_filter();
+				common_report_functions.get_branches_filter();
         });
 
         $('div.navbar').on("click", ".refresh-data", function(e) {
@@ -115,7 +119,44 @@ var common_report_functions = {
             }
         });
     },
-
+    get_users_filter: function() {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_users_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#filter-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+               var options = "";
+			   	if(response.campaign_users.length==0){
+					options += "<option disabled>Nothing found</option>";
+				}
+                $.each(response.campaign_users, function(i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#filter-right [name="user_id[]"]').html(options).selectpicker('refresh');
+            }
+        });
+    },
+	    get_branches_filter: function() {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_branches_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#filter-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+                var options = "";
+					if(response.campaign_branches.length==0){
+						options += "<option disabled>Nothing found</option>";
+				}
+                $.each(response.campaign_branches, function(i, val) {
+                    options += "<option value=" + val.id + ">" + val.name + "</option>";
+                });
+                $('#filter-right [name="branch_id[]"]').html(options).selectpicker('refresh');
+            }
+        });
+    },
     get_sources_filter: function() {
         $.ajax({
             url: helper.baseUrl + 'reports/get_sources_filter',
@@ -125,6 +166,9 @@ var common_report_functions = {
         }).done(function(response) {
             if (response.success) {
                 var options = "";
+					if(response.campaign_sources.length==0){
+						options += "<option disabled>Nothing found</option>";
+				}
                 $.each(response.campaign_sources, function(i, val) {
                     options += "<option value=" + val.id + ">" + val.name + "</option>";
                 });
@@ -142,6 +186,9 @@ var common_report_functions = {
         }).done(function(response) {
             if (response.success) {
                 var options = "";
+				if(response.campaign_pots.length==0){
+						options += "<option disabled>Nothing found</option>";
+				}
                 $.each(response.campaign_pots, function(i, val) {
                     options += "<option value=" + val.id + ">" + val.name + "</option>";
                 });

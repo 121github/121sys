@@ -21,7 +21,7 @@ class Reports extends CI_Controller
     public function overview()
     {
 
-        $report_filter = $this->Filter_model->build_filter_options();
+        $report_filter = $this->Filter_model->build_filter_options(true);
 		$report_filter['campaigns'] = $this->_campaigns;
 		$title = "Overview Report";
         $data = array(
@@ -442,7 +442,7 @@ $field_assoc = array("date_from"=>"h.contact",
         }
         $campaign_outcomes = $aux;
 
-        $report_filter = $this->Filter_model->build_filter_options();
+        $report_filter = $this->Filter_model->build_filter_options(true);
 		$report_filter['campaigns'] = $this->_campaigns;
 		$title = "Activity Report";
         $data = array(
@@ -482,6 +482,8 @@ $field_assoc = array("date_from"=>"h.contact",
 			"outcome_id"=>"h.outcome_id",
 			"pot_id"=>"h.pot_id",
 			"source_id"=>"h.source_id",
+			"branch_id"=>"r.branch_id",
+			"region_id"=>"r.region_id",
 			"group_id"=>"h.group_id");
 			
 			$query_params = $this->Report_model->build_filter_query($this->input->post(),$field_assoc);
@@ -492,6 +494,8 @@ $field_assoc = array("date_from"=>"h.contact",
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
             $pots = $this->input->post("pots");
+			$branch = $this->input->post("branches");
+            $region = $this->input->post("regions");
 
 
             $overall_array = array();
@@ -766,7 +770,7 @@ $field_assoc = array("date_from"=>"h.contact",
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+            $campaigns = (isset($form['campaign_id']) ? $form['campaign_id'] : array());
 
             $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($campaigns);
 
@@ -789,6 +793,41 @@ $field_assoc = array("date_from"=>"h.contact",
             ));
         }
     }
+	
+	  /**
+     * Get the branch for the filter by campaign list
+     */
+	    public function get_branches_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $campaigns = (isset($form['campaign_id']) ? $form['campaign_id'] : array());
+
+            $campaign_branches = $this->Form_model->get_branch_by_campaign_list($campaigns);
+
+            echo json_encode(array(
+                "success" => true,
+                "campaign_branches" => $campaign_branches
+            ));
+        }
+    }
+	
+	 /**
+     * Get the users for the filter by campaign list
+     */
+    public function get_users_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $campaigns = (isset($form['campaign_id']) ? $form['campaign_id'] : array());
+            $campaign_users = $this->Form_model->get_users_by_campaign_list($campaigns);
+
+            echo json_encode(array(
+                "success" => true,
+                "campaign_users" => $campaign_users
+            ));
+        }
+    }
 
     /**
      * Get the sources for the filter by campaign list
@@ -797,7 +836,7 @@ $field_assoc = array("date_from"=>"h.contact",
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+            $campaigns = (isset($form['campaign_id']) ? $form['campaign_id'] : array());
 
             $campaign_sources = $this->Form_model->get_sources_by_campaign_list($campaigns);
 
@@ -815,7 +854,7 @@ $field_assoc = array("date_from"=>"h.contact",
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+            $campaigns = (isset($form['campaign_id']) ? $form['campaign_id'] : array());
 
             $campaign_pots = $this->Form_model->get_pots_by_campaign_list($campaigns);
 
