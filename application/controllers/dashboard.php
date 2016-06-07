@@ -1524,7 +1524,7 @@ public function index(){
                 }
                 $aux[$filter['filter_name']] = array(
                     "values" => ($filter['filter_value'] != ''?explode(",",$filter['filter_value']):array()),
-                    "editable" => $filter['editable']
+                    "editable" => (in_array("enable all filters", $_SESSION['permissions'])?1:$filter['editable'])
                 );
             }
             $filters = $aux;
