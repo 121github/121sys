@@ -127,7 +127,7 @@ var modals = {
 							  if (helper.permissions['overlap appointment'] > 0) {
                                 var appointment_id = $form.find('input[name="appointment_id"]').val();
                                 var urn = $form.find('input[name="urn"]').val();
-                                modals.confirm_overlap_appointment(urn, appointment_id, $form.serialize());
+                                modals.confirm_overlap_appointment(urn, appointment_id, $form.serialize(),response.results);
                             }
                             else {
                               flashalert.danger(response.msg);
@@ -698,9 +698,12 @@ var modals = {
 				flashalert.danger("There was an error saving the appointment");
         });
     },
-    confirm_overlap_appointment: function (urn, appointment_id, data) {
+    confirm_overlap_appointment: function (urn, appointment_id, data, results) {
         var mheader = "Overlap appointments";
-        var mbody = "There are one or more appointments on the same date and for this attendee. Do you still want to book this appointment?";
+        var mbody = "There are one or more appointments at the same time and for this attendee. Do you still want to book this appointment?";
+		$.each(results,function(i,row){
+			mbody += "<div><a href='"+helper.baseUrl+"records/detail"+row.urn+">URN:"+row.urn+": "+ $row.title+"</a></div>";
+		});
         var mfooter = '<button class="btn btn-default pull-left cancel-overlap-appointment" data-urn="'+urn+'" data-id="'+appointment_id+'" type="button">No, cancel it</button> <button class="btn btn-danger confirm-overlap-appointment" type="button">Yes, book it</button>';
 
         modals.load_modal(mheader, mbody, mfooter);

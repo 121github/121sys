@@ -581,7 +581,7 @@ $datafield_ids = array();
                ";
         $results = $this->db->query($qry)->result_array();
 
-        return (!empty($results));
+        return $results;
     }
 
 
