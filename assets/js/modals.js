@@ -703,7 +703,7 @@ var modals = {
         var mbody = "There are one or more appointments at the same time and for this attendee. Do you still want to book this appointment?";
 		$.each(results,function(i,row){
 			mbody += "<div><a href='"+helper.baseUrl+"records/detail"+row.urn+">URN:"+row.urn+": "+ $row.title+"</a></div>";
-		});
+		}); 
         var mfooter = '<button class="btn btn-default pull-left cancel-overlap-appointment" data-urn="'+urn+'" data-id="'+appointment_id+'" type="button">No, cancel it</button> <button class="btn btn-danger confirm-overlap-appointment" type="button">Yes, book it</button>';
 
         modals.load_modal(mheader, mbody, mfooter);
