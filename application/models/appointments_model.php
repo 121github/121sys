@@ -563,7 +563,7 @@ $datafield_ids = array();
     }
 
     public function check_overlap_appointments($urn, $appointment_id, $attendee_id, $start, $end) {
-        $qry = "SELECT *
+        $qry = "SELECT appointment_id,urn,title
                 FROM appointments a
                   LEFT JOIN appointment_attendees at USING (appointment_id)
                 WHERE user_id = " . $attendee_id . "
@@ -577,7 +577,7 @@ $datafield_ids = array();
                             (`start` = '" . to_mysql_datetime($start) . "')
                             OR
                             (`end` = '" . to_mysql_datetime($end) . "')
-                        )
+                        ) group by appointment_id
                ";
         $results = $this->db->query($qry)->result_array();
 
