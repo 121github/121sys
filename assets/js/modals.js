@@ -65,7 +65,10 @@ var modals = {
         });
         $(document).on('dblclick', '[data-modal="view-record"],[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
-            window.location.href = helper.baseUrl + 'records/detail/' + $(this).attr('data-urn');
+            var urn = $(this).attr('data-urn');
+            if (typeof urn != "undefined" && urn > 0) {
+                window.location.href = helper.baseUrl + 'records/detail/' + urn;
+            }
         });
 
         $(document).on('click', '[data-modal="edit-contact"]', function (e) {
