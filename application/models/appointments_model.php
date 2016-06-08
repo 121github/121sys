@@ -213,7 +213,7 @@ class Appointments_model extends CI_Model
                 @$slots[$date][$id]['sqldate'] = $row['start'];
                 @$slots[$date][$id]['apps'] = $row['count'];
                 //the smallest distance for this timeslot
-				if($row['distance']){
+				if(isset($row['distance'])){
                 @$slots[$date][$id]['min_distance'] = number_format($row['distance'], 2);					
                 if ($i == 0) {
                     //first record is best distance
