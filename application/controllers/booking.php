@@ -110,7 +110,7 @@ class Booking extends CI_Controller
         }
         $postcode_valid = validate_postcode($this->input->post('postcode'));
         $postcode = false;
-        if ($postcode_valid) {
+        if ($postcode_valid) { 
             $postcode = postcodeFormat($this->input->post('postcode'));
         }
         $appointment_type = $this->input->post('appointment_type');
