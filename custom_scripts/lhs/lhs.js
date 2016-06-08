@@ -278,7 +278,7 @@ var campaign_functions = {
         if ($('[name="appointment_contact_email"]').length > 0) {
             var client_email = $('[name="appointment_contact_email"]').val();
         }
-		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced")) {
+		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced")||$form.find("[name='6']").val() === "Appointment Confirmed") {
 			 $.ajax({
                     url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
                     type: "POST",

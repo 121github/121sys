@@ -557,7 +557,7 @@ switch ($action) {
         $check = "select `value` from custom_panel_values where field_id = 1 and `value` like 'LH%' and data_id = '" . $_POST['data_id'] . "'";
         $exists = $conn->query($check);
         if ($exists->num_rows == 0) {
-            $update = "insert into custom_panel_values set data_id = '{$_POST['data_id']}',field_id='1',`value`='$job_number'";
+            $update = "replace into custom_panel_values set data_id = '{$_POST['data_id']}',field_id='1',`value`='$job_number'";
             $conn->query($update);
         }
         echo json_encode(array("success" => true, "job_number" => $job_number, "query" => $update));
