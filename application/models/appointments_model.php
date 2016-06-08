@@ -208,15 +208,18 @@ class Appointments_model extends CI_Model
 
             $i = 0;
             foreach ($results as $row) {
+				$slots[$date][$id]['best_distance'] = false;
                 $date = date("D jS M y", strtotime($row['start']));
                 @$slots[$date][$id]['sqldate'] = $row['start'];
                 @$slots[$date][$id]['apps'] = $row['count'];
                 //the smallest distance for this timeslot
-                @$slots[$date][$id]['min_distance'] = number_format($row['distance'], 2);
+				if($row['distance']){
+                @$slots[$date][$id]['min_distance'] = number_format($row['distance'], 2);					
                 if ($i == 0) {
                     //first record is best distance
                     @$slots[$date][$id]['best_distance'] = true;
                 }
+				}
                 $i++;
             }
         }
@@ -460,11 +463,17 @@ $datafield_ids = array();
         //TODO check if there is a slot available for this date
     }
 
+	public function get_company_id_from_appointment($appointment_id) {
+	 $query = $this->db->query("select company_id from companies join appointments using(urn) where appointment_id = '$appointment_id'");
+	 return $query->company_id;
+}
 
     /**
      * Get appointment by id
      *
      */
+	
+	 
     public function getAppointmentById($appointment_id)
     {
 
@@ -473,7 +482,6 @@ $datafield_ids = array();
         $this->db->where('appointment_id', $appointment_id);
         $this->db->join('branch', 'branch.branch_id=appointments.branch_id', 'LEFT');
         $this->db->join('appointment_types', 'appointment_types.appointment_type_id=appointments.appointment_type_id', 'LEFT');
-		$this->db->join('companies', 'appointments.urn = companies.urn', 'LEFT');
         $query = $this->db->get();
         if ($query->num_rows() == 1) {
             return $query->row();

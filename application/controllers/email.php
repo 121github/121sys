@@ -1030,13 +1030,11 @@ class Email extends CI_Controller
         user_auth_check();
         if ($this->input->is_ajax_request()) {
 			session_write_close();
-            $appointment_id = $this->input->post('appointment_id');
+            $appointment_id = intval($this->input->post('appointment_id'));
             $description = $this->input->post('description');
-
 
             //Get the appointment info
             $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
-
             //Get the receivers, that sould be the attendees with ics field true and if the branch_id is set on the appointment, send to the
             //users related to the branch_region
             $email_addresses = $this->get_ics_email_addresses($appointment_id);
@@ -1049,7 +1047,11 @@ class Email extends CI_Controller
                 //Get contact info
                 $contact = $this->Contacts_model->get_contact($appointment->contact_id);
 				//get company info
-				$company = $this->Company_model->get_company($appointment->company_id);
+				 $company_id = $this->Appointments_model->get_company_id_from_appointment($appointment->appointment_id);
+				 $company=array();
+				 if($company_id){
+				 $company = $this->Company_model->get_company($company_id);
+				 }
                 //Date
                 $start_date = new \DateTime($appointment->start);
                 $end_date = new \DateTime($appointment->end);

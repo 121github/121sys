@@ -1867,7 +1867,7 @@ JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn =
         return $this->db->update("records", array("source_id" => $id));
     }
 
-    function get_all_record_details($urn)
+    function get_all_record_details($urn='')
     {
 		$fields = array();
         $query = "select * from record_details where urn = '$urn'";
