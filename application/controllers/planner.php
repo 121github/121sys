@@ -762,10 +762,10 @@ class Planner extends CI_Controller
             //get the info for the planner
             $appointment_data = $this->Planner_model->getPlannerInfoByAppointment($appointment_id);
 			if(!isset($appointment_data['region_users'])){
-				$appointment_data['region_users']=array();
+				$appointment_data['region_users']="";
 			}
 			if(!isset($appointment_data['branch_users'])){
-				$appointment_data['branch_users']=array();
+				$appointment_data['branch_users']="";
 			}
 			
             $users = array_unique(array_merge(
