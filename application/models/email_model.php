@@ -757,7 +757,7 @@ class Email_model extends CI_Model
                 inner join webforms w using(webform_id)
                 inner join webform_questions wq using(webform_id)
                 inner join webforms_to_campaigns wc using(webform_id)
-                where urn = ".$urn."
+                where urn = '".$urn."'
                 order by updated_by desc";
 
         $result = $this->db->query($qry)->result_array();
@@ -794,6 +794,7 @@ class Email_model extends CI_Model
 				
 		
 			function get_custom_panels($urn){
+			$fields = array();
 			$query = "select * from record_details where urn = '$urn'";
 			$results =  $this->db->query($query)->result_array();
 			$fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();

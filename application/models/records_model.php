@@ -1869,6 +1869,7 @@ JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn =
 
     function get_all_record_details($urn)
     {
+		$fields = array();
         $query = "select * from record_details where urn = '$urn'";
         $results = $this->db->query($query)->result_array();
         $fields_result = $this->db->query("select `field`,field_name from record_details_fields join records using(campaign_id) where urn = '$urn'")->result_array();

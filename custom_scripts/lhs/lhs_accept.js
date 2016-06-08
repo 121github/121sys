@@ -232,7 +232,7 @@ var campaign_functions = {
                     dataType: "JSON",
                     data: {
 						action:'create_job_number',
-                        data_id: response.data[appointment.job_id],
+                          data_id: appointment.job_id
                     }
                 })
 		 }

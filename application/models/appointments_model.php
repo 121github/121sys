@@ -176,7 +176,7 @@ class Appointments_model extends CI_Model
                     $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515)) AS distance";
 
                 $join_locations = " left join locations on locations.location_id = appointments.location_id ";
-                if ($distance > 0) {
+                if ($distance && $distance > 0) {
                     $where .= " and ( ";
                     //Distance from the company or the contacts addresses
                     $where .= " (";

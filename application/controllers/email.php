@@ -1072,9 +1072,11 @@ class Email extends CI_Controller
                 }
 				
 				 //Company telephones
+				 if(isset($company['telephone'])){
                 foreach($company['telephone'] as $telephone) {
                     $telephone_numbers .= "<tr><td>Contact Telephone (".$telephone['tel_name']."):</td><td>".$telephone['tel_num']."</td></tr>";
                 }
+				 }
 
                 $appointment_table = "<table>
                     <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
