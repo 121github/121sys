@@ -331,7 +331,7 @@ class Appointments extends CI_Controller
 
             $result = $this->Appointments_model->check_overlap_appointments($urn, $appointment_id, $attendee[0], $start, $end);
             if (count($result)>0) {
-                echo json_encode(array("success" => false, "error" => false, "overlapped" => true, "msg" => "This attendee is unavailble at the selected time. Please find a free slot","results"=>$results));
+                echo json_encode(array("success" => false, "error" => false, "overlapped" => true, "msg" => "This attendee is unavailble at the selected time. Please find a free slot","results"=>$result));
             } else {
                 echo json_encode(array("success" => true, "error" => false, "overlapped" => false, "msg" => "Attendee is available"));
             }
