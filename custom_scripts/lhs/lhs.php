@@ -545,7 +545,7 @@ switch ($action) {
         }
         break;
     case "create_job_number":
-        $sql = "select `value` from custom_panel_values where field_id = 1 and `value` like 'LH%' order by `value` limit 1";
+        $sql = "select `value` from custom_panel_values where field_id = 1 and `value` like 'LH%' order by `value` desc limit 1";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();

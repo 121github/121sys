@@ -208,10 +208,10 @@ class Appointments_model extends CI_Model
 
             $i = 0;
             foreach ($results as $row) {
-				$slots[$date][$id]['best_distance'] = false;
                 $date = date("D jS M y", strtotime($row['start']));
                 @$slots[$date][$id]['sqldate'] = $row['start'];
                 @$slots[$date][$id]['apps'] = $row['count'];
+				@$slots[$date][$id]['best_distance'] = false;
                 //the smallest distance for this timeslot
 				if(isset($row['distance'])){
                 @$slots[$date][$id]['min_distance'] = number_format($row['distance'], 2);					

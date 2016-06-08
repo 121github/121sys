@@ -759,15 +759,20 @@ class Planner extends CI_Controller
         $appointment_id = $this->input->post('appointment_id');
 
         if ($appointment_id) {
-
             //get the info for the planner
             $appointment_data = $this->Planner_model->getPlannerInfoByAppointment($appointment_id);
-
-            $users = array_filter(array_unique(array_merge(
+			if(!isset($appointment_data['region_users'])){
+				$appointment_data['region_users']=array();
+			}
+			if(!isset($appointment_data['branch_users'])){
+				$appointment_data['branch_users']=array();
+			}
+			
+            $users = array_unique(array_merge(
                 explode(',', $appointment_data['attendees']),
                 explode(',', @$appointment_data['region_users']),
                 explode(',', @$appointment_data['branch_users'])
-            )));
+            ));
 
             //Create the planner data for every user
             $planner_data = array();
