@@ -579,7 +579,6 @@ $datafield_ids = array();
                             (`end` = '" . to_mysql_datetime($end) . "')
                         )
                ";
-
         $results = $this->db->query($qry)->result_array();
 
         return (!empty($results));

@@ -51,8 +51,8 @@ class Exports extends CI_Controller
         $users = $this->Form_model->get_users();
         $aux = array();
         if (isset($_SESSION['user_id'])) {
-            $aux["-"] = array(array(
-                "name" => "User Logged in",
+            $aux["User"] = array(array(
+                "name" => $_SESSION['name'],
                 "id" => "user_id"
             ));
         }
