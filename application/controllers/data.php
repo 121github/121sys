@@ -532,11 +532,15 @@ class Data extends CI_Controller
         } else {
             $campaigns = $this->Form_model->get_campaigns_by_user($_SESSION['user_id']);
         }
-
-        $title = "Data | Add Record";
+        $campaign_triggers = array();
+        if (isset($_SESSION['current_campaign'])) {
+            $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($_SESSION['current_campaign']);
+        }
+        $title = "Create new record";
 
         $data = array(
             'campaign_access' => $this->_campaigns,
+			'campaign_triggers' => $campaign_triggers,
             'pageId' => 'Admin',
             'title' => $title,
             'page' => 'add_record',
@@ -598,6 +602,10 @@ class Data extends CI_Controller
                     "primary" => "1"
                 );
 
+				if(isset($form['description'])&&!empty($form['description'])){
+					 $company_address['description'] = $form['description'];
+				}
+
             } else if (!empty($form['company_add1']) && empty($form['company_postcode'])) {
                 echo json_encode(array(
                     "success" => false,
@@ -631,6 +639,11 @@ class Data extends CI_Controller
                     "country" => $form['contact_country'],
                     "primary" => "1"
                 );
+				
+					if(isset($form['description'])&&!empty($form['description'])){
+					 $contact_address['description'] = $form['description'];
+				}
+				
             } else if (!empty($form['contact_add1']) && empty($form['contact_postcode'])) {
                 echo json_encode(array(
                     "success" => false,
@@ -670,7 +683,7 @@ class Data extends CI_Controller
             unset($form['company_telephone']);
             unset($form['company_house_number']);
             unset($form['company_address']);
-
+			 
             unset($form['contact_name']);
             unset($form['contact_postcode']);
             unset($form['contact_add1']);
@@ -684,6 +697,7 @@ class Data extends CI_Controller
             unset($form['contact_telephone']);
             unset($form['contact_house_number']);
             unset($form['contact_address']);
+			unset($form['description']);
 
             if (!empty($form['campaign_id'])) {
                 $record_id = $this->Records_model->save_record($form);

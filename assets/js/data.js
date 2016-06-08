@@ -1,6 +1,6 @@
 /*the class below is for the data import page. It gets initialized by the data.php view*/
 var importer = {
-    init: function () {
+    init: function () {		
 		$('#addresspicker').selectpicker();
         $(document).on('change', '#source,#pot', function (e) {
             importer.check_source_pot($(this));
@@ -828,6 +828,10 @@ var backup_restore = {
 /*the class below is for the add_record page. It gets initialized by the add_record.php view*/
 var add_record = {
     init: function () {
+		if(typeof campaign_functions.add_record_setup!=="undefined"){
+			campaign_functions.add_record_setup();
+		}
+		
          $('#record-form').on('change', '#campaign', function () {
             add_record.show_campaign_type();
         });

@@ -12,6 +12,9 @@ var campaign_functions = {
         $('.progress-outcome').selectpicker('refresh');
 		
     },
+	add_record_setup:function(){
+		$('#create-record .panel').prepend('<div class="form-group"><label>Address Type</label><br><select class="selectpicker" name="description"><option value="Survey Address">Survey Address</option><option value="Correspondence Address">Correspondence Address</option><option value="Access Address">Access Address</option></select></div>');
+	},
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
         $('input[name="website"]').closest('.form-group').hide();
