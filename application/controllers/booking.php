@@ -336,7 +336,7 @@ class Booking extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $appointment_id = $this->input->post("appointment_id");
             $data = $this->input->post("data");
-            $description = $this->input->post("description");
+            $description = strip_tags($this->input->post("description"));
             $event_status = $this->input->post("event_status");
             if (!($data)) {
                 //Get the appointment data
