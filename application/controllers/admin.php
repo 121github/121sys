@@ -559,7 +559,7 @@ class Admin extends CI_Controller
             $results = $this->Admin_model->get_users();
             foreach ($results as $rownum => $row) {
                 foreach ($row as $k => $v) {
-                    if ($v == NULL) {
+                    if ($v == NULL||$v=="-") {
                         $results[$rownum][$k] = "";
                     }
                 }
@@ -1189,10 +1189,11 @@ class Admin extends CI_Controller
     {
         $form = $this->input->post();
         foreach ($form as $k => $v) {
-            
+           if($k=="phone_un"||$k=="user_telephone"||$k=="ext"){ 
             if ($v == "null" || empty($v)) {
-                //unset($form[$k]);
+                unset($form[$k]);
             }
+		   }
         }
         if(empty($form['name'])){
 			echo json_encode(array("success"=>false,"error"=>"Please enter the name"));
