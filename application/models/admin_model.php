@@ -181,6 +181,20 @@ class Admin_model extends CI_Model
             ));
         }
     }
+
+    public function set_campaign_user_ids($user_id, $campaigns)
+    {
+        foreach ($campaigns as $campaign_id) {
+            $this->db->where("campaign_id", $campaign_id);
+            $this->db->where("user_id", $user_id);
+            $this->db->delete("users_to_campaigns");
+
+            $this->db->insert("users_to_campaigns", array(
+                "campaign_id" => $campaign_id,
+                "user_id" => $user_id
+            ));
+        }
+    }
     
     public function save_campaign_group($form)
     {
@@ -448,9 +462,37 @@ class Admin_model extends CI_Model
         if ($_SESSION['role'] == "1") {
             $where = "";
         } else {
-            $where = " and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
+            $where = " and role_id != 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
         }
-        $qry    = "select user_id,name,username,if(group_name is null,'-',group_name) group_name,team_id,if(team_name is null,'-',team_name) team_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,user_groups.group_id,role_id,user_email,if(user_telephone is null,'',user_telephone) user_telephone,if(ext is null,'',ext) ext,if(phone_un is null,'',phone_un) phone_un,phone_pw,attendee,ics,home_postcode from users  left join user_roles using(role_id) left join user_groups using(group_id) left join teams using(team_id) where 1 $where order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END,role_id,name";
+
+        $qry    = "select user_id,
+                          name,
+                          username,
+                          if(group_name is null,'-',group_name) group_name,
+                          team_id,
+                          if(team_name is null,'-',team_name) team_name,
+                          role_name,
+                          IF(user_status = 1,'On','Off') status_text,
+                          user_status,
+                          user_groups.group_id,
+                          role_id,
+                          user_email,
+                          if(user_telephone is null,'',user_telephone) user_telephone,
+                          if(ext is null,'',ext) ext,
+                          if(phone_un is null,'',phone_un) phone_un,
+                          phone_pw,
+                          attendee,
+                          ics,
+                          home_postcode,
+                          GROUP_CONCAT(uc.campaign_id SEPARATOR ',') as campaigns
+                      from users
+                      left join user_roles using(role_id)
+                      left join user_groups using(group_id)
+                      left join teams using(team_id)
+                      left join users_to_campaigns uc using (user_id)
+                  where 1 $where
+                  group by user_id
+                  order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END,role_id,name";
         $result = $this->db->query($qry)->result_array();
         return $result;
     }

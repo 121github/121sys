@@ -101,6 +101,7 @@ var admin = {
                                     '<td><span class="hidden team_id">' + val.team_id + '</span>' + val.team_name + '</td>' +
                                     '<td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td>' +
                                     '<td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td>' +
+                                    '<td><span class="hidden campaigns">' + val.campaigns + '</span></td>' +
                                     '<td>' +
                                         '<button class="btn btn-default btn-xs edit-btn">Edit</button>' +
                                         '<button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button>' +
@@ -126,16 +127,17 @@ var admin = {
             $('form').find('input[name="name"]').val(row.find('.name').text());
             $('form').find('input[name="username"]').val(row.find('.username').text());
           
-			 $('form').find('select[name="group_id"]').val(row.find('.group_id').text()).selectpicker('refresh');
+			$('form').find('select[name="group_id"]').val(row.find('.group_id').text()).selectpicker('refresh');
             $('form').find('select[name="role_id"]').val(row.find('.role_id').text()).selectpicker('refresh');
-			   $('form').find('select[name="user_status"]').val(row.find('.user_status').text()).selectpicker('refresh');
-			      $('form').find('select[name="team_id"]').val(row.find('.team_id').text()).selectpicker('refresh');
-				     $('form').find('select[name="attendee"]').val(row.find('.attendee').text()).selectpicker('refresh');
+			$('form').find('select[name="user_status"]').val(row.find('.user_status').text()).selectpicker('refresh');
+			$('form').find('select[name="team_id"]').val(row.find('.team_id').text()).selectpicker('refresh');
+			$('form').find('select[name="attendee"]').val(row.find('.attendee').text()).selectpicker('refresh');
             $('form').find('select[name="ics"]').selectpicker('val', row.find('.ics').text());
 			$('form').find('select[name="team_id"]').selectpicker('val', row.find('.team_id').text());
 			$('form').find('input[name="phone_un"]').val( row.find('.phone_un').text());
             $('form').find('input[name="phone_pw"]').val(row.find('.phone_pw').text());
 			$('form').find('input[name="ext"]').val(row.find('.ext').text());
+            $('form').find('select[name="campaigns[]"]').val((row.find('.campaigns').text()).split(",")).selectpicker('refresh');
             $('.ajax-table').fadeOut(1000, function() {
                 $('form').fadeIn();
             });

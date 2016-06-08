@@ -424,7 +424,13 @@ class Form_model extends CI_Model
     }
     public function get_roles()
     {
-        $qry = "select role_id id,role_name name,landing_page,timeout from user_roles";
+        if ($_SESSION['role'] == "1") {
+            $where = "";
+        } else {
+            $where = " and role_id != 1 ";
+        }
+
+        $qry = "select role_id id,role_name name,landing_page,timeout from user_roles where 1 $where";
         return $this->db->query($qry)->result_array();
     }
     public function get_managers()
