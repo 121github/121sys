@@ -407,6 +407,13 @@ var campaign_functions = {
     edit_custom_item_setup: function (data) {
         //Set the job winner options
         campaign_functions.job_winner_setup(data);
+		if($('#appointment-panel table tr').length==0){
+		$modal.find('select[name="6"] option:contains("Appointment")').attr('disabled','disabled');
+$modal.find('select[name="6"] option:contains("Invoiced")').attr('disabled','disabled');
+$modal.find('select[name="6"] option:contains("Paid")').attr('disabled','disabled');
+$modal.find('select[name="6"] option:contains("Cancelled")').attr('disabled','disabled');
+$modal.find('select[name="6"]').selectpicker('refresh');
+		}
     },
     job_winner_setup: function(data) {
         $.ajax({

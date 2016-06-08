@@ -12,6 +12,9 @@ var campaign_functions = {
         $('.progress-outcome').selectpicker('refresh');
 		
     },
+	add_record_setup:function(){
+		$('#create-record .panel').prepend('<div class="form-group"><label>Address Type</label><br><select class="selectpicker" name="description"><option value="Survey Address">Survey Address</option><option value="Correspondence Address">Correspondence Address</option><option value="Access Address">Access Address</option></select></div>');
+	},
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
         $('input[name="website"]').closest('.form-group').hide();
@@ -29,7 +32,7 @@ var campaign_functions = {
 		data: { "contact_id":$modal.find('[name="contact_id"]').val(),"urn": record.urn }, 
 		dataType:"HTML",
 		beforeSend:function(){
-		$modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+		$modal.find('#address').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");	
 		}
 		}).done(function(response){ 	
 		$modal.find('#address').html(response);
@@ -275,7 +278,7 @@ var campaign_functions = {
         if ($('[name="appointment_contact_email"]').length > 0) {
             var client_email = $('[name="appointment_contact_email"]').val();
         }
-		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced")) {
+		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced")||$form.find("[name='6']").val() === "Appointment Confirmed") {
 			 $.ajax({
                     url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
                     type: "POST",
@@ -404,6 +407,13 @@ var campaign_functions = {
     edit_custom_item_setup: function (data) {
         //Set the job winner options
         campaign_functions.job_winner_setup(data);
+		if($('#appointment-panel table tr').length==0){
+		$modal.find('select[name="6"] option:contains("Appointment")').attr('disabled','disabled');
+$modal.find('select[name="6"] option:contains("Invoiced")').attr('disabled','disabled');
+$modal.find('select[name="6"] option:contains("Paid")').attr('disabled','disabled');
+$modal.find('select[name="6"] option:contains("Cancelled")').attr('disabled','disabled');
+$modal.find('select[name="6"]').selectpicker('refresh');
+		}
     },
     job_winner_setup: function(data) {
         $.ajax({
