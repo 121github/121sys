@@ -100,9 +100,9 @@ class Email_model extends CI_Model
             $appointment_fields = "";
         }
         /* adding custom_panel_data 24/03/16 BF */
-        $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and appointment_id = '$appointment_id'";
+        $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and appointment_id = '$appointment_id' ";
         if(!$this->db->query($c_q)->num_rows()){
-            $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn'";
+            $c_q = "select * from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and data_id = (select max(data_id) from custom_panel_data where urn = '$urn') ";
         }
         $c_selects = "";
         $c_joins = "";
