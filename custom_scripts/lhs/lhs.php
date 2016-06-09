@@ -626,6 +626,11 @@ switch ($action) {
         }
         break;
     case "create_job_number":
+		if(isset($_POST['appointment_id'])){
+		$set_confirmed = "update appointments set appointment_type_id = 3 where appointment_id = '".intval($_POST['appointment_id'])."'";
+        $conn->query($set_confirmed);
+		}
+	
         $sql = "select `value` from custom_panel_values where field_id = 1 and `value` like 'LH%' order by `value` desc limit 1";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {

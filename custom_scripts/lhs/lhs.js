@@ -254,6 +254,7 @@ var campaign_functions = {
                     data: {
 						action:'create_job_number',
                         data_id: appointment.job_id,
+						appointment_id:appointment.appointment_id
                     }
                 })
 		 }
