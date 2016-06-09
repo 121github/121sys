@@ -1,14 +1,14 @@
  <nav id="global-filter" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">
             <form id="global-filter-form">
-                      <?php  if(isset($campaigns) && count($campaigns) > 0){ ?>
+                      <?php if(isset($campaigns) && count($campaigns) > 0){ ?>
             <div class="form-group">
                 <label>Campaign <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="Only show data from these campaigns" data-html="true"></span></label>
                 <select name="campaign_id[]" title="All Campaigns" class="selectpicker campaign-filter" data-width="100%"><?php foreach ($campaigns as $campaign => $pot_data) { ?>
                         <optgroup label="<?php echo $campaign ?>">
                             <?php foreach ($pot_data as $row) { ?>
-                                <option 
-								<?php if(isset($_SESSION['report-filter']['values']['pot_id']) && @in_array($row['id'],$_SESSION['report-filter']['values']['pot_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name']; ?></option>
+             <option 
+								<?php if($_SESSION['current_campaign']==$row['id']) { echo "selected"; } else if(isset($_SESSION['report-filter']['values']['pot_id']) && @in_array($row['id'],$_SESSION['report-filter']['values']['pot_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                             <?php } ?>
                         </optgroup>
                     <?php } ?>
@@ -155,7 +155,7 @@
            <?php } ?>
                 <div class="form-group">
               
-                  <button class="btn btn-danger pull-left clear-filter"  <?php echo (isset($_SESSION['report-filter']['values'])?"":"disabled") ?> >Clear</button>
+                  <button class="btn btn-danger pull-left clear-filter"  <?php echo (isset($_SESSION['filter']['values'])?"":"disabled") ?> >Clear</button>
                 <button class="btn btn-primary pull-right apply-filter">Submit</button>
                 </div>
             </form>

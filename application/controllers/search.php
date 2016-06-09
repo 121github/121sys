@@ -394,8 +394,11 @@ class Search extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$filter = $this->input->post();
 			
-			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
+			if(!in_array("search campaigns",$_SESSION['permissions'])){
+			//if they do not have permission to search campaigns they can only view the current campaign
+			if(isset($_SESSION['current_campaign'])){
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
+			}
 			}
             $count = $this->Filter_model->apply_filter($filter);
             echo json_encode(array(

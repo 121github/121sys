@@ -1961,6 +1961,9 @@ event.stopPropagation()
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
+			$('#global-filter-form select,#report-filter-form select').selectpicker('val',[]).selectpicker('refresh');
+			$('#global-filter-form,#report-filter-form input').val('');
+			$('#submenu-filter-btn').removeClass('btn-success').addClass('btn-default');
 			if(typeof view !== "undefined"){
             view.reload_table();
 			} else {

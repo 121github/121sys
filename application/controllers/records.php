@@ -67,11 +67,10 @@ class Records extends CI_Controller
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
 		
 		$title = "Record List";
-		$global_filter = $this->Filter_model->build_filter_options();
-		if(isset($_SESSION['current_campaign'])){
-		$global_filter['campaigns'] = array("name"=>$_SESSION['current_campaign_name'],"id"=>$_SESSION['current_campaign']);
-		} else {
-		$global_filter['campaigns'] = $this->_campaigns;
+		$global_filter = false;
+			if(in_array("enable global filter",$_SESSION['permissions'])){
+				$global_filter = $this->Filter_model->build_filter_options();
+					$global_filter['campaigns'] = $this->_campaigns;
 		}
         $data = array(
 		'global_filter' => $global_filter,
@@ -112,7 +111,11 @@ class Records extends CI_Controller
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		}
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
-		$global_filter = $this->Filter_model->build_filter_options();
+				$global_filter = false;
+					if(in_array("enable global filter",$_SESSION['permissions'])){
+				$global_filter = $this->Filter_model->build_filter_options();
+					$global_filter['campaigns'] = $this->_campaigns;
+		}
 		$title = "Record List";
         $data = array(
 		'global_filter' => $global_filter,
@@ -371,15 +374,17 @@ if(!isset($_SESSION['current_campaign'])||$campaign_id<>$_SESSION['current_campa
                 }
             endforeach;
         }
-		$global_filter=false;
+		
         //Get the campaign_triggers if exists
         $campaign_triggers = array();
         if ($campaign['campaign_id']) {
             $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($campaign['campaign_id']);
         }
 		$title = "View Details";
-		if(in_array("enable global filter",$_SESSION['permissions'])){
-      		$global_filter = $this->Filter_model->build_filter_options();
+		$global_filter = false;
+					if(in_array("enable global filter",$_SESSION['permissions'])){
+				$global_filter = $this->Filter_model->build_filter_options();
+					$global_filter['campaigns'] = $this->_campaigns;
 		}
         $data = array(
 		'global_filter' => $global_filter,

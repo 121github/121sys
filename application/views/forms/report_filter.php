@@ -20,7 +20,8 @@
                     <?php foreach ($campaigns as $campaign => $pot_data) { ?>
                         <optgroup label="<?php echo $campaign ?>">
                             <?php foreach ($pot_data as $row) { ?>
-                                <option <?php if(isset($_SESSION['report-filter']['values']['pot_id']) && @in_array($row['id'],$_SESSION['report-filter']['values']['pot_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                                <option 
+								<?php if($_SESSION['current_campaign']==$row['id']) { echo "selected"; } else if(isset($_SESSION['report-filter']['values']['pot_id']) && @in_array($row['id'],$_SESSION['report-filter']['values']['pot_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                             <?php } ?>
                         </optgroup>
                     <?php } ?>
