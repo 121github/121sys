@@ -254,6 +254,7 @@ var campaign_functions = {
                     data: {
 						action:'create_job_number',
                         data_id: appointment.job_id,
+						appointment_id:appointment.appointment_id
                     }
                 })
 		 }
@@ -424,7 +425,7 @@ var campaign_functions = {
     new_custom_item_setup: function () {
         //Set the job winner options
         campaign_functions.job_winner_setup();
-        
+
         //Changes on the form elements
         campaign_functions.change_custom_item_form();
     },
@@ -438,7 +439,7 @@ var campaign_functions = {
             $modal.find('select[name="6"] option:contains("Cancelled")').attr('disabled','disabled');
             $modal.find('select[name="6"]').selectpicker('refresh');
 		}
-        
+
         //Changes on the form elements
         campaign_functions.change_custom_item_form();
     },
