@@ -425,17 +425,81 @@ var campaign_functions = {
     new_custom_item_setup: function () {
         //Set the job winner options
         campaign_functions.job_winner_setup();
+
+        //Changes on the form elements
+        campaign_functions.change_custom_item_form();
     },
     edit_custom_item_setup: function (data) {
         //Set the job winner options
         campaign_functions.job_winner_setup(data);
 		if($('#appointment-panel table tr').length==0){
-		$modal.find('select[name="6"] option:contains("Appointment")').attr('disabled','disabled');
-$modal.find('select[name="6"] option:contains("Invoiced")').attr('disabled','disabled');
-$modal.find('select[name="6"] option:contains("Paid")').attr('disabled','disabled');
-$modal.find('select[name="6"] option:contains("Cancelled")').attr('disabled','disabled');
-$modal.find('select[name="6"]').selectpicker('refresh');
+            $modal.find('select[name="6"] option:contains("Appointment")').attr('disabled','disabled');
+            $modal.find('select[name="6"] option:contains("Invoiced")').attr('disabled','disabled');
+            $modal.find('select[name="6"] option:contains("Paid")').attr('disabled','disabled');
+            $modal.find('select[name="6"] option:contains("Cancelled")').attr('disabled','disabled');
+            $modal.find('select[name="6"]').selectpicker('refresh');
 		}
+
+        //Changes on the form elements
+        campaign_functions.change_custom_item_form();
+    },
+    change_custom_item_form: function() {
+
+        //Change type of survey input
+        var type_of_survey_html = '<div class="input-group">' +
+            '<div class="input-group-btn">' +
+            '<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown"' +
+            'aria-haspopup="true" aria-expanded="false">Select <span class="caret"></span>' +
+            '</button>' +
+            '<ul class="dropdown-menu type-of-survey-list">' +
+            '<li><a href="#">Building Survey</a></li>' +
+            '<li><a href="#">Expert Witness</a></li>' +
+            '<li><a href="#">General Structural Inspection</a></li>' +
+            '<li><a href="#">Home Buyer Report</a></li>' +
+            '<li><a href="#">Party Wall</a></li>' +
+            '<li><a href="#">Specific Inspection</a></li>' +
+            '<li><a href="#">Structural Calculations</a></li>' +
+            '<li><a href="#">Valuation</a></li>' +
+            '</ul>' +
+            '</div>' +
+            '</div>';
+        var $input = $modal.find('.form-group').find('input[name="7"]');
+        var $new = $(type_of_survey_html);
+        var $parent = $modal.find('.form-group').find('input[name="7"]').parent()
+        $new.append($input);
+        $parent.html($new);
+        $parent.prepend($('<label>Type of Survey</label>'));
+
+        $modal.find(".type-of-survey-list li a").click(function () {
+            $modal.find('.form-group').find('input[name="7"]').val($(this).text());
+        });
+
+
+        //Change additional services input
+        var additional_services_html = '<div class="input-group">' +
+            '<div class="input-group-btn">' +
+            '<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown"' +
+            'aria-haspopup="true" aria-expanded="false">Select <span class="caret"></span>' +
+            '</button>' +
+            '<ul class="dropdown-menu additional-services-list">' +
+            '<li><a href="#">Gas Inspection</a></li>' +
+            '<li><a href="#">High Level Images</a></li>' +
+            '<li><a href="#">Platinum Plus</a></li>' +
+            '<li><a href="#">Thermal Images</a></li>' +
+            '<li><a href="#">Valuation</a></li>' +
+            '</ul>' +
+            '</div>' +
+            '</div>';
+        var $input = $modal.find('.form-group').find('input[name="11"]');
+        var $new = $(additional_services_html);
+        var $parent = $modal.find('.form-group').find('input[name="11"]').parent()
+        $new.append($input);
+        $parent.html($new);
+        $parent.prepend($('<label>Additional Services</label>'));
+
+        $modal.find(".additional-services-list li a").click(function () {
+            $modal.find('.form-group').find('input[name="11"]').val($(this).text());
+        });
     },
     job_winner_setup: function(data) {
         $.ajax({
