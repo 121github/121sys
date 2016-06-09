@@ -481,10 +481,10 @@ $survey_type = $row['value']."\n";
 $query = "select * from appointments a join records using(urn) join sticky_notes using(urn) join contacts c using(urn) where a.appointment_id = '$id' and c.`primary`=1";
 $result= $conn->query($query);
 $contact = $result->fetch_assoc();
-$description .= $contact['fullname']."\n";
-$description .= $contact['email']."\n";
-$description .= $contact['notes']."\n";
-$notes = $contact['text'];
+$description .= !empty($contact['fullname'])?$contact['fullname']."\n":"";
+$description .= !empty($contact['email'])?$contact['email']."\n":"";
+$description .= !empty($contact['notes'])?$contact['notes']."\n":"";
+$notes = $contact['note'];
 $query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts c using(urn) join contact_addresses ca on ca.contact_id = c.contact_id where description = 'Correspondance Address' and a.appointment_id = '$id'";
 $result= $conn->query($query);
 $address = $result->fetch_assoc();
@@ -496,17 +496,17 @@ $result = $conn->query($query);
 while($row =$result->fetch_assoc()){
 $telephone .= $row['description'].": ".$row['telephone_number']."\n";
 }
-$description .= $telephone."\n\n";
-$description .= $survey_type."\n";
+$description .= !empty($telephone)?$telephone."\n":"";
+$description .= !empty($survey_type)?$survey_type."\n":"";
 
-$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts c using(urn) join contact_addresses ca on ca.contact_id = c.contact_id left join contact_telephone ct on ct.contact_id = c.contact_id where (ca.description = 'Access Address' or ca.description is null)  and a.appointment_id = '$id' and (c.`primary` = 0 or c.`primary` is null)";
+$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts c using(urn) join contact_addresses ca on ca.contact_id = c.contact_id left join contact_telephone ct on ct.contact_id = c.contact_id where (ca.description = 'Access Address' or ca.description is null) and a.appointment_id = '$id' and (c.`primary` = 0 or c.`primary` is null)";
 $result= $conn->query($query);
 $address = $result->fetch_assoc();
 $description .= addressFormat($address)."\n";
-$description .= $address['fullname']."\n";
-$description .= $address['position']."\n";
-$description .= $address['notes']."\n";
-$description .= $address['telephone_number']."\n";
+$description .= !empty($contact['fullname'])?$contact['fullname']."\n":"";
+$description .= !empty($contact['position'])?$contact['position']."\n":"";
+$description .= !empty($contact['notes'])?$contact['notes']."\n":"";
+$description .= !empty($contact['telephone_number'])?$contact['telephone_number']."\n":"";
 
 $description .= $notes;
 
