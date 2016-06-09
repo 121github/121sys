@@ -7,24 +7,41 @@ var campaign_functions = {
 		$('#sticky-panel .panel-heading').text('Job Notes');
 		$('#sticky-notes').attr('placeholder','Enter any additional information about the job here. These notes will be added to the surveyors appointment and sent to their calendar');
     },
+	add_google_event:function(appointment_id){
+		 var description = '';
+                $.ajax({
+                    url:helper.baseUrl+'custom_scripts/lhs/lhs.php?calendar_description',
+                    data: {
+                        id: appointment_id
+                    },
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function(response){
+                    if (response.success) {
+                       description= response.description;
+                    }
+                   modals.add_google_event(appointment_id,description);
+                });
+	},
     record_setup_update: function () {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
         $('.progress-outcome').selectpicker('refresh');
 		
     },
 	add_record_setup:function(){
-		$('#create-record .panel').prepend('<div class="form-group"><label>Address Type</label><br><select class="selectpicker" name="description"><option value="Survey Address">Survey Address</option><option value="Correspondence Address">Correspondence Address</option><option value="Access Address">Access Address</option></select></div>');
+		$('#create-record .panel').prepend('<div class="form-group"><label>Address Type</label><br><select class="selectpicker" name="description"><option value="Survey Address">Survey Address</option><option value="Correspondence Address">Correspondence Address</option><option disabled data-subtext="Must add this later" value="Access Address">Access Address</option></select></div>');
 	},
     contact_form_setup: function () {
-        $('input[name="dob"]').closest('.form-group').hide();
-        $('input[name="website"]').closest('.form-group').hide();
-        $('input[name="facebook"]').closest('.form-group').hide();
-        $('input[name="linkedin"]').closest('.form-group').hide();
 
-        $('.position-label').html("Company");
-        $('input[name="position"]').attr('placeholder', 'Company Name')
+        $modal.find('input[name="dob"]').closest('.form-group').hide();
+        $modal.find('input[name="website"]').closest('.form-group').hide();
+        $modal.find('input[name="facebook"]').closest('.form-group').hide();
+        $modal.find('input[name="linkedin"]').closest('.form-group').hide();
 
-        $('select[name="tps"]').closest('.form-group').hide();
+       $modal.find('.position-label').html("Company");
+        $modal.find('input[name="position"]').attr('placeholder', 'Company Name')
+
+        $modal.find('select[name="tps"]').closest('.form-group').hide();
 		$modal.find('#address').empty();
 		
 		$.ajax({ url:helper.baseUrl+'custom_scripts/lhs/lhs.php?address_form',
@@ -51,9 +68,13 @@ var campaign_functions = {
     contact_panel_setup: function () {
         $('.Job-panel-label').html("Company");
         $('.tps-btn').hide();
+		$('#contact-panel .panel-heading .btn').remove();
     },
     contact_tabs_setup: function () {
         $('.tps-contact-label').hide();
+		if($modal.find('input[name="primary"]').val()=="0"){
+			$('#correspondance-panel,#survey-panel,#contact-tabs .phone-tab').hide();
+		}
     },
     appointment_setup: function (start, attendee, urn) {
 		console.log("LHS app setup");
@@ -232,7 +253,7 @@ var campaign_functions = {
                     dataType: "JSON",
                     data: {
 						action:'create_job_number',
-                          data_id: appointment.job_id
+                        data_id: appointment.job_id,
                     }
                 })
 		 }
@@ -425,10 +446,8 @@ $modal.find('select[name="6"]').selectpicker('refresh');
                 if (response.data.length > 0) {
                     var options = "<option value=''> --Please select-- </option>";
 					var job_winner_val = "";
-					if(typeof data[1] !== "undefined"){
 					if(typeof data[1][14] !== "undefined"){
                     job_winner_val= data[1][14];
-					}
 					}
                     $.each(response.data, function (k, val) {
                         options += "<option value='" + val.name + "'>" + val.name + "</option>";
