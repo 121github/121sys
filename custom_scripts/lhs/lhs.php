@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 define("BASEPATH", "../../system/");
 include("../../application/config/database.php");
@@ -450,23 +453,27 @@ $(document).ready(function(){
 
 //create the LHS survey description
 if(isset($_GET['calendar_description'])){
+	$description = "";
+	$survey_type = "";
+	$notes = "";
+	if(isset($_POST['id'])){
 	$id = intval($_POST['id']);
-$description = "";
+	}
 
 if(isset($_GET['id'])){
 	$id = intval($_GET['id']);
 }
 
 //first get the job reference and survey type
-$query = "select * from custom_panel_data cpd join custom_panel_values using(data_id) join data_panel_fields using(field_id) where cpd.appointment_id = '$id' ";
+$query = "select * from custom_panel_data cpd join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where cpd.appointment_id = '$id' ";
 $job= $conn->query($query);
 
 
 while($row =$job->fetch_assoc()){
-if($row['field_name']=='Job Reference'){
+if($row['name']=='Job Reference'){
 $description .= $row['value']."\n";
 }
-if($row['field_name']=='Type of survey'){
+if($row['name']=='Type of survey'){
 $survey_type = $row['value']."\n";
 }
 }
@@ -478,21 +485,21 @@ $description .= $contact['fullname']."\n";
 $description .= $contact['email']."\n";
 $description .= $contact['notes']."\n";
 $notes = $contact['text'];
-$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts using(urn) join contact_adddress ca using(contact_id) where description = 'Correspondance Address' where a.appointment_id = '$id'";
+$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts c using(urn) join contact_addresses ca on ca.contact_id = c.contact_id where description = 'Correspondance Address' and a.appointment_id = '$id'";
 $result= $conn->query($query);
 $address = $result->fetch_assoc();
 $description .= addressFormat($address)."\n";
 
 $telephone="";
 $query = "select * from appointments a join records using(urn) join contacts c using(urn) left join contact_telephone ct on c.contact_id = ct.contact_id where a.appointment_id = '$id' and c.`primary`=1";
-$telephone = $conn->query($query);
-while($row =$contact->fetch_assoc()){
+$result = $conn->query($query);
+while($row =$result->fetch_assoc()){
 $telephone .= $row['description'].": ".$row['telephone_number']."\n";
 }
 $description .= $telephone."\n\n";
 $description .= $survey_type."\n";
 
-$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts using(urn) join contact_adddress ca using(contact_id) left join contact_telephone ct using(contact_id) where description = 'Access Address' where a.appointment_id = '$id' and (contacts.`primary` = 0 or contacts.`primary` is null)";
+$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts c using(urn) join contact_addresses ca on ca.contact_id = c.contact_id left join contact_telephone ct on ct.contact_id = c.contact_id where (ca.description = 'Access Address' or ca.description is null)  and a.appointment_id = '$id' and (c.`primary` = 0 or c.`primary` is null)";
 $result= $conn->query($query);
 $address = $result->fetch_assoc();
 $description .= addressFormat($address)."\n";
@@ -748,6 +755,7 @@ function postcodeFormat($postcode)
 		function addressFormat($array=array(),$seperator=", "){
 		$allowed = array("add1","add2","add3","add4","city","county","country","postcode");
 		$address = "";
+	if(is_array($array)){
 	foreach($array as $k=>$v){
 	if(!in_array($k,$allowed)||empty($v)){
 		unset($array[$k]);
@@ -755,6 +763,9 @@ function postcodeFormat($postcode)
 	}
 	$address =implode($seperator,$array);
 	return $address;
+	} else {
+	return "";	
+	}
 }
 
 ?>
