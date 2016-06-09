@@ -20,7 +20,7 @@ $database = $db['default']['database'];
 // Create connection
 $conn = new mysqli($hostname, $username, $password);
 
-// Check connection
+// Check connection 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
