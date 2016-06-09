@@ -532,7 +532,12 @@ class Admin extends CI_Controller
         $options['teams']  = $this->Form_model->get_teams();
         $options['roles']  = $this->Form_model->get_roles();
         $options['groups'] = $this->Form_model->get_all_groups();
-        $options['campaigns'] = $this->Form_model->get_campaigns();
+
+        $aux = array();
+        foreach ($this->_campaigns as $campaign) {
+            array_push($aux,$campaign[0]);
+        }
+        $options['campaigns'] = $aux;
 
         $data              = array(
             'campaign_access' => $this->_campaigns,
