@@ -178,9 +178,9 @@
                                         class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu description-list">
-                                    <li><a href="#">Correspondence Address</a></li>
-                                    <li><a href="#">Surveying Address</a></li>
-                                    <li><a href="#">Access Address</a></li>
+                                    <li><a href="#">Home Address</a></li>
+                                    <li><a href="#">Invoice Address</a></li>
+                                    <li><a href="#">Delivery Address</a></li>
                                 </ul>
                             </div>
                             <!-- /btn-group -->

@@ -162,9 +162,9 @@
                                         aria-haspopup="true" aria-expanded="false">Description <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu description-list">
-                                    <li><a href="#">Correspondence Address</a></li>
-                                    <li><a href="#">Surveying Address</a></li>
-                                    <li><a href="#">Access Address</a></li>
+                                    <li><a href="#">Office Address</a></li>
+                                    <li><a href="#">Branch Address</a></li>
+                                    <li><a href="#">Site Address</a></li>
                                 </ul>
                             </div>
                             <!-- /btn-group -->

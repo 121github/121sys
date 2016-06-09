@@ -86,7 +86,7 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	}
 	//surveying address
 	$address = "";
-	$qry = "select * from contact_addresses join contacts using(contact_id) where urn = '$urn' and description = 'Surveying Address'";
+	$qry = "select * from contact_addresses join contacts using(contact_id) where urn = '$urn' and description = 'Survey Address'";
 	$result = $conn->query($qry);
 	if($result->num_rows){
 	$row = $result->fetch_assoc();
@@ -228,7 +228,7 @@ if(isset($_GET['address_form'])){
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
         <?php
-	    $sql = "select * from contact_addresses where description = 'Surveying address' and contact_id = $contact_id ";
+	    $sql = "select * from contact_addresses where description = 'Survey address' and contact_id = $contact_id ";
 		$row = array();
 		$result = $conn->query($sql);
         if($result){
@@ -239,7 +239,7 @@ if(isset($_GET['address_form'])){
       
         <form id="survey-address-form">
          <input type="hidden" name="urn" value="<?php echo $urn ?>" />
-              <input type="hidden" name="description" value="Surveying Address" />
+              <input type="hidden" name="description" value="Survey Address" />
                  <input type="hidden" name="contact_id" value="<?php echo $contact_id ?>" />
           <div class="row">
             <div class="col-md-6">
@@ -568,7 +568,7 @@ if(isset($_GET['save_address'])){
 	, county = '".addslashes($_POST['county'])."'
 	, country = '".addslashes($_POST['country'])."'
 	, postcode = '".addslashes($postcode)."' ";
-	if($_POST['description']=="Surveying Address"){
+	if($_POST['description']=="Survey Address"){
 	$sql .= " ,`primary` = '1' ";	
 	}
 	 $sql .= ",contact_id = '".$contact_id."'";
@@ -582,7 +582,7 @@ if(isset($_GET['save_address'])){
 			 $app = $result->fetch_assoc();
 			 $app_id = $app['appointment_id'];
 			  $address = addressFormat($_POST);
-			 if($_POST['description'] == "Surveying Address"){
+			 if($_POST['description'] == "Survey Address"){
 				$sql = "update appointments set address = '$address' ,postcode='$postcode',address_table='contact_addresses',address_id='$address_id' where appointment_id = '$app_id'";
 				$conn->query($sql);
 			 }
