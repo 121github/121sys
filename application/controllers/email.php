@@ -905,7 +905,7 @@ class Email extends CI_Controller
 		
         $result = $this->email->send();
         //print_r($this->email->print_debugger());
-        $this->firephp->log($this->email->print_debugger());
+        //$this->firephp->log($this->email->print_debugger());
 
         //Write on log
         log_message('info', '[EMAIL] Email sent from '.$form['send_from'].' to '.$form['send_to'].'. Title: '.$form['subject']);

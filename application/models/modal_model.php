@@ -23,7 +23,6 @@ class Modal_model extends CI_Model
 		$modal_config_id = $this->db->query($get_modal_query)->row()->id;
 
 		$query = "select * from modals join modal_config using(modal_id) join modal_columns on modal_config.id = modal_columns.modal_config_id join modal_datafields using(column_id) join datafields using(datafield_id) left join record_details_fields on datafield_title = field where modal_id = $modal_type and modal_config_id = '$modal_config_id' and (datafields.campaign is null or datafields.campaign = '$campaign') order by column_sort,modal_datafields.sort";
-$this->firephp->log($query);
 		if ($this->db->query($query)->num_rows()) {
 			$fields = $this->db->query($query)->result_array();
 		} else {
@@ -188,7 +187,6 @@ $this->firephp->log($query);
             $qry .= $join_query;
         }
         $qry .= " where a.appointment_id = '$id' group by a.appointment_id";
-		$this->firephp->log($qry);
         return $this->db->query($qry)->row_array();
     }
 	

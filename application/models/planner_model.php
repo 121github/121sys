@@ -149,7 +149,9 @@ class Planner_model extends CI_Model
         $location_id = $this->get_location_id($postcode);
         //add the location to the planner table
         $data = array("urn" => $urn, "user_id" => $user_id, "start_date" => $date, "postcode" => $postcode, "location_id" => $location_id, "planner_status" => 1, "planner_type" => $type, "order_num" => $order);
-        $this->db->insert("record_planner", $data);
+        $string = $this->db->insert_string("record_planner", $data);
+		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$string);
+		$this->db->query($insert_query);
         return $this->db->insert_id();
     }
 
