@@ -464,8 +464,12 @@ $datafield_ids = array();
     }
 
 	public function get_company_id_from_appointment($appointment_id) {
-	 $query = $this->db->query("select company_id from companies join appointments using(urn) where appointment_id = '$appointment_id'");
-	 return $query->company_id;
+	 $row = $this->db->query("select company_id from appointments left join companies using(urn) where appointment_id = '$appointment_id'")->row_array();
+	 if(!empty($row['company_id'])){
+	 return $row['company_id'];
+	 } else {
+	 return false;	 
+	 }
 }
 
     /**
