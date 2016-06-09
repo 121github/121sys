@@ -532,6 +532,13 @@ class Admin extends CI_Controller
         $options['teams']  = $this->Form_model->get_teams();
         $options['roles']  = $this->Form_model->get_roles();
         $options['groups'] = $this->Form_model->get_all_groups();
+
+        $aux = array();
+        foreach ($this->_campaigns as $campaign) {
+            array_push($aux,$campaign[0]);
+        }
+        $options['campaigns'] = $aux;
+
         $data              = array(
             'campaign_access' => $this->_campaigns,
             
@@ -1211,19 +1218,33 @@ class Admin extends CI_Controller
 			echo json_encode(array("success"=>false,"error"=>"Please set the user role"));
 			exit;
 		}
+        if(empty($form['campaigns'])){
+            echo json_encode(array("success"=>false,"error"=>"Please set at least one campaign"));
+            exit;
+        }
 		if(empty($form['user_status'])){
 			$form['user_status'] = 1;
 		}
+
+
+        $campaigns = $form['campaigns'];
+        unset($form['campaigns']);
+
         if (empty($form['user_id'])) {
             $user_id = $this->Admin_model->add_new_user($form);
             $this->load->model('Datatables_model');
             $this->Datatables_model->set_default_columns($user_id);
+
+            $this->Admin_model->set_campaign_user_ids($user_id,$campaigns);
+
             $response = true;
         } else {
             $response = $this->Admin_model->update_user($form);
             $this->User_model->flag_users_for_reload(array(
                 $form['user_id']
             ));
+
+            $this->Admin_model->set_campaign_user_ids($form['user_id'],$campaigns);
         }
         
         
