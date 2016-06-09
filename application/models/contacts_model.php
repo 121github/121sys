@@ -18,7 +18,7 @@ class Contacts_model extends CI_Model
     
     public function get_contact($id)
     {
-        $qry     = "select *, IF (dob,date_format(dob,'%d/%m/%Y'),null) dob, contact_addresses.description as add_description from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
+        $qry     = "select *, IF (dob,date_format(dob,'%d/%m/%Y'),null) dob, contact_addresses.description as add_description,contacts.`primary` primary_contact from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
             $contact['general'] = array(
@@ -35,7 +35,8 @@ class Contacts_model extends CI_Model
                 "notes" => $result['notes'],
                 "email" => $result['email'],
                 "optout" => $result['email_optout'],
-                "dob" => $result['dob']
+                "dob" => $result['dob'],
+				"primary"=>$result['primary_contact']
             );
 
             if ($result['telephone_id']) {

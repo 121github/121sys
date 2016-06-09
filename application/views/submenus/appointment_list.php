@@ -12,7 +12,7 @@
 
                         <div class="btn-group">
                             <a type="button" class="btn btn-default" data-modal="choose-columns"
-                               data-table-id="1"><span
+                               data-table-id="3"><span
                                     class="fa fa-table"></span> Views
                             </a>
                         </div>

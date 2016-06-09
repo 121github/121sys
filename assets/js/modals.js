@@ -657,8 +657,10 @@ var modals = {
                         calendar.fullCalendar.fullCalendar('refetchEvents');
                     }, 1000);
                 }
-
-
+				
+ 				if (typeof campaign_functions.add_google_event !== "undefined") {
+                    campaign_functions.add_google_event(appointment_id);
+                } else {				
                 //Set appointmnt in google calendar if the attendee has a google account
                 var description = '';
                 $.ajax({
@@ -678,8 +680,18 @@ var modals = {
                             description += '\n\n';
                         });
                     }
-
-                    $.ajax({
+                   modals.add_google_event(appointment_id,description);
+                });
+				}
+            } else {
+                flashalert.danger(response.msg);
+            }
+        }).fail(function(){
+				flashalert.danger("There was an error saving the appointment");
+        });
+    },
+	add_google_event:function(appointment_id,description){
+		 $.ajax({
                         url: helper.baseUrl + 'booking/add_google_event',
                         data: {
                             appointment_id: appointment_id,
@@ -689,15 +701,7 @@ var modals = {
                         type: "POST",
                         dataType: "JSON"
                     });
-                });
-
-            } else {
-                flashalert.danger(response.msg);
-            }
-        }).fail(function(){
-				flashalert.danger("There was an error saving the appointment");
-        });
-    },
+	},
     confirm_overlap_appointment: function (urn, appointment_id, data, results) {
         var mheader = "Overlap appointments";
         var mbody = "There are one or more appointments at the same time and for this attendee. Do you still want to book this appointment?";
@@ -1985,7 +1989,7 @@ event.stopPropagation()
                 modals.contacts.save_item(action);
             });
             /*when a tab is changed we should reset the tab content*/
-            $modal.on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
+            $('#contact-tabs').on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
 				console.log(tabname);
@@ -2230,7 +2234,7 @@ event.stopPropagation()
                 }
 					if(typeof campaign_functions.contact_form_setup !== "undefined"){
 					campaign_functions.contact_form_setup();
-				}
+					}
 				
             });
         },
@@ -2255,7 +2259,6 @@ event.stopPropagation()
                 }
             }).done(function (response) {
                 if (response.success) {
-
                     $.each(response.data.general, function (key, val) {
                         $modal.find('#general [name="' + key + '"]').val(val);
                     });
@@ -2374,7 +2377,7 @@ event.stopPropagation()
                 modals.referrals.save_item(action);
             });
             /*when a tab is changed we should reset the tab content*/
-            $modal.on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
+            $('#referral-tabs').on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
                 modals.referrals.change_tab(tabname);
@@ -2731,7 +2734,7 @@ event.stopPropagation()
                 modals.update_footer('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
             });
 			 /*when a tab is changed we should reset the tab content*/
-          $modal.on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
+          $('#company-tabs').on('click', '.nav-tabs .general-tab a,.nav-tabs .phone-tab a,.nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
                 modals.companies.change_tab(tabname);
@@ -2934,19 +2937,7 @@ event.stopPropagation()
 
             });
         },
-		change_tab: function (tab) {
-            modals.clear_footer();
-            var buttons = "";
-            if (tab == "#general") {
-                buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
-                modals.update_footer(buttons);
-            } else {
-                buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-				$modal.find('#company-phone-form,#company-address-form').hide();
-                $modal.find('.table-container').show();
-                modals.update_footer(buttons);
-            }
-		},
+		
         load_tabs: function (id, item_form) {
             if (item_form !== "general") {
                 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';

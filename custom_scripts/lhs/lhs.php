@@ -213,11 +213,12 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 if(isset($_GET['address_form'])){
 	$contact_id = intval($_POST['contact_id']);
 	$urn = intval($_POST['urn']);
-	  
+	$is_primary = $conn->query("select contact_id from contacts where primary = 1 and contact_id = '$contact_id'");
 ?>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <div class="panel panel-default">
+  <div id="survey-panel" class="panel panel-default">
+
     <div class="panel-heading" role="tab" id="headingOne">
       <h4 class="panel-title"> <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> <span style="color:#666">Survey Details</span></a></h4>
     </div>
@@ -278,7 +279,7 @@ if(isset($_GET['address_form'])){
       </div>
     </div>
   </div>
-  <div class="panel panel-default">
+  <div id="access-panel" class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingTwo">
       <h4 class="panel-title"> <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> <span style="color:#666;"> Access Details</span> </a> </h4>
     </div>
@@ -286,7 +287,7 @@ if(isset($_GET['address_form'])){
       <div class="panel-body">
       <?php
 	  $access_contact = $contact_id;
-	    $sql = "select * from contacts left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where ((contact_addresses.description = 'Access address' or contact_telephone.description = 'Access number') or (contacts.notes = 'Access Details' and contact_addresses.description is null and contact_telephone.description is null)) and urn = $urn";
+	    $sql = "select * from contacts left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where (contacts.`primary`=0 or contacts.`primary` is null) and urn = $urn";
 		$row = array();
 		$result = $conn->query($sql);
         if($result){
@@ -295,7 +296,7 @@ if(isset($_GET['address_form'])){
 		?>
       
       
-        <form id="survey-address-form">
+        <form id="access-address-form">
                  <input type="hidden" name="urn" value="<?php echo $urn ?>" />
            <input type="hidden" name="description" value="Access Address" />
                             <input type="hidden" name="contact_id" value="<?php echo @$row['contact_id'] ?>" />
@@ -347,7 +348,8 @@ if(isset($_GET['address_form'])){
       </div>
     </div>
   </div>
-  <div class="panel panel-default">
+
+  <div id="correspondance-panel" class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingThree">
       <h4 class="panel-title"> <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> <span style="color:#666">Correspondence Address</span> </a> </h4>
     </div>
@@ -420,22 +422,90 @@ $(document).ready(function(){
 	
 	$modal.find('.save-address').click(function(e){
 		e.preventDefault();
+		var description = $(this).closest('form').find('input[name="description"]').val();
+		console.log(description);
 		$.ajax({ url:helper.baseUrl+'custom_scripts/lhs/lhs.php?save_address',
 		type:"POST",
 		data:$(this).closest('form').serialize(),
 		dataType:"JSON",
 		}).done(function(response){
 			if(response.success){
+				if(description=="Access Address"){
+		$('#access-address-form').find('input[name="contact_id"]').val(response.contact_id);
+				}
 			flashalert.success(response.msg);
 			record.contact_panel.load_panel(record.urn);
 			campaign_functions.set_appointment_title("",record.urn);
+			} else {
+				flashalert.danger(response.msg);
 			}
+			
+			
 		});
 	});
 	
 });
 </script>
 <?php  exit; }
+
+//create the LHS survey description
+if(isset($_GET['calendar_description'])){
+	$id = intval($_POST['id']);
+$description = "";
+
+if(isset($_GET['id'])){
+	$id = intval($_GET['id']);
+}
+
+//first get the job reference and survey type
+$query = "select * from custom_panel_data cpd join custom_panel_values using(data_id) join data_panel_fields using(field_id) where cpd.appointment_id = '$id' ";
+$job= $conn->query($query);
+
+
+while($row =$job->fetch_assoc()){
+if($row['field_name']=='Job Reference'){
+$description .= $row['value']."\n";
+}
+if($row['field_name']=='Type of survey'){
+$survey_type = $row['value']."\n";
+}
+}
+
+$query = "select * from appointments a join records using(urn) join sticky_notes using(urn) join contacts c using(urn) where a.appointment_id = '$id' and c.`primary`=1";
+$result= $conn->query($query);
+$contact = $result->fetch_assoc();
+$description .= $contact['fullname']."\n";
+$description .= $contact['email']."\n";
+$description .= $contact['notes']."\n";
+$notes = $contact['text'];
+$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts using(urn) join contact_adddress ca using(contact_id) where description = 'Correspondance Address' where a.appointment_id = '$id'";
+$result= $conn->query($query);
+$address = $result->fetch_assoc();
+$description .= addressFormat($address)."\n";
+
+$telephone="";
+$query = "select * from appointments a join records using(urn) join contacts c using(urn) left join contact_telephone ct on c.contact_id = ct.contact_id where a.appointment_id = '$id' and c.`primary`=1";
+$telephone = $conn->query($query);
+while($row =$contact->fetch_assoc()){
+$telephone .= $row['description'].": ".$row['telephone_number']."\n";
+}
+$description .= $telephone."\n\n";
+$description .= $survey_type."\n";
+
+$query = "select ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts using(urn) join contact_adddress ca using(contact_id) left join contact_telephone ct using(contact_id) where description = 'Access Address' where a.appointment_id = '$id' and (contacts.`primary` = 0 or contacts.`primary` is null)";
+$result= $conn->query($query);
+$address = $result->fetch_assoc();
+$description .= addressFormat($address)."\n";
+$description .= $address['fullname']."\n";
+$description .= $address['position']."\n";
+$description .= $address['notes']."\n";
+$description .= $address['telephone_number']."\n";
+
+$description .= $notes;
+
+echo json_encode(array("success"=>true,"description"=>$description));
+exit;
+}
 
 if(isset($_GET['save_address'])){
 	$contact_id =intval($_POST['contact_id']);
@@ -445,9 +515,9 @@ if(isset($_GET['save_address'])){
 	echo json_encode(array("success"=>false,"msg"=>"Postcode is invalid"));
 	exit;	
 	}
-	if(empty($_POST['add1'])&&!empty($_POST['postcode'])){
-	//echo json_encode(array("success"=>false,"msg"=>"Please complete address line 1"));
-	//exit;	
+	if($_POST['description']<>'Access Address'&&empty($_POST['postcode'])){
+	echo json_encode(array("success"=>false,"msg"=>"Address needs a postcode"));
+	exit;	
 	}
 	if(empty($_POST['add1'])&&empty($_POST['postcode'])){
 		 $sql = "delete from contact_addresses where contact_id = '".intval($_POST['contact_id'])."' and description = '".addslashes($_POST['description'])."'";
@@ -458,7 +528,7 @@ if(isset($_GET['save_address'])){
 		//if its the access address we have to create a new contact and link the address to the access contact because they have might their own name and number.
 	if($_POST['description']=="Access Address"){
 		if(empty($_POST['contact_id'])){
-			 $add_access_contact = "insert into contacts set fullname = '".$_POST['name']."', urn = '$urn',notes ='Access details'";
+			 $add_access_contact = "insert into contacts set fullname = '".$_POST['name']."', urn = '$urn',notes ='Access details',`primary`=0";
 			 $conn->query($add_access_contact);
 			 $contact_id = $conn->insert_id;
 			if($contact_id&&!empty($_POST['telephone_number'])){
@@ -476,7 +546,7 @@ if(isset($_GET['save_address'])){
 	}
 	
 	//if the address is ok then we can proceed
-		if(!empty($_POST['add1'])&&!empty($_POST['postcode'])){
+		if(!empty($_POST['postcode'])){
 	$postcode = postcodeFormat($_POST['postcode']);
 	
 	$sql = "delete from contact_addresses where contact_id = '".$contact_id."' and description = '".addslashes($_POST['description'])."'";
@@ -519,7 +589,7 @@ if(isset($_GET['save_address'])){
 	 
 	}
 			
-		echo json_encode(array("success"=>true,"msg"=>"The address was updated"));
+		echo json_encode(array("success"=>true,"msg"=>"The address was updated","contact_id"=>$contact_id));
 		exit;
 
 }
@@ -568,6 +638,8 @@ switch ($action) {
         break;
 }
 }
+
+
 
 
 function postcodeFormat($postcode)
@@ -684,7 +756,5 @@ function postcodeFormat($postcode)
 	$address =implode($seperator,$array);
 	return $address;
 }
-
-
 
 ?>

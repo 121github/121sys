@@ -11,6 +11,7 @@
         <form class="form-horizontal">
             <input name="urn" type="hidden" value="">
             <input name="contact_id" type="hidden" value="">
+             <input name="primary" type="hidden" value="">
             <?php if ($_SESSION['config']['use_fullname']): ?>
                 <div class="form-group input-group-sm">
                     <label class="col-sm-2 control-label">Fullname</label>
