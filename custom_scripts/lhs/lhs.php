@@ -182,6 +182,8 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
             case "Party Wall":
                 $type = "PW";
                 break;
+			default: $type = $type_of_survey;
+                break;
         }
 
         switch ($additional_services) {
@@ -199,6 +201,8 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
                 break;
             case "Thermal Images":
                 $add_services = "TI";
+                break;
+			default: $add_services = $additional_services;
                 break;
         }
 
