@@ -513,7 +513,7 @@ var campaign_functions = {
 		
 		$modal.on('click','.type-of-survey-list a,.additional-services-list a',function(e){
 			if($(this).text()=="Other"){
-				$(this).closest('.input-group').find('input').prop('disabled',false);
+				$(this).closest('.input-group').find('input').prop('disabled',false).val('');
 			} else {
 			$(this).closest('.input-group').find('input').prop('disabled',true);	
 			}
