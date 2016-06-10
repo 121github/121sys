@@ -95,10 +95,10 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	}
 	
 	//set the new appointment_type/status in the appointment table
-	if(!empty($_POST['job_status'])){
+	if(!empty($_POST['status'])){
 		
-		$app_types = array("Appointment confirmed"=>"3","Appointment Possible"=>"1","Appointment TBC"=>"2");
-		$appointment_type_id = $app_types[$_POST['job_status']];
+		$app_types = array("Appointment Confirmed"=>"3","Appointment Possible"=>"1","Appointment TBC"=>"2");
+		$appointment_type_id = $app_types[$_POST['status']];
 		$set_app_type = "update appointments set appointment_type_id = '".$appointment_type_id."' where appointment_id = '".intval($appointment_id)."'";
         $conn->query($set_app_type);
 	}

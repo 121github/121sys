@@ -362,7 +362,7 @@ var campaign_functions = {
         }
 		
         //Job Status is Paid
-        if ($form.find("[name='6']").val() === "Paid"){
+        if (status === "Paid"){
 			
 			if($form.find("[name='15']").val()=="Yes") {
             //Send email Referral Scheme Email to Account Role group email
