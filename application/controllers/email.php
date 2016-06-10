@@ -9,7 +9,7 @@ class Email extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('User_model');
         $this->load->model('Records_model');

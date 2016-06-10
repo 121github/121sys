@@ -12,7 +12,7 @@ class Smstemplates extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Sms_model');
         $this->load->model('Form_model');
@@ -39,7 +39,7 @@ class Smstemplates extends CI_Controller
             ),
 
             'javascript' => array(
-                'sms-templates.js?v' . $this->project_version
+                'sms-templates.js'
             ),
             'campaigns' => $campaigns,
             'sms_senders' => $sms_senders,

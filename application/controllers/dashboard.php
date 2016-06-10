@@ -12,7 +12,7 @@ class Dashboard extends CI_Controller
         user_auth_check(false);
 		session_write_close();
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 		check_page_permissions('view dashboard');
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -104,7 +104,7 @@ public function index(){
                 'charts.js',
                 'dashboard.js',
                 'lib/daterangepicker.js',
-                'dashboards/hsl.js?v' . $this->project_version
+                'dashboards/hsl.js'
             ),
             'css' => array(
                 'dashboard.css',
@@ -397,7 +397,7 @@ public function index(){
             'hide_filter' => true,
             'javascript' => array(
                 'charts.js',
-                'dashboard.js?v' . $this->project_version
+                'dashboard.js'
             ),
             'campaigns' => $campaigns,
             'surveys' => $surveys,
@@ -429,7 +429,7 @@ public function index(){
             'campaigns' => $campaigns,
             'javascript' => array(
                 'charts.js',
-                'dashboard.js?v' . $this->project_version
+                'dashboard.js'
             ),
             'css' => array(
                 'dashboard.css',
@@ -1627,7 +1627,7 @@ public function index(){
                        'page' => 'dashboard-error',
                     'error' => "There is no dashboard with this id or you don't have permissions to access!",
                     'javascript' => array(
-                        'dashboard.js?v' . $this->project_version
+                        'dashboard.js'
                     ),
                     'css' => array(
                         'dashboard.css'
@@ -1647,7 +1647,7 @@ public function index(){
                   'page' => 'dashboard-error',
                 'error' => "ERROR => There is an error on the url!",
                 'javascript' => array(
-                    'dashboard.js?v' . $this->project_version
+                    'dashboard.js'
                 ),
                 'css' => array(
                     'dashboard.css'

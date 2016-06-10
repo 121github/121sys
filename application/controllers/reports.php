@@ -11,7 +11,7 @@ class Reports extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -377,7 +377,7 @@ $field_assoc = array("date_from"=>"h.contact",
         ,
             'javascript' => array(
                 'charts.js',
-                'report/answers.js?v' . $this->project_version
+                'report/answers.js'
             ),
             'surveys' => $surveys,
             'answers' => $results,

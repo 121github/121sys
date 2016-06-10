@@ -11,7 +11,7 @@ class Recordings extends CI_Controller
         parent::__construct();
 		$this->load->model('Records_model');
 		$this->load->model('Recordings_model');
-		$this->project_version = $this->config->item('project_version');
+		
     }
 
 public function find_calls(){

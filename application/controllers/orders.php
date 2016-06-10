@@ -9,7 +9,7 @@ class Orders extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->project_version = $this->config->item('project_version');
+        
     }
 
     public function get_orders()

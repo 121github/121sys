@@ -3,10 +3,10 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-function minify($path,$files){
+function minify($path,$files,$project_version){
 	$src = base_url()."min/";
-	$src .= "b=$path&f=".implode(",",$files);
-	return $src;
+	$src .= "b=$path&f=".implode(",",array_unique($files));
+	return $src."&v=".$project_version;
 }
 
 

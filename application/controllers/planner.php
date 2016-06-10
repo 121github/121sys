@@ -12,7 +12,7 @@ class Planner extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Records_model');
         $this->load->model('User_model');

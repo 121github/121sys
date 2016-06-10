@@ -11,7 +11,7 @@ class Sms extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('User_model');
         $this->load->model('Records_model');
@@ -652,7 +652,7 @@ class Sms extends CI_Controller
         $numbers = array("+447814401867");
         $message = "Motion detected!";
         $sender = "one2One";
-        $this->textlocal->sendSms($numbers, $message, $sender, null, $test, $receiptUrl, $customID);
+        $this->textlocal->sendSms($numbers, $message, $sender, null, null, null, null);
     }
 
     /***********************************************************************************************************/

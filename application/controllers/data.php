@@ -10,7 +10,7 @@ class Data extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Form_model');
         $this->load->model('Data_model');
@@ -1026,7 +1026,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version
+                'data.js'
             ),
             'status_list' => $status_list,
             'progress_list' => $progress_list
@@ -1144,7 +1144,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version
+                'data.js'
             ),
             'campaigns' => $campaigns,
             'outcomes' => $outcomes,
@@ -1363,7 +1363,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version
+                'data.js'
             ),
             'filter' => $filter,
             'campaigns' => $campaigns
@@ -1578,7 +1578,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version
+                'data.js'
             )
         );
         $this->template->load('default', 'data/parkcodes.php', $data);

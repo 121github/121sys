@@ -9,7 +9,7 @@ class Admin extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns      = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
         
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -170,7 +170,7 @@ class Admin extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'admin/slots.js?v' . $this->project_version
+                'admin/slots.js'
             ),
             'slots' => $slots,
 			'options' => array("slot_groups"=>$slot_groups)
@@ -266,7 +266,7 @@ class Admin extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'admin/availability.js?v' . $this->project_version
+                'admin/availability.js'
             ),
             'options' => array(
                 "campaigns" => $campaigns,
@@ -316,7 +316,7 @@ class Admin extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'admin/copy_campaign.js?v' . $this->project_version
+                'admin/copy_campaign.js'
             ),
             'options' => array(
                 "campaigns" => $campaigns
@@ -947,7 +947,7 @@ class Admin extends CI_Controller
             'title' => 'Admin',
             'page' => 'roles',
             'javascript' => array(
-                'admin/roles.js?v' . $this->project_version
+                'admin/roles.js'
             ),
             'roles' => $roles,
             'permissions' => $permissions,
@@ -1099,7 +1099,7 @@ class Admin extends CI_Controller
             'title' => 'Admin',
             'page' => 'groups',
             'javascript' => array(
-                'admin/groups.js?v' . $this->project_version
+                'admin/groups.js'
             ),
             'css' => array(
                 'dashboard.css'
@@ -1142,7 +1142,7 @@ class Admin extends CI_Controller
             'title' => 'Admin',
             'page' => 'teams',
             'javascript' => array(
-                'admin/teams.js?v' . $this->project_version
+                'admin/teams.js'
             ),
             'css' => array(
                 'dashboard.css'
@@ -1308,7 +1308,7 @@ class Admin extends CI_Controller
             'title' => 'Campaign custom fields',
             'page' => 'custom_fields',
             'javascript' => array(
-                'admin/customfields.js?v' . $this->project_version
+                'admin/customfields.js'
             ),
             'css' => array(
                 'dashboard.css'
