@@ -32,8 +32,8 @@ class Hour extends CI_Controller
             'title' => 'Admin | Hours',
             'page' =>  'agent_hours',
             'javascript' => array(
-                'admin/hours.js?v' . $this->project_version,
-                    'lib/moment.js',
+                'admin/hours.js',
+                   
                     'lib/jquery.numeric.min.js',
                     'lib/daterangepicker.js',
             ),
@@ -272,8 +272,8 @@ class Hour extends CI_Controller
             'title' => 'Admin | Hours',
             'page' => 'default_hours',
             'javascript' => array(
-                'admin/hours.js?v' . $this->project_version,
-                'lib/moment.js',
+                'admin/hours.js',
+               
                 'lib/jquery.numeric.min.js',
             ),
             'css' => array(

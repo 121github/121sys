@@ -332,13 +332,15 @@ $datafield_ids = array();
         $qry .= " group by appointment_id";
         $start = $options['start'];
         $length = $options['length'];
-        if (isset($_SESSION['appointment_table']['order']) && $options['draw'] == "1") {
+         if (isset($_SESSION['appointment_table']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['appointment_table']['order'];
-        } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-            unset($_SESSION['appointment_table']['order']);
+        } else if (isset($options['order'][0]['column'])){
+            $order =  $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+			 unset($_SESSION['appointment_table']['order']);
             unset($_SESSION['appointment_table']['values']['order']);
-        }
+		} else {
+			$order = " r.urn desc";
+		}
 
         $qry .= $order;
 		if($length>0){

@@ -127,7 +127,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version,
+                'data.js',
                 "lib/bootstrap-slider.js"
             )
         );
@@ -149,7 +149,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version,
+                'data.js',
                 'lib/jquery.numeric.min.js'
             )
         );
@@ -554,7 +554,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version,
+                'data.js',
                 'lib/jquery.numeric.min.js'
             )
         );
@@ -759,7 +759,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version,
+                'data.js',
                 'lib/jquery.numeric.min.js'
             )
         );
@@ -1480,8 +1480,8 @@ class Data extends CI_Controller
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
-                'data.js?v' . $this->project_version,
-                'lib/moment.js',
+                'data.js',
+               
                 'lib/daterangepicker.js'
             ),
             'campaigns' => $campaigns

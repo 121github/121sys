@@ -556,11 +556,11 @@ class Planner extends CI_Controller
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
-                'lib/moment.js',
+               
                 'lib/daterangepicker.js',
-                'location.js?v' . $this->project_version,
-                'map.js?v' . $this->project_version,
-                'planner/planner.js?v' . $this->project_version,
+                'location.js',
+                'map.js',
+                'planner/planner.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/touch-punch/jquery-ui-touch-punch.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js'

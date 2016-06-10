@@ -30,10 +30,10 @@ class Reports extends CI_Controller
             'title' => $title,
             'page' => 'activity',
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-				'report/reports.js?v' . $this->project_version,
-                'report/overview.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+				'report/reports.js',
+                'report/overview.js',
+               
                 'lib/daterangepicker.js'
             ),
 				 'css' => array(
@@ -241,9 +241,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'page' => 'data'
         ,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/data.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/data.js',
+               
                 'lib/daterangepicker.js'
             ),
             'campaigns_by_group' => $campaigns_by_group,
@@ -275,9 +275,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'page' => 'targets'
         ,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/targets.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/targets.js',
+               
                 'lib/daterangepicker.js'
 
             ),
@@ -312,8 +312,8 @@ $field_assoc = array("date_from"=>"h.contact",
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'javascript' => array(
-                'report/data_capture.js?v' . $this->project_version,
-                'lib/moment.js',
+                'report/data_capture.js',
+               
                 'lib/daterangepicker.js'
 
             ),
@@ -340,9 +340,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'page' => 'targets'
         ,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/targets.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/targets.js',
+               
                 'lib/daterangepicker.js'
 
             ),
@@ -376,7 +376,7 @@ $field_assoc = array("date_from"=>"h.contact",
             'page' => 'answers'
         ,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
+                'charts.js',
                 'report/answers.js?v' . $this->project_version
             ),
             'surveys' => $surveys,
@@ -451,10 +451,10 @@ $field_assoc = array("date_from"=>"h.contact",
             'title' => $title,
             'page' => 'activity',
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-				'report/reports.js?v' . $this->project_version,
-                'report/activity.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+				'report/reports.js',
+                'report/activity.js',
+               
                 'lib/daterangepicker.js'
             ),
                 'css' => array(
@@ -607,9 +607,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'title' => $title,
             'page' => "outcome_report_$group",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/outcomes.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/outcomes.js',
+               
                 'lib/daterangepicker.js'
             ),
             'group' => $group,
@@ -916,9 +916,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'title' =>$title,
             'page' => "email_report_$group",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/email.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/email.js',
+               
                 'lib/daterangepicker.js'
             ),
             'group' => $group,
@@ -1130,9 +1130,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'title' =>$title,
             'page' => 'productivity',
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/productivity.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/productivity.js',
+               
                 'lib/daterangepicker.js'
             ),
             'team_managers' => $teamManagers,
@@ -1215,9 +1215,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'title' => 'Reports | Realtime',
             'page' => 'realtime',
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/realtime.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/realtime.js',
+               
                 'lib/daterangepicker.js'
             ),
             'team_managers' => $teamManagers,
@@ -1339,9 +1339,9 @@ $field_assoc = array("date_from"=>"h.contact",
             'title' => $title,
             'page' => 'client_report_outcomes',
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/last_outcomes.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/last_outcomes.js',
+               
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
@@ -1454,9 +1454,9 @@ $title = "Dials Report";
             'title' => $title,
             'page' => 'client_report_dials',
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/dials_report.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/dials_report.js',
+               
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
@@ -1579,9 +1579,9 @@ $title = "Dials Report";
             'title' => $title,
             'page' => "sms_report_$group",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/sms.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/sms.js',
+               
                 'lib/daterangepicker.js'
             ),
 			'campaigns_by_group' => $campaigns_by_group,
@@ -1916,9 +1916,9 @@ $title = "Dials Report";
             'title' =>$title,
             'page' => "appointment_summary",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'report/appointment_summary.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'report/appointment_summary.js',
+               
                 'lib/daterangepicker.js'
             ),
             'css' => array(

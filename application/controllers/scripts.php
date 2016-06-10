@@ -35,7 +35,7 @@ class Scripts extends CI_Controller
 				),
 	
 				'javascript' => array(
-                    'script.js?v' . $this->project_version,
+                    'script.js',
 				),
 				'campaigns' => $campaigns,
 		);

@@ -333,18 +333,18 @@ $datafield_ids = array();
 
 		 //get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows . $qry)->row()->numrows;
-        $qry .= " group by surveys.survey_id";
+        $qry .= " group by surveys.survey_id ";
         $start = $options['start'];
         $length = $options['length'];
-        if (isset($_SESSION['survey_table']['order']) && $options['draw'] == "1") {
+         if (isset($_SESSION['survey_table']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['survey_table']['order'];
-        } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-            unset($_SESSION['survey_table']['order']);
+        } else if (isset($options['order'][0]['column'])){
+            $order =  $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+			 unset($_SESSION['survey_table']['order']);
             unset($_SESSION['survey_table']['values']['order']);
-        }
-
-        $qry .= $order;
+		} else {
+			$order = " r.urn desc";
+		}
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}

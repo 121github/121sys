@@ -565,7 +565,7 @@ class Records_model extends CI_Model
 		
         //get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows . $qry)->row()->numrows;
-		$qry .= " group by r.urn";
+		$qry .= " group by r.urn ";
         
 
         //if any order has been set then we should apply it here
@@ -573,13 +573,15 @@ class Records_model extends CI_Model
         $length = $options['length'];
         if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['filter']['order'];
-        } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",r.urn";
-            unset($_SESSION['filter']['order']);
+        } else if (isset($options['order'][0]['column'])){
+            $order =  $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+			 unset($_SESSION['filter']['order']);
             unset($_SESSION['filter']['values']['order']);
-        }
+		} else {
+			$order = " r.urn desc";
+		}
 
-        $qry .= $order;
+        $qry .= "order by ". $order;
         if ($length > 0) {
             $qry .= "  limit $start,$length";
         }

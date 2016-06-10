@@ -4,30 +4,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <title><?php echo $title; ?></title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
-    <!-- Optional theme -->
-    <link id="theme-css" type="text/css" rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/themes/colors/<?php echo(isset($_SESSION['theme_color']) ? $_SESSION['theme_color'] : $theme); ?>/bootstrap-theme.css">
-    <link rel="stylesheet" type="text/css"
-          href="<?php echo base_url(); ?>assets/css/plugins/dataTables/datatables.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/bootstrap-select.css?v1.1">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/slider.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/default.css">
-    <link rel="stylesheet" type="text/css"
-          href="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/css/jquery.mmenu.all.css">
-    <link rel="stylesheet" type="text/css"
-          href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/font-awesome.css">
-    <!-- Set the baseUrl in the JavaScript helper -->
-    <?php //load specific css files set in the controller
-    if (isset($css)):
-        foreach ($css as $file): ?>
-            <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/<?php echo $file ?>">
-        <?php endforeach;
-    endif; ?>
+  <link rel="shortcut icon"
+          href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/icon.png">
+<?php
+// array[PATH]=>array(FILE);
+$css_path = "assets/css";
+$css_files=array("bootstrap.css",
+"bootstrap-datetimepicker.css",
+"datepicker3.css",
+"bootstrap-select.css",
+"slider.css",
+"default.css",
+"plugins/mmenu2/jquery.mmenu.all.css",
+"plugins/dataTables/datatables.min.css",
+"plugins/dataTables/css/font-awesome.css",
+);
+ if (isset($css)):
+        foreach ($css as $file): 
+		 $css_files[] = $file;
+		endforeach;
+endif;
+?>
+ <link rel="stylesheet" type="text/css" href="<?php echo minify($css_path,$css_files)?>" />
+<?php $css_path = "assets";
+$css_files=array("themes/colors/".(isset($_SESSION['theme_color']) ? $_SESSION['theme_color'] : $theme)."/bootstrap-theme.css");
+?>
+ <link rel="stylesheet" type="text/css" href="<?php echo minify($css_path,$css_files)?>" />
     <?php if (isset($submenu)) { ?>
         <style>
             .container-fluid {
@@ -43,11 +45,13 @@
             }
         </style>
     <?php } ?>
-
-    <link rel="shortcut icon"
-          href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default"); ?>/icon.png">
-    <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
+    <?php 
+$js_path = "assets/js";
+$js_files=array("lib/jquery.min.js",
+"lib/jquery-ui-1.9.2.custom.min.js"
+);
+?>
+<script src="<?php echo minify($js_path,$js_files) ?>"></script>
     <script type="text/javascript">
         helper = [];
         helper.baseUrl = '<?php echo base_url(); ?>';
@@ -65,6 +69,8 @@
         <?php } ?>
         <?php } ?>
     </script>
+  
+
 </head>
 <body>
 
@@ -103,65 +109,50 @@
     <?php $this->view('misc/alerts.php'); ?>
     <?php $this->view('misc/modal.php'); ?>
      <?php $this->view('misc/footer.php'); ?>
+     <?php if(isset($_SESSION['user_id'])){ $this->view('misc/side_boxes.php'); } ?>
 </div>
-<script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
-<script type="text/javascript"
-        src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/js/jquery.mmenu.min.all.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/browser.js"></script>
-<script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
-<?php if (isset($_SESSION['user_id'])) { ?>
-    <script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <!-- Campaign triggers-->
-<?php if (!empty($campaign_triggers)) { ?>
-    <?php foreach ($campaign_triggers as $script) { ?>
-    <script
-        src="<?php echo base_url() . "custom_scripts/" . $script['path'] . "?v" . $this->config->item('project_version'); ?>"></script>
-<?php } ?>
-<?php } else { ?>
-    <script type="text/javascript">campaign_functions = {};</script>
-<?php } ?>
-    <!-- End of campaign triggers-->
-    <script type="text/javascript">
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">campaign_functions = {};</script>
+<?php if(isset($_SESSION['user_id'])){ 
+$js_files=array("lib/wavsurfer.js",
+"plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js",
+"lib/bootstrap.min.js",
+"lib/moment.js",
+"lib/bootstrap-datetimepicker.js",
+"lib/bootstrap-select.js",
+"plugins/mmenu2/core/js/jquery.mmenu.min.all.js",
+"modals.js",
+"main.js",
+"record_update.js",
+"preferences.js",
+);
+if (!empty($campaign_triggers)) { 
+     foreach ($campaign_triggers as $script) {
+		$js_files[]=$script; 
+	 } 
+}
+if (isset($javascript)) { 
+     foreach ($javascript as $script) {
+		$js_files[]=$script; 
+	 } 
+}
+?>
+<script src="<?php echo minify($js_path,$js_files) ?>"></script>
+<script type="text/javascript">
         modals.init();
-        <?php if(isset($_SESSION['user_id'])){ ?>
         var custom_appointment_modal = false;
         var custom_record_modal = false;
         var refreshIntervalId;
         check_session();
-        <?php } ?>
     </script>
-    <script
-        src="<?php echo base_url() . "assets/js/record_update.js?v" . $this->config->item('project_version'); ?>"></script>
-<?php } ?>
-<?php
-//load specific javascript files set in the controller
-if (isset($javascript)):
-foreach ($javascript as $file): ?>
-    <script src="<?php echo base_url(); ?>assets/js/<?php echo $file ?>"></script>
-<?php endforeach;
-?>
 
 <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript) || @in_array("location.js?v" . $this->config->item('project_version'), $javascript)) { ?>
 <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript)) {
     $callback = "&callback=initializemaps";
 }
 ?>
-    <script
-        type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback) ? $callback : "" ?>"></script>
-<?php }
-endif;
-?>
-
-
-<?php if (isset($_SESSION['user_id'])) { ?>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback) ? $callback : "" ?>"></script>
+<?php } ?>
 <div id="quick-actions-box" class="Fixed">
     <a href="#quick-actions-right">
         <span class="fa fa-caret-left quick-actions-btn"></span>
@@ -170,9 +161,8 @@ endif;
     <div id="color-box" class="Fixed">
         <a href="#"><span class="glyphicon glyphicon-cog color-btn"></span></a>
     </div>
-    <script type="text/javascript" src="<?php echo base_url() ?>assets/js/preferences.js"></script>
-<?php } ?>
 
+<?php } ?>
 
 
 </body>

@@ -14,13 +14,7 @@
     <?php endif; ?>
     <?php 
 $logo = base_url()."assets/themes/images/".(isset($_SESSION['theme_images']) ? $_SESSION['theme_images'] : "default")."/login-logo.png"; ?>
-<script>
-function logo_text(){
-	$('#login-logo').remove();
-	$('#no-logo').html('<h3>System Login</h3>');
 
-}
-</script>
 	<img id="login-logo" class="img-responsive" onerror="logo_text()" src="<?php echo $logo ?>">	
 <div id="no-logo"></div>
 					<input type="text" name="username" placeholder="Username" <?php echo (empty($username)?"autofocus":"") ?> value="<?php echo $username ?>" required class="form-control input-lg" />
@@ -38,10 +32,22 @@ function logo_text(){
             <div class="panel panel-primary forgot-password-container">
     <?php $this->view('forms/forgot_password_form.php'); ?>
 </div>
+<?php 
+$js_files=array("plugins/browser/jquery.browser.min.js",
+"browser.js",
+"modals.js",
+"login.js"
+);
+?>
+<script src="<?php echo minify("assets/js",$js_files) ?>"></script>
 <script>
     $(document).ready(function(){
 		modals.init();
         login.init();
 		browser.init();
     });
+	function logo_text(){
+	$('#login-logo').remove();
+	$('#no-logo').html('<h3>System Login</h3>');
+	}
 </script>

@@ -39,7 +39,7 @@ class Templates extends CI_Controller
 				),
 	
 				'javascript' => array(
-                    'template-table.js?v' . $this->project_version,
+                    'template-table.js',
 						'plugins/jqfileupload/vendor/jquery.ui.widget.js',
 						'plugins/jqfileupload/jquery.iframe-transport.js',
 						'plugins/jqfileupload/jquery.fileupload.js',

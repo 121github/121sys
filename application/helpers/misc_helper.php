@@ -3,6 +3,13 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+function minify($path,$files){
+	$src = base_url()."min/";
+	$src .= "b=$path&f=".implode(",",$files);
+	return $src;
+}
+
+
  function custom_formats(){
 return array("table","table","list");	
 }

@@ -29,7 +29,7 @@ class Time extends CI_Controller
     			'title' => 'Admin | Time',
     			'page' =>  'agent_time',
     			'javascript' => array(
-                    'admin/time.js?v' . $this->project_version,
+                    'admin/time.js',
     					'lib/moment.js',
     					'lib/jquery.numeric.min.js',
     					'lib/daterangepicker.js',
@@ -295,8 +295,8 @@ class Time extends CI_Controller
             'title' => 'Admin | Time',
             'page' => 'default_time',
             'javascript' => array(
-                'admin/time.js?v' . $this->project_version,
-                'lib/moment.js',
+                'admin/time.js',
+               
                 'lib/jquery.numeric.min.js',
             ),
             'css' => array(

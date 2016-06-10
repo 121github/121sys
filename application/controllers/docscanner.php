@@ -23,7 +23,7 @@ class Docscanner extends CI_Controller
 			'pageId' => 'Admin',
             'title' => 'Admin',
             'javascript' => array(
-                'dashboard.js?v' . $this->project_version,
+                'dashboard.js',
             ),
             'options' => $options,
             'css' => array(

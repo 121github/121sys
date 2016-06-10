@@ -547,7 +547,7 @@ class Admin extends CI_Controller
             'page' => 'users',
             'options' => $options,
             'javascript' => array(
-                'admin/users.js?v' . $this->project_version,
+                'admin/users.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             ),
             'css' => array(
@@ -606,10 +606,9 @@ class Admin extends CI_Controller
             'title' => 'Admin',
             'page' => 'campaign_setup',
             'javascript' => array(
-                'dashboard.js?v' . $this->project_version,
-                'admin/campaigns.js?v' . $this->project_version,
+                'dashboard.js',
+                'admin/campaigns.js',
                 'lib/jquery.numeric.min.js',
-                'lib/moment.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
             ),
@@ -639,10 +638,9 @@ class Admin extends CI_Controller
             'title' => 'Admin | Campaign Access',
             'page' => 'campaign_access',
             'javascript' => array(
-                'dashboard.js?v' . $this->project_version,
-                'admin/campaigns.js?v' . $this->project_version,
+                'dashboard.js',
+                'admin/campaigns.js',
                 'lib/jquery.numeric.min.js',
-                'lib/moment.js'
             ),
             'options' => $options,
             'css' => array(
@@ -1002,7 +1000,7 @@ class Admin extends CI_Controller
             'title' => 'Admin',
             'page' => 'campaign_permissions',
             'javascript' => array(
-                'admin/campaign_permissions.js?v' . $this->project_version,
+                'admin/campaign_permissions.js',
                 'plugins/bootstrap-checkbox-x-master/js/checkbox-x.min.js'
             ),
             'campaigns' => $campaigns,

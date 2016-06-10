@@ -70,10 +70,10 @@ class Exports extends CI_Controller
 			'pageId' => 'export',
             'title' => 'Admin | Report Settings',
             'javascript' => array(
-                'lib/moment.js',
+               
                 'lib/daterangepicker.js',
-                'export.js?v' . $this->project_version,
-                'charts.js?v' . $this->project_version,
+                'export.js',
+                'charts.js',
                 'plugins/DataTables/datatables.min.js'
             ),
             'page' => 'export_data',

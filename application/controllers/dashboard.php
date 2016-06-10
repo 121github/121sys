@@ -45,11 +45,10 @@ public function index(){
             'title' => 'Dashboard',
             'page' => "overview",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js',
-                'dashboards/ghs.js?v' . $this->project_version,
+                'dashboards/ghs.js',
             ),
             'agents' => $agents,
             'campaigns' => $campaigns,
@@ -75,11 +74,10 @@ public function index(){
             'title' => 'Dashboard',
             'page' => "eldon",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js',
-                'dashboards/eldon.js?v' . $this->project_version,
+                'dashboards/eldon.js',
             ),
             'agents' => $agents,
             'campaigns' => $campaigns,
@@ -103,9 +101,8 @@ public function index(){
             'title' => 'Dashboard',
              'page' => "hsl_dash",
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js',
                 'dashboards/hsl.js?v' . $this->project_version
             ),
@@ -193,9 +190,8 @@ public function index(){
                 )
             ),
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js'
             ),
             'agents' => $agents,
@@ -251,9 +247,8 @@ public function index(){
             ),
             'hide_filter' => true,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js'
             ),
             'date_from' => $date_from,
@@ -354,9 +349,8 @@ public function index(){
                 )
             ),
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js'
             ),
             'date_from' => $date_from,
@@ -402,7 +396,7 @@ public function index(){
             ),
             'hide_filter' => true,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
+                'charts.js',
                 'dashboard.js?v' . $this->project_version
             ),
             'campaigns' => $campaigns,
@@ -434,7 +428,7 @@ public function index(){
             'hide_filter' => true,
             'campaigns' => $campaigns,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
+                'charts.js',
                 'dashboard.js?v' . $this->project_version
             ),
             'css' => array(
@@ -466,9 +460,8 @@ public function index(){
             ),
             'hide_filter' => true,
             'javascript' => array(
-                'charts.js?v' . $this->project_version,
-                'dashboard.js?v' . $this->project_version,
-                'lib/moment.js',
+                'charts.js',
+                'dashboard.js',
                 'lib/daterangepicker.js'
             ),
             'campaigns' => $campaigns,
@@ -1200,7 +1193,7 @@ public function index(){
             'title' => 'Dashboard-Settings',
                 'page' => 'dash_settings',
             'javascript' => array(
-                'dashboard.js?v' . $this->project_version,
+                'dashboard.js',
                 'lib/daterangepicker.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             ),
@@ -1611,11 +1604,10 @@ public function index(){
                     'campaign_outcomes' => $campaign_outcomes,
                     'filters' => $filters,
                     'javascript' => array(
-                        'charts.js?v' . $this->project_version,
-                        'dashboard.js?v' . $this->project_version,
-                        'lib/moment.js',
+                        'charts.js',
+                        'dashboard.js',
                         'lib/daterangepicker.js',
-                        'export.js?v' . $this->project_version,
+                        'export.js',
                         'plugins/DataTables/datatables.min.js'
                     ),
                     'css' => array(

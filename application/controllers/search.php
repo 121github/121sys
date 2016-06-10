@@ -265,7 +265,7 @@ class Search extends CI_Controller
             'email_templates' => $email_templates,
             'groups' => $groups,
             'javascript' => array(
-                'filter.js?v' . $this->project_version,
+                'filter.js',
                 'location.js?v' . $this->project_version
             )
         );
@@ -437,8 +437,8 @@ class Search extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css',
             ),
             'javascript' => array(
-                'view.js?v' . $this->project_version,
-				'location.js?v' . $this->project_version,
+                'view.js',
+				'location.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',

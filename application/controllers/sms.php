@@ -175,7 +175,7 @@ class Sms extends CI_Controller
                 'plugins/jqfileupload/jquery.fileupload.css',
             ),
             'javascript' => array(
-                'sms.js?v' . $this->project_version,
+                'sms.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',

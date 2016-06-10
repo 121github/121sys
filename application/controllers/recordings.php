@@ -103,7 +103,7 @@ $columns = array();
 			"page"=>"Recordings",
 			"columns"=>$columns,
 			"campaign_access"=> campaign_access_dropdown(),
-			"javascript"=>array( 'view.js?v' . $this->project_version,'plugins/DataTables/datatables.min.js'));
+			"javascript"=>array( 'view.js','plugins/DataTables/datatables.min.js'));
 	        $this->template->load('default', 'recordings/view.php', $data);
 }
 public function process_view(){

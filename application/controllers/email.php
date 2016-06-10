@@ -186,7 +186,7 @@ class Email extends CI_Controller
                 'plugins/jqfileupload/jquery.fileupload.css',
             ),
             'javascript' => array(
-                'email.js?v' . $this->project_version,
+                'email.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',

@@ -54,8 +54,8 @@ class History extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css',
             ),
             'javascript' => array(
-                'view.js?v' . $this->project_version,
-				'location.js?v' . $this->project_version,
+                'view.js',
+				'location.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',
@@ -95,9 +95,9 @@ class History extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
-				'location.js?v' . $this->project_version,
-                'map.js?v' . $this->project_version,
-                'view-map.js?v' . $this->project_version,
+				'location.js',
+                'map.js',
+                'view-map.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',
