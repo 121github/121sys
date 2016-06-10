@@ -771,7 +771,9 @@ return $query->result_array();
         if ($use) {
             $_SESSION['filter']['join']  = $join;
             $_SESSION['filter']['where'] = $where;
+			if(!empty($order)){
             $_SESSION['filter']['order'] = $order . ",urn";
+			}
         }
 	
         if (!empty($where)) {
