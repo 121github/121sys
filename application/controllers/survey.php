@@ -12,7 +12,7 @@ class Survey extends CI_Controller
         user_auth_check();
 		check_page_permissions('view surveys');
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 		$this->load->model('Filter_model');
         $this->load->model('Survey_model');
         $this->load->model('Records_model');
@@ -123,7 +123,7 @@ class Survey extends CI_Controller
             'categories' => $categories,
             "javascript" => array(
 				"lib/bootstrap-slider.js",
-                "survey.js?v" . $this->project_version,
+                "survey.js",
 			
             )
         );
@@ -190,7 +190,7 @@ class Survey extends CI_Controller
             "locked" => $locked,
             "javascript" => array(
                 "lib/bootstrap-slider.js",
-                "survey.js?v" . $this->project_version,
+                "survey.js",
 				
             )
         );

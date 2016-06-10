@@ -12,7 +12,7 @@ class Records extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
         $this->load->model('User_model');
 		$this->load->model('Filter_model');
         $this->load->model('Records_model');
@@ -407,9 +407,9 @@ if(!isset($_SESSION['current_campaign'])||$campaign_id<>$_SESSION['current_campa
             "map_icon" => $details['record']['map_icon'],
             "campaign_triggers" => $campaign_triggers,
             "javascript" => array(
-                "detail2.js?v" . $this->project_version,
-				"availability.js?v" . $this->project_version,
-				"custom_panels.js?v" . $this->project_version,
+                "detail2.js",
+				"availability.js",
+				"custom_panels.js",
 				'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',

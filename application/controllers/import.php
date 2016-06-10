@@ -11,7 +11,7 @@ class Import extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Import_model');
 		$this->load->model('Form_model');
@@ -73,7 +73,7 @@ echo json_encode(array("success"=>true));
                 'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
                 'plugins/jqfileupload/jquery.fileupload-validate.js',
-                'import.js?v' . $this->project_version
+                'import.js'
             ),
             'campaigns' => $campaigns,
             'sources' => $sources,

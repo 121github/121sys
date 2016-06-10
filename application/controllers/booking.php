@@ -13,7 +13,7 @@ class Booking extends CI_Controller
             $this->_campaigns = campaign_access_dropdown();
         }
 
-        $this->project_version = $this->config->item('project_version');
+        
         $this->load->model('Booking_model');
         $this->load->model('Contacts_model');
         $this->load->model('Appointments_model');
@@ -83,7 +83,7 @@ class Booking extends CI_Controller
             "campaign_triggers" => $campaign_triggers,
             'css' => array("plugins/fullcalendar-2.6.1/fullcalendar.min.css", 'plugins/bootstrap-toggle/bootstrap-toggle.min.css', 'plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.css'),
             'javascript' => array("plugins/fullcalendar-2.6.1/fullcalendar.min.js", 'plugins/bootstrap-toggle/bootstrap-toggle.min.js', "plugins/fullcalendar-2.6.1/gcal.js", "plugins/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js",
-                'booking.js?v' . $this->project_version));
+                'booking.js'));
 
         $this->template->load('default', 'bookings/booking.php', $data);
     }

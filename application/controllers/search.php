@@ -12,7 +12,7 @@ class Search extends CI_Controller
 		
         user_auth_check();
 		$this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -266,7 +266,7 @@ class Search extends CI_Controller
             'groups' => $groups,
             'javascript' => array(
                 'filter.js',
-                'location.js?v' . $this->project_version
+                'location.js'
             )
         );
         $this->template->load('default', 'records/search.php', $data);

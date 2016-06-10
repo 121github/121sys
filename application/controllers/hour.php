@@ -8,7 +8,7 @@ class Hour extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');

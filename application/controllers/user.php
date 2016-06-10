@@ -9,7 +9,7 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->project_version = $this->config->item('project_version');
+        
 
         $this->load->model('User_model');
         $this->load->model('Form_model');
@@ -90,7 +90,7 @@ class User extends CI_Controller
             'pageClass' => 'login',
             'title' => '121 Calling System',
             'javascript' => array(
-                'login.js?v' . $this->project_version
+                'login.js'
             ),
 			'css' => array("login.css"),
             'redirect' => $redirect
@@ -626,7 +626,7 @@ class User extends CI_Controller
                 'pageClass' => 'login',
                 'title' => '121 Calling System',
                 'javascript' => array(
-                    'login.js?v' . $this->project_version
+                    'login.js'
                 ),
                 'user_id' => $user['user_id'],
                 'username' => $user['username']

@@ -11,12 +11,14 @@ class Docscanner extends CI_Controller
         parent::__construct();
 		user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
-        $this->project_version = $this->config->item('project_version');
+        
 
 		 $this->load->model('Docscanner_model');
     }
     
 	public function index(){
+			$options = array();
+		
 	        $data                 = array(
             'campaign_access' => $this->_campaigns,
 
