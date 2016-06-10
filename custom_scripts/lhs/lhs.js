@@ -513,9 +513,9 @@ var campaign_functions = {
                 if (response.data.length > 0) {
                     var options = "<option value=''> --Please select-- </option>";
 					var job_winner_val = "";
-					if(typeof data[1][14] !== "undefined"){
-                    job_winner_val= data[1][14];
-					}
+                    if(data && typeof data[2][14] !== "undefined"){
+                        job_winner_val= data[2][14].value;
+                    }
                     $.each(response.data, function (k, val) {
                         options += "<option value='" + val.name + "'>" + val.name + "</option>";
                     });
