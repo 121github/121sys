@@ -284,6 +284,20 @@ var campaign_functions = {
         });
 
     },
+    cancel_appointment: function (appointment) {
+        //Set job status as Cancelled
+        // $.ajax({
+        //     url: helper.baseUrl + 'records/update_custom_data_field',
+        //     type: "POST",
+        //     dataType: "JSON",
+        //     data: {
+        //         urn: urn,
+        //         data_id: data_id,
+        //         field_id: 6,
+        //         value: "Cancelled"
+        //     }
+        // });
+    },
     load_custom_fields: function () {
     },
     edit_custom_fields: function () {
@@ -434,13 +448,19 @@ var campaign_functions = {
     edit_custom_item_setup: function (data) {
         //Set the job winner options
         campaign_functions.job_winner_setup(data);
-		if($('#appointment-panel table tr').length==0){
-            $modal.find('select[name="6"] option:contains("Appointment")').attr('disabled','disabled');
+
+        if(data && typeof data[2][3] !== "undefined" && typeof data[2][3].value !== "undefined" && data[2][3].value !== ''){
+            $modal.find('select[name="6"] option:contains("Prospect")').attr('disabled','disabled');
+        }
+        else {
+            // $modal.find('select[name="6"] option:contains("Appointment Possible")').attr('disabled','disabled');
+            // $modal.find('select[name="6"] option:contains("Appointment TBC")').attr('disabled','disabled');
+            $modal.find('select[name="6"] option:contains("Appointment Confirmed")').attr('disabled','disabled');
             $modal.find('select[name="6"] option:contains("Invoiced")').attr('disabled','disabled');
             $modal.find('select[name="6"] option:contains("Paid")').attr('disabled','disabled');
             $modal.find('select[name="6"] option:contains("Cancelled")').attr('disabled','disabled');
-            $modal.find('select[name="6"]').selectpicker('refresh');
-		}
+        }
+        $modal.find('select[name="6"]').selectpicker('refresh');
 
         //Changes on the form elements
         campaign_functions.change_custom_item_form();

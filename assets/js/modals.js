@@ -796,6 +796,11 @@ var modals = {
                 });
 
 
+                if(typeof campaign_functions.cancel_appointment !== "undefined"){
+                    campaign_functions.cancel_appointment(response.data);
+                }
+
+
                 //Notice for set the outcome before leave the page
                 $(window).on('beforeunload', function () {
                     return 'You need to set the outcome after cancel an appointment. Are you sure you want to leave?';

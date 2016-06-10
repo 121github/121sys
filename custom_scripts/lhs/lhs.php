@@ -61,7 +61,7 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	}
 	
 	//get the appointment_id 
-	$qry = "select max(appointment_id) appointment_id,appointment_type_id,urn from appointments where 1 ";
+	$qry = "select max(appointment_id) appointment_id,appointment_type_id,status,urn from appointments where 1 ";
 	if($urn){
 	$qry .= " and urn = '$urn' ";	
 	}
@@ -76,6 +76,7 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	$row = $result->fetch_assoc();
 	$appointment_id = $row['appointment_id'];
 	$appointment_type_id = $row['appointment_type_id'];
+    $appointment_status = $row['status'];
 	$urn = $row['urn'];
 	//access address
 	$access_address = "";
@@ -95,12 +96,19 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	}
 	
 	//set the new appointment_type/status in the appointment table
-	if(!empty($_POST['status'])){
-		
-		$app_types = array("Appointment Confirmed"=>"3","Appointment Possible"=>"1","Appointment TBC"=>"2");
-		$appointment_type_id = $app_types[$_POST['status']];
-		$set_app_type = "update appointments set appointment_type_id = '".$appointment_type_id."' where appointment_id = '".intval($appointment_id)."'";
-        $conn->query($set_app_type);
+	if(!empty($_POST['status']) && $_POST['status'] != "Prospect"){
+		if ($_POST['status'] == "Cancelled") {
+            //Cancel the appointment
+            $cancel_app_qry = "update appointments set status = 0, cancellation_reason = 'Cancelled from job status' where appointment_id = '".intval($appointment_id)."'";
+            $conn->query($cancel_app_qry);
+
+        }
+        else {
+            $app_types = array("Appointment Confirmed"=>"3","Invoiced"=>"3","Paid"=>"3","Appointment Possible"=>"1","Appointment TBC"=>"2");
+            $appointment_type_id = $app_types[$_POST['status']];
+            $set_app_type = "update appointments set appointment_type_id = '".$appointment_type_id."', status = 1, cancellation_reason = NULL where appointment_id = '".intval($appointment_id)."'";
+            $conn->query($set_app_type);
+        }
 	}
 	
 	//get the job reference 
