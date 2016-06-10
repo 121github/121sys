@@ -258,7 +258,7 @@ var modals = {
             }
         });
 
-        $(document).on('click', '.modal-show-filter-options', function (e) {
+        $(document).on('click', 'button.modal-show-filter-options', function (e) {
             e.preventDefault();
             modals.view_filter_options();
         });
@@ -1904,7 +1904,7 @@ event.stopPropagation()
     view_filter_options_html: function (data) {
 
         var filter_options = "";
-        filter_options += "<div style='float:right; padding:8px 0;'>"+$('.dataTables_info').text()+"</div>";
+        filter_options += "";
         var clear_filters_opt = true;
         if (data) {
             $.each(data, function (i, val) {

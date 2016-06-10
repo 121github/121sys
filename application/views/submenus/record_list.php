@@ -29,12 +29,8 @@
 
                     <?php if ($global_filter) {
                         $filter_class = "btn-default";  ?>
-                        <?php if (isset($_SESSION['filter']['values'])) { ?>
-                            <?php if (@array_key_exists("pot_id", $_SESSION['filter']['values']) || @array_key_exists("source_id", $_SESSION['filter']['values']) || @array_key_exists("outcome_id", $_SESSION['filter']['values']) || @array_key_exists("postcode", $_SESSION['filter']['values'])|| @array_key_exists("pot_id", $_SESSION['filter']['values'])|| @array_key_exists("parked_code", $_SESSION['filter']['values'])|| @array_key_exists("user_id", $_SESSION['filter']['values'])|| @array_key_exists("record_status", $_SESSION['filter']['values'])|| @array_key_exists("campaign_id", $_SESSION['filter']['values'])) { 
-
-                                $filter_class = "btn-success";
-                            } ?>
-                        <?php } ?>
+                        <?php if (isset($_SESSION['filter']['values'])&&!empty($_SESSION['filter']['values'])) {  $filter_class = "btn-success"; } ?>
+   
                         <div class="btn-group">
                             <a href="#global-filter" id="submenu-filter-btn"
                                class="btn <?php echo $filter_class ?>"><span

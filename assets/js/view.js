@@ -105,12 +105,12 @@ var view = {
                 },
                 complete: function(d) {
                     request_time = (new Date().getTime() - start_time) / 1000;
-                    $('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" data-placement="bottom" title="Process time ' + Number(d.responseJSON.process_time) + ' seconds<br>Query time ' + Number(d.responseJSON.query_time) + ' seconds<br>Request time ' + request_time + ' seconds"><span class="glyphicon glyphicon-info-sign"></span></span>');
-                    $('.tt').tooltip();
+                    /*$('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" data-placement="bottom" title="Process time ' + Number(d.responseJSON.process_time) + ' seconds<br>Query time ' + Number(d.responseJSON.query_time) + ' seconds<br>Request time ' + request_time + ' seconds"><span class="glyphicon glyphicon-info-sign"></span></span>');
+                    $('.tt').tooltip();*/
 					$('#loading-overlay').fadeOut();
                     //Show search options if some filter exist
                     if (view.has_filter) {
-                        $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");
+                        $('.dataTables_info').append("<a class='marl modal-show-filter-options btn btn-danger btn-xs'><span class='glyphicon glyphicon-filter'></span> Filter is on</button>");
                     }
                 }
 				

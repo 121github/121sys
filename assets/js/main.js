@@ -651,6 +651,9 @@ $(document).ready(function () {
             dataType: "JSON",
             data: $('#quicksearchform').serialize()
         }).done(function (response) {
+			if(response.filter){
+				$('#submenu-filter-btn').removeClass('btn-default').addClass('btn-success');
+			}
             if (typeof view !== "undefined") {
                 view.reload_table();
             } else {
