@@ -300,7 +300,9 @@ var campaign_functions = {
         if ($('[name="appointment_contact_email"]').length > 0) {
             var client_email = $('[name="appointment_contact_email"]').val();
         }
-		 if ($form.find('input[name="1"]').val()==""&&($form.find("[name='6']").val() === "Paid"||$form.find("[name='6']").val() === "Invoiced")||$form.find("[name='6']").val() === "Appointment Confirmed") {
+		var status = $form.find('input[name="6"]').val();
+		
+		 if ($form.find('input[name="1"]').val()==""&&(status === "Paid"||status === "Invoiced")||status === "Appointment Confirmed") {
 			 $.ajax({
                     url: helper.baseUrl + 'custom_scripts/lhs/lhs.php',
                     type: "POST",
@@ -382,7 +384,7 @@ var campaign_functions = {
             lhs.send_template_email(urn, 8, "Client", 'rowena@lhsurveying.co.uk', "", "", "Feedback email", appointment_id);
         }
         //Job Status is Confirmed Appointment
-        else if ($form.find("[name='6']").val() === "Appointment Confirmed") {
+        else if (status === "Appointment Confirmed") {
             //Send email Appointment Confirmation Email to Client email
             lhs.send_template_email(urn, 3, "Client", 'rowena@lhsurveying.co.uk', "", "", "Appointment confirmation", appointment_id);
 
@@ -404,7 +406,7 @@ var campaign_functions = {
             var job_status = $form.find("[name='6']").val();
             var type_of_survey = $form.find("[name='7']").val();
             var additional_services = $form.find("[name='11']").val();
-            campaign_functions.set_appointment_title(appointment_id,"");
+            campaign_functions.set_appointment_title(appointment_id,"",job_status);
         }).fail( function() {
             flashalert.danger("Error saving the appointment title")
         });
@@ -541,14 +543,15 @@ var campaign_functions = {
             }
         }
     },
-    set_appointment_title: function(appointment_id,urn) {
+    set_appointment_title: function(appointment_id,urn,job_status) {
         $.ajax({
             url: helper.baseUrl+'custom_scripts/lhs/lhs.php?set_appointment_title',
             type: "POST",
             dataType: "JSON",
             data: {
                 urn:urn,
-				appointment_id:appointment_id
+				appointment_id:appointment_id,
+				status:typeof job_status!=="undefined"?job_status:""
             }
         }).done(function (response) {
             if (response.success) {

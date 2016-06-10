@@ -59,6 +59,7 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	if(!empty($_POST['appointment_id'])){
 	$appointment_id = 	intval($_POST['appointment_id']);
 	}
+	
 	//get the appointment_id 
 	$qry = "select max(appointment_id) appointment_id,appointment_type_id,urn from appointments where 1 ";
 	if($urn){
@@ -93,7 +94,15 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
 	$address	= addressFormat($row);
 	}
 	
-
+	//set the new appointment_type/status in the appointment table
+	if(!empty($_POST['job_status'])){
+		
+		$app_types = array("Appointment confirmed"=>"3","Appointment Possible"=>"1","Appointment TBC"=>"2");
+		$appointment_type_id = $app_types[$_POST['job_status']];
+		$set_app_type = "update appointments set appointment_type_id = '".$appointment_type_id."' where appointment_id = '".intval($appointment_id)."'";
+        $conn->query($set_app_type);
+	}
+	
 	//get the job reference 
 	$job_ref = "";
 	$qry = "select `value` from  custom_panel_values join custom_panel_data using(data_id) where appointment_id = '$appointment_id' and field_id = 1 group by appointment_id";
@@ -202,6 +211,7 @@ if(isset($_GET['get_appointment_title'])||isset($_GET['set_appointment_title']))
         }	
 
 		 if(isset($_GET['set_appointment_title'])){
+			 
 		  $sql = "UPDATE appointments SET title='" . addslashes($title) . "' WHERE appointment_id=" . $appointment_id;
 		  $conn->query($sql);
 		 }
@@ -626,10 +636,7 @@ switch ($action) {
         }
         break;
     case "create_job_number":
-		if(isset($_POST['appointment_id'])){
-		$set_confirmed = "update appointments set appointment_type_id = 3 where appointment_id = '".intval($_POST['appointment_id'])."'";
-        $conn->query($set_confirmed);
-		}
+	
 	
         $sql = "select `value` from custom_panel_values where field_id = 1 and `value` like 'LH%' order by `value` desc limit 1";
         $result = $conn->query($sql);
