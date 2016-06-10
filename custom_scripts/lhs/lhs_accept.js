@@ -462,12 +462,16 @@ var campaign_functions = {
             '<li><a href="#">Specific Inspection</a></li>' +
             '<li><a href="#">Structural Calculations</a></li>' +
             '<li><a href="#">Valuation</a></li>' +
+			'<li><a href="#" class="other_select">Other</a></li>' +
             '</ul>' +
             '</div>' +
             '</div>';
         var $input = $modal.find('.form-group').find('input[name="7"]');
         var $new = $(type_of_survey_html);
-        var $parent = $modal.find('.form-group').find('input[name="7"]').parent()
+        var $parent = $modal.find('.form-group').find('input[name="7"]').parent();
+		if($input.val()!=="Other"){
+		$input.prop('disabled',true);	
+		}
         $new.append($input);
         $parent.html($new);
         $parent.prepend($('<label>Type of Survey</label>'));
@@ -475,7 +479,7 @@ var campaign_functions = {
         $modal.find(".type-of-survey-list li a").click(function () {
             $modal.find('.form-group').find('input[name="7"]').val($(this).text());
         });
-
+		
 
         //Change additional services input
         var additional_services_html = '<div class="input-group">' +
@@ -489,12 +493,16 @@ var campaign_functions = {
             '<li><a href="#">Platinum Plus</a></li>' +
             '<li><a href="#">Thermal Images</a></li>' +
             '<li><a href="#">Valuation</a></li>' +
+			'<li><a href="#">Other</a></li>' +
             '</ul>' +
             '</div>' +
             '</div>';
         var $input = $modal.find('.form-group').find('input[name="11"]');
         var $new = $(additional_services_html);
-        var $parent = $modal.find('.form-group').find('input[name="11"]').parent()
+        var $parent = $modal.find('.form-group').find('input[name="11"]').parent();
+		if($input.val()!=="Other"){
+		$input.prop('disabled',true);	
+		}
         $new.append($input);
         $parent.html($new);
         $parent.prepend($('<label>Additional Services</label>'));
@@ -502,6 +510,15 @@ var campaign_functions = {
         $modal.find(".additional-services-list li a").click(function () {
             $modal.find('.form-group').find('input[name="11"]').val($(this).text());
         });
+		
+		$modal.on('click','.type-of-survey-list a,.additional-services-list a',function(e){
+			if($(this).text()=="Other"){
+				$(this).closest('.input-group').find('input').prop('disabled',false);
+			} else {
+			$(this).closest('.input-group').find('input').prop('disabled',true);	
+			}
+		});
+		
     },
     job_winner_setup: function(data) {
         $.ajax({

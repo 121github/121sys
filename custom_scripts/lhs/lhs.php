@@ -486,6 +486,9 @@ $description .= $row['value']."\n";
 if($row['name']=='Type of survey'){
 $survey_type = $row['value']."\n";
 }
+if($row['name']=='Additional services'){
+$additional_services = $row['value']."\n";
+}
 }
 
 $query = "select * from appointments a join records using(urn) join sticky_notes using(urn) join contacts c using(urn) where a.appointment_id = '$id' and c.`primary`=1";
@@ -510,6 +513,7 @@ $telephone .= $row['description'].": ".$row['telephone_number']."\n";
 }
 $description .= !empty($telephone)?$telephone."\n":"";
 $description .= !empty($survey_type)?$survey_type."\n":"";
+$description .= !empty($additional_services)?$survey_type."\n":"";
 
 $query = "select fullname,position,notes,telephone_number,ca.add1,ca.add2,ca.add3,ca.add4,ca.city,ca.county,ca.postcode from appointments a join contacts c using(urn) left join contact_addresses ca on ca.contact_id = c.contact_id left join contact_telephone ct on ct.contact_id = c.contact_id where (ca.description = 'Access Address' or ca.description is null) and a.appointment_id = '$id' and (c.`primary` = 0 or c.`primary` is null)";
 $result= $conn->query($query);
