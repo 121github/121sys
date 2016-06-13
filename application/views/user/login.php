@@ -32,14 +32,15 @@ $logo = base_url()."assets/themes/images/".(isset($_SESSION['theme_images']) ? $
             <div class="panel panel-primary forgot-password-container">
     <?php $this->view('forms/forgot_password_form.php'); ?>
 </div>
-<?php 
+<?php
+$project_version = $this->config->item('project_version');
 $js_files=array("plugins/browser/jquery.browser.min.js",
 "browser.js",
 "modals.js",
 "login.js"
 );
 ?>
-<script src="<?php echo minify("assets/js",$js_files) ?>"></script>
+<script src="<?php echo minify("assets/js",$js_files, $project_version) ?>"></script>
 <script>
     $(document).ready(function(){
 		modals.init();
